@@ -7,7 +7,7 @@ from flask import Flask, redirect, request, session, url_for, jsonify
 import requests
 import os
 from functools import wraps
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Configurações OAuth
 DISCORD_CLIENT_ID = os.getenv('DISCORD_CLIENT_ID', '')
@@ -69,7 +69,7 @@ class DiscordOAuth:
                 'email': user_info.get('email'),
                 'access_token': token_data['access_token'],
                 'refresh_token': token_data['refresh_token'],
-                'expires_at': datetime.now() + timedelta(seconds=token_data['expires_in'])
+                'expires_at': datetime.now(timezone.utc) + timedelta(seconds=token_data['expires_in'])
             }
             
             return redirect('/')
@@ -179,12 +179,12 @@ def require_auth(f):
             return redirect(url_for('login'))
         
         # Verificar se token expirou
-        if datetime.now() >= session['user']['expires_at']:
+        if datetime.now(timezone.utc) >= session['user']['expires_at']:
             # Tentar renovar
             new_token = oauth.refresh_token(session['user']['refresh_token'])
             if new_token:
                 session['user']['access_token'] = new_token['access_token']
-                session['user']['expires_at'] = datetime.now() + timedelta(seconds=new_token['expires_in'])
+                session['user']['expires_at'] = datetime.now(timezone.utc) + timedelta(seconds=new_token['expires_in'])
             else:
                 session.pop('user', None)
                 return redirect(url_for('login'))
