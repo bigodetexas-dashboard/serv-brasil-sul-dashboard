@@ -9,6 +9,12 @@ dashboard_bp = Blueprint('dashboard', __name__)
 
 def load_json(filename):
     if not os.path.exists(filename):
+        # Cria arquivo vazio se não existir
+        try:
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump({}, f)
+        except:
+            pass
         return {}
     try:
         with open(filename, 'r', encoding='utf-8') as f:

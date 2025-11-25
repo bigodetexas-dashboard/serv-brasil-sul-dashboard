@@ -1,0 +1,11 @@
+{
+    "123456789": {
+        "balance": 1000,
+        "last_daily": null,
+        "inventory": {},
+        "transactions": [],
+        "gamertag": "ExamplePlayer",
+        "favorites": [],
+        "achievements": {}
+    }
+}
