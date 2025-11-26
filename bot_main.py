@@ -902,24 +902,6 @@ async def parse_log_line(line):
                     heatmap_coords = (lx, lz)
                 except: pass
             
-            if heatmap_coords:
-                try:
-                    h_data = load_json("heatmap_data.json")
-                    if "points" not in h_data: h_data["points"] = []
-                    h_data["points"].append({
-                        "x": heatmap_coords[0],
-                        "z": heatmap_coords[1],
-                        "timestamp": time.time()
-                    })
-                    # Mantem ultimos 5000 pontos
-                    if len(h_data["points"]) > 5000:
-                        h_data["points"] = h_data["points"][-5000:]
-                    save_json("heatmap_data.json", h_data)
-                except Exception as e:
-                    print(f"Erro ao salvar heatmap: {e}")
-            # --- END HEATMAP LOGGING ---
-
-            # Recompensa Padrão
             discord_id = get_discord_id_by_gamertag(killer_name)
             reward_msg = ""
             total_reward = KILL_REWARD

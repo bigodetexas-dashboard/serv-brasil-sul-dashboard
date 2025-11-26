@@ -3,6 +3,7 @@ import json, os
 from datetime import datetime
 from flask import Blueprint, jsonify, render_template, send_from_directory
 from discord_oauth import login_required
+import database  # Importar módulo de banco de dados
 
 # Blueprint definition
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -25,8 +26,8 @@ def load_json(filename):
 # --- API ENDPOINTS ---
 @dashboard_bp.route('/api/stats')
 def api_stats():
-    players_db = load_json('players_db.json')
-    economy = load_json('economy.json')
+    players_db = database.get_all_players()
+    economy = database.get_all_economy()
     total_kills = sum(p.get('kills', 0) for p in players_db.values())
     total_deaths = sum(p.get('deaths', 0) for p in players_db.values())
     total_players = len(players_db)
@@ -41,7 +42,7 @@ def api_stats():
 
 @dashboard_bp.route('/api/players')
 def api_players():
-    players_db = load_json('players_db.json')
+    players_db = database.get_all_players()
     players_list = []
     for name, stats in players_db.items():
         kd = stats['kills'] if stats.get('deaths', 0) == 0 else round(stats['kills'] / stats['deaths'], 2)
@@ -57,7 +58,7 @@ def api_players():
 
 @dashboard_bp.route('/api/leaderboard')
 def api_leaderboard():
-    players_db = load_json('players_db.json')
+    players_db = database.get_all_players()
     # Top Kills
     top_kills = sorted(
         [(name, stats.get('kills', 0)) for name, stats in players_db.items()],
@@ -86,7 +87,7 @@ def api_leaderboard():
 
 @dashboard_bp.route('/api/shop')
 def api_shop():
-    items = load_json('items.json')
+    items = load_json('items.json') # Items ainda são arquivo estático
     shop_items = []
     for category, items_dict in items.items():
         for key, item in items_dict.items():
@@ -101,45 +102,39 @@ def api_shop():
 
 @dashboard_bp.route('/api/wars')
 def api_wars():
-    clans = load_json('clans.json')
-    wars = clans.get('wars', {})
-    active_wars = []
-    for war_id, war_data in wars.items():
-        if war_data.get('active'):
-            active_wars.append({
-                'id': war_id,
-                'clan1': war_data['clan1'],
-                'clan2': war_data['clan2'],
-                'score': war_data['score'],
-                'start_time': war_data.get('start_time', '')
-            })
-    return jsonify(active_wars)
+    clans = database.get_all_clans()
+    # Adaptação: O banco retorna dict de clãs, precisamos ver se tem 'wars'
+    # Como a estrutura do banco mudou (tabela clans), 'wars' pode não estar lá diretamente
+    # TODO: Implementar sistema de guerras no banco. Por enquanto retorna vazio.
+    return jsonify([]) 
 
 @dashboard_bp.route('/api/heatmap')
 def api_heatmap():
-    heatmap_data = load_json('heatmap_data.json')
-    return jsonify(heatmap_data.get('points', []))
+    points = database.get_heatmap_points()
+    return jsonify(points)
 
 @dashboard_bp.route('/api/player/<name>')
 @login_required
 def api_player(name):
-    players_db = load_json('players_db.json')
-    economy = load_json('economy.json')
-    if name not in players_db:
+    stats = database.get_player(name)
+    if not stats:
         return jsonify({'error': 'Player not found'}), 404
-    stats = players_db[name]
+        
+    economy = database.get_all_economy() # Otimizar depois para buscar só um
+    
     kd = stats['kills'] if stats.get('deaths', 0) == 0 else round(stats['kills'] / stats['deaths'], 2)
-    links = load_json('links.json')
-    discord_id = None
-    for gt, did in links.items():
-        if gt.lower() == name.lower():
-            discord_id = str(did)
-            break
+    
+    # Buscar Discord ID pelo link
+    discord_id = database.get_link_by_gamertag(name)
+    
     balance = 0
     achievements = []
-    if discord_id and discord_id in economy:
-        balance = economy[discord_id].get('balance', 0)
-        achievements = economy[discord_id].get('achievements', {})
+    if discord_id:
+        eco_data = database.get_economy(discord_id)
+        if eco_data:
+            balance = eco_data.get('balance', 0)
+            achievements = eco_data.get('achievements', {})
+            
     return jsonify({
         'name': name,
         'kills': stats.get('kills', 0),
@@ -186,7 +181,7 @@ def profile(name):
 # --- EXPORT ENDPOINTS ---
 @dashboard_bp.route('/api/export/players')
 def export_players():
-    players_db = load_json('players_db.json')
+    players_db = database.get_all_players()
     players_list = []
     for name, stats in players_db.items():
         kd = stats['kills'] if stats.get('deaths', 0) == 0 else round(stats['kills'] / stats['deaths'], 2)
@@ -202,8 +197,8 @@ def export_players():
 
 @dashboard_bp.route('/api/export/report')
 def export_report():
-    players_db = load_json('players_db.json')
-    economy = load_json('economy.json')
+    players_db = database.get_all_players()
+    economy = database.get_all_economy()
     total_kills = sum(p.get('kills', 0) for p in players_db.values())
     total_deaths = sum(p.get('deaths', 0) for p in players_db.values())
     total_players = len(players_db)

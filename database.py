@@ -80,6 +80,15 @@ def init_database():
                 linked_at TIMESTAMP DEFAULT NOW()
             )
         """)
+        # Tabela de heatmap
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS heatmap (
+                id SERIAL PRIMARY KEY,
+                x FLOAT NOT NULL,
+                z FLOAT NOT NULL,
+                timestamp TIMESTAMP DEFAULT NOW()
+            )
+        """)
         conn.commit()
         cur.close()
         conn.close()
@@ -90,6 +99,42 @@ def init_database():
         conn.rollback()
         conn.close()
         return False
+
+# ===== HEATMAP =====
+
+def save_heatmap_point(x, z):
+    """Salva um ponto no heatmap"""
+    conn = get_connection()
+    if not conn:
+        return False
+    try:
+        cur = conn.cursor()
+        cur.execute("INSERT INTO heatmap (x, z) VALUES (%s, %s)", (x, z))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Erro ao salvar ponto no heatmap: {e}")
+        conn.close()
+        return False
+
+def get_heatmap_points():
+    """Retorna todos os pontos do heatmap"""
+    conn = get_connection()
+    if not conn:
+        return []
+    try:
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute("SELECT x, z FROM heatmap ORDER BY timestamp DESC LIMIT 2000") # Limite para não pesar
+        points = cur.fetchall()
+        cur.close()
+        conn.close()
+        return [dict(p) for p in points]
+    except Exception as e:
+        print(f"Erro ao buscar heatmap: {e}")
+        conn.close()
+        return []
 
 # ===== PLAYERS =====
 
