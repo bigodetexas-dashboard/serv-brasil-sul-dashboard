@@ -7,6 +7,46 @@
     <title>Loja - BigodeTexas</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .category-filter {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-primary);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .category-filter:hover {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: var(--accent-primary);
+        }
+
+        .category-filter.active {
+            background: var(--accent-primary);
+            color: #000;
+            border-color: var(--accent-primary);
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: var(--accent-primary);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: var(--accent-primary);
+        }
+    </style>
 </head>
 
 <body>
@@ -25,11 +65,43 @@
 
     <div class="container">
         <h1 class="fade-in" style="margin-bottom: 1rem;">🛒 Loja</h1>
-        <p class="text-secondary fade-in" style="margin-bottom: 2rem;">
-            Use o comando <code
-                style="background: rgba(245,158,11,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">!comprar &lt;codigo&gt;</code>
-            no Discord para adquirir itens.
+        <p class="text-secondary fade-in" style="margin-bottom: 1rem;">
+            Clique em "📋 Copiar" para copiar o comando de compra e cole no Discord.
         </p>
+
+        <!-- Category Filters -->
+        <div class="fade-in" style="margin-bottom: 2rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="category-filter active" data-category="all" onclick="filterCategory('all')">
+                Todas
+            </button>
+            <button class="category-filter" data-category="armas" onclick="filterCategory('armas')">
+                🔫 Armas
+            </button>
+            <button class="category-filter" data-category="municao" onclick="filterCategory('municao')">
+                💥 Munição
+            </button>
+            <button class="category-filter" data-category="carregadores" onclick="filterCategory('carregadores')">
+                📦 Carregadores
+            </button>
+            <button class="category-filter" data-category="acessorios" onclick="filterCategory('acessorios')">
+                🔧 Acessórios
+            </button>
+            <button class="category-filter" data-category="construcao" onclick="filterCategory('construcao')">
+                🏗️ Construção
+            </button>
+            <button class="category-filter" data-category="ferramentas" onclick="filterCategory('ferramentas')">
+                🛠️ Ferramentas
+            </button>
+            <button class="category-filter" data-category="medico" onclick="filterCategory('medico')">
+                🏥 Médico
+            </button>
+            <button class="category-filter" data-category="roupas" onclick="filterCategory('roupas')">
+                👕 Roupas
+            </button>
+            <button class="category-filter" data-category="veiculos" onclick="filterCategory('veiculos')">
+                🚗 Veículos
+            </button>
+        </div>
 
         <div id="shop-container" class="grid grid-3">
             <div class="loading text-center">Carregando...</div>

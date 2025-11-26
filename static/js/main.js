@@ -56,32 +56,76 @@ async function loadStats() {
 }
 
 // --- SHOP PAGE ---
+let allShopItems = [];
+
 async function loadShop() {
   const items = await fetchAPI('shop');
   if (!items) return;
 
+  allShopItems = items;
+  renderShopItems(items);
+  hideLoading('shop-container');
+}
+
+function renderShopItems(items) {
   const shopContainer = document.getElementById('shop-container');
   if (shopContainer) {
     shopContainer.innerHTML = items.map(item => `
-      <div class="card fade-in">
+      <div class="card fade-in" data-category="${item.category}">
         <div class="card-header">
           <h3 class="card-title">${item.name}</h3>
           <span class="badge badge-primary">${item.category}</span>
         </div>
         <p class="text-muted">${item.description}</p>
         <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
             <span style="font-size: 1.5rem; font-weight: 700; color: var(--accent-primary);">
               ${formatNumber(item.price)} 💰
             </span>
             <code style="font-size: 0.875rem; color: var(--text-muted);">${item.code}</code>
           </div>
+          <button onclick="copyCommand('${item.code}')" class="copy-btn">
+            📋 Copiar Comando
+          </button>
         </div>
       </div>
     `).join('');
   }
+}
 
-  hideLoading('shop-container');
+function filterCategory(category) {
+  // Update active button
+  document.querySelectorAll('.category-filter').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.querySelector(`[data-category="${category}"]`).classList.add('active');
+
+  // Filter items
+  if (category === 'all') {
+    renderShopItems(allShopItems);
+  } else {
+    const filtered = allShopItems.filter(item => item.category === category);
+    renderShopItems(filtered);
+  }
+}
+
+function copyCommand(code) {
+  const command = `!comprar ${code}`;
+  navigator.clipboard.writeText(command).then(() => {
+    // Visual feedback
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '✅ Copiado!';
+    btn.style.background = 'rgba(34, 197, 94, 0.2)';
+
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+    }, 2000);
+  }).catch(err => {
+    console.error('Erro ao copiar:', err);
+    alert('Erro ao copiar comando. Copie manualmente: ' + command);
+  });
 }
 
 // --- WARS PAGE ---
