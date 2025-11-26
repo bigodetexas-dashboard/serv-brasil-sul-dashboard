@@ -148,6 +148,25 @@ def api_player(name):
         'first_seen': stats.get('first_seen', 0)
     })
 
+@dashboard_bp.route('/api/user/balance')
+@login_required
+def api_user_balance():
+    """Returns the logged-in user's balance"""
+    from flask import session
+    discord_id = session.get('discord_id')
+    
+    if not discord_id:
+        return jsonify({'error': 'Not authenticated'}), 401
+    
+    eco_data = database.get_economy(str(discord_id))
+    balance = eco_data.get('balance', 0) if eco_data else 0
+    
+    return jsonify({
+        'balance': balance,
+        'discord_id': str(discord_id)
+    })
+
+
 # --- PAGES ---
 @dashboard_bp.route('/')
 def index():
