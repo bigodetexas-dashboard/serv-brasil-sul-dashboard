@@ -55,6 +55,63 @@ async function loadStats() {
   hideLoading('stats-container');
 }
 
+// --- LEADERBOARD PAGE ---
+async function loadLeaderboard() {
+  const data = await fetchAPI('leaderboard');
+  if (!data) {
+    console.error('Failed to load leaderboard data');
+    return;
+  }
+
+  // Top Kills
+  const topKills = document.getElementById('top-kills');
+  if (topKills && data.kills) {
+    topKills.innerHTML = data.kills.map((player, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${player.name}</td>
+        <td>${formatNumber(player.value)}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Top K/D
+  const topKd = document.getElementById('top-kd');
+  if (topKd && data.kd) {
+    topKd.innerHTML = data.kd.map((player, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${player.name}</td>
+        <td>${player.value.toFixed(2)}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Top Killstreak
+  const topStreak = document.getElementById('top-streak');
+  if (topStreak && data.killstreak) {
+    topStreak.innerHTML = data.killstreak.map((player, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${player.name}</td>
+        <td>${formatNumber(player.value)}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Top Longest Shot
+  const topShot = document.getElementById('top-shot');
+  if (topShot && data.longest_shot) {
+    topShot.innerHTML = data.longest_shot.map((player, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${player.name}</td>
+        <td>${formatNumber(player.value)}m</td>
+      </tr>
+    `).join('');
+  }
+}
+
 // --- SHOP PAGE ---
 let allShopItems = [];
 
