@@ -55,14 +55,14 @@ async function loadStats() {
   hideLoading('stats-container');
 }
 
-// --- LEADERBOARD PAGE ---
-async function loadLeaderboard() {
+// --- SHOP PAGE ---
+async function loadShop() {
   const items = await fetchAPI('shop');
   if (!items) return;
 
-  const shopGrid = document.getElementById('shop-grid');
-  if (shopGrid) {
-    shopGrid.innerHTML = items.map(item => `
+  const shopContainer = document.getElementById('shop-container');
+  if (shopContainer) {
+    shopContainer.innerHTML = items.map(item => `
       <div class="card fade-in">
         <div class="card-header">
           <h3 class="card-title">${item.name}</h3>
