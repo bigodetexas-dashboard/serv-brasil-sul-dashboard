@@ -121,6 +121,11 @@ from discord_oauth import init_oauth
 health_app = Flask(__name__)
 health_app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key") # Importante para sessões
 
+# CRITICAL: Desabilitar cache de templates para forçar reload
+health_app.config['TEMPLATES_AUTO_RELOAD'] = True
+health_app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+health_app.config['EXPLAIN_TEMPLATE_LOADING'] = True
+
 # Inicializar OAuth
 init_oauth(health_app)
 
