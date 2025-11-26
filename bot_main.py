@@ -1196,18 +1196,6 @@ def load_state():
     return load_json(STATE_FILE)
 
 def save_state(file_name, lines_read):
-    data = {"current_log_file": file_name, "last_read_lines": lines_read}
-    save_json(STATE_FILE, data)
-
-    # Inicia todos os loops
-    if not killfeed_loop.is_running():
-        print("[LOOP] Iniciando killfeed_loop...")
-        killfeed_loop.start()
-    
-    if not raid_scheduler.is_running():
-        print("[LOOP] Iniciando raid_scheduler...")
-        raid_scheduler.start()
-    
     if not save_data_loop.is_running():
         print("[LOOP] Iniciando save_data_loop...")
         save_data_loop.start()
