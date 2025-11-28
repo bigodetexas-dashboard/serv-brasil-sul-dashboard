@@ -37,6 +37,11 @@ def login_required(f):
         
         # Modo normal: verifica autenticação
         if 'user' not in session:
+            # Se for uma chamada de API (fetch/XHR), retorna JSON
+            from flask import request, jsonify
+            if request.path.startswith('/api/'):
+                return jsonify({'error': 'Not authenticated', 'login_required': True}), 401
+            # Se for página HTML, redireciona para login
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
