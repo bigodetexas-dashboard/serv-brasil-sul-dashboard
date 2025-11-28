@@ -102,22 +102,16 @@ def api_shop():
     return jsonify(shop_items)
 
 @dashboard_bp.route('/api/user/balance')
-# @login_required  # Temporariamente desabilitado para testes
+@login_required
 def api_user_balance():
     from flask import session
     user_id = session.get('discord_user_id')
     
-    # Se não estiver logado, busca pelo ID fixo de teste
     if not user_id:
-        user_id = '847456652253069382'  # ID do usuário para testes
+        return jsonify({'error': 'Not authenticated'}), 401
     
     economy = database.get_all_economy()
-    
-    # MODO DEV: Saldo infinito para testes
-    if user_id == '123456789':
-        balance = 999999
-    else:
-        user_data = economy.get(str(user_id), {})
+    user_data = economy.get(str(user_id), {})
         balance = user_data.get('balance', 0)
     
     return jsonify({
@@ -126,7 +120,7 @@ def api_user_balance():
     })
 
 @dashboard_bp.route('/api/shop/purchase', methods=['POST'])
-# @login_required  # Temporariamente desabilitado para teste
+@login_required
 def api_shop_purchase():
     from flask import session, request
     import asyncio
