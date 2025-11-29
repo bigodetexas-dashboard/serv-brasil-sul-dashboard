@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rankings - SERV. BRASIL SUL - XBOX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/leaderboard.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <!-- Logo temporário (texto) até termos a imagem da placa -->
+                <span style="font-size: 1.5rem;">SERV. BRASIL SUL - XBOX</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
+                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
+                <li><a href="/leaderboard" class="navbar-link active"><i class="ri-trophy-line"></i> Rankings</a></li>
+                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
+            </ul>
+            <a href="/login" class="btn btn-primary"><i class="ri-discord-line"></i> Login Discord</a>
+        </div>
+    </nav>
+
+    <div class="container leaderboard-container">
+        <div class="leaderboard-header">
+            <h1><i class="ri-trophy-line"></i> Hall da Fama</h1>
+            <p>Veja quem são as lendas do SERV. BRASIL SUL - XBOX</p>
+        </div>
+
+        <div class="rankings-grid">
+            <!-- Menu Lateral de Categorias -->
+            <div class="rankings-menu">
+                <button class="rank-btn active" data-type="money">
+                    <i class="ri-money-dollar-circle-line"></i> Mais Rico
+                </button>
+                <button class="rank-btn" data-type="kills">
+                    <i class="ri-skull-line"></i> Mais Mata Players
+                </button>
+                <button class="rank-btn" data-type="deaths">
+                    <i class="ri-ghost-line"></i> Mais Morre
+                </button>
+                <button class="rank-btn" data-type="kd">
+                    <i class="ri-sword-line"></i> Melhor K/D
+                </button>
+                <button class="rank-btn" data-type="zombie_kills">
+                    <i class="ri-virus-line"></i> Mais Mata Zumbis
+                </button>
+                <button class="rank-btn" data-type="distance_traveled">
+                    <i class="ri-footprint-line"></i> Mais Anda no Mapa
+                </button>
+                <button class="rank-btn" data-type="distance_driven">
+                    <i class="ri-roadster-line"></i> Mais Anda de Veículo
+                </button>
+                <button class="rank-btn" data-type="logins">
+                    <i class="ri-login-circle-line"></i> Mais Desloga/Reloga
+                </button>
+                <button class="rank-btn" data-type="base_builds">
+                    <i class="ri-hammer-line"></i> Mais Constrói Bases
+                </button>
+                <button class="rank-btn" data-type="lock_raids">
+                    <i class="ri-lock-unlock-line"></i> Mais Roda Cadeado
+                </button>
+            </div>
+
+            <!-- Conteúdo do Ranking -->
+            <div class="rankings-content">
+                <!-- Pódio (Top 3) -->
+                <div class="podium" id="podium-container">
+                    <!-- Preenchido via JS -->
+                </div>
+
+                <!-- Lista Completa -->
+                <div class="ranking-list" id="ranking-list">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
+</body>
+
+</html>
