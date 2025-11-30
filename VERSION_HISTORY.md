@@ -1,5 +1,16 @@
 # Histórico de Versões do BigodeTexas Bot
 
+## Site 9.2 (30/11/2025) 🎨
+
+**Tag:** `site-9.2-2025-11-30`
+
+**Principais Mudanças:**
+
+- **Checkout Navbar:** Substituído header customizado por navbar padrão com logo Texas.
+- **Heatmap Fallback:** Adicionado fundo de grid quando tiles do iZurvive não carregam.
+- **Bug Fixes:** Corrigidos erros de sintaxe CSS e warnings de markdown.
+- **UX:** Visual consistente em todas as páginas do site.
+
 ## Site 9.1 (30/11/2025) 🔥
 
 **Tag:** `site-9.1-2025-11-30`
