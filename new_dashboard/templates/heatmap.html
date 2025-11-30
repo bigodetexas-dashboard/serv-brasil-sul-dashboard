@@ -4,59 +4,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa de Calor - BigodeTexas</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Mapa de Calor PvP - SERV. BRASIL SUL - XBOX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/heatmap.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
 
 <body>
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="/" class="navbar-brand">🤠 BigodeTexas</a>
-            <ul class="navbar-nav">
-                <li><a href="/" class="nav-link">Início</a></li>
-                <li><a href="/stats" class="nav-link">Estatísticas</a></li>
-                <li><a href="/leaderboard" class="nav-link">Ranking</a></li>
-                <li><a href="/shop" class="nav-link">Loja</a></li>
-                <li><a href="/heatmap" class="nav-link">Mapa de Calor</a></li>
+            <a href="/" class="navbar-brand">
+                <span style="font-size: 1.5rem;">SERV. BRASIL SUL - XBOX</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
+                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
+                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
+                <li><a href="/heatmap" class="navbar-link active"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
+                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
             </ul>
+            <a href="/login" class="btn btn-primary"><i class="ri-discord-line"></i> Login Discord</a>
         </div>
     </nav>
 
-    <div class="container">
-        <h1 class="fade-in" style="margin-bottom: 1rem;">🗺️ Mapa de Calor PvP</h1>
-        <p class="text-secondary fade-in" style="margin-bottom: 2rem;">
-            Visualize as zonas mais quentes de combate no servidor.
-        </p>
+    <!-- Heatmap Section -->
+    <section class="heatmap-section">
+        <div class="container">
+            <div class="heatmap-header">
+                <h1 class="section-title">Mapa de Calor PvP</h1>
+                <p class="section-subtitle">Veja onde a ação está acontecendo em tempo real. As áreas vermelhas indicam
+                    zonas de alto conflito.</p>
 
-        <div class="card fade-in">
-            <div class="card-header">
-                <h3 class="card-title">🔥 Heatmap</h3>
+                <div class="heatmap-controls">
+                    <button class="control-btn active" data-time="24h">Últimas 24h</button>
+                    <button class="control-btn" data-time="7d">7 Dias</button>
+                    <button class="control-btn" data-time="all">Tudo</button>
+                </div>
             </div>
-            <div style="text-align: center; padding: 2rem;">
-                <img src="/heatmap.png" alt="Heatmap"
-                    style="max-width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl);"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div style="display: none; color: var(--text-muted);">
-                    <p>⚠️ Nenhum dado de heatmap disponível ainda.</p>
-                    <p style="font-size: 0.875rem;">O heatmap será gerado após algumas mortes serem registradas.</p>
+
+            <div class="heatmap-container">
+                <div id="map"></div>
+
+                <div class="heatmap-legend">
+                    <div class="legend-item">
+                        <span class="color-box low"></span> Baixa Atividade
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-box medium"></span> Média Atividade
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-box high"></span> Alta Atividade (Zona Quente)
+                    </div>
+                </div>
+            </div>
+
+            <div class="top-locations">
+                <h2><i class="ri-map-pin-range-line"></i> Zonas Mais Perigosas</h2>
+                <div class="locations-grid">
+                    <div class="location-card">
+                        <span class="rank">#1</span>
+                        <div class="loc-info">
+                            <h3>North West Airfield</h3>
+                            <p>145 Mortes (24h)</p>
+                        </div>
+                        <div class="danger-level high">Extremo</div>
+                    </div>
+                    <div class="location-card">
+                        <span class="rank">#2</span>
+                        <div class="loc-info">
+                            <h3>Tisy Military Base</h3>
+                            <p>98 Mortes (24h)</p>
+                        </div>
+                        <div class="danger-level high">Alto</div>
+                    </div>
+                    <div class="location-card">
+                        <span class="rank">#3</span>
+                        <div class="loc-info">
+                            <h3>Chernogorsk</h3>
+                            <p>67 Mortes (24h)</p>
+                        </div>
+                        <div class="danger-level medium">Médio</div>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="card fade-in" style="margin-top: 2rem;">
-            <div class="card-header">
-                <h3 class="card-title">ℹ️ Como Funciona</h3>
-            </div>
-            <p class="text-secondary">
-                O mapa de calor mostra as áreas com maior atividade de PvP.
-                Pontos vermelhos indicam locais onde ocorreram mortes recentemente.
-                Use essas informações para evitar ou procurar combate!
-            </p>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 SERV. BRASIL SUL - XBOX. Todos os direitos reservados.</p>
         </div>
-    </div>
+    </footer>
 
-    <script src="/static/js/main.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Leaflet Heat -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+    <script src="{{ url_for('static', filename='js/heatmap.js') }}"></script>
 </body>
 
 </html>

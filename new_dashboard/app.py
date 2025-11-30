@@ -28,6 +28,10 @@ def index():
     """Homepage"""
     return render_template('index.html')
 
+@app.route('/heatmap')
+def heatmap():
+    return render_template('heatmap.html')
+
 @app.route('/login')
 def login():
     """Redireciona para OAuth Discord"""
