@@ -1,0 +1,36 @@
+# EditorConfig para BigodeBot
+root = true
+
+# Configurações padrão
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Arquivos Python
+[*.py]
+indent_style = space
+indent_size = 4
+
+# Arquivos Enforce Script (DayZ)
+[init.c]
+# Desabilita análise de C/C++
+# Este é um arquivo Enforce Script, não C
+indent_style = tab
+indent_size = 4
+
+# JSON
+[*.json]
+indent_style = space
+indent_size = 2
+
+# XML
+[*.xml]
+indent_style = space
+indent_size = 2
+
+# HTML/CSS/JS
+[*.{html,css,js}]
+indent_style = space
+indent_size = 2

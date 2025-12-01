@@ -221,43 +221,63 @@ async def parse_log_line(line):
 
             # Extração de Localização e Distância
             location = "Desconhecido"
-            distance = "N/A"
+            distance = 0.0
             coords_text = ""
+            game_x, game_y, game_z = 0.0, 0.0, 0.0
+            
             if "<" in line and ">" in line:
                 coords_text = line.split("<")[1].split(">")[0]
                 try:
                     c_parts = coords_text.split(",")
-                    x = float(c_parts[0])
-                    z = float(c_parts[2])
-                    location = f"{x:.1f} x {z:.1f}"
+                    game_x = float(c_parts[0])
+                    game_y = float(c_parts[1])
+                    game_z = float(c_parts[2])
+                    location = f"{game_x:.1f} x {game_z:.1f}"
                     
-                    # Tenta calcular distância se houver duas coordenadas (ex: killer e victim)
-                    # O log padrão do DayZ geralmente mostra apenas a coordenada da vítima ou do evento
-                    # Mas se tivermos sorte de ter ambas, poderíamos calcular.
-                    # Por enquanto, vamos assumir que não temos a do killer facilmente na mesma linha
-                    # a menos que o formato seja específico.
-                    # Se o log tiver <x1,y1,z1> ... <x2,y2,z2>, podemos tentar.
-                    
+                    # Tenta calcular distância se houver duas coordenadas
                     all_coords = re.findall(r"<([^>]+)>", line)
                     if len(all_coords) >= 2:
                         c1 = all_coords[0].split(",")
                         c2 = all_coords[1].split(",")
                         x1, y1, z1 = float(c1[0]), float(c1[1]), float(c1[2])
                         x2, y2, z2 = float(c2[0]), float(c2[1]), float(c2[2])
-                        dist = ((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)**0.5
-                        distance = f"{dist:.1f}m"
+                        distance = ((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)**0.5
 
                 except:
                     location = coords_text
 
+            # ✅ INTEGRAÇÃO COM DATABASE.PY - Salvar evento no SQLite
+            try:
+                import sys
+                import os
+                sys.path.append(os.path.dirname(__file__))
+                from database import add_event
+                from datetime import datetime
+                
+                add_event(
+                    event_type='kill',
+                    x=game_x,
+                    y=game_y,
+                    z=game_z,
+                    weapon=weapon,
+                    killer=killer_name,
+                    victim=victim_name,
+                    distance=distance,
+                    timestamp=datetime.now()
+                )
+                print(f"✅ Evento salvo no banco: {killer_name} → {victim_name} ({weapon})")
+            except Exception as e:
+                print(f"⚠️ Erro ao salvar evento no banco: {e}")
+
             # Monta mensagem
+            distance_str = f"{distance:.1f}m" if distance > 0 else "N/A"
             msg = f"""
 🧛‍♂️ **Assassino**
   ╒┄{killer_name}
   ╞┄Nível:………〘{k_level}〙
   ╞┄Matou:……… {k_stats['kills']}
   ╞┄Série:……… {k_stats['killstreak']}
-  ╞┄Distância:… {distance}
+  ╞┄Distância:… {distance_str}
   ╘┄PvP K/D:… {k_kd}
 🧟 **Vítima**
   ╒┄{victim_name}

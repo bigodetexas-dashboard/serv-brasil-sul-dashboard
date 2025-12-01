@@ -551,6 +551,294 @@ def api_parse_log():
             'events_saved': events_saved
         }), 500
 
+@app.route('/api/heatmap/top_locations')
+def api_heatmap_top_locations():
+    """
+    API de Top Locations - Retorna as 5 áreas mais perigosas
+    """
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from datetime import datetime, timedelta
+    
+    # Parâmetros da query
+    time_range = request.args.get('range', '24h')
+    
+    # Calcular data de início
+    if time_range == '24h':
+        since_date = datetime.now() - timedelta(hours=24)
+    elif time_range == '7d':
+        since_date = datetime.now() - timedelta(days=7)
+    else:
+        since_date = datetime(2020, 1, 1)
+    
+    try:
+        import sqlite3
+        conn = sqlite3.connect('pvp_events.db')
+        cursor = conn.cursor()
+        
+        # Query para agrupar por regiões (buckets de 500m)
+        query = """
+        SELECT 
+            CAST(game_x / 500 AS INT) * 500 + 250 as center_x,
+            CAST(game_z / 500 AS INT) * 500 + 250 as center_z,
+            COUNT(*) as deaths,
+            GROUP_CONCAT(DISTINCT weapon, ', ') as weapons
+        FROM events
+        WHERE timestamp >= ? AND event_type = 'kill'
+        GROUP BY 
+            CAST(game_x / 500 AS INT),
+            CAST(game_z / 500 AS INT)
+        ORDER BY deaths DESC
+        LIMIT 5
+        """
+        
+        cursor.execute(query, (since_date,))
+        rows = cursor.fetchall()
+        conn.close()
+        
+        # Mapear coordenadas para nomes de locais conhecidos
+        def get_location_name(x, z):
+            landmarks = {
+                'NWAF': (4500, 10000, 800),
+                'Tisy Military Base': (1800, 14000, 600),
+                'Chernogorsk': (6500, 2500, 800),
+                'Elektrozavodsk': (10500, 2200, 800),
+                'Berezino': (12500, 9500, 600),
+                'Stary Sobor': (6000, 7700, 400),
+                'Zelenogorsk': (2500, 5000, 500),
+                'Vybor': (3700, 8900, 400),
+                'Severograd': (7900, 12600, 500),
+                'Novo': (11900, 12300, 500)
+            }
+            
+            for name, (lx, lz, radius) in landmarks.items():
+                dist = ((x - lx)**2 + (z - lz)**2)**0.5
+                if dist <= radius:
+                    return name
+            
+            return None
+        
+        # Formatar resultado
+        locations = []
+        for row in rows:
+            center_x, center_z, deaths, weapons = row
+            location_name = get_location_name(center_x, center_z)
+            
+            locations.append({
+                'center_x': center_x,
+                'center_z': center_z,
+                'deaths': deaths,
+                'weapons': weapons or 'Várias',
+                'location_name': location_name,
+                'time_range': time_range
+            })
+        
+        return jsonify({
+            'success': True,
+            'locations': locations,
+            'range': time_range
+        })
+        
+    except Exception as e:
+        print(f"Erro ao buscar top locations: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'locations': []
+        }), 500
+
+@app.route('/api/heatmap/weapons')
+def api_heatmap_weapons():
+    """
+    API de Armas - Retorna lista de armas usadas e contagem
+    """
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from datetime import datetime, timedelta
+    
+    time_range = request.args.get('range', '24h')
+    
+    if time_range == '24h':
+        since_date = datetime.now() - timedelta(hours=24)
+    elif time_range == '7d':
+        since_date = datetime.now() - timedelta(days=7)
+    elif time_range == '30d':
+        since_date = datetime.now() - timedelta(days=30)
+    else:
+        since_date = datetime(2020, 1, 1)
+    
+    try:
+        import sqlite3
+        conn = sqlite3.connect('pvp_events.db')
+        cursor = conn.cursor()
+        
+        query = """
+        SELECT weapon, COUNT(*) as count
+        FROM events
+        WHERE timestamp >= ? AND event_type = 'kill' AND weapon IS NOT NULL
+        GROUP BY weapon
+        ORDER BY count DESC
+        """
+        
+        cursor.execute(query, (since_date,))
+        rows = cursor.fetchall()
+        conn.close()
+        
+        weapons = [{'name': row[0], 'count': row[1]} for row in rows]
+        
+        return jsonify({
+            'success': True,
+            'weapons': weapons,
+            'range': time_range
+        })
+        
+    except Exception as e:
+        print(f"Erro ao buscar armas: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'weapons': []
+        }), 500
+
+@app.route('/api/heatmap/timeline')
+def api_heatmap_timeline():
+    """
+    API de Timeline - Retorna mortes agrupadas por período de tempo
+    """
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from datetime import datetime, timedelta
+    
+    time_range = request.args.get('range', '7d')
+    
+    if time_range == '24h':
+        since_date = datetime.now() - timedelta(hours=24)
+        group_by = 'hour'
+    elif time_range == '7d':
+        since_date = datetime.now() - timedelta(days=7)
+        group_by = 'day'
+    elif time_range == '30d':
+        since_date = datetime.now() - timedelta(days=30)
+        group_by = 'day'
+    else:
+        since_date = datetime.now() - timedelta(days=30)
+        group_by = 'day'
+    
+    try:
+        import sqlite3
+        conn = sqlite3.connect('pvp_events.db')
+        cursor = conn.cursor()
+        
+        if group_by == 'hour':
+            query = """
+            SELECT 
+                strftime('%Y-%m-%d %H:00:00', timestamp) as period,
+                COUNT(*) as total,
+                SUM(CASE WHEN event_type = 'kill' THEN 1 ELSE 0 END) as pvp,
+                SUM(CASE WHEN event_type = 'suicide' THEN 1 ELSE 0 END) as pve
+            FROM events
+            WHERE timestamp >= ?
+            GROUP BY strftime('%Y-%m-%d %H', timestamp)
+            ORDER BY period ASC
+            """
+        else:
+            query = """
+            SELECT 
+                strftime('%Y-%m-%d', timestamp) as period,
+                COUNT(*) as total,
+                SUM(CASE WHEN event_type = 'kill' THEN 1 ELSE 0 END) as pvp,
+                SUM(CASE WHEN event_type = 'suicide' THEN 1 ELSE 0 END) as pve
+            FROM events
+            WHERE timestamp >= ?
+            GROUP BY strftime('%Y-%m-%d', timestamp)
+            ORDER BY period ASC
+            """
+        
+        cursor.execute(query, (since_date,))
+        rows = cursor.fetchall()
+        conn.close()
+        
+        timeline = [{
+            'period': row[0],
+            'total': row[1],
+            'pvp': row[2],
+            'pve': row[3]
+        } for row in rows]
+        
+        return jsonify({
+            'success': True,
+            'timeline': timeline,
+            'range': time_range,
+            'group_by': group_by
+        })
+        
+    except Exception as e:
+        print(f"Erro ao buscar timeline: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'timeline': []
+        }), 500
+
+@app.route('/api/heatmap/hourly')
+def api_heatmap_hourly():
+    """
+    API de Heatmap por Hora - Retorna mortes agrupadas por hora do dia (0-23)
+    """
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    from datetime import datetime, timedelta
+    
+    time_range = request.args.get('range', '7d')
+    
+    if time_range == '24h':
+        since_date = datetime.now() - timedelta(hours=24)
+    elif time_range == '7d':
+        since_date = datetime.now() - timedelta(days=7)
+    elif time_range == '30d':
+        since_date = datetime.now() - timedelta(days=30)
+    else:
+        since_date = datetime(2020, 1, 1)
+    
+    try:
+        import sqlite3
+        conn = sqlite3.connect('pvp_events.db')
+        cursor = conn.cursor()
+        
+        query = """
+        SELECT 
+            CAST(strftime('%H', timestamp) AS INTEGER) as hour,
+            COUNT(*) as count
+        FROM events
+        WHERE timestamp >= ? AND event_type = 'kill'
+        GROUP BY hour
+        ORDER BY hour ASC
+        """
+        
+        cursor.execute(query, (since_date,))
+        rows = cursor.fetchall()
+        conn.close()
+        
+        # Criar array com todas as 24 horas (inicializado com 0)
+        hourly_data = [0] * 24
+        for row in rows:
+            hour, count = row
+            hourly_data[hour] = count
+        
+        return jsonify({
+            'success': True,
+            'hourly': hourly_data,
+            'range': time_range
+        })
+        
+    except Exception as e:
+        print(f"Erro ao buscar hourly heatmap: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'hourly': [0] * 24
+        }), 500
+
 @app.route('/logout')
 def logout():
     """Logout do usuário"""

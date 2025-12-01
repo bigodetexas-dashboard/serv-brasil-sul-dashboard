@@ -34,3 +34,15 @@ Thumbs.db
 # Backups
 backups/
 *.bak
+
+# Map tiles e imagens grandes
+static/tiles/
+new_dashboard/static/tiles/
+static/img/*.jpg
+static/img/*.png
+!static/img/logo_texas.png
+*.tif
+*.tiff
+test_tile_real.png
+test_real_tile.png
+chernarus_map_full.png
