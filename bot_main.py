@@ -2214,6 +2214,12 @@ async def set(ctx, nome: str, x: float, z: float, raio: int):
     
     alarms = load_alarms()
     
+    # Verifica se o usuário já possui um alarme (base) registrado
+    for aid, data in alarms.items():
+        if data['owner_id'] == ctx.author.id:
+            await ctx.send("❌ **Limite Atingido!**\nVocê já possui uma base registrada. Use `!alarme remover <nome>` antes de registrar uma nova.")
+            return
+    
     user_clan, _ = get_user_clan(ctx.author.id)
     
     for aid, data in alarms.items():
