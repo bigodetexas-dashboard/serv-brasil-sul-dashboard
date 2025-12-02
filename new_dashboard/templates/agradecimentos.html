@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agradecimentos - BigodeTexas</title>
+    <title>Agradecimentos - SERV. BRASIL SUL - XBOX</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/agradecimentos.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='img/logo_texas.png') }}" type="image/png">
+    <!-- Adicionando RemixIcon para ícones consistentes -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 
 <body>
@@ -15,7 +17,7 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="BigodeTexas">
-                <span>BIGODE TEXAS</span>
+                <span>SERV. BRASIL SUL - XBOX</span>
             </div>
             <ul class="nav-menu">
                 <li><a href="/">Início</a></li>
@@ -35,7 +37,18 @@
 
             <!-- Título Principal -->
             <div class="main-title">
-                <div class="handshake-icon">⚔</div>
+                <!-- Ícone de Rifles Cruzados (SVG Inline Branco) -->
+                <div class="handshake-icon">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.5 19.5L19.5 4.5M19.5 4.5H15M19.5 4.5V9" stroke="white" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M19.5 19.5L4.5 4.5M4.5 4.5H9M4.5 4.5V9" stroke="white" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <!-- Adicionando detalhes para parecer mais com armas -->
+                        <path d="M7 17L5 19" stroke="white" stroke-width="2" />
+                        <path d="M17 7L19 5" stroke="white" stroke-width="2" />
+                    </svg>
+                </div>
                 <h1>Agradecimentos</h1>
                 <p class="subtitle">8 Anos de Sobrevivência e Amizade</p>
             </div>
@@ -125,8 +138,6 @@
                                 Aos meus grandiosos amigos de alma...
                             </p>
                             <div class="friends-names">
-                                <span class="friend-name">CODINOME</span>
-                                <span class="separator">•</span>
                                 <span class="friend-name">NICK</span>
                                 <span class="separator">•</span>
                                 <span class="friend-name">MACOY</span>
@@ -143,8 +154,9 @@
 
             <!-- Rodapé da Página -->
             <div class="page-footer">
-                <p>BigodeTexas • Servidor Brasil Sul • Xbox</p>
-                <p class="years">2017 - 2025 • 8 Anos de História</p>
+                <p>Servidor configurado com</p>
+                <p style="font-size: 1.2rem; font-weight: bold; color: #ffd700; margin: 5px 0;">BigodeTexas</p>
+                <p class="years">Brasil Sul • Xbox • Dayz</p>
             </div>
 
         </div>
