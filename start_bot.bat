@@ -39,7 +39,7 @@ echo    ║  🟢 BOT ONLINE                                                    
 echo    ╚══════════════════════════════════════════════════════════════════════════════╝
 echo.
 
-python bot_main.py
+python bot_wrapper.py
 
 :: Se parar
 color 0C

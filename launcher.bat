@@ -55,7 +55,7 @@ echo        ╚═════════════════════�
 echo.
 echo        Iniciando bot...
 timeout /t 1 /nobreak >nul
-python bot_main.py
+python bot_wrapper.py
 goto END
 
 :FULL_DIAGNOSTIC

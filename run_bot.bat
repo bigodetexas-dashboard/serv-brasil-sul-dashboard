@@ -93,7 +93,7 @@ echo    ║  🤖 BOT ATIVO - Monitorando Servidor DayZ                         
 echo    ╚══════════════════════════════════════════════════════════════════════════════╝
 echo.
 
-python bot_main.py
+python bot_wrapper.py
 
 :: Se o bot parar
 cls
