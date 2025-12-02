@@ -106,6 +106,11 @@ def order_confirmation():
     """Confirmação de pedido"""
     return render_template('order_confirmation.html')
 
+@app.route('/agradecimentos')
+def agradecimentos():
+    """Página de agradecimentos aos amigos"""
+    return render_template('agradecimentos.html')
+
 # ==================== API ENDPOINTS ====================
 
 @app.route('/api/stats')

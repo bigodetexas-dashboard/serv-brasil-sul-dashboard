@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agradecimentos - BigodeTexas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/agradecimentos.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/logo_texas.png') }}" type="image/png">
+</head>
+
+<body>
+    <!-- Navegação -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="BigodeTexas">
+                <span>BIGODE TEXAS</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/">Início</a></li>
+                <li><a href="/shop">Loja</a></li>
+                <li><a href="/leaderboard">Rankings</a></li>
+                <li><a href="/heatmap">Mapa de Calor</a></li>
+                <li><a href="/dashboard">Meu Perfil</a></li>
+                <li><a href="/agradecimentos" class="active">🤝 Agradecimentos</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="hero-section">
+        <div class="overlay"></div>
+        <div class="content-wrapper">
+
+            <!-- Título Principal -->
+            <div class="main-title">
+                <div class="handshake-icon">🤝</div>
+                <h1>Agradecimentos</h1>
+                <p class="subtitle">8 Anos de Sobrevivência e Amizade</p>
+            </div>
+
+            <!-- Citações -->
+            <div class="quotes-section">
+                <div class="quote-card">
+                    <div class="quote-icon">"</div>
+                    <p class="quote-text">
+                        Um verdadeiro sobrevivente não anda só — ele traz o novato e mostra onde cavar,
+                        onde mirar e onde confiar.
+                    </p>
+                    <p class="quote-author">— NICK</p>
+                </div>
+
+                <div class="quote-card">
+                    <div class="quote-icon">"</div>
+                    <p class="quote-text">
+                        Brother: 'confia em mim, só dá uma espiada acima do muro'.
+                        Resultado? Só ouvi a bala zunindo de raspão na minha testa.
+                    </p>
+                    <p class="quote-author">— Macoy trollando Texas</p>
+                </div>
+            </div>
+
+            <!-- História -->
+            <div class="story-section">
+                <div class="story-card">
+                    <h2>Uma Jornada de 8 Anos</h2>
+
+                    <div class="story-content">
+                        <p class="story-intro">
+                            Tudo começou com um simples gesto de gentileza...
+                        </p>
+
+                        <div class="memory-timeline">
+                            <div class="memory-item">
+                                <div class="memory-icon">💧</div>
+                                <div class="memory-text">
+                                    <h3>O Primeiro Passo</h3>
+                                    <p>
+                                        Lavar as mãos na bica d'água. Um gesto simples que alguém me ensinou.
+                                        Naquele momento, eu não sabia que estava começando uma jornada que mudaria tudo.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="memory-item">
+                                <div class="memory-icon">🎖️</div>
+                                <div class="memory-text">
+                                    <h3>A Primeira Conquista</h3>
+                                    <p>
+                                        A emoção de conseguir a primeira roupa militar. Aquele momento de orgulho,
+                                        de sentir que estava evoluindo, que estava aprendendo.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="memory-item">
+                                <div class="memory-icon">🔧</div>
+                                <div class="memory-text">
+                                    <h3>Mergulhando Fundo</h3>
+                                    <p>
+                                        Mas eu quis mais. Muito mais. Mergulhei nas entrelinhas por trás do jogo...
+                                        Configurar, entender, criar, ir além. Descobrir os segredos, dominar os
+                                        sistemas,
+                                        construir algo próprio.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="memory-item">
+                                <div class="memory-icon">❤️</div>
+                                <div class="memory-text">
+                                    <h3>O Que Realmente Importa</h3>
+                                    <p>
+                                        Tudo isso porque alguém se importou. Porque vocês estavam lá,
+                                        não apenas como companheiros de jogo, mas como verdadeiros amigos.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="gratitude-message">
+                            <div class="gratitude-icon">🙏</div>
+                            <h2>Obrigado</h2>
+                            <p class="gratitude-text">
+                                Aos meus grandiosos amigos de alma...
+                            </p>
+                            <div class="friends-names">
+                                <span class="friend-name">CODINOME</span>
+                                <span class="separator">•</span>
+                                <span class="friend-name">NICK</span>
+                                <span class="separator">•</span>
+                                <span class="friend-name">MACOY</span>
+                            </div>
+                            <p class="final-message">
+                                Por 8 anos de risadas, sustos, vitórias e derrotas.
+                                Por me ensinarem que em Chernarus, assim como na vida,
+                                ninguém sobrevive sozinho.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rodapé da Página -->
+            <div class="page-footer">
+                <p>🎮 BigodeTexas • Servidor Brasil Sul • Xbox</p>
+                <p class="years">2017 - 2025 • 8 Anos de História</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
