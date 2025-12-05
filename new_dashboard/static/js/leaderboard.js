@@ -1,20 +1,16 @@
 // ==================== LEADERBOARD.JS ====================
 // Sistema de rankings
 
-let currentRanking = 'richest';
+let currentCategory = 'kills';
 let rankingsData = {};
 
-const rankingConfig = {
-    richest: { label: 'DZCoins', icon: '💰', field: 'balance' },
-    kills: { label: 'Kills', icon: '🔫', field: 'kills' },
-    deaths: { label: 'Deaths', icon: '💀', field: 'deaths' },
-    kd: { label: 'K/D', icon: '📊', field: 'kd' },
-    zombies: { label: 'Zumbis Mortos', icon: '🧟', field: 'zombie_kills' },
-    distance: { label: 'Metros Andados', icon: '🚶', field: 'distance_walked' },
-    vehicle: { label: 'Metros de Veículo', icon: '🚗', field: 'vehicle_distance' },
-    reconnects: { label: 'Reconexões', icon: '🔄', field: 'reconnects' },
-    builder: { label: 'Construções', icon: '🏗️', field: 'buildings_built' },
-    raider: { label: 'Cadeados Rodados', icon: '🔓', field: 'locks_picked' }
+const categoryConfig = {
+    kills: { label: 'Kills', icon: 'ri-sword-line', field: 'kills' },
+    deaths: { label: 'Mortes', icon: 'ri-skull-line', field: 'deaths' },
+    kd: { label: 'K/D Ratio', icon: 'ri-percent-line', field: 'kd' },
+    balance: { label: 'DZCoins', icon: 'ri-money-dollar-circle-line', field: 'balance' },
+    playtime: { label: 'Tempo Jogado', icon: 'ri-time-line', field: 'playtime' },
+    longest_shot: { label: 'Longest Shot', icon: 'ri-crosshair-2-line', field: 'longest_shot' }
 };
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -23,11 +19,11 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function setupEventListeners() {
-    document.querySelectorAll('.ranking-tab').forEach(tab => {
-        tab.addEventListener('click', function () {
-            document.querySelectorAll('.ranking-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.control-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            currentRanking = this.dataset.ranking;
+            currentCategory = this.dataset.category;
             renderRanking();
         });
     });
@@ -45,71 +41,103 @@ async function loadRankings() {
 }
 
 function renderRanking() {
-    const config = rankingConfig[currentRanking];
-    const data = rankingsData[currentRanking] || [];
+    const config = categoryConfig[currentCategory];
+    const data = rankingsData[currentCategory] || [];
 
-    // Pódio (Top 3)
-    if (data.length >= 1) {
-        updatePodiumPlace(1, data[0], config);
-    }
-    if (data.length >= 2) {
-        updatePodiumPlace(2, data[1], config);
-    }
-    if (data.length >= 3) {
-        updatePodiumPlace(3, data[2], config);
-    }
+    // Atualizar cabeçalho da tabela
+    document.getElementById('stat-header').textContent = config.label;
 
-    // Lista (4º em diante)
-    const listContainer = document.getElementById('ranking-list');
-    const remaining = data.slice(3);
+    // Renderizar pódio (Top 3)
+    renderPodium(data.slice(0, 3));
 
-    if (remaining.length === 0) {
-        listContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhum dado disponível</p>';
+    // Renderizar tabela completa
+    renderTable(data);
+}
+
+function renderPodium(top3) {
+    const podiumContainer = document.getElementById('podium-container');
+
+    if (top3.length === 0) {
+        podiumContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">Nenhum dado disponível</p>';
         return;
     }
 
-    listContainer.innerHTML = remaining.map((player, index) => `
-        <div class="ranking-item">
-            <div class="ranking-position">${index + 4}</div>
-            <div class="ranking-avatar">${getPlayerAvatar(player.name)}</div>
-            <div class="ranking-info">
-                <div class="ranking-name">${player.name}</div>
-                <div class="ranking-stats">${getPlayerStats(player)}</div>
-            </div>
-            <div class="ranking-value">${formatValue(player.value, currentRanking)}</div>
+    // Ordem do pódio: 2º, 1º, 3º (para visual correto)
+    const podiumOrder = [
+        top3[1] || null, // 2º lugar (esquerda)
+        top3[0] || null, // 1º lugar (centro)
+        top3[2] || null  // 3º lugar (direita)
+    ];
+
+    const positions = [2, 1, 3];
+    const heights = ['120px', '150px', '100px'];
+    const colors = ['#c0c0c0', '#ffd700', '#cd7f32'];
+
+    podiumContainer.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: flex-end; gap: 2rem; margin: 2rem 0;">
+            ${podiumOrder.map((player, idx) => {
+        if (!player) return '';
+        const position = positions[idx];
+        return `
+                    <div style="text-align: center;">
+                        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 1rem; margin-bottom: 1rem; border: 2px solid ${colors[idx]};">
+                            <div style="font-size: 2rem; color: ${colors[idx]};">#${position}</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; margin: 0.5rem 0;">${player.name || player.gamertag}</div>
+                            <div style="font-size: 1.5rem; color: var(--accent);">${formatValue(player.value, currentCategory)}</div>
+                        </div>
+                        <div style="background: ${colors[idx]}; height: ${heights[idx]}; border-radius: 0.5rem 0.5rem 0 0; opacity: 0.3;"></div>
+                    </div>
+                `;
+    }).join('')}
         </div>
+    `;
+}
+
+function renderTable(data) {
+    const tbody = document.getElementById('leaderboard-body');
+
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Nenhum dado disponível</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = data.map((player, index) => `
+        <tr>
+            <td><strong>#${index + 1}</strong></td>
+            <td>${player.name || player.gamertag || 'Desconhecido'}</td>
+            <td><strong>${formatValue(player.value, currentCategory)}</strong></td>
+            <td style="color: var(--text-secondary); font-size: 0.9rem;">
+                ${getPlayerDetails(player)}
+            </td>
+        </tr>
     `).join('');
 }
 
-function updatePodiumPlace(position, player, config) {
-    const element = document.getElementById(`rank-${position}`);
-    if (!element || !player) {
-        element.querySelector('.player-name').textContent = '-';
-        element.querySelector('.player-value').textContent = '0';
-        return;
+function getPlayerDetails(player) {
+    // Retorna detalhes adicionais baseado na categoria
+    if (currentCategory === 'kd') {
+        return `${player.kills || 0} kills / ${player.deaths || 0} mortes`;
+    } else if (currentCategory === 'kills') {
+        return `${player.deaths || 0} mortes`;
+    } else if (currentCategory === 'deaths') {
+        return `${player.kills || 0} kills`;
     }
-
-    element.querySelector('.player-name').textContent = player.name;
-    element.querySelector('.player-value').textContent = formatValue(player.value, currentRanking);
+    return 'Jogador ativo';
 }
 
-function getPlayerAvatar(name) {
-    // Pega primeira letra do nome
-    return name.charAt(0).toUpperCase();
-}
+function formatValue(value, category) {
+    if (!value && value !== 0) return '0';
 
-function getPlayerStats(player) {
-    // Retorna estatísticas adicionais do jogador
-    return `Jogador desde ${new Date().getFullYear()}`;
-}
-
-function formatValue(value, ranking) {
-    if (ranking === 'kd') {
-        return value.toFixed(2);
-    } else if (ranking === 'distance' || ranking === 'vehicle') {
-        return `${formatNumber(Math.floor(value))}m`;
+    if (category === 'kd') {
+        return Number(value).toFixed(2);
+    } else if (category === 'balance') {
+        return `${formatNumber(Math.floor(value))} 💰`;
+    } else if (category === 'playtime') {
+        return `${Math.floor(value)} horas`;
+    } else if (category === 'longest_shot') {
+        return `${Math.floor(value)}m`;
     } else {
-        return formatNumber(value);
+        return formatNumber(Math.floor(value));
     }
 }
 
@@ -118,9 +146,11 @@ function formatNumber(num) {
 }
 
 function renderEmptyRanking() {
-    document.getElementById('ranking-list').innerHTML = `
-        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">
-            Carregando rankings...
-        </p>
+    document.getElementById('leaderboard-body').innerHTML = `
+        <tr>
+            <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                Carregando rankings...
+            </td>
+        </tr>
     `;
 }
