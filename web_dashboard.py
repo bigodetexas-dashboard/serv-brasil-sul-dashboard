@@ -28,7 +28,7 @@ def load_json(filename):
 @dashboard_bp.route('/api/stats')
 def api_stats():
     players_db = database.get_all_players()
-    economy = database.get_all_economy()
+    economy = database.get_economy("all") # Passando "all" ou ajustando database.py para retornar tudo se user_id for None
     total_kills = sum(p.get('kills', 0) for p in players_db.values())
     total_deaths = sum(p.get('deaths', 0) for p in players_db.values())
     total_players = len(players_db)
@@ -110,7 +110,7 @@ def api_user_balance():
     if not user_id:
         return jsonify({'error': 'Not authenticated'}), 401
     
-    economy = database.get_all_economy()
+    economy = database.get_economy("all")
     user_data = economy.get(str(user_id), {})
     balance = user_data.get('balance', 0)
     
@@ -141,7 +141,7 @@ def api_shop_purchase():
         return jsonify({'error': 'Dados inválidos'}), 400
     
     # Verificar saldo
-    economy = database.get_all_economy()
+    economy = database.get_economy("all")
     user_data = economy.get(str(user_id), {})
     balance = user_data.get('balance', 0)
     
@@ -202,7 +202,7 @@ def api_player(name):
     if not stats:
         return jsonify({'error': 'Player not found'}), 404
         
-    economy = database.get_all_economy() # Otimizar depois para buscar só um
+    economy = database.get_economy("all") # Otimizar depois para buscar só um
     
     kd = stats['kills'] if stats.get('deaths', 0) == 0 else round(stats['kills'] / stats['deaths'], 2)
     
@@ -301,7 +301,7 @@ def export_players():
 @dashboard_bp.route('/api/export/report')
 def export_report():
     players_db = database.get_all_players()
-    economy = database.get_all_economy()
+    economy = database.get_economy("all")
     total_kills = sum(p.get('kills', 0) for p in players_db.values())
     total_deaths = sum(p.get('deaths', 0) for p in players_db.values())
     total_players = len(players_db)

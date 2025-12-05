@@ -181,6 +181,8 @@ def get_economy(user_id):
     try:
         with open("economy.json", 'r', encoding='utf-8') as f:
             data = json.load(f)
+            if user_id == "all":
+                return data
             return data.get(str(user_id), {})
     except:
         return {}
