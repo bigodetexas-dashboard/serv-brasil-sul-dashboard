@@ -233,8 +233,31 @@ def get_link_by_gamertag(gamertag):
         pass
     return None
 
-def get_clan(tag):
-    """Retorna dados de um clã específico"""
-    clans = get_all_clans()
-    return clans.get(tag.upper())
+def get_heatmap_points():
+    """Retorna todos os pontos de kill para o heatmap"""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    # Busca apenas eventos de kill com coordenadas válidas
+    cursor.execute('''
+    SELECT game_x, game_z 
+    FROM events 
+    WHERE event_type = 'kill' AND game_x IS NOT NULL AND game_z IS NOT NULL
+    ''')
+    
+    rows = cursor.fetchall()
+    conn.close()
+    
+    # Formato esperado pelo heatmap.js: [{x: 100, y: 200, value: 1}, ...]
+    # Nota: O heatmap.js espera 'x' e 'y', mas nossas coordenadas são X e Z no jogo.
+    # Vamos mapear Z para Y aqui.
+    points = []
+    for r in rows:
+        points.append({
+            'x': r[0],
+            'y': r[1],
+            'value': 1
+        })
+        
+    return points
 
