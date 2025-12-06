@@ -102,8 +102,8 @@ function setupEventListeners() {
         renderItems();
     });
 
-    // Carrinho
-    document.getElementById('cart-btn').addEventListener('click', openCart);
+    // Carrinho - usando botão flutuante
+    document.getElementById('cart-float-btn').addEventListener('click', openCart);
     document.getElementById('close-cart').addEventListener('click', closeCart);
     document.getElementById('clear-cart').addEventListener('click', clearCart);
     document.getElementById('checkout-btn').addEventListener('click', checkout);
@@ -256,7 +256,10 @@ function clearCart() {
 // Atualizar contador do carrinho
 function updateCartCount() {
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-    document.getElementById('cart-count').textContent = count;
+    const cartCountEl = document.getElementById('cart-count');
+    if (cartCountEl) {
+        cartCountEl.textContent = count;
+    }
 }
 
 // Finalizar compra
