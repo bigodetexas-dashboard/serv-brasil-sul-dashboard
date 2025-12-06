@@ -6,8 +6,24 @@ from discord_oauth import login_required
 import database  # Importar módulo de banco de dados
 
 # Blueprint definition
-dashboard_bp = Blueprint('dashboard', __name__)
-# Force redeploy v2
+# Blueprint definition
+# ATENÇÃO: Redirecionando para as pastas do NOVO DASHBOARD
+import os
+base_dir = os.path.dirname(os.path.abspath(__file__))
+template_dir = os.path.join(base_dir, 'new_dashboard', 'templates')
+static_dir = os.path.join(base_dir, 'new_dashboard', 'static')
+
+dashboard_bp = Blueprint('dashboard', __name__, template_folder=template_dir, static_folder=static_dir)
+
+# ==================== ROTAS DE COMPATIBILIDADE (NOVO DESIGN) ====================
+@dashboard_bp.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html')
+
+@dashboard_bp.route('/agradecimentos')
+def agradecimentos():
+    return render_template('agradecimentos.html')
 
 def load_json(filename):
     if not os.path.exists(filename):
@@ -245,12 +261,11 @@ def stats():
 
 @dashboard_bp.route('/shop')
 def shop():
-    return render_template('shop_ecommerce.html')
+    return render_template('shop.html')
 
-@dashboard_bp.route('/shop-old')
-@login_required
-def shop_old():
-    return render_template('shop_new.html')
+@dashboard_bp.route('/shop-ecommerce')
+def shop_ecommerce():
+    return render_template('shop_ecommerce.html')
 
 @dashboard_bp.route('/checkout')
 def checkout():
