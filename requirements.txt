@@ -1,12 +1,9 @@
-# Dashboard dependencies
 Flask
 Flask-Session
 requests
 python-dotenv
 gunicorn
 psycopg2-binary
-
-# Discord bot dependencies
 discord.py
 matplotlib
 pillow

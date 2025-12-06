@@ -1,1 +1,1 @@
-web: python bot_main.py
+web: gunicorn --chdir new_dashboard app:app
