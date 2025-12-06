@@ -3,11 +3,24 @@ BigodeTexas Dashboard - Versão 2.0
 Sistema completo de dashboard para servidor DayZ
 """
 import os
+import sys
 from datetime import datetime, timedelta
 from flask import Flask, render_template, session, redirect, url_for, jsonify, request
 from dotenv import load_dotenv
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import json
+import sqlite3
+
+# Adicionar diretório pai ao path para importar módulos da raiz
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Importar módulos do sistema (agora funcionará corretamente)
+# Usando try/except para evitar erros caso dependências faltem localmente
+try:
+    from database import get_heatmap_data, parse_rpt_line, add_event
+except ImportError:
+    print("Aviso: Não foi possível importar database.py. Verifique o path.")
 
 load_dotenv()
 
@@ -536,10 +549,9 @@ def api_heatmap():
     API de Heatmap - Retorna dados agregados de eventos PvP
     Implementação baseada na arquitetura sugerida pelo ChatGPT
     """
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from database import get_heatmap_data
-    from datetime import datetime, timedelta
+    # Imports movidos para o topo
+    # from database import get_heatmap_data
+    # from datetime import datetime, timedelta
     
     # Parâmetros da query
     time_range = request.args.get('range', '24h')  # 24h, 7d, all
@@ -591,9 +603,8 @@ def api_parse_log():
         "events_parsed": 10
     }
     """
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from database import parse_rpt_line, add_event
+    # Imports movidos para o topo
+    # from database import parse_rpt_line, add_event
     
     data = request.get_json()
     if not data or 'text' not in data:
@@ -656,9 +667,8 @@ def api_heatmap_top_locations():
     """
     API de Top Locations - Retorna as 5 áreas mais perigosas
     """
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from datetime import datetime, timedelta
+    # Imports movidos para o topo
+    # from datetime import datetime, timedelta
     
     # Parâmetros da query
     time_range = request.args.get('range', '24h')
@@ -672,7 +682,7 @@ def api_heatmap_top_locations():
         since_date = datetime(2020, 1, 1)
     
     try:
-        import sqlite3
+        # import sqlite3 (Movido para topo)
         conn = sqlite3.connect('pvp_events.db')
         cursor = conn.cursor()
         
@@ -752,9 +762,8 @@ def api_heatmap_weapons():
     """
     API de Armas - Retorna lista de armas usadas e contagem
     """
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from datetime import datetime, timedelta
+    # Imports movidos para o topo
+    # from datetime import datetime, timedelta
     
     time_range = request.args.get('range', '24h')
     
@@ -768,7 +777,7 @@ def api_heatmap_weapons():
         since_date = datetime(2020, 1, 1)
     
     try:
-        import sqlite3
+        # import sqlite3 (Movido para topo)
         conn = sqlite3.connect('pvp_events.db')
         cursor = conn.cursor()
         
@@ -982,9 +991,8 @@ def api_heatmap_timeline():
     """
     API de Timeline - Retorna mortes agrupadas por período de tempo
     """
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from datetime import datetime, timedelta
+    # Imports movidos para o topo
+    # from datetime import datetime, timedelta
     
     time_range = request.args.get('range', '7d')
     
@@ -1002,7 +1010,7 @@ def api_heatmap_timeline():
         group_by = 'day'
     
     try:
-        import sqlite3
+        # import sqlite3 (Movido para topo)
         conn = sqlite3.connect('pvp_events.db')
         cursor = conn.cursor()
         
@@ -1062,9 +1070,8 @@ def api_heatmap_hourly():
     """
     API de Heatmap por Hora - Retorna mortes agrupadas por hora do dia (0-23)
     """
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from datetime import datetime, timedelta
+    # Imports movidos para o topo
+    # from datetime import datetime, timedelta
     
     time_range = request.args.get('range', '7d')
     
@@ -1078,7 +1085,7 @@ def api_heatmap_hourly():
         since_date = datetime(2020, 1, 1)
     
     try:
-        import sqlite3
+        # import sqlite3 (Movido para topo)
         conn = sqlite3.connect('pvp_events.db')
         cursor = conn.cursor()
         
