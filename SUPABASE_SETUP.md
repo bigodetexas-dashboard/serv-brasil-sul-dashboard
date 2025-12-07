@@ -25,7 +25,7 @@
    - **Database Password:** (crie uma senha forte e **GUARDE!**)
    - **Region:** `West US (Oregon)` (mesma do Render)
    - **Pricing Plan:** **Free** (já selecionado)
-3. Clique em **"Create new project"**
+1. Clique em **"Create new project"**
 
 Aguarde ~2 minutos para o projeto ser criado.
 
@@ -41,9 +41,9 @@ Aguarde ~2 minutos para o projeto ser criado.
 
 A URL terá este formato:
 
-```
+```text
 postgresql://postgres:[YOUR-PASSWORD]@db.xxx.supabase.co:5432/postgres
-```
+```text
 
 ⚠️ **Importante:** Substitua `[YOUR-PASSWORD]` pela senha que você criou no Passo 2!
 
@@ -57,7 +57,7 @@ postgresql://postgres:[YOUR-PASSWORD]@db.xxx.supabase.co:5432/postgres
 4. Preencha:
    - **Key:** `DATABASE_URL`
    - **Value:** (cole a URL do Supabase com a senha substituída)
-5. Clique em **"Save Changes"**
+1. Clique em **"Save Changes"**
 
 O Render vai fazer um **redeploy automático** (~2 minutos).
 
@@ -72,7 +72,9 @@ Volte ao Supabase e:
 3. Cole este SQL:
 
 ```sql
+
 -- Tabela de jogadores
+
 CREATE TABLE IF NOT EXISTS players (
     gamertag VARCHAR(255) PRIMARY KEY,
     kills INTEGER DEFAULT 0,
@@ -85,6 +87,7 @@ CREATE TABLE IF NOT EXISTS players (
 );
 
 -- Tabela de economia
+
 CREATE TABLE IF NOT EXISTS economy (
     discord_id VARCHAR(255) PRIMARY KEY,
     gamertag VARCHAR(255),
@@ -97,6 +100,7 @@ CREATE TABLE IF NOT EXISTS economy (
 );
 
 -- Tabela de clãs
+
 CREATE TABLE IF NOT EXISTS clans (
     clan_name VARCHAR(255) PRIMARY KEY,
     leader VARCHAR(255),
@@ -107,15 +111,16 @@ CREATE TABLE IF NOT EXISTS clans (
 );
 
 -- Tabela de links Discord-Gamertag
+
 CREATE TABLE IF NOT EXISTS links (
     discord_id VARCHAR(255) PRIMARY KEY,
     gamertag VARCHAR(255) UNIQUE,
     linked_at TIMESTAMP DEFAULT NOW()
 );
-```
+```text
 
-4. Clique em **"Run"** (ou pressione Ctrl+Enter)
-5. Deve aparecer "Success. No rows returned"
+1. Clique em **"Run"** (ou pressione Ctrl+Enter)
+2. Deve aparecer "Success. No rows returned"
 
 ---
 
@@ -125,7 +130,7 @@ Para o bot local funcionar, adicione ao arquivo `.env`:
 
 ```env
 DATABASE_URL=postgresql://postgres:SUA_SENHA@db.xxx.supabase.co:5432/postgres
-```
+```text
 
 (Use a mesma URL do Passo 3)
 
@@ -137,7 +142,7 @@ Execute no seu PC:
 
 ```powershell
 python migrate_to_postgres.py
-```
+```text
 
 Isso vai migrar todos os dados dos JSONs para o Supabase!
 
@@ -169,17 +174,17 @@ Agora você tem:
 
 ## 💡 Dicas
 
-**Ver dados no Supabase:**
+### Ver dados no Supabase:
 
 - Menu lateral → **"Table Editor"**
 - Clique em qualquer tabela para ver/editar dados
 
-**Monitorar uso:**
+### Monitorar uso:
 
 - Menu lateral → **"Project Settings"** → **"Usage"**
 - Veja quanto espaço está usando (limite: 500MB)
 
-**Backup automático:**
+### Backup automático:
 
 - Supabase faz backup automático diário
 - Seus JSONs locais continuam como backup extra

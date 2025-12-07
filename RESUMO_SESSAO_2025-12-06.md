@@ -76,15 +76,15 @@ Implementadas **3 novas páginas** no perfil do usuário:
 
 ### Documentação
 
-4. `INTERFACE_MODERNIZATION.md` - Documentação técnica da modernização
-5. `PENDENCIAS.md` - Roadmap e tarefas pendentes
-6. `SESSAO_2025-12-06_PART2.md` - Documentação desta sessão
-7. `SESSAO_ANTIGRAVITY.md` - Registro de trabalho
+1. `INTERFACE_MODERNIZATION.md` - Documentação técnica da modernização
+2. `PENDENCIAS.md` - Roadmap e tarefas pendentes
+3. `SESSAO_2025-12-06_PART2.md` - Documentação desta sessão
+4. `SESSAO_ANTIGRAVITY.md` - Registro de trabalho
 
 ### Scripts Utilitários
 
-8. `diagnose_schema_full.py` - Diagnóstico de schema do banco
-9. `fix_null_bytes.py` - Correção de bytes nulos
+1. `diagnose_schema_full.py` - Diagnóstico de schema do banco
+2. `fix_null_bytes.py` - Correção de bytes nulos
 
 ---
 
@@ -137,7 +137,7 @@ transition: all 0.3s ease;
 /* Hover Effects */
 transform: translateY(-2px);
 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-```
+```text
 
 ### Sistema de Badges
 
@@ -157,7 +157,7 @@ function showTab(tabName) {
     // Mostra a tab selecionada
     // Atualiza indicador visual
 }
-```
+```text
 
 ---
 
@@ -215,27 +215,27 @@ function showTab(tabName) {
    - Conectar com backend
    - Salvar configurações no banco
 
-2. **Conectar Achievements com banco de dados**
+1. **Conectar Achievements com banco de dados**
    - Criar tabela de conquistas
    - Implementar lógica de desbloqueio
    - Sistema de notificações
 
-3. **Conectar History com banco de dados**
+1. **Conectar History com banco de dados**
    - Sistema de logging de atividades
    - Filtros e paginação
    - Exportação de dados
 
 ### Média Prioridade
 
-4. Melhorar sistema de clãs
-5. Aprimorar sistema de bases
-6. Expandir funcionalidades do Banco Sul
+1. Melhorar sistema de clãs
+2. Aprimorar sistema de bases
+3. Expandir funcionalidades do Banco Sul
 
 ### Baixa Prioridade
 
-7. Sistema de notificações em tempo real
-8. PWA (Progressive Web App)
-9. Temas customizáveis
+1. Sistema de notificações em tempo real
+2. PWA (Progressive Web App)
+3. Temas customizáveis
 
 ---
 

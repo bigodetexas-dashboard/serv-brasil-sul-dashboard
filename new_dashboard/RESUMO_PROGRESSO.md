@@ -43,7 +43,7 @@ Use o script `generate_map_tiles.py` que já existe no projeto:
 
 ```bash
 python generate_map_tiles.py
-```
+```text
 
 Isso deve gerar os tiles a partir de uma imagem do mapa Chernarus.
 
@@ -60,13 +60,13 @@ Edite `static/js/heatmap.js` linha ~45 e substitua:
 
 ```javascript
 L.tileLayer('/static/tiles/{z}/{x}/{y}.png', {
-```
+```text
 
 Por uma URL pública (se encontrar uma funcional):
 
 ```javascript
 L.tileLayer('https://SERVIDOR_PUBLICO/chernarusplus/{z}/{x}/{y}.png', {
-```
+```text
 
 ---
 
@@ -76,18 +76,18 @@ L.tileLayer('https://SERVIDOR_PUBLICO/chernarusplus/{z}/{x}/{y}.png', {
    - Abra `static/tiles/0/0/0.png` - deve ser uma imagem do mapa completo
    - Abra `static/tiles/3/4/2.png` - deve ser um pedaço do mapa
 
-2. **Rodar o servidor**:
+1. **Rodar o servidor**:
 
    ```bash
    python app.py
-   ```
+```text
 
-3. **Acessar o mapa**:
+1. **Acessar o mapa**:
    - Vá para `http://localhost:5000/heatmap`
    - O mapa deve carregar com zoom suave
    - Os pontos de calor (vermelhos) devem aparecer sobre o mapa
 
-4. **Verificar alinhamento**:
+1. **Verificar alinhamento**:
    - Se os pontos estiverem deslocados, ajuste `gameToLatLng()` em `heatmap.js`
 
 ---
@@ -132,6 +132,6 @@ static/tiles/
 ├── 2/...              (4x4 = 16 tiles)
 ├── 3/...              (8x8 = 64 tiles)
 └── 7/...              (128x128 = 16384 tiles)
-```
+```text
 
 Total aproximado: **21.845 tiles** (todos os zooms de 0 a 7)

@@ -20,9 +20,9 @@
 
 Exemplo de URL:
 
-```
+```text
 https://discord.com/api/webhooks/1234567890/AbCdEfGhIjKlMnOpQrStUvWxYz
-```
+```text
 
 ---
 
@@ -51,9 +51,9 @@ https://discord.com/api/webhooks/1234567890/AbCdEfGhIjKlMnOpQrStUvWxYz
 
 **Para produção**, adicione também:
 
-```
+```text
 https://seu-dominio.com/callback
-```
+```text
 
 ---
 
@@ -67,7 +67,7 @@ Para que o bot funcione corretamente e leia mensagens, você **PRECISA** ativar 
     - [x] **PRESENCE INTENT**
     - [x] **SERVER MEMBERS INTENT**
     - [x] **MESSAGE CONTENT INTENT**
-4. Clique em **Save Changes**.
+1. Clique em **Save Changes**.
 
 > [!IMPORTANT]
 > Se você não ativar essas opções, o bot dará erro ao iniciar: `Shard ID None is requesting privileged intents`.
@@ -79,20 +79,25 @@ Para que o bot funcione corretamente e leia mensagens, você **PRECISA** ativar 
 Abra o arquivo `.env` e preencha:
 
 ```env
+
 # Discord Bot (já deve estar preenchido)
+
 DISCORD_TOKEN=seu_token_aqui
 
 # Push Notifications
+
 NOTIFICATION_WEBHOOK_URL=https://discord.com/api/webhooks/SEU_WEBHOOK_AQUI
 
 # Discord OAuth
+
 DISCORD_CLIENT_ID=seu_client_id_aqui
 DISCORD_CLIENT_SECRET=seu_client_secret_aqui
 DISCORD_REDIRECT_URI=http://localhost:5000/callback
 SECRET_KEY=gere_uma_chave_aleatoria_aqui
 
 # Resto das configurações...
-```
+
+```text
 
 ### Gerar Secret Key
 
@@ -100,7 +105,7 @@ Execute no terminal:
 
 ```bash
 python -c "import secrets; print(secrets.token_hex(32))"
-```
+```text
 
 Copie o resultado e cole em `SECRET_KEY`
 
@@ -112,14 +117,14 @@ Execute:
 
 ```bash
 python push_notifications.py
-```
+```text
 
-**O que deve acontecer:**
+### O que deve acontecer:
 
 - Script envia 3 notificações de teste
 - Você deve ver as mensagens no canal Discord configurado
 
-**Se não funcionar:**
+### Se não funcionar:
 
 - Verifique se a URL do webhook está correta
 - Verifique se o canal ainda existe
@@ -133,11 +138,11 @@ Execute:
 
 ```bash
 python discord_oauth.py
-```
+```text
 
 Acesse: <http://localhost:5000>
 
-**O que deve acontecer:**
+### O que deve acontecer:
 
 1. Página mostra "Login com Discord"
 2. Clique no link
@@ -163,13 +168,13 @@ Acesse: <http://localhost:5000>
 
 ## 🆘 Problemas Comuns
 
-**Webhook não funciona:**
+### Webhook não funciona:
 
 - URL incorreta ou expirada
 - Canal foi deletado
 - Permissões insuficientes
 
-**OAuth não funciona:**
+### OAuth não funciona:
 
 - Client ID/Secret incorretos
 - Redirect URI não configurado

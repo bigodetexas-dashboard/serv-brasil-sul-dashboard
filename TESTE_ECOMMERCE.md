@@ -13,7 +13,7 @@
 ```bash
 cd "d:\dayz xbox\BigodeBot"
 python bot_main.py
-```
+```text
 
 ### 2. Acessar o Site
 
@@ -61,13 +61,13 @@ Após 5 minutos, verifique o arquivo de fila:
 
 ```bash
 cat delivery_queue.json
-```
+```text
 
 Para processar manualmente (teste):
 
 ```bash
 python delivery_processor.py
-```
+```text
 
 ## 📋 Checklist de Verificação
 
@@ -90,24 +90,31 @@ python delivery_processor.py
 ### Site não carrega
 
 ```bash
+
 # Verificar se o bot está rodando
+
 # Verificar porta 3000 não está em uso
+
 netstat -ano | findstr :3000
-```
+```text
 
 ### Erro 404 nas rotas
 
 ```bash
+
 # Verificar se o Blueprint está registrado
+
 python -c "from web_dashboard import dashboard_bp; print('OK')"
-```
+```text
 
 ### Itens não aparecem
 
 ```bash
+
 # Verificar items.json
+
 python -c "import json; print(len(json.load(open('items.json'))))"
-```
+```text
 
 ### Erro de autenticação
 
@@ -122,7 +129,7 @@ Após testar localmente, faça commit e push:
 git add .
 git commit -m "Sistema de e-commerce completo implementado"
 git push origin main
-```
+```text
 
 No Render:
 

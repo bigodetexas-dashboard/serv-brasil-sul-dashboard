@@ -25,8 +25,10 @@ Foco principal na modernização da interface da **Loja (`shop.html`)**, impleme
 
 ## ⚠️ ESTADO CRÍTICO ATUAL
 
-**A PÁGINA DA LOJA ESTÁ VISUALMENTE DESCONFIGURADA PARA O USUÁRIO.**
+### A PÁGINA DA LOJA ESTÁ VISUALMENTE DESCONFIGURADA PARA O USUÁRIO.
+
 Apesar das verificações via browser agent mostrarem o layout aparentemente "correto" (elementos no lugar), o usuário relata consistentemente que a página está desconfigurada.
+
 **Ação Necessária:** A próxima sessão deve priorizar **exclusivamente** o conserto visual da Loja, possivelmente revertendo mudanças se necessário ou investigando problemas de cache/resolução específicos do usuário.
 
 ## 📝 Arquivos Modificados

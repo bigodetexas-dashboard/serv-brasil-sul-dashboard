@@ -88,7 +88,7 @@ Se ainda não funcionar, vamos verificar as variáveis de ambiente:
    - `FLASK_CACHING`
    - `TEMPLATES_AUTO_RELOAD`
 
-3. **Anote os valores**: ________________
+1. **Anote os valores**: ________________
 
 ## Passo 10: Restart do Serviço
 
@@ -118,7 +118,7 @@ Como último recurso:
 
 ## 🆘 Se Precisar de Ajuda
 
-**Me avise em qual passo você está e o que está vendo na tela!**
+### Me avise em qual passo você está e o que está vendo na tela!
 
 Exemplos:
 

@@ -6,19 +6,19 @@
 
 ```bash
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
-```
+```text
 
-2. **Rode o servidor:**
+1. **Rode o servidor:**
 
 ```bash
 python app.py
-```
+```text
 
-3. **Acesse:**
+1. **Acesse:**
 
-```
+```text
 http://localhost:5001
-```
+```text
 
 ---
 
@@ -27,6 +27,7 @@ http://localhost:5001
 ### Logo da Placa
 
 O logo ainda não está disponível devido à quota de geração de imagens.  
+
 **Resetará em:** ~4h30m  
 **Quando resetar:** Execute o comando abaixo para gerar o logo final.
 
@@ -36,7 +37,7 @@ Certifique-se de que o arquivo `.env` está configurado com:
 
 ```env
 DATABASE_URL=sua_url_postgresql_supabase
-```
+```text
 
 ---
 
@@ -53,19 +54,19 @@ DATABASE_URL=sua_url_postgresql_supabase
 
 ## 🎨 TEMA APLICADO
 
-**Cores:**
+### Cores:
 
 - Verde Militar Escuro (#3a4a2a)
 - Vermelho Sangue Seco (#5a1a1a)
 - Ferrugem (#7a6a3a)
 
-**Fontes:**
+### Fontes:
 
 - Creepster (títulos horror)
 - Special Elite (textos)
 - Share Tech Mono (monospace)
 
-**Efeitos:**
+### Efeitos:
 
 - Grain/noise overlay
 - Texturas de sujeira
@@ -83,4 +84,4 @@ DATABASE_URL=sua_url_postgresql_supabase
 
 ---
 
-**Tudo pronto para usar! 🎮🧟‍♂️**
+### Tudo pronto para usar! 🎮🧟‍♂️

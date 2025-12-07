@@ -88,14 +88,17 @@
 **Prioridade:** CRÍTICA
 
 ```bash
+
 # Conectar ao PostgreSQL e executar:
+
 psql $DATABASE_URL -f schema_achievements_history.sql
 
 # OU se DATABASE_URL não estiver definido:
-psql -h HOST -U USER -d DATABASE -f schema_achievements_history.sql
-```
 
-**Por que é crítico:**
+psql -h HOST -U USER -d DATABASE -f schema_achievements_history.sql
+```text
+
+### Por que é crítico:
 
 - Sem isso, as APIs vão retornar erro 500
 - Achievements não vão funcionar
@@ -112,7 +115,7 @@ Adicionar antes do `</body>`:
 
 ```html
 <script src="{{ url_for('static', filename='js/history.js') }}"></script>
-```
+```text
 
 E **REMOVER** o script inline existente (linhas 472-693)
 
@@ -122,7 +125,7 @@ Adicionar antes do `</body>`:
 
 ```html
 <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
-```
+```text
 
 E **REMOVER** qualquer script inline que conflite
 
@@ -132,17 +135,20 @@ E **REMOVER** qualquer script inline que conflite
 **Prioridade:** ALTA
 
 ```bash
+
 # Iniciar servidor
+
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
 python app.py
 
 # Em outro terminal, testar:
+
 curl http://localhost:5001/api/achievements/all
 curl http://localhost:5001/api/history/events
 curl http://localhost:5001/api/settings/get
-```
+```text
 
-**Verificar:**
+### Verificar:
 
 - [ ] APIs retornam JSON válido
 - [ ] Sem erros 500
@@ -157,12 +163,14 @@ curl http://localhost:5001/api/settings/get
 **Tempo estimado:** 45 minutos  
 **Prioridade:** ALTA
 
-**Onde adicionar:**
+### Onde adicionar:
 
 #### No bot_main.py (quando jogador mata)
 
 ```python
+
 # Após registrar kill no banco
+
 import requests
 requests.post('http://localhost:5001/api/history/add', json={
     'event_type': 'kill',
@@ -175,23 +183,28 @@ requests.post('http://localhost:5001/api/history/add', json={
         'location': location
     }
 })
-```
+```text
 
 #### Quando conquista é desbloqueada
 
 ```python
+
 # Já está implementado na API /api/achievements/unlock
+
 # Ela automaticamente adiciona ao histórico quando desbloqueia
-```
+
+```text
 
 #### Quando compra é feita
 
 ```python
+
 # Em /api/shop/purchase, adicionar:
+
 cur.execute("""
     SELECT add_activity_event(%s, 'purchase', '🛒', 'Compra Realizada', %s, %s)
 """, (user_id, f'Compra de {len(items)} itens', json.dumps({'total': total_cost})))
-```
+```text
 
 ### 5. **Criar Triggers para Conquistas Automáticas**
 
@@ -201,14 +214,19 @@ cur.execute("""
 **Criar arquivo:** `triggers_achievements.sql`
 
 ```sql
+
 -- Trigger para desbloquear "Primeiro Sangue" ao primeiro kill
+
 CREATE OR REPLACE FUNCTION check_first_kill() RETURNS TRIGGER AS $$
 BEGIN
+
     -- Verificar se é o primeiro kill
+
     IF (SELECT COUNT(*) FROM activity_history 
         WHERE discord_id = NEW.discord_id AND event_type = 'kill') = 1 THEN
         
         -- Desbloquear conquista
+
         PERFORM update_achievement_progress(NEW.discord_id, 'first_kill', 1);
     END IF;
     RETURN NEW;
@@ -222,14 +240,15 @@ WHEN (NEW.event_type = 'kill')
 EXECUTE FUNCTION check_first_kill();
 
 -- Adicionar mais triggers para outras conquistas...
-```
+
+```text
 
 ### 6. **Adicionar Notificações de Conquistas**
 
 **Tempo estimado:** 30 minutos  
 **Prioridade:** MÉDIA
 
-**No achievements.html, adicionar:**
+### No achievements.html, adicionar:
 
 ```javascript
 // Quando conquista é desbloqueada
@@ -248,7 +267,7 @@ function showAchievementNotification(achievement) {
     
     setTimeout(() => notification.remove(), 5000);
 }
-```
+```text
 
 ---
 
@@ -352,7 +371,7 @@ function showAchievementNotification(achievement) {
 
 Nenhum bug crítico identificado até o momento.
 
-**Possíveis problemas a verificar:**
+### Possíveis problemas a verificar:
 
 - Timezone dos timestamps (pode estar em UTC)
 - Formatação de datas em português
@@ -368,19 +387,19 @@ Nenhum bug crítico identificado até o momento.
    - Execute: `psql $DATABASE_URL -f schema_achievements_history.sql`
    - Isso é CRÍTICO para tudo funcionar
 
-2. **Scripts JS criados mas NÃO INCLUÍDOS nas páginas**
+1. **Scripts JS criados mas NÃO INCLUÍDOS nas páginas**
    - Adicione `<script src="...">` em history.html e settings.html
    - Remova scripts inline que conflitem
 
-3. **APIs funcionam mas precisam de dados no banco**
+1. **APIs funcionam mas precisam de dados no banco**
    - Após aplicar schema, as conquistas estarão cadastradas
    - Mas progresso do usuário estará vazio inicialmente
 
-4. **Sistema de fallback está ativo**
+1. **Sistema de fallback está ativo**
    - Se API falhar, mostra dados mockados
    - Isso é bom para desenvolvimento, mas remover em produção
 
-5. **Achievements.html JÁ ESTÁ CONECTADO**
+1. **Achievements.html JÁ ESTÁ CONECTADO**
    - É o único que já funciona com API
    - Use como referência para history e settings
 
@@ -393,34 +412,41 @@ Nenhum bug crítico identificado até o momento.
 ```bash
 cd "d:/dayz xbox/BigodeBot"
 psql $DATABASE_URL -f schema_achievements_history.sql
-```
+```text
 
 ### Iniciar Servidor
 
 ```bash
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
 python app.py
-```
+```text
 
 ### Testar APIs
 
 ```bash
+
 # Achievements
+
 curl http://localhost:5001/api/achievements/all | jq
 
 # History
+
 curl http://localhost:5001/api/history/events | jq
 
 # Settings
+
 curl http://localhost:5001/api/settings/get | jq
-```
+```text
 
 ### Ver Logs do Servidor
 
 ```bash
+
 # O servidor mostra erros no console
+
 # Fique atento a mensagens de erro SQL
-```
+
+```text
 
 ---
 
@@ -428,7 +454,7 @@ curl http://localhost:5001/api/settings/get | jq
 
 ### Status Geral: **95% COMPLETO** 🎯
 
-**O que funciona:**
+### O que funciona:
 
 - ✅ Backend completo (9 endpoints)
 - ✅ Schema SQL pronto
@@ -437,7 +463,7 @@ curl http://localhost:5001/api/settings/get | jq
 - ✅ Documentação completa
 - ✅ Git commitado e pushed
 
-**O que falta:**
+### O que falta:
 
 - ⏳ Aplicar schema no banco (5 min)
 - ⏳ Incluir scripts nas páginas (10 min)
@@ -457,12 +483,12 @@ Se encontrar problemas:
    - Veja logs do servidor
    - Verifique DATABASE_URL
 
-2. **Conquistas não aparecem:**
+1. **Conquistas não aparecem:**
    - Verifique se schema foi aplicado
    - Teste endpoint: `curl http://localhost:5001/api/achievements/all`
    - Veja console do navegador (F12)
 
-3. **Settings não salvam:**
+1. **Settings não salvam:**
    - Verifique se user_settings existe no banco
    - Teste endpoint POST com curl
    - Veja Network tab no navegador

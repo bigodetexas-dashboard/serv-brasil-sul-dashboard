@@ -1,26 +1,31 @@
 # Diagnóstico do Killfeed - 24/11/2025
 
 ## ❌ Problema Reportado
+
 Ausência de registros de mortes no killfeed desde as 9h da manhã.
 
 ## 🔍 Investigação Realizada
 
 ### 1. Verificação do Estado do Bot
+
 **Arquivo:** `bot_state.json`
+
 ```json
 {
     "current_log_file": "log_teste.adm",
     "last_read_lines": 100
 }
-```
+```text
 
 **Problema:** Bot estava configurado para ler `log_teste.adm` (arquivo de teste inexistente).
 
 ### 2. Scan do Servidor FTP
+
 **Conexão:** ✅ OK (brsp012.gamedata.io:21)
 **Logs encontrados:** 105 arquivos
 
-**Log mais recente identificado:**
+### Log mais recente identificado:
+
 - Nome: `DayZServer_X1_x64_2025-11-24_19-53-43.ADM`
 - Caminho: `/dayzxb/config/`
 - Tamanho: 126,501 bytes
@@ -31,6 +36,7 @@ Ausência de registros de mortes no killfeed desde as 9h da manhã.
 **Eventos de PvP encontrados:** 4
 
 #### Evento 1
+
 - **Horário:** 20:12:07
 - **Vítima:** XMISERIA9443
 - **Assassino:** B0B HAUS9044
@@ -39,6 +45,7 @@ Ausência de registros de mortes no killfeed desde as 9h da manhã.
 - **Localização:** <6354.3, 7808.9, 304.9>
 
 #### Evento 2
+
 - **Horário:** 20:32:46
 - **Vítima:** AkiNTicoTico
 - **Assassino:** yan schuh
@@ -46,6 +53,7 @@ Ausência de registros de mortes no killfeed desde as 9h da manhã.
 - **Localização:** <13375.3, 5831.7, 6.0>
 
 #### Evento 3
+
 - **Horário:** 21:09:07
 - **Vítima:** ever89noob
 - **Assassino:** LeoRdL
@@ -54,6 +62,7 @@ Ausência de registros de mortes no killfeed desde as 9h da manhã.
 - **Localização:** <13817.2, 13218.4, 20.7>
 
 #### Evento 4
+
 - **Horário:** 21:33:43
 - **Vítima:** ARAGORN2706
 - **Assassino:** AtiradorBr8463
@@ -64,33 +73,36 @@ Ausência de registros de mortes no killfeed desde as 9h da manhã.
 ## ✅ Solução Aplicada
 
 ### Correção do `bot_state.json`
+
 ```json
 {
     "current_log_file": "DayZServer_X1_x64_2025-11-24_19-53-43.ADM",
     "last_read_lines": 0
 }
-```
+```text
 
-**Mudanças:**
+### Mudanças:
+
 1. ✅ Arquivo correto: `DayZServer_X1_x64_2025-11-24_19-53-43.ADM`
 2. ✅ Reset de linhas lidas: `0` (vai reprocessar desde o início)
 
 ## 🚀 Próximos Passos
 
-### Para Reativar o Killfeed:
+### Para Reativar o Killfeed
 
 1. **Reinicie o bot:**
+
    ```powershell
    python bot_main.py
-   ```
+```text
 
-2. **O que vai acontecer:**
+1. **O que vai acontecer:**
    - Bot vai ler o arquivo correto
    - Processar as 1,045 linhas desde o início
    - Enviar os 4 eventos de PvP para o Discord
    - Continuar monitorando novos eventos a cada 30s
 
-3. **Verificação:**
+1. **Verificação:**
    - Confira o canal de killfeed no Discord
    - Deve receber 4 mensagens com os eventos acima
 

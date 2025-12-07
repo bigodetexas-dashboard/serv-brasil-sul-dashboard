@@ -108,15 +108,15 @@ Implementamos com sucesso um sistema profissional de mapa com tiles para o dashb
    ```bash
    cd new_dashboard
    python app.py
-   ```
+```text
 
-2. Acesse no navegador:
+1. Acesse no navegador:
 
-   ```
+```text
    http://localhost:5001/heatmap
-   ```
+```text
 
-3. O mapa de satélite será carregado automaticamente com:
+1. O mapa de satélite será carregado automaticamente com:
    - Zoom com scroll do mouse ou botões +/-
    - Navegação arrastando o mapa
    - Tiles carregados sob demanda
@@ -130,15 +130,15 @@ Para ter ambos os mapas disponíveis:
    ```python
    SOURCE_IMAGE = "static/img/DayZ_1.25.0_chernarus_map_16x16_top.jpg"
    OUTPUT_DIR = "new_dashboard/static/tiles_top"
-   ```
+```text
 
-2. Execute:
+1. Execute:
 
    ```bash
    python slice_map.py
-   ```
+```text
 
-3. Modifique `heatmap.js` para adicionar controle de camadas.
+1. Modifique `heatmap.js` para adicionar controle de camadas.
 
 ---
 

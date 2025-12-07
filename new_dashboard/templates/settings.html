@@ -25,6 +25,7 @@
         font-size: 3rem;
         font-weight: 800;
         background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 0.5rem;
@@ -824,40 +825,7 @@
     </div>
 </div>
 
-<script>
-    // Sidebar navigation
-    document.querySelectorAll('.sidebar-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const section = item.dataset.section;
 
-            // Update sidebar
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-
-            // Update content
-            document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(section).classList.add('active');
-
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    });
-
-    // Toggle switch
-    function toggleSwitch(element) {
-        element.classList.toggle('active');
-    }
-
-    // Save settings
-    function saveSettings() {
-        const message = document.getElementById('successMessage');
-        message.classList.add('show');
-
-        setTimeout(() => {
-            message.classList.remove('show');
-        }, 3000);
-    }
-</script>
 
 <!-- Script de configurações movido para arquivo externo -->
 <script src="{{ url_for('static', filename='js/settings.js') }}"></script>

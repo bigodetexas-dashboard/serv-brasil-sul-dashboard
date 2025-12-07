@@ -32,39 +32,39 @@
 
 ### **1. Serviço Render Incorreto**
 
-**Problema:**
+### Problema:
 
 - Deploy foi feito no serviço `bigodetexas-dashboard` (antigo)
 - Serviço `serv-brasil-sul-dashboard` (novo) não existe ou não foi usado
 
-**Evidência:**
+### Evidência:
 
-```
+```bash
 ==> Running 'python bot_main.py'
 ==> Available at https://bigodetexas-dashboard.onrender.com
-```
+```text
 
 ### **2. Comando de Start Incorreto**
 
-**Problema:**
+### Problema:
 
 - Render está executando `python bot_main.py` (bot do Discord)
 - Deveria executar `gunicorn app:app` (dashboard web)
 
-**Causa:**
+### Causa:
 
 - Configuração do serviço no Render sobrescreve o Procfile
 - OU Procfile não estava correto (já foi corrigido)
 
 ### **3. Dois Serviços Diferentes**
 
-**Confusão:**
+### Confusão:
 
 - Existem (ou deveriam existir) DOIS serviços no Render:
   1. `bigodetexas-dashboard` - Site antigo
   2. `serv-brasil-sul-dashboard` - Site novo
 
-**Problema:**
+### Problema:
 
 - Deploy foi feito no serviço errado
 - Serviço novo pode não ter sido criado
@@ -98,17 +98,17 @@
 
 ### ✅ **1. Procfile Corrigido**
 
-**Antes:**
+### Antes:
 
-```
+```text
 web: gunicorn --chdir new_dashboard app:app
-```
+```text
 
-**Depois:**
+### Depois:
 
-```
+```bash
 web: cd new_dashboard && gunicorn app:app --bind 0.0.0.0:$PORT
-```
+```text
 
 **Status:** ✅ Commitado e pushed para GitHub
 
@@ -132,9 +132,9 @@ web: cd new_dashboard && gunicorn app:app --bind 0.0.0.0:$PORT
 
 ### **1. Fazer Deploy no Serviço Correto** ⚠️ URGENTE
 
-**Opção A: Usar serviço existente `bigodetexas-dashboard`**
+### Opção A: Usar serviço existente `bigodetexas-dashboard`
 
-**Passos:**
+### Passos:
 
 1. Ir para Settings do serviço
 2. Mudar "Start Command" para: `cd new_dashboard && gunicorn app:app`
@@ -142,9 +142,9 @@ web: cd new_dashboard && gunicorn app:app --bind 0.0.0.0:$PORT
 4. Fazer novo deploy manual
 5. Aguardar build
 
-**Opção B: Criar novo serviço `serv-brasil-sul-dashboard`**
+### Opção B: Criar novo serviço `serv-brasil-sul-dashboard`
 
-**Passos:**
+### Passos:
 
 1. No Render, clicar em "New +" → "Web Service"
 2. Conectar repositório: `bigodetexas-dashboard/bigodetexas-dashboard`
@@ -153,12 +153,12 @@ web: cd new_dashboard && gunicorn app:app --bind 0.0.0.0:$PORT
    - **Root Directory:** `new_dashboard`
    - **Build Command:** `pip install -r requirements.txt`
    - **Start Command:** `gunicorn app:app`
-4. Adicionar variáveis de ambiente
-5. Criar serviço
+1. Adicionar variáveis de ambiente
+2. Criar serviço
 
-**Opção C: Deletar serviço antigo e recriar**
+### Opção C: Deletar serviço antigo e recriar
 
-**Passos:**
+### Passos:
 
 1. Deletar `bigodetexas-dashboard`
 2. Criar novo com configuração correta
@@ -166,25 +166,25 @@ web: cd new_dashboard && gunicorn app:app --bind 0.0.0.0:$PORT
 
 ### **2. Configurar Variáveis de Ambiente** ⚠️ IMPORTANTE
 
-**Variáveis necessárias:**
+### Variáveis necessárias:
 
-```
-SECRET_KEY=<gerar_nova>
+```env
+<gerar_nova>
 DATABASE_URL=<postgresql_url>
 DISCORD_CLIENT_ID=<discord_app_id>
 DISCORD_CLIENT_SECRET=<discord_app_secret>
 DISCORD_REDIRECT_URI=https://serv-brasil-sul-dashboard.onrender.com/callback
-```
+```text
 
 ### **3. Aplicar Schema no Banco de Produção** ⚠️ CRÍTICO
 
-**Após deploy bem-sucedido:**
+### Após deploy bem-sucedido:
 
 ```bash
 python apply_schema_production.py
-```
+```text
 
-**O que faz:**
+### O que faz:
 
 - Cria tabelas `activity_history` e `user_settings`
 - Cria função `add_activity_event()`
@@ -196,7 +196,7 @@ python apply_schema_production.py
 
 ### **4. Atualizar Discord OAuth**
 
-**Após deploy:**
+### Após deploy:
 
 1. Ir para Discord Developer Portal
 2. Adicionar nova URL de callback
@@ -204,18 +204,18 @@ python apply_schema_production.py
 
 ### **5. Testar Site em Produção**
 
-**URLs para testar:**
+### URLs para testar:
 
-```
+```text
 https://serv-brasil-sul-dashboard.onrender.com/
 https://serv-brasil-sul-dashboard.onrender.com/achievements
 https://serv-brasil-sul-dashboard.onrender.com/history
 https://serv-brasil-sul-dashboard.onrender.com/settings
-```
+```text
 
 ### **6. Decidir sobre Site Antigo**
 
-**Opções:**
+### Opções:
 
 - Deletar `bigodetexas-dashboard` (economiza recursos)
 - Manter como backup
@@ -253,14 +253,14 @@ https://serv-brasil-sul-dashboard.onrender.com/settings
 
 ### **Melhor Solução: OPÇÃO A**
 
-**Por quê:**
+### Por quê:
 
 - ✅ Mais rápido
 - ✅ Mantém mesma URL (se for aceitável)
 - ✅ Não precisa reconfigurar tudo
 - ✅ Apenas mudar Start Command
 
-**Passos:**
+### Passos:
 
 1. No Render, ir para `bigodetexas-dashboard`
 2. Settings → Build & Deploy
@@ -311,15 +311,17 @@ Se tiver API Key do Render, posso:
 
 ## 🔍 **LOGS DO ÚLTIMO DEPLOY**
 
-```
+```bash
 ==> Running 'python bot_main.py'
+
 * Serving Flask app 'bot_main'
 * Running on http://127.0.0.1:10000
+
 ==> Your service is live 🎉
 ==> Available at https://bigodetexas-dashboard.onrender.com
-```
+```text
 
-**Problema identificado:**
+### Problema identificado:
 
 - Executando `bot_main.py` ❌
 - Deveria executar `gunicorn app:app` ✅
@@ -330,7 +332,7 @@ Se tiver API Key do Render, posso:
 
 ### **Para o Usuário:**
 
-**Escolher uma opção:**
+### Escolher uma opção:
 
 **A) Corrigir serviço existente** (RECOMENDADO)
 
@@ -338,13 +340,13 @@ Se tiver API Key do Render, posso:
 - Mudar Start Command
 - Fazer deploy
 
-**B) Criar novo serviço**
+### B) Criar novo serviço
 
 - Criar `serv-brasil-sul-dashboard`
 - Configurar do zero
 - Fazer deploy
 
-**C) Deletar e recriar**
+### C) Deletar e recriar
 
 - Deletar antigo
 - Criar novo
@@ -364,18 +366,18 @@ Se tiver API Key do Render, posso:
 
 ### **Se Deploy Falhar:**
 
-**Erro: "Application failed to start"**
+### Erro: "Application failed to start"
 
 - Verificar logs do Render
 - Verificar Procfile
 - Verificar requirements.txt
 
-**Erro: "Port binding failed"**
+### Erro: "Port binding failed"
 
 - Adicionar `--bind 0.0.0.0:$PORT` ao comando
 - Verificar se app.py usa `PORT` do ambiente
 
-**Erro: "Module not found"**
+### Erro: "Module not found"
 
 - Verificar requirements.txt
 - Fazer rebuild com cache limpo

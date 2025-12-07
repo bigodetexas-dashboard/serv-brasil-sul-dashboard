@@ -60,7 +60,7 @@
 ```bash
 cd "d:/dayz xbox/BigodeBot"
 apply_schema.bat
-```
+```text
 
 O script vai:
 
@@ -74,17 +74,20 @@ O script vai:
 ```bash
 cd "d:/dayz xbox/BigodeBot"
 psql %DATABASE_URL% -f schema_achievements_history.sql
-```
+```text
 
 ### **Opção 3: Se DATABASE_URL não estiver definido**
 
 ```bash
+
 # Definir DATABASE_URL primeiro
+
 set DATABASE_URL=postgresql://user:password@host:port/database
 
 # Depois aplicar
+
 psql %DATABASE_URL% -f schema_achievements_history.sql
-```
+```text
 
 ---
 
@@ -94,22 +97,24 @@ psql %DATABASE_URL% -f schema_achievements_history.sql
 
 ```bash
 apply_schema.bat
-```
+```text
 
 ### **2. Iniciar Servidor**
 
 ```bash
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
 python app.py
-```
+```text
 
 ### **3. Executar Testes Automatizados**
 
 ```bash
+
 # Em outro terminal
+
 cd "d:/dayz xbox/BigodeBot"
 python test_apis.py
-```
+```text
 
 O script vai testar:
 
@@ -122,11 +127,11 @@ O script vai testar:
 
 ### **4. Testar no Navegador**
 
-```
+```text
 http://localhost:5001/achievements  ← Deve carregar conquistas do banco
 http://localhost:5001/history       ← Deve carregar histórico do banco
 http://localhost:5001/settings      ← Deve carregar configurações do banco
-```
+```text
 
 ---
 
@@ -138,29 +143,29 @@ http://localhost:5001/settings      ← Deve carregar configurações do banco
 
 ### JavaScript
 
-2. ✅ `new_dashboard/static/js/history.js` (200+ linhas)
-3. ✅ `new_dashboard/static/js/settings.js` (200+ linhas)
+1. ✅ `new_dashboard/static/js/history.js` (200+ linhas)
+2. ✅ `new_dashboard/static/js/settings.js` (200+ linhas)
 
 ### Python
 
-4. ✅ `test_apis.py` (Script de teste automatizado)
+1. ✅ `test_apis.py` (Script de teste automatizado)
 
 ### Batch
 
-5. ✅ `apply_schema.bat` (Script para aplicar schema)
+1. ✅ `apply_schema.bat` (Script para aplicar schema)
 
 ### Documentação
 
-6. ✅ `IMPLEMENTACAO_COMPLETA_2025-12-07.md`
-7. ✅ `PENDENCIAS_FINAIS_2025-12-07.md`
-8. ✅ `VERSION_HISTORY.md` (atualizado)
+1. ✅ `IMPLEMENTACAO_COMPLETA_2025-12-07.md`
+2. ✅ `PENDENCIAS_FINAIS_2025-12-07.md`
+3. ✅ `VERSION_HISTORY.md` (atualizado)
 
 ### Arquivos Modificados
 
-9. ✅ `new_dashboard/app.py` (+400 linhas de API)
-10. ✅ `new_dashboard/templates/achievements.html` (conectado)
-11. ✅ `new_dashboard/templates/history.html` (conectado) 🆕
-12. ✅ `new_dashboard/templates/settings.html` (conectado) 🆕
+1. ✅ `new_dashboard/app.py` (+400 linhas de API)
+2. ✅ `new_dashboard/templates/achievements.html` (conectado)
+3. ✅ `new_dashboard/templates/history.html` (conectado) 🆕
+4. ✅ `new_dashboard/templates/settings.html` (conectado) 🆕
 
 ---
 
@@ -246,7 +251,7 @@ http://localhost:5001/settings      ← Deve carregar configurações do banco
 ```bash
 cd "d:/dayz xbox/BigodeBot"
 apply_schema.bat
-```
+```text
 
 ---
 
@@ -258,17 +263,17 @@ Se você for continuar este trabalho:
 
    ```bash
    apply_schema.bat
-   ```
+```text
 
-2. **Depois, teste tudo:**
+1. **Depois, teste tudo:**
 
    ```bash
    python test_apis.py
-   ```
+```text
 
-3. **Se tudo passar, está 100% pronto!**
+1. **Se tudo passar, está 100% pronto!**
 
-4. **Próximos passos (opcionais):**
+1. **Próximos passos (opcionais):**
    - Integrar logging automático de eventos
    - Criar triggers para conquistas automáticas
    - Adicionar notificações visuais
@@ -280,22 +285,22 @@ Se você for continuar este trabalho:
 
 ### Se algo não funcionar
 
-**Erro: "psql não é reconhecido"**
+### Erro: "psql não é reconhecido"
 
 - Instale PostgreSQL ou use pgAdmin
 - Ou execute o SQL manualmente no banco
 
-**Erro: "DATABASE_URL não definido"**
+### Erro: "DATABASE_URL não definido"
 
 - Defina: `set DATABASE_URL=postgresql://...`
 - Ou edite apply_schema.bat com a URL
 
-**Erro: "Tabela já existe"**
+### Erro: "Tabela já existe"
 
 - Normal se já aplicou antes
 - Schema usa `IF NOT EXISTS`
 
-**APIs retornam erro 500:**
+### APIs retornam erro 500:
 
 - Verifique se schema foi aplicado
 - Veja logs do servidor

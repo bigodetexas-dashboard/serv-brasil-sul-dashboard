@@ -288,7 +288,7 @@
 
 ---
 
-**Legenda:**
+### Legenda:
 
 - 🔴 Alta Prioridade - Fazer primeiro
 - 🟡 Média Prioridade - Importante mas não urgente

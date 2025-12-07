@@ -10,11 +10,11 @@
 
 ### **Site Correto (Local):**
 
-```
+```text
 URL Local: http://localhost:5001
-```
+```text
 
-**Características:**
+### Características:
 
 - ✅ Achievements (Conquistas) - `/achievements`
 - ✅ History (Histórico) - `/history`
@@ -25,11 +25,11 @@ URL Local: http://localhost:5001
 
 ### **Onde deve ficar online:**
 
-```
+```text
 URL Online: https://bigodetexas-dashboard.onrender.com
 OU
 URL Online: https://serv-brasil-sul-dashboard.onrender.com
-```
+```text
 
 ---
 
@@ -37,14 +37,16 @@ URL Online: https://serv-brasil-sul-dashboard.onrender.com
 
 ### **PASSO 1: ACESSAR RENDER**
 
-```
+```text
+
 1. Abrir navegador
 2. Ir para: https://dashboard.render.com
 3. Fazer login (se necessário)
 4. Ver lista de serviços
-```
 
-**O que você vai ver:**
+```text
+
+### O que você vai ver:
 
 - Lista de Web Services
 - Procurar: `bigodetexas-dashboard`
@@ -53,13 +55,15 @@ URL Online: https://serv-brasil-sul-dashboard.onrender.com
 
 ### **PASSO 2: ABRIR CONFIGURAÇÕES**
 
-```
+```text
+
 1. Clicar no serviço: bigodetexas-dashboard
 2. No menu lateral, clicar em: Settings
 3. Rolar até encontrar: "Build & Deploy"
-```
 
-**O que procurar:**
+```text
+
+### O que procurar:
 
 - Seção "Build & Deploy"
 - Campo "Start Command"
@@ -69,24 +73,26 @@ URL Online: https://serv-brasil-sul-dashboard.onrender.com
 
 ### **PASSO 3: CORRIGIR START COMMAND**
 
-```
+```text
+
 1. Clicar no campo "Start Command"
 2. APAGAR o texto atual
 3. DIGITAR: cd new_dashboard && gunicorn app:app
 4. Clicar em "Save Changes" (Salvar)
-```
 
-**Antes:**
+```text
 
-```
+### Antes:
+
+```bash
 Start Command: python bot_main.py
-```
+```text
 
-**Depois:**
+### Depois:
 
-```
+```bash
 Start Command: cd new_dashboard && gunicorn app:app
-```
+```text
 
 **IMPORTANTE:** Copie exatamente como está acima!
 
@@ -94,68 +100,76 @@ Start Command: cd new_dashboard && gunicorn app:app
 
 ### **PASSO 4: FAZER DEPLOY**
 
-```
+```text
+
 1. Voltar para a página principal do serviço
 2. No canto superior direito, clicar: "Manual Deploy"
 3. Selecionar: "Deploy latest commit"
 4. Aguardar o build começar
-```
 
-**O que você vai ver:**
+```text
 
-```
+### O que você vai ver:
+
+```text
 ==> Cloning from https://github.com/...
 ==> Installing dependencies...
 ==> Running build command...
 ==> Uploading build...
 ==> Build successful 🎉
 ==> Deploying...
-```
+```text
 
 ---
 
 ### **PASSO 5: ACOMPANHAR LOGS**
 
-```
+```text
+
 1. Clicar na aba "Logs"
 2. Acompanhar o progresso em tempo real
 3. Aguardar aparecer: "Your service is live 🎉"
-```
 
-**Logs corretos (o que você DEVE ver):**
+```text
 
-```
+### Logs corretos (o que você DEVE ver):
+
+```bash
 ==> Running 'cd new_dashboard && gunicorn app:app'
 [INFO] Starting gunicorn...
 [INFO] Listening at: http://0.0.0.0:10000
 ==> Your service is live 🎉
-```
+```text
 
-**Logs ERRADOS (se aparecer isso, algo está errado):**
+### Logs ERRADOS (se aparecer isso, algo está errado):
 
-```
+```bash
 ==> Running 'python bot_main.py'
+
 * Serving Flask app 'bot_main'
-```
+
+```text
 
 ---
 
 ### **PASSO 6: VERIFICAR SITE ONLINE**
 
-```
+```text
+
 1. Aguardar status mudar para: "Live" (verde)
 2. Abrir em nova aba: https://bigodetexas-dashboard.onrender.com
 3. Verificar se carrega a homepage
-```
 
-**Teste rápido:**
+```text
 
-```
+### Teste rápido:
+
+```text
 https://bigodetexas-dashboard.onrender.com/
 https://bigodetexas-dashboard.onrender.com/achievements
 https://bigodetexas-dashboard.onrender.com/history
 https://bigodetexas-dashboard.onrender.com/settings
-```
+```text
 
 **Se `/achievements` carregar:** ✅ SUCESSO!
 **Se `/achievements` der 404:** ❌ Algo errado, verificar logs
@@ -164,24 +178,26 @@ https://bigodetexas-dashboard.onrender.com/settings
 
 ### **PASSO 7: APLICAR SCHEMA NO BANCO**
 
-```
+```text
+
 1. Abrir terminal/PowerShell
 2. Navegar até: cd "d:/dayz xbox/BigodeBot"
 3. Executar: python apply_schema_production.py
 4. Quando perguntar, digitar: sim
 5. Aguardar conclusão
-```
 
-**Comandos:**
+```text
+
+### Comandos:
 
 ```bash
 cd "d:/dayz xbox/BigodeBot"
 python apply_schema_production.py
-```
+```text
 
-**O que vai acontecer:**
+### O que vai acontecer:
 
-```
+```text
 APLICANDO SCHEMA NO BANCO DE PRODUCAO
 [OK] Conectando ao banco de producao...
 [OK] SQL lido (3080 caracteres)
@@ -189,29 +205,32 @@ APLICANDO SCHEMA NO BANCO DE PRODUCAO
 ATENCAO: Isto vai criar tabelas no banco de PRODUCAO!
 
 Tabelas que serao criadas:
+
   - activity_history
   - user_settings
 
 Deseja continuar? (sim/nao): sim
 
 [SUCESSO] SCHEMA APLICADO NO BANCO DE PRODUCAO!
-```
+```text
 
 ---
 
 ### **PASSO 8: TESTAR TUDO**
 
-```
+```text
+
 1. Abrir site online
 2. Fazer login com Discord
 3. Testar cada página nova:
    - Achievements
    - History
    - Settings
-4. Verificar se APIs funcionam
-```
+1. Verificar se APIs funcionam
 
-**Checklist de testes:**
+```text
+
+### Checklist de testes:
 
 - [ ] Homepage carrega
 - [ ] Login Discord funciona
@@ -226,14 +245,14 @@ Deseja continuar? (sim/nao): sim
 
 ### **Problema 1: Build Failed**
 
-**Sintoma:**
+### Sintoma:
 
-```
+```text
 ==> Build failed ❌
 Error: ...
-```
+```text
 
-**Solução:**
+### Solução:
 
 1. Ver logs completos
 2. Verificar se requirements.txt existe
@@ -243,12 +262,12 @@ Error: ...
 
 ### **Problema 2: Site não carrega**
 
-**Sintoma:**
+### Sintoma:
 
 - Site mostra erro 503
 - Ou "Application Error"
 
-**Solução:**
+### Solução:
 
 1. Ver logs do Render
 2. Verificar se Start Command está correto
@@ -258,13 +277,13 @@ Error: ...
 
 ### **Problema 3: Páginas novas dão 404**
 
-**Sintoma:**
+### Sintoma:
 
 - `/achievements` retorna 404
 - `/history` retorna 404
 - `/settings` retorna 404
 
-**Solução:**
+### Solução:
 
 - Schema não foi aplicado no banco
 - Executar: `python apply_schema_production.py`
@@ -273,13 +292,13 @@ Error: ...
 
 ### **Problema 4: Ainda roda bot_main.py**
 
-**Sintoma:**
+### Sintoma:
 
-```
+```bash
 ==> Running 'python bot_main.py'
-```
+```text
 
-**Solução:**
+### Solução:
 
 1. Verificar se salvou o Start Command
 2. Fazer novo deploy
@@ -320,26 +339,26 @@ Error: ...
 ```bash
 cd "d:/dayz xbox/BigodeBot"
 python apply_schema_production.py
-```
+```text
 
 ### **Verificar Banco:**
 
 ```bash
 python check_database.py
-```
+```text
 
 ### **Testar APIs Localmente:**
 
 ```bash
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
 python app.py
-```
+```text
 
 ### **Ver Logs do Git:**
 
 ```bash
 git log --oneline -5
-```
+```text
 
 ---
 
@@ -369,7 +388,7 @@ git log --oneline -5
 
 ### **Site ERRADO (atual online):**
 
-```
+```text
 URL: https://bigodetexas-dashboard.onrender.com
 
 Páginas:
@@ -383,12 +402,14 @@ Páginas:
 
 Logs:
 ==> Running 'python bot_main.py'
+
 * Serving Flask app 'bot_main'
-```
+
+```text
 
 ### **Site CORRETO (deve ficar assim):**
 
-```
+```text
 URL: https://bigodetexas-dashboard.onrender.com
 
 Páginas:
@@ -404,7 +425,7 @@ Logs:
 ==> Running 'cd new_dashboard && gunicorn app:app'
 [INFO] Starting gunicorn...
 [INFO] Listening at: http://0.0.0.0:10000
-```
+```text
 
 ---
 
@@ -444,18 +465,23 @@ Após seguir todos os passos:
 ### **Comandos de diagnóstico:**
 
 ```bash
+
 # Ver status do Git
+
 git status
 
 # Ver últimos commits
+
 git log --oneline -5
 
 # Verificar banco
+
 python check_database.py
 
 # Testar APIs
+
 python test_apis.py
-```
+```text
 
 ---
 
@@ -463,27 +489,27 @@ python test_apis.py
 
 ### **Repositório GitHub:**
 
-```
+```text
 URL: https://github.com/bigodetexas-dashboard/bigodetexas-dashboard
 Branch: main
 Último commit: f1d9c784
-```
+```text
 
 ### **Serviço Render:**
 
-```
+```text
 Nome: bigodetexas-dashboard
 URL: https://bigodetexas-dashboard.onrender.com
 Start Command CORRETO: cd new_dashboard && gunicorn app:app
-```
+```text
 
 ### **Banco de Dados:**
 
-```
+```env
 Variável: DATABASE_URL (no Render)
 Tabelas novas: activity_history, user_settings
 Script: apply_schema_production.py
-```
+```text
 
 ---
 
@@ -500,7 +526,7 @@ Antes de considerar concluído, verificar:
 7. ✅ Schema aplicado no banco
 8. ✅ Testes básicos passam
 
-**Se todos os itens acima estiverem ✅, o deploy está COMPLETO!**
+### Se todos os itens acima estiverem ✅, o deploy está COMPLETO!
 
 ---
 

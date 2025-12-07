@@ -74,25 +74,31 @@ Na página principal:
 ## 🚀 COMANDOS ÚTEIS
 
 ```bash
+
 # Backup antes de começar
+
 python auto_backup.py create "Inicio da proxima sessao"
 
 # Iniciar servidor
+
 cd new_dashboard
 python app.py
 
 # Testar páginas
+
 http://localhost:5001/base
 http://localhost:5001/clan
 http://localhost:5001/banco
 
 # Backup ao finalizar
+
 python auto_backup.py create "Fim da sessao - [descricao]"
 
 # Commit Git
+
 git add -A
 git commit -m "feat: [descricao das mudancas]"
-```
+```text
 
 ---
 

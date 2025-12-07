@@ -32,7 +32,7 @@ cd "d:/dayz xbox/BigodeBot"
 git add new_dashboard/
 git commit -m "Dashboard completo com tema Horror Apocalypse"
 git push origin main
-```
+```text
 
 ### 2. Render.com
 
@@ -52,7 +52,7 @@ DATABASE_URL=<url_supabase_postgresql>
 DISCORD_CLIENT_ID=<discord_app_id>
 DISCORD_CLIENT_SECRET=<discord_app_secret>
 DISCORD_REDIRECT_URI=https://serv-brasil-sul-dashboard.onrender.com/callback
-```
+```text
 
 ### 4. Discord Developer Portal
 
@@ -109,19 +109,19 @@ DISCORD_REDIRECT_URI=https://serv-brasil-sul-dashboard.onrender.com/callback
    - "SERV. BRASIL SUL" pichado vermelho (baixo)
    - Atmosfera pós-apocalíptica
 
-2. Salvar como `logo_placa.png`
+1. Salvar como `logo_placa.png`
 
-3. Copiar para `new_dashboard/static/images/`
+1. Copiar para `new_dashboard/static/images/`
 
-4. Fazer commit e push:
+1. Fazer commit e push:
 
 ```bash
 git add new_dashboard/static/images/logo_placa.png
 git commit -m "Adiciona logo da placa do servidor"
 git push origin main
-```
+```text
 
-5. Render fará redeploy automático
+1. Render fará redeploy automático
 
 ---
 
@@ -167,15 +167,15 @@ git push origin main
    - Substituir ícones por fotos reais
    - Otimizar tamanho das imagens
 
-2. **Notificações Push**
+1. **Notificações Push**
    - Avisos de entrega
    - Alertas de eventos
 
-3. **Sistema de Clãs**
+1. **Sistema de Clãs**
    - Criar/entrar em clãs
    - Rankings de clãs
 
-4. **Mapa de Calor**
+1. **Mapa de Calor**
    - Visualizar zonas quentes
    - Estatísticas de mortes por região
 
@@ -187,4 +187,4 @@ git push origin main
 
 ---
 
-**Desenvolvido com 🧟‍♂️ para SERV. BRASIL SUL - XBOX**
+### Desenvolvido com 🧟‍♂️ para SERV. BRASIL SUL - XBOX

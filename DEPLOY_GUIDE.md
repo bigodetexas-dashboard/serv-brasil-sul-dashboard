@@ -22,7 +22,7 @@ URL: <https://dashboard.render.com/web/srv-d4jrhp8gjchc739odl2g>
 
 Acesse: <https://bigodetexas-dashboard.onrender.com/checkout>
 
-**O que você deve ver:**
+### O que você deve ver:
 
 - ✅ Mapa com grid
 - ✅ Nomes de cidades (Elektro, Cherno, etc.)
@@ -37,7 +37,7 @@ Se quiser acompanhar automaticamente, rode:
 
 ```bash
 python monitor_deploy.py
-```
+```text
 
 O script vai:
 

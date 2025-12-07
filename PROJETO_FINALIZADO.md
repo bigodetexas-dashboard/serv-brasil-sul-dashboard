@@ -50,11 +50,11 @@ Você tem agora no seu Desktop:
    - Abre o menu premium do bot
    - **CLIQUE AQUI PARA INICIAR O BOT!**
 
-2. **`Ver_Avatar_BigodeTexas.html`**
+1. **`Ver_Avatar_BigodeTexas.html`**
    - Visualizador do avatar
    - Instruções de uso no Discord
 
-3. **`BigodeTexas_Avatar.png`**
+1. **`BigodeTexas_Avatar.png`**
    - Imagem do avatar (512x512)
    - Para upload no Discord
 
@@ -64,12 +64,12 @@ Você tem agora no seu Desktop:
 
 ### Iniciar o Bot
 
-**Opção 1 (Recomendada):**
+### Opção 1 (Recomendada):
 
 - Clique duas vezes em `BigodeTexas Launcher.lnk` no Desktop
 - Escolha a opção desejada no menu
 
-**Opção 2:**
+### Opção 2:
 
 - Navegue até `d:\dayz xbox\BigodeBot`
 - Execute `launcher.bat`
@@ -81,9 +81,9 @@ Você tem agora no seu Desktop:
    ```bash
    cd new_dashboard
    python app.py
-   ```
+```text
 
-2. Abra: <http://localhost:5001/heatmap>
+1. Abra: <http://localhost:5001/heatmap>
 
 ### Atualizar Avatar no Discord
 
@@ -125,7 +125,7 @@ Você tem agora no seu Desktop:
 
 ## 📁 ESTRUTURA DO PROJETO
 
-```
+```text
 BigodeBot/
 ├── 🚀 Launcher
 │   ├── launcher.bat (Menu interativo)
@@ -158,7 +158,7 @@ BigodeBot/
     ├── killfeed.py
     ├── spawn_system.py
     └── [outros arquivos do bot]
-```
+```text
 
 ---
 
@@ -187,29 +187,37 @@ BigodeBot/
 ### Git
 
 ```bash
+
 # Ver todas as tags
+
 git tag
 
 # Ver commits
+
 git log --oneline
 
 # Ver status
+
 git status
-```
+```text
 
 ### Projeto
 
 ```bash
+
 # Iniciar bot
+
 launcher.bat
 
 # Iniciar dashboard
+
 cd new_dashboard
 python app.py
 
 # Gerar tiles novos
+
 python slice_map.py
-```
+```text
 
 ---
 
@@ -232,18 +240,18 @@ Todos os arquivos `.md` na raiz do projeto contêm informações detalhadas sobr
 
 ### Antes vs Depois
 
-**Interface do Console - ANTES:**
+### Interface do Console - ANTES:
 
-```
+```text
 ==========================================
      INICIANDO BIGODETEXAS - DIAGNOSTICO
 ==========================================
 [OK] Python encontrado.
-```
+```text
 
-**Interface do Console - DEPOIS:**
+### Interface do Console - DEPOIS:
 
-```
+```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║   ██████╗ ██╗ ██████╗  ██████╗ ██████╗ ███████╗████████╗███████╗██╗  ██╗   ║
 ║   BIGODE TEXAS - SERVIDOR BRASIL SUL - XBOX                                  ║
@@ -251,17 +259,17 @@ Todos os arquivos `.md` na raiz do projeto contêm informações detalhadas sobr
 
 [1/4] 🐍 Verificando Python...
 ✅ Python 3.12.0 detectado
-```
+```text
 
 ### Mapa - ANTES vs DEPOIS
 
-**ANTES:**
+### ANTES:
 
 - Imagem estática
 - Sem zoom
 - Baixa qualidade
 
-**DEPOIS:**
+### DEPOIS:
 
 - 5.461 tiles dinâmicos
 - Zoom infinito (0-6+)
@@ -281,7 +289,7 @@ O projeto BigodeTexas Bot foi **100% modernizado** com:
 ✅ Documentação completa  
 ✅ Tudo versionado no Git  
 
-**PROJETO PRONTO PARA USO!**
+### PROJETO PRONTO PARA USO!
 
 ---
 

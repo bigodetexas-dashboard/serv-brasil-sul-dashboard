@@ -14,9 +14,9 @@ Mesmo que `.vscode` esteja no `.gitignore`, você pode criar localmente (não se
 
    ```powershell
    mkdir .vscode
-   ```
+```text
 
-2. Crie o arquivo `.vscode\settings.json` com este conteúdo:
+1. Crie o arquivo `.vscode\settings.json` com este conteúdo:
 
    ```json
    {
@@ -26,7 +26,7 @@ Mesmo que `.vscode` esteja no `.gitignore`, você pode criar localmente (não se
        "C_Cpp.errorSquiggles": "disabled",
        "C_Cpp.intelliSenseEngine": "disabled"
    }
-   ```
+```text
 
 ### Passo 2: Recarregar VS Code
 

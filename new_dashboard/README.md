@@ -85,7 +85,7 @@ Dashboard web completo para servidor DayZ com tema **Horror Apocalíptico**, sis
 
 ## 🗂️ ESTRUTURA DE ARQUIVOS
 
-```
+```text
 new_dashboard/
 ├── app.py                          # Aplicação Flask principal
 ├── discord_auth.py                 # Módulo de autenticação OAuth
@@ -118,20 +118,22 @@ new_dashboard/
 │   │   └── confirmation.js         # Confirmação
 │   └── images/
 │       └── logo_placa.png          # Logo (a ser adicionado)
-```
+```text
 
 ---
 
 ## 🎨 PALETA DE CORES (HORROR APOCALYPSE)
 
 ```css
+
 --primary: #3a4a2a;           /* Verde Militar Escuro */
 --secondary: #5a1a1a;         /* Vermelho Sangue Seco */
 --accent: #7a6a3a;            /* Ferrugem/Latão Oxidado */
 --blood: #4a0a0a;             /* Sangue Escuro */
 --bg-card: rgba(20,16,14,0.95); /* Concreto Sujo */
 --text-primary: #b8b0a8;      /* Branco Sujo/Poeira */
-```
+
+```text
 
 ---
 
@@ -165,9 +167,9 @@ new_dashboard/
 
 ```bash
 pip install -r requirements.txt
-```
+```text
 
-2. **Configurar variáveis de ambiente (.env):**
+1. **Configurar variáveis de ambiente (.env):**
 
 ```env
 SECRET_KEY=sua_chave_secreta
@@ -175,19 +177,19 @@ DATABASE_URL=sua_url_postgresql
 DISCORD_CLIENT_ID=seu_client_id
 DISCORD_CLIENT_SECRET=seu_client_secret
 DISCORD_REDIRECT_URI=http://localhost:5001/callback
-```
+```text
 
-3. **Rodar o servidor:**
+1. **Rodar o servidor:**
 
 ```bash
 python app.py
-```
+```text
 
-4. **Acessar:**
+1. **Acessar:**
 
-```
+```text
 http://localhost:5001
-```
+```text
 
 ---
 
@@ -195,7 +197,7 @@ http://localhost:5001
 
 Siga o guia completo em `DEPLOY_GUIDE.md`
 
-**Resumo:**
+### Resumo:
 
 1. Push para GitHub
 2. Criar Web Service no Render

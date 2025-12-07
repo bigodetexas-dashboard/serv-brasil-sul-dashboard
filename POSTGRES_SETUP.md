@@ -11,7 +11,7 @@
    - **Region:** `Ohio (US East)` (mesma do Web Service)
    - **PostgreSQL Version:** `16` (ou mais recente)
    - **Instance Type:** **Free**
-4. Clique em **"Create Database"**
+1. Clique em **"Create Database"**
 
 Aguarde ~2 minutos para o database ser criado.
 
@@ -25,9 +25,9 @@ Aguarde ~2 minutos para o database ser criado.
 
 A URL terá este formato:
 
-```
+```text
 postgres://usuario:senha@host/database
-```
+```text
 
 ---
 
@@ -39,7 +39,7 @@ postgres://usuario:senha@host/database
 4. Preencha:
    - **Key:** `DATABASE_URL`
    - **Value:** (cole a URL que você copiou no Passo 2)
-5. Clique em **"Save Changes"**
+1. Clique em **"Save Changes"**
 
 O Render vai fazer um **redeploy automático** (~2 minutos).
 
@@ -49,15 +49,15 @@ O Render vai fazer um **redeploy automático** (~2 minutos).
 
 Depois que o redeploy terminar, você precisa criar as tabelas no banco.
 
-**Opção A: Via Script Python (Recomendado)**
+### Opção A: Via Script Python (Recomendado)
 
 Execute no seu PC:
 
 ```powershell
 python -c "import database; database.init_database()"
-```
+```text
 
-**Opção B: Manualmente no Render**
+### Opção B: Manualmente no Render
 
 1. No painel do database, clique em **"Connect"** → **"External Connection"**
 2. Use um cliente SQL (como DBeaver ou pgAdmin)
@@ -71,7 +71,7 @@ Execute no seu PC para migrar os dados existentes:
 
 ```powershell
 python migrate_to_postgres.py
-```
+```text
 
 (Vou criar esse script agora)
 
@@ -90,17 +90,17 @@ Depois de tudo configurado, teste:
 
 ## 🔧 Troubleshooting
 
-**Erro: "could not connect to server"**
+### Erro: "could not connect to server"
 
 - Verifique se a `DATABASE_URL` está correta
 - Certifique-se de usar a **Internal Database URL** (não a External)
 
-**Tabelas não foram criadas:**
+### Tabelas não foram criadas:
 
 - Execute `python -c "import database; database.init_database()"`
 - Verifique os logs do Render
 
-**Dados não aparecem:**
+### Dados não aparecem:
 
 - Execute o script de migração
 - Verifique se o bot está usando `database.py` em vez de JSON

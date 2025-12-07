@@ -77,9 +77,9 @@ Criado schema completo com:
        const events = await response.json();
        renderTimeline(events);
    }
-   ```
+```text
 
-2. **Conectar Settings.html com API** (20 min)
+1. **Conectar Settings.html com API** (20 min)
 
    ```javascript
    // Adicionar em settings.html:
@@ -97,21 +97,23 @@ Criado schema completo com:
            body: JSON.stringify(data)
        });
    }
-   ```
+```text
 
-3. **Aplicar Schema no Banco de Dados** (5 min)
+1. **Aplicar Schema no Banco de Dados** (5 min)
 
    ```bash
-   # Conectar ao PostgreSQL e executar:
-   psql $DATABASE_URL < schema_achievements_history.sql
-   ```
 
-4. **Integrar Sistema de Logging Automático** (30 min)
+   # Conectar ao PostgreSQL e executar:
+
+   psql $DATABASE_URL < schema_achievements_history.sql
+```text
+
+1. **Integrar Sistema de Logging Automático** (30 min)
    - Quando jogador mata alguém → adicionar ao histórico
    - Quando conquista é desbloqueada → adicionar ao histórico
    - Quando compra é feita → adicionar ao histórico
 
-5. **Triggers para Conquistas Automáticas** (45 min)
+1. **Triggers para Conquistas Automáticas** (45 min)
    - Criar triggers no banco para desbloquear conquistas automaticamente
    - Exemplo: Ao atingir 10 kills → desbloquear "Assassino"
 
@@ -168,27 +170,27 @@ Criado schema completo com:
 
 ### Survival (4)
 
-7. Sobrevivente Experiente (Silver) - 24h vivo
-8. Mestre da Sobrevivência (Platinum) - 7 dias vivo
-9. Imortal (Diamond) - 30 dias vivo
-10. Construtor (Silver) - 10 estruturas
+1. Sobrevivente Experiente (Silver) - 24h vivo
+2. Mestre da Sobrevivência (Platinum) - 7 dias vivo
+3. Imortal (Diamond) - 30 dias vivo
+4. Construtor (Silver) - 10 estruturas
 
 ### Exploration (2)
 
-11. Explorador do Mapa (Silver) - Visitar 15 cidades
-12. Colecionador de Armas (Gold) - 12 armas raras
+1. Explorador do Mapa (Silver) - Visitar 15 cidades
+2. Colecionador de Armas (Gold) - 12 armas raras
 
 ### Social (3)
 
-13. Líder de Grupo (Bronze) - Grupo com 5+ jogadores
-14. Médico de Campo (Silver) - Curar 50 jogadores
-15. Amigo Fiel (Platinum) - 100h com mesmo grupo
+1. Líder de Grupo (Bronze) - Grupo com 5+ jogadores
+2. Médico de Campo (Silver) - Curar 50 jogadores
+3. Amigo Fiel (Platinum) - 100h com mesmo grupo
 
 ### Wealth (3)
 
-16. Empreendedor (Bronze) - 10k DZCoins
-17. Milionário (Silver) - 50k DZCoins
-18. Magnata (Gold) - 100k DZCoins
+1. Empreendedor (Bronze) - 10k DZCoins
+2. Milionário (Silver) - 50k DZCoins
+3. Magnata (Gold) - 100k DZCoins
 
 ---
 
@@ -205,27 +207,31 @@ Nenhum bug crítico identificado até o momento.
 ```bash
 cd "d:/dayz xbox/BigodeBot"
 psql $DATABASE_URL < schema_achievements_history.sql
-```
+```text
 
 ### Testar API
 
 ```bash
+
 # Achievements
+
 curl http://localhost:5001/api/achievements/all
 
 # History
+
 curl http://localhost:5001/api/history/events
 
 # Settings
+
 curl http://localhost:5001/api/settings/get
-```
+```text
 
 ### Iniciar Servidor
 
 ```bash
 cd new_dashboard
 python app.py
-```
+```text
 
 ---
 

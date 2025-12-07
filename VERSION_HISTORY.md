@@ -4,7 +4,7 @@
 
 **Tag:** `v10.0-achievements-system`
 
-**Principais Mudanças:**
+### Principais Mudanças:
 
 - **🏆 Sistema de Conquistas Completo:**
   - 18 conquistas pré-cadastradas (Combat, Survival, Exploration, Social, Wealth)
@@ -47,7 +47,7 @@
 
 **Tag:** `site-9.3-2025-12-06`
 
-**Principais Mudanças:**
+### Principais Mudanças:
 
 - **Novas Funcionalidades:** Implementação completa de Base, Clã e Banco Sul no painel web.
 - **Banco de Dados:** Schema adaptativo (`schema_v2_compat.sql`) com suporte a bases e clãs.
@@ -60,7 +60,7 @@
 
 **Tag:** `site-9.2-2025-11-30`
 
-**Principais Mudanças:**
+### Principais Mudanças:
 
 - **Checkout Navbar:** Substituído header customizado por navbar padrão com logo Texas.
 - **Heatmap Fallback:** Adicionado fundo de grid quando tiles do iZurvive não carregam.
@@ -71,7 +71,7 @@
 
 **Tag:** `site-9.1-2025-11-30`
 
-**Principais Mudanças:**
+### Principais Mudanças:
 
 - **Arquitetura Completa do ChatGPT:** Implementação 100% da arquitetura sugerida para Heatmap PvP.
 - **Parser de Logs RPT:** Função `parse_rpt_line()` com suporte a múltiplos formatos.
@@ -85,7 +85,7 @@
 
 **Tag:** `projeto-9-2025-11-29`
 
-**Principais Mudanças:**
+### Principais Mudanças:
 
 - **Novo Recurso:** Mapa de Calor (Heatmap) PvP inspirado no concorrente.
 - **Melhoria:** Integração de mapa iZurvive no Checkout.

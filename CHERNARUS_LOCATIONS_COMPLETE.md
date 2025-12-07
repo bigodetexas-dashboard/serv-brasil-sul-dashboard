@@ -120,11 +120,11 @@
 
 ## 🌊 COSTA (Coastline)
 
-**Sul (South Coast):**
+### Sul (South Coast):
 
 - Kamenka → Komarovo → Balota → Chernogorsk → Elektrozavodsk → Kamyshovo
 
-**Leste (East Coast):**
+### Leste (East Coast):
 
 - Kamyshovo → Tulga → Berezino → Svetlojarsk → Rify
 

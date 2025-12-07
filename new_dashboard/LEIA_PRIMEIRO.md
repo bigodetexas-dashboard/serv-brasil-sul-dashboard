@@ -34,11 +34,11 @@ Implementei com sucesso um **sistema profissional de mapa com tiles** (mosaicos)
 ```bash
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
 python app.py
-```
+```text
 
 Depois acesse: `http://localhost:5000/heatmap`
 
-**O que você deve ver:**
+### O que você deve ver:
 
 - ✅ Mapa com grid cinza e nomes de cidades
 - ✅ Zoom suave (scroll ou botões +/-)
@@ -55,13 +55,13 @@ Os tiles atuais são **placeholders** (temporários) com:
 - Nomes de cidades (Elektro, Cherno, NWAF, etc.)
 - Fundo cinza escuro
 
-**Isso é suficiente para:**
+### Isso é suficiente para:
 
 - ✅ Testar o sistema
 - ✅ Desenvolver funcionalidades
 - ✅ Verificar alinhamento
 
-**Para produção (opcional):**
+### Para produção (opcional):
 
 - Substitua por tiles do mapa real do DayZ
 - Instruções em `SISTEMA_MAPA_TILES.md` seção "Melhorias Futuras"
@@ -83,7 +83,7 @@ new_dashboard/
 │   └── heatmap.html        ← Página do mapa
 ├── app.py                  ← Backend
 └── SISTEMA_MAPA_TILES.md   ← Documentação completa
-```
+```text
 
 ---
 
@@ -119,14 +119,14 @@ Leia `SISTEMA_MAPA_TILES.md` para:
 
 Olá! O sistema de mapa com tiles está **100% funcional**. Os tiles foram gerados e copiados para o local correto. O código JavaScript foi atualizado para usar `L.tileLayer` em vez de imagem única.
 
-**Se o usuário pedir para:**
+### Se o usuário pedir para:
 
 - **"Testar o mapa"**: Execute `python app.py` e acesse `/heatmap`
 - **"Melhorar o mapa"**: Veja `SISTEMA_MAPA_TILES.md` seção "Melhorias Futuras"
 - **"Corrigir alinhamento"**: Ajuste função `gameToLatLng()` em `heatmap.js`
 - **"Usar mapa real"**: Siga instruções para `gdal2tiles` na documentação
 
-**Arquivos importantes:**
+### Arquivos importantes:
 
 - `static/js/heatmap.js` - Lógica do mapa
 - `static/tiles/` - 5.461 tiles

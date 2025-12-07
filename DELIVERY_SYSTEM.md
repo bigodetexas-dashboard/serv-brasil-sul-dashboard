@@ -29,7 +29,7 @@ Este módulo processa entregas pendentes e spawna itens no servidor DayZ automat
     "delivery_at": "2025-11-27T10:05:00"
   }
 }
-```
+```text
 
 ## Status de Entrega
 
@@ -47,6 +47,8 @@ ITEM_CLASS_MAP = {
     "ak74": "AK74",
     "akm": "AKM",
     "m4a1": "M4A1",
+
     # ... etc
+
 }
-```
+```text

@@ -43,5 +43,6 @@ Clique na aba **Environment** e adicione as seguintes variáveis (copie do seu a
 
 ---
 
-**Nota sobre o Redirect URI:**
+### Nota sobre o Redirect URI:
+
 Lembre-se de ir no [Discord Developer Portal](https://discord.com/developers/applications), selecionar sua aplicação, ir em **OAuth2** e adicionar a nova URL de callback do Render (ex: `https://seu-app.onrender.com/callback`) na lista de Redirects.

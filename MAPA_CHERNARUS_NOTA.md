@@ -4,9 +4,9 @@
 
 Atualmente estamos usando um **mapa gerado por IA** localizado em:
 
-```
+```text
 /static/images/chernarus_map.png
-```
+```text
 
 ## ⚠️ Próximo Passo Recomendado
 
@@ -28,9 +28,9 @@ Para ter o **mapa EXATO e OFICIAL** do DayZ Chernarus, você tem 3 opções:
 
 Se você tem o DayZ instalado, pode extrair o mapa oficial dos arquivos do jogo:
 
-```
+```text
 C:\Program Files (x86)\Steam\steamapps\common\DayZ\dta\
-```
+```text
 
 ## 🎨 Mapa Atual (Gerado por IA)
 
@@ -48,25 +48,26 @@ Quando tiver o mapa oficial, basta:
 
 1. Substituir o arquivo:
 
-```bash
-copy "seu_mapa_oficial.png" "d:\dayz xbox\BigodeBot\new_dashboard\static\images\chernarus_map.png"
-```
+   ```bash
+   copy "seu_mapa_oficial.png" "d:\dayz xbox\BigodeBot\new_dashboard\static\images\chernarus_map.png"
+```text
 
-2. Reiniciar o dashboard:
+1. Reiniciar o dashboard:
 
-```bash
-python new_dashboard/app.py
-```
+   ```bash
+   python new_dashboard/app.py
+```text
 
-3. Validar coordenadas no modo debug:
+1. Validar coordenadas no modo debug:
 
-```
-http://localhost:5001/heatmap?debug=true
-```
+   ```text
+   http://localhost:5001/heatmap?debug=true
+```text
 
-Os landmarks amarelos devem aparecer nas posições corretas.
+   Os landmarks amarelos devem aparecer nas posições corretas.
 
 ---
 
-**O sistema já está 100% funcional com o mapa atual!**  
+### O sistema já está 100% funcional com o mapa atual!
+
 A substituição é apenas para ter a versão oficial exata. ✅

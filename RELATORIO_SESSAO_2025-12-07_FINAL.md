@@ -80,32 +80,32 @@
 
 ### Python
 
-3. `apply_partial.py`
-4. `apply_schema_production.py`
-5. `check_database.py`
-6. `test_apis.py` (sem emojis para Windows)
-7. `apply_schema.py`
-8. `apply_schema_direct.py`
+1. `apply_partial.py`
+2. `apply_schema_production.py`
+3. `check_database.py`
+4. `test_apis.py` (sem emojis para Windows)
+5. `apply_schema.py`
+6. `apply_schema_direct.py`
 
 ### JavaScript
 
-9. `new_dashboard/static/js/history.js` (200+ linhas)
-10. `new_dashboard/static/js/settings.js` (200+ linhas)
+1. `new_dashboard/static/js/history.js` (200+ linhas)
+2. `new_dashboard/static/js/settings.js` (200+ linhas)
 
 ### Documentação
 
-11. `IMPLEMENTACAO_COMPLETA_2025-12-07.md`
-12. `PENDENCIAS_FINAIS_2025-12-07.md`
-13. `RELATORIO_FINAL_COMPLETO.md`
-14. `GUIA_DEPLOY_NOVO_DASHBOARD.md`
+1. `IMPLEMENTACAO_COMPLETA_2025-12-07.md`
+2. `PENDENCIAS_FINAIS_2025-12-07.md`
+3. `RELATORIO_FINAL_COMPLETO.md`
+4. `GUIA_DEPLOY_NOVO_DASHBOARD.md`
 
 ### Arquivos Modificados
 
-15. `new_dashboard/app.py` (+400 linhas de API)
-16. `new_dashboard/templates/achievements.html` (conectado com API)
-17. `new_dashboard/templates/history.html` (script externo)
-18. `new_dashboard/templates/settings.html` (script externo)
-19. `VERSION_HISTORY.md`
+1. `new_dashboard/app.py` (+400 linhas de API)
+2. `new_dashboard/templates/achievements.html` (conectado com API)
+3. `new_dashboard/templates/history.html` (script externo)
+4. `new_dashboard/templates/settings.html` (script externo)
+5. `VERSION_HISTORY.md`
 
 ---
 
@@ -161,12 +161,12 @@ Quando o deploy terminar (aparecer "Live"):
 **Status:** Aguardando schema ser aplicado  
 **URLs para testar:**
 
-```
+```text
 https://serv-brasil-sul-dashboard.onrender.com/
 https://serv-brasil-sul-dashboard.onrender.com/achievements
 https://serv-brasil-sul-dashboard.onrender.com/history
 https://serv-brasil-sul-dashboard.onrender.com/settings
-```
+```text
 
 ### **3. Verificar Autenticação Discord** ⚠️ IMPORTANTE
 
@@ -281,23 +281,25 @@ https://serv-brasil-sul-dashboard.onrender.com/settings
 ```bash
 cd "d:/dayz xbox/BigodeBot"
 python apply_schema_production.py
-```
+```text
 
 ### **Verificar Banco:**
 
 ```bash
 python check_database.py
-```
+```text
 
 ### **Testar APIs Localmente:**
 
 ```bash
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
 python app.py
+
 # Em outro terminal:
+
 cd "d:/dayz xbox/BigodeBot"
 python test_apis.py
-```
+```text
 
 ### **Ver Logs do Render:**
 
@@ -336,7 +338,7 @@ No painel do Render, clicar em "Logs"
 
 ### **Status Geral: 98% COMPLETO**
 
-**Concluído:**
+### Concluído:
 
 - ✅ Sistema de Achievements, History, Settings
 - ✅ Backend completo (9 APIs)
@@ -347,7 +349,7 @@ No painel do Render, clicar em "Logs"
 - ✅ Git salvo e pushed
 - ✅ Deploy iniciado
 
-**Falta:**
+### Falta:
 
 - ⏳ Deploy terminar (5-10 min)
 - ⏳ Aplicar schema em produção (2 min)

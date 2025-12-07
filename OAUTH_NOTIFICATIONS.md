@@ -18,23 +18,25 @@ Este guia explica como configurar e usar as novas funcionalidades:
    - Integrações → Webhooks → Novo Webhook
    - Copie a URL do webhook
 
-2. **Configurar no `.env`:**
+1. **Configurar no `.env`:**
 
 ```env
 NOTIFICATION_WEBHOOK_URL=https://discord.com/api/webhooks/...
-```
+```text
 
-3. **Usar no código:**
+1. **Usar no código:**
 
 ```python
 from push_notifications import PushNotificationManager
 
 # Inicializar
+
 notifier = PushNotificationManager(webhook_url=os.getenv('NOTIFICATION_WEBHOOK_URL'))
 
 # Enviar notificação
+
 notifier.notify_player_kill("Player1", "Player2", "M4A1", 350)
-```
+```text
 
 ### Tipos de Notificações Disponíveis
 
@@ -57,22 +59,22 @@ notifier.notify_player_kill("Player1", "Player2", "M4A1", 350)
    - Crie uma nova aplicação
    - Vá em OAuth2 → General
 
-2. **Configurar Redirects:**
+1. **Configurar Redirects:**
    - Adicione: `http://localhost:5000/callback`
    - Para produção: `https://seu-dominio.com/callback`
 
-3. **Copiar Credenciais:**
+1. **Copiar Credenciais:**
    - Client ID
    - Client Secret
 
-4. **Configurar no `.env`:**
+1. **Configurar no `.env`:**
 
 ```env
 DISCORD_CLIENT_ID=seu_client_id
 DISCORD_CLIENT_SECRET=seu_client_secret
 DISCORD_REDIRECT_URI=http://localhost:5000/callback
 SECRET_KEY=uma_chave_secreta_aleatoria
-```
+```text
 
 ### Usar no Dashboard
 
@@ -92,7 +94,7 @@ from discord_oauth import require_auth
 @require_auth
 def admin_page():
     return "Área administrativa"
-```
+```text
 
 ### Frontend - Botão de Login
 
@@ -116,7 +118,7 @@ fetch('/api/user')
         }
     });
 </script>
-```
+```text
 
 ---
 
@@ -126,13 +128,13 @@ fetch('/api/user')
 
 ```bash
 python push_notifications.py
-```
+```text
 
 ### Discord OAuth
 
 ```bash
 python discord_oauth.py
-```
+```text
 
 Acesse: <http://localhost:5000>
 
@@ -146,26 +148,28 @@ Acesse: <http://localhost:5000>
 
 ```env
 DISCORD_REDIRECT_URI=https://seu-dominio.com/callback
-```
+```text
 
-2. **Secret Key Forte:**
+1. **Secret Key Forte:**
 
 ```python
 import secrets
 print(secrets.token_hex(32))
-```
+```text
 
-3. **Proteja Endpoints Sensíveis:**
+1. **Proteja Endpoints Sensíveis:**
 
 ```python
 @app.route('/api/admin/data')
 @require_auth
 def admin_data():
+
     # Verificar se é admin
+
     if session['user']['id'] not in ADMIN_IDS:
         return jsonify({'error': 'Unauthorized'}), 403
     return jsonify(data)
-```
+```text
 
 ---
 
@@ -179,15 +183,17 @@ Adicione ao `bot_main.py`:
 from push_notifications import PushNotificationManager
 
 # Inicializar
+
 notifier = PushNotificationManager(
     webhook_url=os.getenv('NOTIFICATION_WEBHOOK_URL')
 )
 
 # Usar em eventos
+
 @bot.event
 async def on_player_kill(killer, victim, weapon, distance):
     notifier.notify_player_kill(killer, victim, weapon, distance)
-```
+```text
 
 ---
 
@@ -198,14 +204,14 @@ async def on_player_kill(killer, victim, weapon, distance):
 ```python
 if distance > 500:  # Tiro longo
     notifier.notify_player_kill(killer, victim, weapon, distance)
-```
+```text
 
 ### 2. Alertas de Guerra
 
 ```python
 if war_score_updated:
     notifier.notify_war_update(clan1, clan2, score1, score2)
-```
+```text
 
 ### 3. Dashboard Personalizado
 
@@ -214,9 +220,11 @@ if war_score_updated:
 @require_auth
 def my_profile():
     user_id = session['user']['id']
+
     # Mostrar dados específicos do usuário
+
     return render_template('profile.html', user_data=data)
-```
+```text
 
 ---
 

@@ -24,35 +24,41 @@
 
 ```bash
 pip install discord.py aiohttp flask matplotlib pillow requests
-```
+```text
 
 ### 2. Configurar Variáveis de Ambiente
 
 Crie o arquivo `.env` na raiz do projeto:
 
 ```env
+
 # Discord
+
 DISCORD_TOKEN=seu_token_aqui
 ADMIN_PASSWORD=sua_senha_admin
 
 # FTP
+
 FTP_HOST=seu_host.nitrado.net
 FTP_PORT=21
 FTP_USER=seu_usuario
 FTP_PASS=sua_senha
 
 # Nitrado API
+
 NITRADO_TOKEN=seu_token_nitrado
 SERVER_ID=seu_server_id
 
 # Dashboard
+
 DASHBOARD_PORT=5000
 DASHBOARD_HOST=0.0.0.0
 
 # Segurança
+
 ADMIN_WHITELIST=123456789,987654321
 RATE_LIMIT_ENABLED=true
-```
+```text
 
 ### 3. Verificar Configurações
 
@@ -60,7 +66,7 @@ Execute o teste de configuração:
 
 ```bash
 python test_suite.py
-```
+```text
 
 Resultado esperado: **28/28 testes passando (100%)**
 
@@ -73,17 +79,20 @@ Resultado esperado: **28/28 testes passando (100%)**
 #### Passo 1: Preparar Ambiente
 
 ```bash
+
 # Criar diretório de produção
+
 mkdir C:\BigodeTexas
 cd C:\BigodeTexas
 
 # Copiar arquivos do projeto
+
 xcopy /E /I "d:\dayz xbox\BigodeBot\*" "C:\BigodeTexas\"
-```
+```text
 
 #### Passo 2: Configurar Serviços
 
-**Bot Discord (Serviço Windows):**
+### Bot Discord (Serviço Windows):
 
 1. Criar `start_bot_service.bat`:
 
@@ -91,17 +100,17 @@ xcopy /E /I "d:\dayz xbox\BigodeBot\*" "C:\BigodeTexas\"
 @echo off
 cd C:\BigodeTexas
 python bot_main.py
-```
+```text
 
-2. Usar NSSM para criar serviço:
+1. Usar NSSM para criar serviço:
 
 ```bash
 nssm install BigodeTexasBot "C:\BigodeTexas\start_bot_service.bat"
 nssm set BigodeTexasBot AppDirectory "C:\BigodeTexas"
 nssm start BigodeTexasBot
-```
+```text
 
-**Dashboard Web:**
+### Dashboard Web:
 
 1. Criar `start_dashboard_service.bat`:
 
@@ -109,15 +118,15 @@ nssm start BigodeTexasBot
 @echo off
 cd C:\BigodeTexas
 python web_dashboard.py
-```
+```text
 
-2. Criar serviço:
+1. Criar serviço:
 
 ```bash
 nssm install BigodeTexasDashboard "C:\BigodeTexas\start_dashboard_service.bat"
 nssm set BigodeTexasDashboard AppDirectory "C:\BigodeTexas"
 nssm start BigodeTexasDashboard
-```
+```text
 
 ---
 
@@ -129,7 +138,7 @@ Criar pasta de logs:
 
 ```bash
 mkdir C:\BigodeTexas\logs
-```
+```text
 
 Configurar logging no `bot_main.py`:
 
@@ -140,7 +149,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
-```
+```text
 
 ### 2. Health Check
 
@@ -151,7 +160,9 @@ import requests
 import time
 
 def check_bot():
+
     # Verificar se bot está respondendo
+
     pass
 
 def check_dashboard():
@@ -165,7 +176,7 @@ while True:
     if not check_dashboard():
         print("ALERT: Dashboard offline!")
     time.sleep(300)  # Check every 5 minutes
-```
+```text
 
 ### 3. Uptime Monitoring
 
@@ -198,13 +209,13 @@ xcopy /E /I C:\BigodeTexas\*.json %BACKUP_DIR%\
 xcopy /E /I C:\BigodeTexas\logs %BACKUP_DIR%\logs\
 
 echo Backup concluido: %BACKUP_DIR%
-```
+```text
 
 ### Agendar no Windows Task Scheduler
 
 ```bash
 schtasks /create /tn "BigodeTexas Backup" /tr "C:\BigodeTexas\backup_daily.bat" /sc daily /st 03:00
-```
+```text
 
 ---
 
@@ -215,12 +226,15 @@ schtasks /create /tn "BigodeTexas Backup" /tr "C:\BigodeTexas\backup_daily.bat" 
 Abrir apenas portas necessárias:
 
 ```bash
+
 # Dashboard (se público)
+
 netsh advfirewall firewall add rule name="BigodeTexas Dashboard" dir=in action=allow protocol=TCP localport=5000
 
 # Bloquear acesso externo se local
+
 netsh advfirewall firewall add rule name="Block Dashboard External" dir=in action=block protocol=TCP localport=5000 remoteip=0.0.0.0-255.255.255.255
-```
+```text
 
 ### 2. Rate Limiting
 
@@ -246,10 +260,12 @@ Todas as entradas são validadas via `security.py`:
 Considerar migrar de JSON para SQLite para melhor performance:
 
 ```python
+
 # Futuro: Migração para SQLite
+
 import sqlite3
 conn = sqlite3.connect('bigodetexas.db')
-```
+```text
 
 ### 2. Cache
 
@@ -262,7 +278,7 @@ from datetime import datetime, timedelta
 @lru_cache(maxsize=128)
 def get_stats_cached():
     return load_json('players_db.json')
-```
+```text
 
 ### 3. CDN para Assets
 
@@ -282,51 +298,57 @@ Se dashboard for público, usar CDN para:
 
 ```bash
 backup_daily.bat
-```
+```text
 
-2. **Parar serviços:**
+1. **Parar serviços:**
 
 ```bash
 nssm stop BigodeTexasBot
 nssm stop BigodeTexasDashboard
-```
+```text
 
-3. **Atualizar código:**
+1. **Atualizar código:**
 
 ```bash
 git pull origin main
-# ou copiar novos arquivos
-```
 
-4. **Executar testes:**
+# ou copiar novos arquivos
+
+```text
+
+1. **Executar testes:**
 
 ```bash
 python test_suite.py
-```
+```text
 
-5. **Reiniciar serviços:**
+1. **Reiniciar serviços:**
 
 ```bash
 nssm start BigodeTexasBot
 nssm start BigodeTexasDashboard
-```
+```text
 
 ### Rollback
 
 Se algo der errado:
 
 ```bash
+
 # Parar serviços
+
 nssm stop BigodeTexasBot
 nssm stop BigodeTexasDashboard
 
 # Restaurar backup
+
 xcopy /E /Y C:\BigodeTexas\backups\YYYYMMDD\*.json C:\BigodeTexas\
 
 # Reiniciar
+
 nssm start BigodeTexasBot
 nssm start BigodeTexasDashboard
-```
+```text
 
 ---
 
@@ -334,19 +356,19 @@ nssm start BigodeTexasDashboard
 
 ### Problemas Comuns
 
-**Bot não inicia:**
+### Bot não inicia:
 
 - Verificar TOKEN no `.env`
 - Verificar logs em `logs/bot.log`
 - Testar conexão: `python -c "import discord; print('OK')"`
 
-**Dashboard não carrega:**
+### Dashboard não carrega:
 
 - Verificar porta 5000 disponível: `netstat -an | findstr 5000`
 - Verificar firewall
 - Testar: `curl http://localhost:5000`
 
-**API não responde:**
+### API não responde:
 
 - Verificar arquivos JSON existem
 - Executar `test_suite.py`
@@ -355,17 +377,21 @@ nssm start BigodeTexasDashboard
 ### Comandos Úteis
 
 ```bash
+
 # Ver status dos serviços
+
 nssm status BigodeTexasBot
 nssm status BigodeTexasDashboard
 
 # Ver logs em tempo real
+
 tail -f logs/bot.log
 
 # Reiniciar tudo
+
 nssm restart BigodeTexasBot
 nssm restart BigodeTexasDashboard
-```
+```text
 
 ---
 
@@ -388,7 +414,7 @@ nssm restart BigodeTexasDashboard
 
 Após seguir todos os passos, seu BigodeTexas Bot estará rodando em produção de forma estável e segura!
 
-**Próximos passos:**
+### Próximos passos:
 
 - Monitorar logs nas primeiras 24h
 - Ajustar rate limits conforme necessário

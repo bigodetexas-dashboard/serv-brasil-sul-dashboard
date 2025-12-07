@@ -27,7 +27,7 @@ Crie o arquivo `.vscode/settings.json` (mesmo que esteja no .gitignore) com:
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
-```
+```text
 
 ### Opção 3: Instalar Extensão DayZ
 
@@ -68,9 +68,9 @@ O sistema funciona assim:
         }
     ]
 }
-```
+```text
 
-**Coordenadas:**
+### Coordenadas:
 
 - Formato 2D: `"X Z"` - O Y (altura) é calculado automaticamente
 - Formato 3D: `"X Y Z"` - Altura manual

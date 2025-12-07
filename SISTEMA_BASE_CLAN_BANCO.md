@@ -130,7 +130,7 @@
 @app.route('/base')     # Página de registro de base
 @app.route('/clan')     # Página de gerenciamento de clã
 @app.route('/banco')    # Página do Banco Sul
-```
+```text
 
 ---
 
@@ -161,18 +161,21 @@
 ### 1. Aplicar Schema do Banco de Dados
 
 ```bash
+
 # Se usando PostgreSQL (Supabase)
+
 psql -h [host] -U [user] -d [database] -f database_schema.sql
 
 # Ou execute o SQL manualmente no Supabase Dashboard
-```
+
+```text
 
 ### 2. Iniciar o Servidor
 
 ```bash
 cd new_dashboard
 python app.py
-```
+```text
 
 ### 3. Acessar as Páginas
 
@@ -211,36 +214,36 @@ python app.py
    - Verificação nos logs
    - Campo `nitrado_gamertag` em uso
 
-2. **Adicionar Membros ao Clã**
+1. **Adicionar Membros ao Clã**
    - Sistema de convites
    - Aceitar/recusar convites
    - Remover membros (líder)
 
-3. **Visualizar Base no Mapa**
+1. **Visualizar Base no Mapa**
    - Mostrar base registrada
    - Editar nome
    - Ver membros do clã com acesso
 
 ### PRIORIDADE MÉDIA 🟡
 
-4. **Extrato Bancário Completo**
+1. **Extrato Bancário Completo**
    - Carregar transações do banco
    - Formatação imersiva
    - Filtros por data
 
-5. **Estatísticas Semanais de Raid**
+1. **Estatísticas Semanais de Raid**
    - Reset automático (sábado 8h-10h)
    - Ranking de clãs
    - Exibição na home
 
-6. **Permissões de Base**
+1. **Permissões de Base**
    - Verificação de zona
    - Logs de construção
    - Alertas de invasão
 
 ### PRIORIDADE BAIXA 🟢
 
-7. **Melhorias Visuais**
+1. **Melhorias Visuais**
    - Símbolos de clãs personalizados
    - Animações
    - Gráficos de estatísticas
@@ -262,28 +265,36 @@ python app.py
 ### Backup
 
 ```bash
+
 # Criar backup
+
 python auto_backup.py create "Descricao"
 
 # Listar backups
+
 python auto_backup.py list
 
 # Restaurar backup
+
 python auto_backup.py restore 1
-```
+```text
 
 ### Git
 
 ```bash
+
 # Ver commits
+
 git log --oneline -5
 
 # Ver mudanças
+
 git diff HEAD~1
 
 # Criar tag
+
 git tag -a v1.0-base-clan-banco -m "Sistema BASE + CLAN + BANCO completo"
-```
+```text
 
 ---
 

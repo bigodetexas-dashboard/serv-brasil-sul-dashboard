@@ -21,7 +21,7 @@ Implementamos um **sistema profissional de mapa com tiles** (mosaicos) para o Ma
 
 #### 1. `static/js/heatmap.js`
 
-**Mudanças principais:**
+### Mudanças principais:
 
 - Substituído `L.imageOverlay` por `L.tileLayer`
 - Configurado para ler tiles de `/static/tiles/{z}/{x}/{y}.png`
@@ -29,7 +29,7 @@ Implementamos um **sistema profissional de mapa com tiles** (mosaicos) para o Ma
 - Zoom configurado de 0 a 7
 - Raio do heatmap ajustado para escalar com o zoom
 
-**Código relevante:**
+### Código relevante:
 
 ```javascript
 L.tileLayer('/static/tiles/{z}/{x}/{y}.png', {
@@ -40,7 +40,7 @@ L.tileLayer('/static/tiles/{z}/{x}/{y}.png', {
     tms: false,
     attribution: 'Map data © Bohemia Interactive, iZurvive'
 }).addTo(map);
-```
+```text
 
 #### 2. `templates/heatmap.html`
 
@@ -58,19 +58,19 @@ L.tileLayer('/static/tiles/{z}/{x}/{y}.png', {
 
 ### Sistema de Coordenadas
 
-**DayZ (Jogo):**
+### DayZ (Jogo):
 
 - X: 0 a 15360 metros
 - Z: 0 a 15360 metros
 - Origem (0,0) = canto inferior esquerdo
 
-**Leaflet (Mapa):**
+### Leaflet (Mapa):
 
 - No zoom 0: 256x256 pixels (1 tile)
 - No zoom 1: 512x512 pixels (4 tiles)
 - No zoom 6: 16384x16384 pixels (16384 tiles)
 
-**Conversão:**
+### Conversão:
 
 ```javascript
 function gameToLatLng(gameX, gameZ) {
@@ -81,7 +81,7 @@ function gameToLatLng(gameX, gameZ) {
     const py = (1 - nz) * mapSize;  // Inverter Y
     return [-py, px];  // Leaflet usa [lat, lng]
 }
-```
+```text
 
 ### Estrutura dos Tiles
 
@@ -102,7 +102,7 @@ new_dashboard/static/tiles/
 ├── 4/                     (16x16 = 256 tiles)
 ├── 5/                     (32x32 = 1024 tiles)
 └── 6/                     (64x64 = 4096 tiles)
-```
+```text
 
 **Total**: 1 + 4 + 16 + 64 + 256 + 1024 + 4096 = **5.461 tiles**
 
@@ -115,7 +115,7 @@ new_dashboard/static/tiles/
 ```bash
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
 python app.py
-```
+```text
 
 ### 2. Acessar o Mapa
 
@@ -148,17 +148,20 @@ Os tiles atuais são **placeholders** (grid cinza com marcações). Para usar o 
    - Procure "Chernarus Satellite Map 8K" ou "DayZ Chernarus Topographic"
    - Ou extraia do jogo usando DayZ Tools
 
-2. **Gerar tiles reais:**
+1. **Gerar tiles reais:**
 
    ```bash
+
    # Instalar gdal2tiles
+
    pip install gdal
    
    # Gerar tiles do mapa real
-   gdal2tiles.py -z 0-7 chernarus_8k.png static/tiles/
-   ```
 
-3. **Substituir tiles:**
+   gdal2tiles.py -z 0-7 chernarus_8k.png static/tiles/
+```text
+
+1. **Substituir tiles:**
    - Apague `static/tiles/*`
    - Copie os novos tiles gerados
 
@@ -170,7 +173,7 @@ Edite `static/js/heatmap.js` linha ~45:
 
 ```javascript
 L.tileLayer('https://SERVIDOR_PUBLICO/chernarusplus/{z}/{x}/{y}.png', {
-```
+```text
 
 **Vantagem**: Não precisa hospedar os tiles localmente.
 **Desvantagem**: Depende de servidor externo.
@@ -206,14 +209,14 @@ L.tileLayer('https://SERVIDOR_PUBLICO/chernarusplus/{z}/{x}/{y}.png', {
 
 ### Por Que Tiles?
 
-**Antes (Imagem Única):**
+### Antes (Imagem Única):
 
 - ❌ Arquivo gigante (50+ MB)
 - ❌ Carrega tudo de uma vez
 - ❌ Zoom fica borrado
 - ❌ Lento em mobile
 
-**Depois (Tiles):**
+### Depois (Tiles):
 
 - ✅ Carrega apenas o visível (~10-20 tiles por vez)
 - ✅ Zoom infinito sem perda de qualidade
@@ -229,13 +232,13 @@ Os tiles gerados são **placeholders** com:
 - Cores por tipo (laranja = cidade grande, vermelho = militar)
 - Fundo cinza escuro
 
-**Isso é suficiente para:**
+### Isso é suficiente para:
 
 - ✅ Testar o sistema
 - ✅ Verificar alinhamento
 - ✅ Desenvolver funcionalidades
 
-**Para produção:**
+### Para produção:
 
 - Substitua por tiles do mapa real (veja "Melhorias Futuras")
 
@@ -244,19 +247,24 @@ Os tiles gerados são **placeholders** com:
 ## 📝 Comandos Úteis
 
 ```bash
+
 # Gerar tiles novamente
+
 python generate_map_tiles.py
 
 # Copiar tiles para dashboard
+
 Copy-Item -Path "static/tiles/*" -Destination "new_dashboard/static/tiles/" -Recurse -Force
 
 # Rodar servidor
+
 cd new_dashboard
 python app.py
 
 # Contar tiles
+
 Get-ChildItem -Path "new_dashboard/static/tiles" -Recurse -File | Measure-Object
-```
+```text
 
 ---
 
@@ -264,7 +272,7 @@ Get-ChildItem -Path "new_dashboard/static/tiles" -Recurse -File | Measure-Object
 
 O sistema de mapa com tiles está **100% funcional** e pronto para uso. Os tiles placeholder permitem testar e desenvolver todas as funcionalidades do heatmap. Quando quiser, substitua por tiles do mapa real seguindo as instruções em "Melhorias Futuras".
 
-**Próximos passos sugeridos:**
+### Próximos passos sugeridos:
 
 1. Testar o mapa localmente
 2. Verificar alinhamento do heatmap

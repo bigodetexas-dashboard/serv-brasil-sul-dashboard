@@ -14,17 +14,19 @@
 - ✅ Grid clustering implementado (`grid_size=50`)
 - ✅ Retorno JSON estruturado com `{success, points, range, grid_size, total_events}`
 
-**Código atual:**
+### Código atual:
 
 ```python
 @app.route('/api/heatmap')
 def api_heatmap():
     time_range = request.args.get('range', '24h')
     grid_size = int(request.args.get('grid', 50))
+
     # ... lógica de agregação
+
     data = get_heatmap_data(since_date, grid_size)
     return jsonify({...})
-```
+```text
 
 ### 2. **Banco de Dados (SQLite)**
 
@@ -33,7 +35,7 @@ def api_heatmap():
 - ✅ Índices de performance (`idx_timestamp`, `idx_coords`)
 - ✅ Query de agregação com grid clustering
 
-**Query atual:**
+### Query atual:
 
 ```sql
 SELECT 
@@ -43,7 +45,7 @@ SELECT
 FROM events
 WHERE timestamp >= ? AND event_type = 'kill'
 GROUP BY gx, gz
-```
+```text
 
 ### 3. **Frontend (Leaflet + Heatmap.js)**
 
@@ -54,7 +56,7 @@ GROUP BY gx, gz
 - ✅ Legenda de intensidade
 - ✅ Fallback visual (grid escuro) quando tiles não carregam
 
-**Conversão atual:**
+### Conversão atual:
 
 ```javascript
 function gameToLatLng(gameX, gameZ) {
@@ -64,7 +66,7 @@ function gameToLatLng(gameX, gameZ) {
     const pz = (1 - nz) * 15360;
     return [pz, px];
 }
-```
+```text
 
 ### 4. **UX/UI**
 
@@ -84,7 +86,7 @@ function gameToLatLng(gameX, gameZ) {
 - ❌ Tiles do iZurvive podem não carregar (CORS/offline)
 - ❌ Fallback é apenas um grid genérico
 
-**Solução necessária:**
+### Solução necessária:
 
 - Baixar mapa oficial Chernarus (PNG 4096x4096 ou tiles)
 - Hospedar localmente em `/static/images/chernarus_map.png`
@@ -96,7 +98,7 @@ function gameToLatLng(gameX, gameZ) {
 - Usando `minX=0, maxX=15360` (presumido)
 - Não há validação com pontos conhecidos do mapa
 
-**Solução necessária:**
+### Solução necessária:
 
 ```javascript
 // Valores REAIS do Chernarus (verificar documentação)
@@ -111,7 +113,7 @@ const MAP_CONFIG = {
         'Cherno': {game: [6500, 2500], expected_pixel: [3200, 1024]}
     }
 };
-```
+```text
 
 ### 3. **Parser de Logs Automático**
 
@@ -119,7 +121,7 @@ const MAP_CONFIG = {
 - Dados de teste são gerados manualmente
 - Sem pipeline de ingestão contínua
 
-**Solução necessária:**
+### Solução necessária:
 
 - Script que lê logs RPT via FTP (já existe `killfeed.py`)
 - Integrar com `database.py` para salvar eventos
@@ -131,7 +133,7 @@ const MAP_CONFIG = {
 - Cada request recalcula agregação
 - Pode ficar lento com milhares de eventos
 
-**Solução necessária:**
+### Solução necessária:
 
 ```python
 from functools import lru_cache
@@ -139,10 +141,12 @@ from datetime import datetime, timedelta
 
 @lru_cache(maxsize=10)
 def get_cached_heatmap(time_range, grid_size):
+
     # Cache por 5 minutos
+
     cache_key = f"{time_range}_{grid_size}_{datetime.now().minute // 5}"
     return get_heatmap_data(...)
-```
+```text
 
 ### 5. **Filtros Avançados**
 
@@ -150,23 +154,25 @@ def get_cached_heatmap(time_range, grid_size):
 - ❌ Sem filtro por distância do tiro
 - ❌ Sem filtro por horário do dia
 
-**API ideal:**
+### API ideal:
 
-```
+```text
 /api/heatmap?range=24h&grid=50&weapon=M4A1&min_distance=100&hour=night
-```
+```text
 
 ### 6. **Top Locations Dinâmicas**
 
 - ❌ Dados hardcoded no HTML
 - Não atualiza com dados reais do banco
 
-**Solução necessária:**
+### Solução necessária:
 
 ```python
 @app.route('/api/heatmap/top_locations')
 def top_locations():
+
     # Query para top 5 áreas com mais mortes
+
     query = """
     SELECT 
         ROUND(AVG(game_x)) as center_x,
@@ -181,7 +187,7 @@ def top_locations():
     ORDER BY deaths DESC
     LIMIT 5
     """
-```
+```text
 
 ### 7. **Recursos UX Avançados**
 
@@ -221,17 +227,17 @@ def top_locations():
 
 ### **Fase 2: Performance (Próxima Semana)**
 
-5. ⚠️ Sistema de cache
-6. ⚠️ Migrar para PostgreSQL (já está configurado)
-7. ⚠️ Rate limiting na API
+1. ⚠️ Sistema de cache
+2. ⚠️ Migrar para PostgreSQL (já está configurado)
+3. ⚠️ Rate limiting na API
 
 ### **Fase 3: UX Avançada (Futuro)**
 
-8. 🔮 Slider de tempo
-9. 🔮 Filtros por arma/distância
-10. 🔮 Tooltips interativos
-11. 🔮 Danger zones automáticas
-12. 🔮 Alertas Discord
+1. 🔮 Slider de tempo
+2. 🔮 Filtros por arma/distância
+3. 🔮 Tooltips interativos
+4. 🔮 Danger zones automáticas
+5. 🔮 Alertas Discord
 
 ---
 
@@ -275,15 +281,15 @@ def top_locations():
    - Salvar em `/static/images/chernarus_map.png`
    - Atualizar `heatmap.js` para usar imagem local
 
-2. **Integrar killfeed com database** (30 min)
+1. **Integrar killfeed com database** (30 min)
    - Modificar `killfeed.py` para chamar `database.add_event()`
    - Testar com logs reais
 
-3. **Top locations dinâmicas** (20 min)
+1. **Top locations dinâmicas** (20 min)
    - Criar endpoint `/api/heatmap/top_locations`
    - Atualizar frontend para consumir
 
-4. **Validar coordenadas** (10 min)
+1. **Validar coordenadas** (10 min)
    - Testar com pontos conhecidos (NWAF, Cherno, Tisy)
    - Ajustar `MAP_CONFIG` se necessário
 
@@ -299,7 +305,7 @@ Os componentes principais estão funcionais:
 - ✅ Frontend com Leaflet + Heatmap.js
 - ✅ Banco de dados estruturado
 
-**Gaps críticos:**
+### Gaps críticos:
 
 - ❌ Mapa base visual
 - ❌ Integração com logs reais

@@ -11,19 +11,19 @@
 
 #### 1. **run_bot.bat** - Modo Diagnóstico Completo
 
-**Antes:**
+### Antes:
 
-```
+```text
 ==========================================
      INICIANDO BIGODETEXAS - DIAGNOSTICO
 ==========================================
 
 [OK] Python encontrado.
-```
+```text
 
-**Depois:**
+### Depois:
 
-```
+```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                              ║
 ║   ██████╗ ██╗ ██████╗  ██████╗ ██████╗ ███████╗████████╗███████╗██╗  ██╗   ║
@@ -49,9 +49,9 @@
 ✅ Configurações carregadas
 [4/4] 🌐 Testando conectividade...
 ✅ Conexão OK
-```
+```text
 
-**Melhorias:**
+### Melhorias:
 
 - ✅ ASCII art do logo BigodeTexas
 - ✅ Ícones Unicode modernos (🐍, 📦, 🔐, 🌐, ✅, ❌)
@@ -66,7 +66,7 @@
 
 #### 2. **start_bot.bat** - Modo Rápido
 
-**Características:**
+### Características:
 
 - Interface simplificada para inicialização rápida
 - Verificação mínima (apenas Python)
@@ -77,11 +77,11 @@
 
 #### 3. **launcher.bat** - Menu Interativo Premium
 
-**Novo arquivo criado!**
+### Novo arquivo criado!
 
 Menu com 5 opções:
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                  │
 │    [1] 🚀 Iniciar Bot (Modo Rápido)                                             │
@@ -95,9 +95,9 @@ Menu com 5 opções:
 │    [5] ❌ Sair                                                                   │
 │                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────┘
-```
+```text
 
-**Funcionalidades:**
+### Funcionalidades:
 
 - Menu interativo com navegação numérica
 - Opção para abrir dashboard web automaticamente
@@ -129,7 +129,7 @@ Menu com 5 opções:
 
 ### Bordas e Boxes
 
-```
+```text
 ╔═══════════════╗
 ║   Conteúdo    ║
 ╚═══════════════╝
@@ -137,7 +137,7 @@ Menu com 5 opções:
 ┌───────────────┐
 │   Conteúdo    │
 └───────────────┘
-```
+```text
 
 ### Cores
 
@@ -167,7 +167,7 @@ Menu com 5 opções:
 
 ```bash
 launcher.bat
-```
+```text
 
 Abre menu interativo com todas as opções.
 
@@ -175,7 +175,7 @@ Abre menu interativo com todas as opções.
 
 ```bash
 run_bot.bat
-```
+```text
 
 Inicia com verificação completa do sistema.
 
@@ -183,7 +183,7 @@ Inicia com verificação completa do sistema.
 
 ```bash
 start_bot.bat
-```
+```text
 
 Inicia diretamente sem diagnóstico.
 

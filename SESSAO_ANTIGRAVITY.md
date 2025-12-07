@@ -13,7 +13,7 @@ Garantir que o trabalho da assistente anterior fosse salvo corretamente sem alte
     * **NÃO** alterei o conteúdo desse arquivo para manter a integridade do histórico dela.
     * Realizei o `git add` e `git commit` do arquivo, garantindo que ele esteja salvo no histórico do projeto.
 
-2. **Versionamento**:
+1. **Versionamento**:
     * Atualizei `VERSION_HISTORY.md` registrando a consolidação da versão **Site 9.3**.
     * Criei a tag `site-9.3-2025-12-06`.
 

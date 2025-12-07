@@ -55,7 +55,7 @@ Vantagens:
 
 ```bash
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
-```
+```text
 
 Arquivos necessários:
 
@@ -69,28 +69,32 @@ Arquivos necessários:
 #### B. Verificar Procfile
 
 ```bash
+
 # Deve conter:
+
 web: gunicorn app:app
-```
+```text
 
 #### C. Verificar runtime.txt
 
 ```bash
+
 # Deve conter:
+
 python-3.10.12
-```
+```text
 
 #### D. Verificar requirements.txt
 
 Deve incluir:
 
-```
+```text
 Flask==2.3.3
 gunicorn==21.2.0
 psycopg2-binary==2.9.7
 python-dotenv==1.0.0
 requests==2.31.0
-```
+```text
 
 ### **2. Fazer Commit e Push**
 
@@ -98,9 +102,11 @@ requests==2.31.0
 cd "d:/dayz xbox/BigodeBot"
 
 # Adicionar tudo
+
 git add -A
 
 # Commit
+
 git commit -m "feat: Deploy novo dashboard v10.0 com Achievements, History e Settings
 
 - Sistema de conquistas completo
@@ -111,17 +117,20 @@ git commit -m "feat: Deploy novo dashboard v10.0 com Achievements, History e Set
 - Pronto para produção"
 
 # Push
+
 git push origin main
-```
+```text
 
 ### **3. Aplicar Schema no Banco de Produção**
 
 **IMPORTANTE:** Antes de fazer deploy, aplicar schema no banco de produção!
 
 ```bash
+
 # Conectar ao banco de produção
+
 python apply_partial.py
-```
+```text
 
 Ou manualmente via Supabase/Render Dashboard:
 
@@ -140,15 +149,19 @@ Ou manualmente via Supabase/Render Dashboard:
 #### Via Render CLI (Alternativa)
 
 ```bash
+
 # Instalar Render CLI
+
 npm install -g render-cli
 
 # Login
+
 render login
 
 # Deploy
+
 render deploy --service srv-d4jrhp8gjchc739odl2g
-```
+```text
 
 ### **5. Verificar Variáveis de Ambiente**
 
@@ -160,7 +173,7 @@ DATABASE_URL=<url_postgresql_supabase>
 DISCORD_CLIENT_ID=<discord_app_id>
 DISCORD_CLIENT_SECRET=<discord_app_secret>
 DISCORD_REDIRECT_URI=https://bigodetexas-dashboard.onrender.com/callback
-```
+```text
 
 ### **6. Aguardar Deploy**
 
@@ -178,9 +191,9 @@ O Render vai:
 
 ### **1. Verificar Homepage**
 
-```
+```text
 https://bigodetexas-dashboard.onrender.com/
-```
+```text
 
 - [ ] Página carrega
 - [ ] Estatísticas aparecem
@@ -188,9 +201,9 @@ https://bigodetexas-dashboard.onrender.com/
 
 ### **2. Testar Login Discord**
 
-```
+```text
 https://bigodetexas-dashboard.onrender.com/login
-```
+```text
 
 - [ ] Redireciona para Discord
 - [ ] Callback funciona
@@ -198,11 +211,11 @@ https://bigodetexas-dashboard.onrender.com/login
 
 ### **3. Testar Novas Páginas**
 
-```
+```text
 https://bigodetexas-dashboard.onrender.com/achievements
 https://bigodetexas-dashboard.onrender.com/history
 https://bigodetexas-dashboard.onrender.com/settings
-```
+```text
 
 - [ ] Achievements carrega conquistas do banco
 - [ ] History carrega eventos
@@ -211,15 +224,19 @@ https://bigodetexas-dashboard.onrender.com/settings
 ### **4. Testar APIs**
 
 ```bash
+
 # Achievements
+
 curl https://bigodetexas-dashboard.onrender.com/api/achievements/all
 
 # History
+
 curl https://bigodetexas-dashboard.onrender.com/api/history/events
 
 # Settings
+
 curl https://bigodetexas-dashboard.onrender.com/api/settings/get
-```
+```text
 
 Deve retornar `401 Not authenticated` (correto!)
 
@@ -239,7 +256,7 @@ No painel do Render:
 
 **Causa:** Erro no código ou dependências
 
-**Solução:**
+### Solução:
 
 1. Verificar logs no Render
 2. Testar localmente: `python app.py`
@@ -249,7 +266,7 @@ No painel do Render:
 
 **Causa:** DATABASE_URL incorreto ou banco inacessível
 
-**Solução:**
+### Solução:
 
 1. Verificar variável DATABASE_URL no Render
 2. Testar conexão localmente
@@ -259,7 +276,7 @@ No painel do Render:
 
 **Causa:** Redirect URI não configurado
 
-**Solução:**
+### Solução:
 
 1. Acessar Discord Developer Portal
 2. Adicionar: `https://bigodetexas-dashboard.onrender.com/callback`
@@ -269,7 +286,7 @@ No painel do Render:
 
 **Causa:** Caminho incorreto
 
-**Solução:**
+### Solução:
 
 1. Verificar estrutura de pastas
 2. Confirmar que `static/` está no root do `new_dashboard/`
@@ -279,7 +296,7 @@ No painel do Render:
 
 **Causa:** Tabelas não existem no banco de produção
 
-**Solução:**
+### Solução:
 
 1. Executar `apply_partial.py` apontando para DATABASE_URL de produção
 2. Ou executar SQL manualmente no painel do banco
@@ -318,23 +335,29 @@ No painel do Render:
 ### Deploy Completo (Copiar e Colar)
 
 ```bash
+
 # 1. Commit e Push
+
 cd "d:/dayz xbox/BigodeBot"
 git add -A
 git commit -m "feat: Deploy novo dashboard v10.0"
 git push origin main
 
 # 2. Aplicar Schema (se ainda não fez)
+
 python apply_partial.py
 
 # 3. Acessar Render e fazer Manual Deploy
+
 # https://dashboard.render.com/web/srv-d4jrhp8gjchc739odl2g
 
 # 4. Aguardar build (5-10 min)
 
 # 5. Testar
+
 # https://bigodetexas-dashboard.onrender.com/
-```
+
+```text
 
 ---
 
@@ -342,13 +365,13 @@ python apply_partial.py
 
 1. **Backup:** O site antigo será substituído. Se quiser manter backup, criar novo serviço.
 
-2. **Downtime:** Haverá ~5-10 minutos de downtime durante o deploy.
+1. **Downtime:** Haverá ~5-10 minutos de downtime durante o deploy.
 
-3. **Rollback:** Se der problema, pode fazer rollback no Render para commit anterior.
+1. **Rollback:** Se der problema, pode fazer rollback no Render para commit anterior.
 
-4. **Schema:** CRÍTICO aplicar schema antes do deploy, senão APIs vão falhar.
+1. **Schema:** CRÍTICO aplicar schema antes do deploy, senão APIs vão falhar.
 
-5. **Testes:** Testar tudo localmente antes de fazer deploy.
+1. **Testes:** Testar tudo localmente antes de fazer deploy.
 
 ---
 

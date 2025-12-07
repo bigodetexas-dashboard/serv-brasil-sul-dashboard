@@ -13,7 +13,7 @@
 **Problema**: Mapa estático sem zoom, baixa qualidade  
 **Solução**: Sistema profissional de tiles (igual Google Maps)
 
-**Implementação:**
+### Implementação:
 
 - ✅ Gerados 5.461 tiles PNG (Zoom 0-6)
 - ✅ Imagem satélite 4096x4096 processada
@@ -21,7 +21,7 @@
 - ✅ Integração com Leaflet.js
 - ✅ Mapa interativo funcionando perfeitamente
 
-**Arquivos:**
+### Arquivos:
 
 - `slice_map.py` - Gerador de tiles
 - `new_dashboard/static/tiles/{z}/{x}/{y}.png` - 5.461 tiles
@@ -36,7 +36,7 @@
 **Problema**: Interface de console antiga e básica  
 **Solução**: Design moderno com ASCII art e ícones
 
-**Implementação:**
+### Implementação:
 
 - ✅ `run_bot.bat` - Diagnóstico completo redesenhado
 - ✅ `start_bot.bat` - Modo rápido modernizado
@@ -47,7 +47,7 @@
 - ✅ Diagnóstico em 4 etapas
 - ✅ UTF-8 encoding para emojis
 
-**Arquivos:**
+### Arquivos:
 
 - `run_bot.bat` - Atualizado
 - `start_bot.bat` - Atualizado
@@ -64,7 +64,7 @@
 **Problema**: Avatar antigo ou genérico  
 **Solução**: Avatar profissional moderno gerado com IA
 
-**Implementação:**
+### Implementação:
 
 - ✅ Design premium 512x512 pixels
 - ✅ Tema: Cowboy + Bigode + Brasil + Gaming
@@ -73,7 +73,7 @@
 - ✅ Estilo vetorial limpo
 - ✅ Guia de atualização no Discord
 
-**Arquivos:**
+### Arquivos:
 
 - `bot_avatar.png` - Avatar final
 - `COMO_ATUALIZAR_AVATAR.md` - Guia de instalação
@@ -85,7 +85,7 @@
 **Problema**: Erros falsos no IDE, arquivos temporários  
 **Solução**: Configuração adequada e limpeza
 
-**Implementação:**
+### Implementação:
 
 - ✅ Corrigidos erros do `init.c` (Enforce Script)
 - ✅ `.vscode/settings.json` criado
@@ -129,18 +129,18 @@
 
 ### Interface do Console
 
-**ANTES:**
+### ANTES:
 
-```
+```text
 ==========================================
      INICIANDO BIGODETEXAS - DIAGNOSTICO
 ==========================================
 [OK] Python encontrado.
-```
+```text
 
-**DEPOIS:**
+### DEPOIS:
 
-```
+```text
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║   ██████╗ ██╗ ██████╗  ██████╗ ██████╗ ███████╗████████╗███████╗██╗  ██╗   ║
 ║   BIGODE TEXAS - SERVIDOR BRASIL SUL - XBOX                                  ║
@@ -150,17 +150,17 @@
 ✅ Python 3.12.0 detectado
 [2/4] 📦 Verificando dependências...
 ✅ Todas as dependências OK
-```
+```text
 
 ### Mapa do Dashboard
 
-**ANTES:**
+### ANTES:
 
 - Imagem estática
 - Sem zoom
 - Baixa resolução
 
-**DEPOIS:**
+### DEPOIS:
 
 - 5.461 tiles dinâmicos
 - Zoom 0-6+ (infinito)
@@ -175,26 +175,33 @@
 ### 1. Iniciar o Bot com Interface Moderna
 
 ```bash
+
 # Opção 1: Menu Premium (Recomendado)
+
 launcher.bat
 
 # Opção 2: Diagnóstico Completo
+
 run_bot.bat
 
 # Opção 3: Modo Rápido
+
 start_bot.bat
-```
+```text
 
 ### 2. Visualizar Mapa com Tiles
 
 ```bash
+
 # Iniciar dashboard
+
 cd new_dashboard
 python app.py
 
 # Acessar no navegador
+
 http://localhost:5001/heatmap
-```
+```text
 
 ### 3. Atualizar Avatar do Bot
 
@@ -208,7 +215,7 @@ http://localhost:5001/heatmap
 
 ## 📁 ESTRUTURA DO PROJETO ATUALIZADA
 
-```
+```text
 BigodeBot/
 ├── 🎨 Interface
 │   ├── launcher.bat (NOVO - Menu Premium)
@@ -235,7 +242,7 @@ BigodeBot/
     ├── .gitignore (Atualizado)
     ├── .editorconfig (NOVO)
     └── .vscode/settings.json (NOVO)
-```
+```text
 
 ---
 
@@ -283,18 +290,23 @@ BigodeBot/
 ### Comandos Úteis
 
 ```bash
+
 # Ver tags
+
 git tag
 
 # Ver commits
+
 git log --oneline
 
 # Status do projeto
+
 git status
 
 # Tamanho do projeto
+
 Get-ChildItem -Recurse | Measure-Object -Property Length -Sum
-```
+```text
 
 ---
 

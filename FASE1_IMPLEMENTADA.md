@@ -68,21 +68,25 @@
 ### 1. Testar Heatmap com Dados Reais
 
 ```bash
+
 # Inicializar banco com dados de teste
+
 python database.py
 
 # Rodar dashboard
+
 python new_dashboard/app.py
 
 # Acessar no navegador
+
 http://localhost:5001/heatmap
-```
+```text
 
 ### 2. Modo Debug (Validar Coordenadas)
 
-```
+```text
 http://localhost:5001/heatmap?debug=true
-```
+```text
 
 Vai mostrar markers amarelos nos landmarks conhecidos para validar posições.
 
@@ -90,14 +94,16 @@ Vai mostrar markers amarelos nos landmarks conhecidos para validar posições.
 
 ```bash
 curl "http://localhost:5001/api/heatmap/top_locations?range=24h"
-```
+```text
 
 ### 4. Testar Integração Killfeed
 
 ```bash
+
 # Rodar killfeed (vai salvar eventos no SQLite automaticamente)
+
 python killfeed.py
-```
+```text
 
 ---
 
@@ -109,15 +115,15 @@ python killfeed.py
    - Top locations UI
    - Markers interativos
 
-2. **`new_dashboard/app.py`** (562 → 664 linhas)
+1. **`new_dashboard/app.py`** (562 → 664 linhas)
    - Endpoint `/api/heatmap/top_locations`
    - Detecção de nomes de locais
 
-3. **`killfeed.py`** (365 → 389 linhas)
+1. **`killfeed.py`** (365 → 389 linhas)
    - Integração com `database.add_event()`
    - Extração de coordenadas melhorada
 
-4. **`new_dashboard/static/images/chernarus_map.png`** (NOVO)
+1. **`new_dashboard/static/images/chernarus_map.png`** (NOVO)
    - Mapa base gerado
 
 ---
@@ -155,7 +161,7 @@ python killfeed.py
 
 ## 🎉 Resultado
 
-**Você agora tem um sistema de heatmap COMPLETO e FUNCIONAL!**
+### Você agora tem um sistema de heatmap COMPLETO e FUNCIONAL!
 
 - ✅ Mapa visual do Chernarus
 - ✅ Dados reais do servidor

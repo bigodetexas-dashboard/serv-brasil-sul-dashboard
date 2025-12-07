@@ -29,9 +29,9 @@ Sistema completo de gerenciamento para servidor DayZ Xbox com Discord Bot e Dash
 
 ```bash
 pip install discord.py aiohttp ftplib flask matplotlib pillow chart.js
-```
+```text
 
-3. Configure o arquivo `.env`:
+1. Configure o arquivo `.env`:
 
 ```env
 DISCORD_TOKEN=seu_token_aqui
@@ -39,19 +39,19 @@ FTP_HOST=seu_host_ftp
 FTP_USER=seu_usuario
 FTP_PASS=sua_senha
 NITRADO_TOKEN=seu_token_nitrado
-```
+```text
 
-4. Inicie o bot:
+1. Inicie o bot:
 
 ```bash
 run_bot.bat
-```
+```text
 
-5. Inicie o dashboard:
+1. Inicie o dashboard:
 
 ```bash
 run_dashboard.bat
-```
+```text
 
 ## 📖 Comandos do Bot
 
@@ -111,7 +111,7 @@ Acesse: `http://localhost:5000`
 
 ## 📁 Estrutura do Projeto
 
-```
+```text
 BigodeBot/
 ├── bot_main.py              # Bot Discord principal
 ├── web_dashboard.py         # Dashboard Flask
@@ -132,7 +132,7 @@ BigodeBot/
     └── js/
         ├── main.js
         └── charts.js
-```
+```text
 
 ## 🎨 Tecnologias Utilizadas
 
@@ -162,19 +162,19 @@ BigodeBot/
    git branch -M main
    git remote add origin <YOUR_GITHUB_REPO_URL>
    git push -u origin main
-   ```
+```text
 
-2. **Create a Render.com account** and click **New Web Service**.
-3. **Connect** the service to your GitHub repository.
-4. **Build Command**: `pip install -r requirements.txt`
-5. **Start Command**: `python dashboard_with_oauth.py`
-6. **Add Environment Variables** (Settings → Environment):
+1. **Create a Render.com account** and click **New Web Service**.
+2. **Connect** the service to your GitHub repository.
+3. **Build Command**: `pip install -r requirements.txt`
+4. **Start Command**: `python dashboard_with_oauth.py`
+5. **Add Environment Variables** (Settings → Environment):
    - `DISCORD_CLIENT_ID`
    - `DISCORD_CLIENT_SECRET`
    - `DISCORD_REDIRECT_URI` (e.g., `https://<your-app>.onrender.com/callback`)
    - `SECRET_KEY`
    - `NOTIFICATION_WEBHOOK_URL`
-7. Click **Create Web Service** – Render will build and deploy automatically.
+1. Click **Create Web Service** – Render will build and deploy automatically.
 
 After deployment, open the provided URL, test the Discord login flow, and verify that all pages and API endpoints work.
 
@@ -188,7 +188,7 @@ Execute `analytics.py` para:
 
 ```bash
 python analytics.py
-```
+```text
 
 ## 🤝 Contribuindo
 

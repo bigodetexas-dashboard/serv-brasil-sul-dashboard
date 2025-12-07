@@ -12,16 +12,16 @@ Este sistema implementa **exatamente** a arquitetura sugerida pelo ChatGPT para 
    - Grid Clustering (agregação inteligente)
    - Parser de logs RPT
 
-2. **Backend API** (`new_dashboard/app.py`)
+1. **Backend API** (`new_dashboard/app.py`)
    - `/api/heatmap` - Retorna dados agregados
    - `/api/parse_log` - Recebe logs via POST
 
-3. **Frontend** (`new_dashboard/templates/heatmap.html` + `static/js/heatmap.js`)
+1. **Frontend** (`new_dashboard/templates/heatmap.html` + `static/js/heatmap.js`)
    - Leaflet + Heatmap.js
    - Conversão precisa de coordenadas
    - Filtros de tempo (24h, 7d, all)
 
-4. **Integração Nitrado** (`nitrado_to_heatmap.py`)
+1. **Integração Nitrado** (`nitrado_to_heatmap.py`)
    - Lê logs RPT via FTP
    - Envia para API automaticamente
 
@@ -34,10 +34,12 @@ Este sistema implementa **exatamente** a arquitetura sugerida pelo ChatGPT para 
 O banco de dados já foi criado com 150 eventos de teste.
 
 ```bash
+
 # Iniciar o servidor Flask
+
 cd "d:/dayz xbox/BigodeBot/new_dashboard"
 python app.py
-```
+```text
 
 Acesse: `http://localhost:5001/heatmap`
 
@@ -54,15 +56,17 @@ Você verá manchas de calor em:
 
 ```bash
 curl "http://localhost:5001/api/heatmap?range=24h&grid=50"
-```
+```text
 
 #### Enviar logs manualmente
 
 ```bash
 curl -X POST http://localhost:5001/api/parse_log \
+
   -H "Content-Type: application/json" \
   -d '{"text": "PlayerKill: Killer=John, Victim=Mike, Pos=<4500, 0, 10000>, Weapon=M4A1, Distance=120m"}'
-```
+
+```text
 
 ---
 
@@ -76,7 +80,7 @@ Adicione no arquivo `.env`:
 NITRADO_FTP_HOST=ftp.nitrado.net
 NITRADO_FTP_USER=seu_usuario
 NITRADO_FTP_PASS=sua_senha
-```
+```text
 
 #### Passo 2: Ajustar caminho do log
 
@@ -84,7 +88,7 @@ Edite `nitrado_to_heatmap.py` linha 15:
 
 ```python
 NITRADO_LOG_PATH = '/games/ni123456_1/noftp/dayzxb/config-1/profiles/'
-```
+```text
 
 Substitua `ni123456_1` pelo ID do seu servidor.
 
@@ -92,7 +96,7 @@ Substitua `ni123456_1` pelo ID do seu servidor.
 
 ```bash
 python nitrado_to_heatmap.py
-```
+```text
 
 Ele vai:
 
@@ -112,13 +116,13 @@ O parser reconhece estes formatos:
 
 ```text
 PlayerKill: Killer=John, Victim=Mike, Pos=<4500, 0, 10000>, Weapon=M4A1, Distance=120m
-```
+```text
 
 ### Formato 2 (Simplificado)
 
 ```text
 Kill: John killed Mike at [4500, 0, 10000] with AKM
-```
+```text
 
 **Se seus logs tiverem outro formato**, cole 3 linhas reais aqui e eu ajusto o regex.
 
@@ -151,7 +155,7 @@ SQLite é ótimo para testes, mas para produção:
 
 ```bash
 pip install psycopg2
-```
+```text
 
 Edite `database.py` para usar PostgreSQL.
 
@@ -166,7 +170,7 @@ Quando uma zona ultrapassar X mortes em Y minutos, enviar webhook:
 ```python
 if intensity > 20:
     send_discord_alert("🔥 Zona Quente em NWAF!")
-```
+```text
 
 ---
 
@@ -178,7 +182,7 @@ if intensity > 20:
 
 ```bash
 python database.py
-```
+```text
 
 ### Problema: "Coordenadas erradas"
 
@@ -191,7 +195,7 @@ const MAP_CONFIG = {
     minZ: 0,
     maxZ: 15360
 };
-```
+```text
 
 ### Problema: "Parser não encontra eventos"
 

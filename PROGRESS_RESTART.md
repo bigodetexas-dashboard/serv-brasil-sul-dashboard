@@ -24,11 +24,11 @@ Assim que você reiniciar o computador e voltar:
     * Ative **"Allow all IP addresses"** (ou adicione seu IP atual).
     * Salve.
 
-2. **Testar Conexão:**
+1. **Testar Conexão:**
     * Me avise que você liberou o IP.
     * Eu rodarei o teste de conexão novamente.
 
-3. **Migrar Dados:**
+1. **Migrar Dados:**
     * Se a conexão funcionar, executarei o script `python migrate_to_postgres.py` para enviar seus dados (players, economia, etc.) para o banco de dados online.
 
 ## 📂 Arquivos Importantes

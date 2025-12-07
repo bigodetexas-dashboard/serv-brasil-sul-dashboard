@@ -10,7 +10,7 @@ Execute o script `download_tiles.py` para baixar os tiles diretamente do iZurviv
 
 ```bash
 python download_tiles.py
-```
+```text
 
 Isso criará a pasta `static/tiles` com a estrutura correta.
 
@@ -22,10 +22,10 @@ Se o script falhar (por bloqueio de IP ou mudança na URL), você pode baixar um
    - <https://dayz.ginfo.gg/map/tiles/chernarusplus.zip>
    - <https://files.dayzsurvival.info/maps/chernarusplus/tiles.zip>
 
-2. Extraia o conteúdo do ZIP.
-3. A estrutura deve ficar assim:
+1. Extraia o conteúdo do ZIP.
+2. A estrutura deve ficar assim:
 
-   ```
+```text
    new_dashboard/
    ├── static/
    │   ├── tiles/
@@ -34,7 +34,7 @@ Se o script falhar (por bloqueio de IP ou mudança na URL), você pode baixar um
    │   │   │       └── 0.png
    │   │   ├── 1/
    │   │   ├── ...
-   ```
+```text
 
 ## Configuração
 
