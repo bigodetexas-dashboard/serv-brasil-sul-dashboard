@@ -1217,25 +1217,26 @@ def api_achievements_all():
     
     try:
         # Buscar todas as conquistas com progresso do usuário
+        # ADAPTADO para estrutura existente: code, name, description, icon, reward
         cur.execute("""
             SELECT 
-                a.achievement_key as id,
+                a.code as id,
                 a.name as title,
                 a.description,
-                a.category,
-                a.rarity,
-                a.tier,
-                a.points,
-                a.reward,
+                'combat' as category,
+                'common' as rarity,
+                'bronze' as tier,
+                CAST(a.reward AS INTEGER) as points,
+                CAST(a.reward AS INTEGER) || ' moedas' as reward,
                 a.icon,
-                a.max_progress as "maxProgress",
+                1 as "maxProgress",
                 COALESCE(ua.progress, 0) as progress,
                 COALESCE(ua.unlocked, FALSE) as unlocked,
                 ua.unlocked_at as "unlockedDate"
             FROM achievements a
-            LEFT JOIN user_achievements ua ON a.achievement_key = ua.achievement_key 
+            LEFT JOIN user_achievements ua ON a.code = ua.achievement_code 
                 AND ua.discord_id = %s
-            ORDER BY a.category, a.tier
+            ORDER BY a.id
         """, (str(user_id),))
         
         achievements = [dict(row) for row in cur.fetchall()]
@@ -1265,16 +1266,16 @@ def api_achievements_stats():
     cur = conn.cursor()
     
     try:
-        # Buscar estatísticas
+        # Buscar estatísticas - ADAPTADO para estrutura existente
         cur.execute("""
             SELECT 
                 COUNT(*) FILTER (WHERE ua.unlocked = TRUE) as total_unlocked,
                 COUNT(*) as total_achievements,
-                COALESCE(SUM(a.points) FILTER (WHERE ua.unlocked = TRUE), 0) as total_points,
-                COUNT(*) FILTER (WHERE ua.unlocked = TRUE AND a.rarity IN ('epic', 'legendary', 'mythic')) as rare_count,
+                COALESCE(SUM(CAST(a.reward AS INTEGER)) FILTER (WHERE ua.unlocked = TRUE), 0) as total_points,
+                0 as rare_count,
                 ROUND(100.0 * COUNT(*) FILTER (WHERE ua.unlocked = TRUE) / NULLIF(COUNT(*), 0), 1) as completion_rate
             FROM achievements a
-            LEFT JOIN user_achievements ua ON a.achievement_key = ua.achievement_key 
+            LEFT JOIN user_achievements ua ON a.code = ua.achievement_code 
                 AND ua.discord_id = %s
         """, (str(user_id),))
         
