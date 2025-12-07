@@ -1,6 +1,49 @@
 # Histórico de Versões do BigodeTexas Bot
 
-## Site 9.3 (06/12/2025) 🚀
+## v10.0 - Achievements System (07/12/2025) 🏆
+
+**Tag:** `v10.0-achievements-system`
+
+**Principais Mudanças:**
+
+- **🏆 Sistema de Conquistas Completo:**
+  - 18 conquistas pré-cadastradas (Combat, Survival, Exploration, Social, Wealth)
+  - Progresso individual por usuário
+  - Sistema de raridade (Common, Rare, Epic, Legendary, Mythic)
+  - Tiers visuais (Bronze, Silver, Gold, Platinum, Diamond)
+  
+- **📜 Sistema de Histórico de Atividades:**
+  - Timeline completa de eventos do jogador
+  - Filtros por tipo (kill, death, achievement, trade, etc)
+  - Filtros por período (hoje, semana, mês, tudo)
+  - Estatísticas agregadas (K/D, total de eventos)
+  
+- **⚙️ Sistema de Configurações:**
+  - Perfil customizável (nome, bio, avatar)
+  - Aparência (tema escuro, cores, fontes, animações)
+  - Notificações (kills, conquistas, eventos, grupo)
+  - Privacidade (perfil público, mostrar stats, status online)
+  - Preferências de jogo (servidor favorito, crosshair)
+  
+- **🔧 Backend:**
+  - Schema SQL completo (`schema_achievements_history.sql`)
+  - 9 novos endpoints de API (achievements, history, settings)
+  - Funções SQL: `update_achievement_progress()`, `add_activity_event()`
+  - Views otimizadas para estatísticas
+  - Índices para performance
+  
+- **🎨 Frontend:**
+  - `achievements.html` conectado com API real
+  - `history.js` e `settings.js` criados
+  - Sistema de fallback para dados mockados
+  - Animações e transições suaves
+  
+- **📚 Documentação:**
+  - `IMPLEMENTACAO_COMPLETA_2025-12-07.md` - Guia técnico completo
+  - `PENDENCIAS_FINAIS_2025-12-07.md` - Relatório de pendências
+  - Comentários detalhados no código
+
+**Status:** 95% completo - Falta aplicar schema no banco e incluir scripts JS nas páginas
 
 **Tag:** `site-9.3-2025-12-06`
 
