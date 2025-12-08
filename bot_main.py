@@ -1,8 +1,24 @@
+# 🔍 DETECTOR AUTOMÁTICO PARA RENDER - EXECUTADO ANTES DE TUDO
+import os
+import sys
+
+if os.getenv('RENDER'):
+    print("🎯 DETECTADO: Ambiente Render - Iniciando DASHBOARD")
+    try:
+        os.chdir('new_dashboard')
+        os.system('gunicorn app:app --bind 0.0.0.0:$PORT')
+        sys.exit(0)
+    except Exception as e:
+        print(f"❌ ERRO no dashboard: {e}")
+        sys.exit(1)
+
+# 🤖 Se não é Render, continua com bot normalmente
+print("🤖 Iniciando BOT Discord localmente")
+
 import discord
 from discord.ext import commands, tasks
 import asyncio
 import json
-import os
 import random
 from datetime import datetime, timedelta, timezone
 import ftplib
