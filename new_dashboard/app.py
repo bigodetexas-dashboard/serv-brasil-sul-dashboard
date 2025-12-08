@@ -525,6 +525,24 @@ def api_shop_purchase():
             VALUES (%s, %s, %s, %s, 'pending')
         """, (str(user_id), json.dumps(items), total_cost, json.dumps(coordinates)))
         
+        # Adicionar ao histórico de atividades
+        try:
+            items_text = ', '.join([f"{item.get('quantity', 1)}x {item.get('name', 'Item')}" for item in items])
+            cur.execute("""
+                INSERT INTO activity_history (discord_id, event_type, icon, title, description, details, created_at)
+                VALUES (%s, %s, %s, %s, %s, %s, NOW())
+            """, (
+                str(user_id),
+                'purchase',
+                '🛒',
+                'Compra Realizada',
+                f'Compra de {len(items)} item(ns): {items_text}',
+                json.dumps({'total': total_cost, 'items': items, 'coordinates': coordinates})
+            ))
+        except Exception as e:
+            print(f"Aviso: Não foi possível adicionar ao histórico: {e}")
+            # Não falhar a compra se o histórico não funcionar
+        
         conn.commit()
         
         return jsonify({

@@ -608,5 +608,44 @@
 
     // Initial load
     loadAchievements();
+    
+    // Verificar novas conquistas periodicamente (a cada 30 segundos)
+    let lastUnlockedCount = 0;
+    
+    async function checkNewAchievements() {
+        try {
+            const response = await fetch('/api/achievements/all');
+            const data = await response.json();
+            
+            if (response.ok) {
+                const currentUnlocked = data.filter(a => a.unlocked);
+                
+                // Se há mais conquistas desbloqueadas que antes
+                if (lastUnlockedCount > 0 && currentUnlocked.length > lastUnlockedCount) {
+                    // Encontrar as novas conquistas
+                    const newAchievements = currentUnlocked.slice(lastUnlockedCount);
+                    
+                    // Mostrar notificação para cada nova conquista
+                    newAchievements.forEach(achievement => {
+                        if (typeof showAchievementNotification === 'function') {
+                            showAchievementNotification(achievement);
+                        }
+                    });
+                    
+                    // Recarregar lista
+                    achievements = data;
+                    renderAchievements(currentFilter);
+                    await loadStats();
+                }
+                
+                lastUnlockedCount = currentUnlocked.length;
+            }
+        } catch (error) {
+            console.error('Erro ao verificar novas conquistas:', error);
+        }
+    }
+    
+    // Verificar a cada 30 segundos
+    setInterval(checkNewAchievements, 30000);
 </script>
 {% endblock %}

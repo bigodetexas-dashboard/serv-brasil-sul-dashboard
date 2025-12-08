@@ -132,13 +132,23 @@ async function confirmOrder() {
         const data = await response.json();
 
         if (data.success) {
+            // Mostrar notificação de compra
+            if (typeof showPurchaseNotification === 'function') {
+                showPurchaseNotification({
+                    itemCount: cart.length,
+                    total: orderTotal
+                });
+            }
+            
             // Limpar carrinho
             localStorage.removeItem('cart');
             localStorage.removeItem('checkout-cart');
 
-            // Redirecionar para confirmação
-            localStorage.setItem('order-confirmation', JSON.stringify(data));
-            window.location.href = '/order-confirmation';
+            // Redirecionar para confirmação após 1 segundo
+            setTimeout(() => {
+                localStorage.setItem('order-confirmation', JSON.stringify(data));
+                window.location.href = '/order-confirmation';
+            }, 1000);
         } else {
             alert('Erro ao processar pedido: ' + (data.error || 'Erro desconhecido'));
         }
