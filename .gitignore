@@ -1,0 +1,53 @@
+# Backups and Archives
+*.zip
+*.rar
+*.7z
+*.tar.gz
+*.001
+*.002
+backup_*/
+Backups/
+99.9/
+BigodeBot_10.1/
+
+# Temporary and System Files
+tmp/
+temp/
+$RECYCLE.BIN/
+System Volume Information/
+DumpStack.log.tmp
+thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.env
+.env.*
+!.env.example
+!.env.configured
+
+# IDE and Tooling
+.vscode/
+.idea/
+.kluster/
+.agent/
+AIProgrammingAssistant/
+
+# Large Game Files / Binaries
+areaflags.map
+*.map
+*.bin
+*.pbo
+
+# Databases (Exclude actual DBs, keep schemas)
+*.db
+*.sqlite
+*.sqlite3
