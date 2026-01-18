@@ -1,0 +1,26 @@
+LINKS PARA BAIXAR ARQUIVOS WINTER (DIRETO DO SCALESPEEDER)
+
+ARQUIVOS NECESSARIOS:
+1. Winter_Map_Data.json
+2. Winter_Trees.json
+3. Winter_Grass_Removal.json (Opcional, mas recomendado)
+
+FONTES ENCONTRADAS:
+
+1. MEGA (Pasta Oficial Scalespeeder):
+   Link: https://mega.nz/folder/kf80RbJR#4PcjsdJsnGQ9gS-Ym1Lv7A
+   -> Procure nas pastas: "Winter", "Snow", "Chernarus_Snow" ou "Json".
+
+2. DISCORD OFICIAL (Modding Tutorial):
+   Link: https://discord.gg/Tz2GBJ5ZRx
+   -> Entre no canal de "downloads" ou "share-files" e busque por "Winter Map Data".
+   -> Este é o local mais garantido se o GitHub estiver offline.
+
+3. GITHUB (Alternativo - Frostline/Sakhal):
+   Link: https://github.com/scalespeeder/DayZ-Frostline-Sakhal-Winter-Themed-Fresh-Spawn-Military-Loadout-Server-Files
+   -> Pode conter a versão mais recente dos JSONs.
+
+INSTRUCOES:
+- Baixe os arquivos .json citados acima.
+- Salve-os NESTA PASTA: d:\dayz xbox\custom\winter
+- Assim que salvar, me avise para eu configurar o loader.

@@ -1,13 +1,23 @@
+"""
+Utility script to split large files into smaller chunks.
+Useful for splitting backup archives into manageable sizes.
+"""
+
 import os
-import sys
 
 
 def split_file(file_path, chunk_size=512 * 1024 * 1024):
+    """
+    Split a large file into smaller chunks.
+
+    Args:
+        file_path: Path to the file to split
+        chunk_size: Size of each chunk in bytes (default: 512MB)
+    """
     if not os.path.exists(file_path):
         print(f"File not found: {file_path}")
         return
 
-    file_size = os.path.getsize(file_path)
     part_num = 1
 
     with open(file_path, "rb") as f:
@@ -27,5 +37,5 @@ def split_file(file_path, chunk_size=512 * 1024 * 1024):
 
 
 if __name__ == "__main__":
-    target_file = r"d:\dayz xbox\backup_99.9.zip"
-    split_file(target_file)
+    TARGET_FILE = r"d:\dayz xbox\backup_99.9.zip"
+    split_file(TARGET_FILE)

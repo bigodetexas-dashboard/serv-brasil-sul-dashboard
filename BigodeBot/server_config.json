@@ -1,0 +1,9 @@
+{
+    "raid_active": false,
+    "raid_days": [
+        5
+    ],
+    "raid_start": 20,
+    "raid_end": 22,
+    "lang": "pt"
+}

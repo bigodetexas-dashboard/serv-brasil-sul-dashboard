@@ -51,3 +51,5 @@ areaflags.map
 *.db
 *.sqlite
 *.sqlite3
+
+.kluster

@@ -1,0 +1,48 @@
+# Arquivos de ambiente
+.env
+
+# Arquivos Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Dados sensíveis
+*.json.backup
+*.log
+*.db
+players_db.json
+economy.json
+clans.json
+bot_state.json
+links.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups
+backups/
+*.bak
+
+# Map tiles e imagens grandes
+static/tiles/
+new_dashboard/static/tiles/
+static/img/*.jpg
+static/img/*.png
+!static/img/logo_texas.png
+*.tif
+*.tiff
+test_tile_real.png
+test_real_tile.png
+chernarus_map_full.png

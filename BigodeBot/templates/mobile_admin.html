@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BIGODE MOBILE COMMAND</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --accent: #d4af37;
+            --primary: #6b8c42;
+            --white: #ffffff;
+            --panel: rgba(15, 15, 15, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--white);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            padding: 25px 20px;
+            border-bottom: 1px solid var(--accent);
+            background: linear-gradient(180deg, #0a0a0a 0%, #030303 100%);
+        }
+
+        h1 {
+            font-family: 'Impact', 'Arial Narrow Bold', sans-serif;
+            font-size: 28px;
+            letter-spacing: 2px;
+            color: var(--white);
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(107, 140, 66, 0.2);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .container {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .ops-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .card-title {
+            font-family: 'Impact', sans-serif;
+            font-size: 18px;
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Impact', sans-serif;
+            font-size: 16px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .btn-action.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(107, 140, 66, 0.1);
+        }
+
+        .btn-raid {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        .btn-raid.active {
+            background: rgba(255, 68, 68, 0.1);
+        }
+
+        .log-area {
+            height: 150px;
+            background: #000;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+            color: var(--primary);
+            overflow-y: auto;
+            border: 1px solid #1a1a1a;
+        }
+
+        .footer {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .logout-link {
+            color: #555;
+            text-decoration: none;
+            font-size: 12px;
+            font-family: 'Impact', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Toast notifications */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--panel);
+            color: var(--accent);
+            text-align: center;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-family: 'Impact', sans-serif;
+        }
+
+        #toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>MOBILE COMMAND</h1>
+        <div class="status-badge">UNIT v4.0 - ACTIVE</div>
+    </div>
+
+    <div class="container">
+        <div class="ops-grid">
+            <!-- RAID CONTROL -->
+            <div class="card">
+                <div class="card-title"><i class="ri-fire-line"></i> TACTICAL RAID</div>
+                <button id="raid-btn" class="btn-action btn-raid {% if config.raid_active %}active{% endif %}"
+                    onclick="toggleRaid()">
+                    <i class="ri-shield-flash-line"></i>
+                    <span id="raid-text">RAID: {% if config.raid_active %}ENABLED{% else %}DISABLED{% endif %}</span>
+                </button>
+            </div>
+
+            <!-- BOOT/DASH CONTROLS -->
+            <div class="card">
+                <div class="card-title"><i class="ri-terminal-box-line"></i> PROCESS MANAGEMENT</div>
+                <button class="btn-action" onclick="notify('BOT COMMAND SENT')"><i class="ri-discord-fill"></i> RESTART
+                    BOT</button>
+                <button class="btn-action" onclick="notify('DASHBOARD COMMAND SENT')"><i
+                        class="ri-layout-masonry-line"></i> RESTART DASH</button>
+            </div>
+
+            <!-- LOGS -->
+            <div class="card">
+                <div class="card-title"><i class="ri-history-line"></i> FIELD LOGS</div>
+                <div class="log-area" id="log-box">
+                    > CONEXÃO ESTABELECIDA<br>
+                    > MÓDULO MOBILE INICIALIZADO...<br>
+                    > AGUARDANDO COMANDOS...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="/logout" class="logout-link">TERMINATE SESSION</a>
+    </div>
+
+    <div id="toast">COMANDO EXECUTADO</div>
+
+    <script>
+        function notify(msg) {
+            var x = document.getElementById("toast");
+            x.innerHTML = msg;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+
+            const log = document.getElementById('log-box');
+            log.innerHTML += `<br>> ${msg}`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        async function toggleRaid() {
+            try {
+                const response = await fetch('/api/control', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'toggle_raid' })
+                });
+                const data = await response.json();
+                if (data.status === 'ok') {
+                    const btn = document.getElementById('raid-btn');
+                    const txt = document.getElementById('raid-text');
+                    if (data.raid_active) {
+                        btn.classList.add('active');
+                        txt.innerText = "RAID: ENABLED";
+                        notify("MODO RAID: ATIVADO");
+                    } else {
+                        btn.classList.remove('active');
+                        txt.innerText = "RAID: DISABLED";
+                        notify("MODO RAID: DESATIVADO");
+                    }
+                }
+            } catch (e) {
+                notify("ERROR CONNECTING TO BRIDGE");
+            }
+        }
+    </script>
+</body>
+
+</html>

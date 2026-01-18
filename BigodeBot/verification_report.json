@@ -1,0 +1,29 @@
+{
+    "timestamp": "2026-01-11T16:12:48.962535",
+    "summary": {
+        "critical": 0,
+        "high": 1,
+        "medium": 16,
+        "low": 40
+    },
+    "checks": [
+        {
+            "name": "Ruff Quality",
+            "status": "WARNING",
+            "count": 12,
+            "details": "Found 12 code quality/style issues."
+        },
+        {
+            "name": "Bandit Security",
+            "status": "FAIL",
+            "count": 45,
+            "details": "Found 45 potential security vulnerabilities."
+        },
+        {
+            "name": "Dependency Audit",
+            "status": "PASS",
+            "count": 0,
+            "details": "Found 0 known vulnerabilities in dependencies."
+        }
+    ]
+}

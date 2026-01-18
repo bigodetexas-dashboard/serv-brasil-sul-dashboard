@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Calor PvP - BIGODETEXAS - XBOX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/heatmap.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
+                    style="height: 40px; margin-right: 10px;">
+                <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
+                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
+                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
+                <li><a href="/heatmap" class="navbar-link active"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
+                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
+                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> Clã</a></li>
+                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Texas</a></li>
+                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
+                <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+    <!-- Heatmap Section -->
+    <section class="heatmap-section">
+        <div class="container">
+            <div class="heatmap-header">
+                <h1 class="section-title">Mapa de Calor PvP</h1>
+                <p class="section-subtitle">Veja onde a ação está acontecendo em tempo real. As áreas vermelhas indicam
+                    zonas de alto conflito.</p>
+
+                <!-- Controles de Filtro -->
+                <div class="heatmap-controls">
+                    <!-- Filtro de Tempo -->
+                    <div class="control-group">
+                        <label><i class="ri-time-line"></i> Período:</label>
+                        <button class="control-btn active" data-time="24h">Últimas 24h</button>
+                        <button class="control-btn" data-time="7d">7 Dias</button>
+                        <button class="control-btn" data-time="30d">30 Dias</button>
+                        <button class="control-btn" data-time="all">Tudo</button>
+                    </div>
+
+                    <!-- Filtro de Tipo -->
+                    <div class="control-group">
+                        <label><i class="ri-skull-line"></i> Tipo:</label>
+                        <button class="type-btn active" data-type="all">Tudo</button>
+                        <button class="type-btn" data-type="pvp">PvP</button>
+                        <button class="type-btn" data-type="pve">PvE</button>
+                    </div>
+
+                    <!-- Filtro de Arma -->
+                    <div class="control-group">
+                        <label><i class="ri-gun-line"></i> Arma:</label>
+                        <select id="weaponFilter" class="weapon-select">
+                            <option value="all">Todas as Armas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Stats Banner -->
+            <div class="hero-stats-banner">
+                <div class="hero-stats-grid">
+                    <div class="hero-stat-card">
+                        <i class="ri-skull-2-line hero-stat-icon"></i>
+                        <div class="hero-stat-info">
+                            <h2 id="heroTotalKills">0</h2>
+                            <p>Total de Kills</p>
+                        </div>
+                    </div>
+                    <div class="hero-stat-card">
+                        <i class="ri-crosshair-line hero-stat-icon"></i>
+                        <div class="hero-stat-info">
+                            <h2 id="heroKillsToday">0</h2>
+                            <p>Kills Hoje</p>
+                        </div>
+                    </div>
+                    <div class="hero-stat-card">
+                        <i class="ri-gun-line hero-stat-icon"></i>
+                        <div class="hero-stat-info">
+                            <h2 id="heroTopWeapon">-</h2>
+                            <p>Arma Mais Letal</p>
+                        </div>
+                    </div>
+                    <div class="hero-stat-card">
+                        <i class="ri-trophy-line hero-stat-icon"></i>
+                        <div class="hero-stat-info">
+                            <h2 id="heroTopPlayer">-</h2>
+                            <p>Jogador Top</p>
+                        </div>
+                    </div>
+                    <div class="hero-stat-card">
+                        <i class="ri-time-line hero-stat-icon"></i>
+                        <div class="hero-stat-info">
+                            <h2 id="heroPeakHour">-</h2>
+                            <p>Horário Pico</p>
+                        </div>
+                    </div>
+                    <div class="hero-stat-card">
+                        <i class="ri-map-pin-range-line hero-stat-icon"></i>
+                        <div class="hero-stat-info">
+                            <h2 id="heroHottestZone">-</h2>
+                            <p>Zona Mais Quente</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a6f);">
+                        <i class="ri-skull-2-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalDeaths">0</h3>
+                        <p>Total de Mortes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                        <i class="ri-sword-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pvpPercent">0%</h3>
+                        <p>PvP</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                        <i class="ri-ghost-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pvePercent">0%</h3>
+                        <p>PvE</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+                        <i class="ri-gun-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="topWeapon">-</h3>
+                        <p>Arma Mais Usada</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa Interativo -->
+            <div class="heatmap-container">
+                <div id="map"></div>
+
+                <div class="heatmap-legend">
+                    <div class="legend-item">
+                        <span class="color-box low"></span> Baixa Atividade
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-box medium"></span> Média Atividade
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-box high"></span> Alta Atividade (Zona Quente)
+                    </div>
+                </div>
+
+                <!-- Controles de Zoom -->
+                <div class="map-controls">
+                    <button id="zoomIn" class="map-control-btn"><i class="ri-zoom-in-line"></i></button>
+                    <button id="zoomOut" class="map-control-btn"><i class="ri-zoom-out-line"></i></button>
+                    <button id="resetView" class="map-control-btn"><i class="ri-focus-3-line"></i></button>
+                </div>
+            </div>
+
+            <!-- Timeline Chart -->
+            <div class="chart-container">
+                <h2><i class="ri-line-chart-line"></i> Timeline de Mortes</h2>
+                <canvas id="timelineChart"></canvas>
+            </div>
+
+            <!-- Hourly Heatmap -->
+            <div class="chart-container">
+                <h2><i class="ri-time-line"></i> Atividade por Hora do Dia</h2>
+                <canvas id="hourlyChart"></canvas>
+            </div>
+
+            <!-- Top Locations -->
+            <div class="top-locations">
+                <h2><i class="ri-map-pin-range-line"></i> Zonas Mais Perigosas</h2>
+                <div class="locations-grid" id="topLocations">
+                    <!-- Carregado dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
+            <p style="margin: 0;">&copy; 2025 BIGODETEXAS - XBOX. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Heatmap.js + Leaflet Heatmap Plugin -->
+    <script src="https://unpkg.com/heatmap.js@2.0.5/build/heatmap.min.js"></script>
+    <script src="https://unpkg.com/leaflet-heatmap/leaflet-heatmap.js"></script>
+    <script src="{{ url_for('static', filename='js/heatmap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

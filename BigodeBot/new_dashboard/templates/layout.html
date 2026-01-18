@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BIGODETEXAS - XBOX{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
+                    style="height: 40px; margin-right: 10px;">
+                <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
+            </a>
+
+            <!-- Menu Hamburguer para Mobile -->
+            <button class="hamburger-menu" id="hamburger-menu" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <ul class="navbar-menu" id="navbar-menu">
+                <li><a href="/" class="navbar-link{% if request.endpoint == 'index' %} active{% endif %}"><i
+                            class="ri-home-line"></i> Início</a></li>
+                <li><a href="/shop" class="navbar-link{% if request.endpoint == 'shop' %} active{% endif %}"><i
+                            class="ri-store-2-line"></i> Loja</a></li>
+                <li><a href="/leaderboard"
+                        class="navbar-link{% if request.endpoint == 'leaderboard' %} active{% endif %}"><i
+                            class="ri-trophy-line"></i> Rankings</a></li>
+                <li><a href="/heatmap" class="navbar-link{% if request.endpoint == 'heatmap' %} active{% endif %}"><i
+                            class="ri-fire-line"></i> Mapa de Calor</a></li>
+                <li><a href="/base" class="navbar-link{% if request.endpoint == 'base' %} active{% endif %}"><i
+                            class="ri-map-pin-line"></i> Base</a></li>
+                <li><a href="/clan" class="navbar-link{% if request.endpoint == 'clan' %} active{% endif %}"><i
+                            class="ri-team-line"></i> Clã</a></li>
+                <li><a href="/banco" class="navbar-link{% if request.endpoint == 'banco' %} active{% endif %}"><i
+                            class="ri-bank-line"></i> Banco Texas</a></li>
+                <li><a href="/dashboard"
+                        class="navbar-link{% if request.endpoint == 'dashboard' %} active{% endif %}"><i
+                            class="ri-user-line"></i> Meu Perfil</a></li>
+                <li><a href="/agradecimentos"
+                        class="navbar-link{% if request.endpoint == 'agradecimentos' %} active{% endif %}"><i
+                            class="ri-hand-heart-line"></i> Agradecimentos</a></li>
+
+                <!-- Ações Mobile (Aparecem apenas no menu hamburguer) -->
+                {% if session.get('discord_user_id') %}
+                <li class="mobile-only-action">
+                    <hr style="border: 0; border-top: 1px solid rgba(107, 140, 66, 0.2); margin: 10px 20px;">
+                    <a href="/logout" class="navbar-link" style="color: var(--danger);">
+                        <i class="ri-logout-box-line"></i> Sair da Conta
+                    </a>
+                </li>
+                {% else %}
+                <li class="mobile-only-action">
+                    <hr style="border: 0; border-top: 1px solid rgba(107, 140, 66, 0.2); margin: 10px 20px;">
+                    <a href="/login" class="navbar-link" style="color: #5865f2;">
+                        <i class="ri-discord-fill"></i> Entrar com Discord
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+
+            <div class="navbar-actions">
+                {% if session.get('discord_user_id') %}
+                <!-- Usuário logado -->
+                <div class="user-menu">
+                    <a href="/dashboard" class="user-info">
+                        {% if session.get('discord_avatar') %}
+                        <img src="https://cdn.discordapp.com/avatars/{{ session['discord_user_id'] }}/{{ session['discord_avatar'] }}.png?size=64"
+                            alt="Avatar" class="user-avatar" onerror="this.src='/static/img/default-avatar.png'">
+                        {% else %}
+                        <div class="user-avatar"
+                            style="background: var(--accent); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                            {{ session.get('discord_username', 'U')[0].upper() }}
+                        </div>
+                        {% endif %}
+                        <div class="user-details">
+                            <span class="user-name">{{ session.get('discord_username', 'Jogador') }}</span>
+                            <span class="user-balance" id="nav-balance">Carregando...</span>
+                        </div>
+                    </a>
+                    <a href="/logout" class="btn btn-secondary" style="margin-left: 10px; font-size: 0.9rem;">
+                        <i class="ri-logout-box-line"></i> Sair
+                    </a>
+                </div>
+                {% else %}
+                <!-- Usuário não logado -->
+                <a href="/login" class="btn-login">
+                    Entrar com Discord
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Elemento flutuante de saldo -->
+    {% if session.get('discord_user_id') %}
+    <div class="balance-float" id="floating-balance">
+        <i class="ri-money-dollar-circle-line"></i>
+        <span id="floating-balance-amount">Carregando...</span>
+    </div>
+    {% endif %}
+
+    <!-- Conteúdo da página -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
+            <p style="margin: 0;">&copy; 2025 BIGODETEXAS - XBOX. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+
+    {% if session.get('discord_user_id') %}
+    <script>
+        // Carregar saldo do usuário na navbar e elemento flutuante
+        async function loadUserBalance() {
+            try {
+                const response = await fetch('/api/user/balance');
+                if (response.ok) {
+                    const data = await response.json();
+                    const balanceText = data.balance + ' DZCoins';
+
+                    // Atualizar navbar
+                    const navBalance = document.getElementById('nav-balance');
+                    if (navBalance) {
+                        navBalance.textContent = balanceText;
+                    }
+
+                    // Atualizar elemento flutuante
+                    const floatingBalance = document.getElementById('floating-balance-amount');
+                    if (floatingBalance) {
+                        floatingBalance.textContent = balanceText;
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar saldo:', error);
+                const errorText = 'Erro';
+
+                // Atualizar navbar
+                const navBalance = document.getElementById('nav-balance');
+                if (navBalance) {
+                    navBalance.textContent = errorText;
+                }
+
+                // Atualizar elemento flutuante
+                const floatingBalance = document.getElementById('floating-balance-amount');
+                if (floatingBalance) {
+                    floatingBalance.textContent = errorText;
+                }
+            }
+        }
+
+        // Carregar saldo quando a página carrega
+        document.addEventListener('DOMContentLoaded', loadUserBalance);
+    </script>
+    {% endif %}
+</body>
+
+</html>
