@@ -8,6 +8,19 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_head %}{% endblock %}
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Hide mobile-only actions on desktop */
+        .mobile-only-action {
+            display: none !important;
+        }
+
+        /* Show mobile-only actions only on mobile */
+        @media (max-width: 768px) {
+            .mobile-only-action {
+                display: list-item !important;
+            }
+        }
+    </style>
 
 </head>
 

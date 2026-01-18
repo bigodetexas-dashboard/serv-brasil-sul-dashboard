@@ -14,6 +14,18 @@
             display: inline-block;
         }
 
+        /* Hide mobile-only actions on desktop */
+        .mobile-only-action {
+            display: none !important;
+        }
+
+        /* Show mobile-only actions only on mobile */
+        @media (max-width: 768px) {
+            .mobile-only-action {
+                display: list-item !important;
+            }
+        }
+
         .user-info {
             display: flex;
             align-items: center;
