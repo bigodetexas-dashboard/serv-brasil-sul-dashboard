@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agradecimentos - SERV. BRASIL SUL - XBOX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/agradecimentos.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/logo_texas.png') }}" type="image/png">
+    <!-- Adicionando RemixIcon para ícones consistentes -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navegação -->
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
+                    style="height: 40px; margin-right: 10px;">
+                <span style="font-size: 1.5rem;">SERV. BRASIL SUL - XBOX</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
+                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
+                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
+                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
+                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
+                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> Clã</a></li>
+                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Sul</a></li>
+                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
+                <li><a href="/agradecimentos" class="navbar-link active"><i class="ri-hand-heart-line"></i>
+                        Agradecimentos</a>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="hero-section">
+        <div class="overlay"></div>
+        <div class="content-wrapper">
+
+            <!-- Título Principal -->
+            <div class="main-title">
+                <!-- Ícone de Rifles Cruzados (SVG Inline Branco) -->
+                <div class="handshake-icon">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.5 19.5L19.5 4.5M19.5 4.5H15M19.5 4.5V9" stroke="white" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M19.5 19.5L4.5 4.5M4.5 4.5H9M4.5 4.5V9" stroke="white" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <!-- Adicionando detalhes para parecer mais com armas -->
+                        <path d="M7 17L5 19" stroke="white" stroke-width="2" />
+                        <path d="M17 7L19 5" stroke="white" stroke-width="2" />
+                    </svg>
+                </div>
+                <h1>Agradecimentos</h1>
+                <p class="subtitle">8 Anos de Sobrevivência e Amizade</p>
+            </div>
+
+            <!-- Citações -->
+            <div class="quotes-section">
+                <div class="quote-card">
+                    <div class="quote-icon">"</div>
+                    <p class="quote-text">
+                        Um verdadeiro sobrevivente não anda só — ele traz o novato e mostra onde cavar,
+                        onde mirar e onde confiar.
+                    </p>
+                    <p class="quote-author">— NICK</p>
+                </div>
+
+                <div class="quote-card">
+                    <div class="quote-icon">"</div>
+                    <p class="quote-text">
+                        Brother: 'confia em mim, só dá uma espiada acima do muro'.
+                        Resultado? Só ouvi a bala zunindo de raspão na minha testa.
+                    </p>
+                    <p class="quote-author">— Macoy trollando Texas</p>
+                </div>
+            </div>
+
+            <!-- História -->
+            <div class="story-section">
+                <div class="story-card">
+                    <h2>Uma Jornada de 8 Anos</h2>
+
+                    <div class="story-content">
+                        <p class="story-intro">
+                            Tudo começou com um simples gesto de gentileza...
+                        </p>
+
+                        <div class="memory-timeline">
+                            <div class="memory-item">
+                                <div class="memory-icon">I</div>
+                                <div class="memory-text">
+                                    <h3>O Primeiro Passo</h3>
+                                    <p>
+                                        Lavar as mãos na bica d'água. Um gesto simples que alguém me ensinou.
+                                        Naquele momento, eu não sabia que estava começando uma jornada que mudaria tudo.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="memory-item">
+                                <div class="memory-icon">II</div>
+                                <div class="memory-text">
+                                    <h3>A Primeira Conquista</h3>
+                                    <p>
+                                        A emoção de conseguir a primeira roupa militar. Aquele momento de orgulho,
+                                        de sentir que estava evoluindo, que estava aprendendo.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="memory-item">
+                                <div class="memory-icon">III</div>
+                                <div class="memory-text">
+                                    <h3>Mergulhando Fundo</h3>
+                                    <p>
+                                        Mas eu quis mais. Muito mais. Mergulhei nas entrelinhas por trás do jogo...
+                                        Configurar, entender, criar, ir além. Descobrir os segredos, dominar os
+                                        sistemas,
+                                        construir algo próprio.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="memory-item">
+                                <div class="memory-icon">IV</div>
+                                <div class="memory-text">
+                                    <h3>O Que Realmente Importa</h3>
+                                    <p>
+                                        Tudo isso porque alguém se importou. Porque vocês estavam lá,
+                                        não apenas como companheiros de jogo, mas como verdadeiros amigos.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="gratitude-message">
+                            <h2>Obrigado</h2>
+                            <p class="gratitude-text">
+                                Aos meus grandiosos amigos de alma...
+                            </p>
+                            <div class="friends-names">
+                                <span class="friend-name">NICK</span>
+                                <span class="separator">•</span>
+                                <span class="friend-name">MACOY</span>
+                            </div>
+                            <p class="final-message">
+                                Por 8 anos de risadas, sustos, vitórias e derrotas.
+                                Por me ensinarem que em Chernarus, assim como na vida,
+                                ninguém sobrevive sozinho.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rodapé da Página -->
+            <div class="page-footer" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
+                    style="height: 60px; margin-bottom: 10px;">
+                <p>Servidor configurado com</p>
+                <p style="font-size: 1.2rem; font-weight: bold; color: #ffd700; margin: 5px 0;">BigodeTexas</p>
+                <p class="years">Brasil Sul • Xbox • Dayz</p>
+                <p style="margin-top: 15px; opacity: 0.7; font-size: 0.9rem;">&copy; 2025 SERV. BRASIL SUL - XBOX. Todos
+                    os direitos reservados.</p>
+            </div>
+
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

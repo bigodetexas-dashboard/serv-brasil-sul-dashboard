@@ -25,14 +25,18 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.so
 .Python
 env/
 venv/
 .venv/
+ENV/
 .env
 .env.*
 !.env.example
 !.env.configured
+*.py[cod]
+*$py.class
 
 # IDE and Tooling
 .vscode/
@@ -40,6 +44,8 @@ venv/
 .kluster/
 .agent/
 AIProgrammingAssistant/
+*.swp
+*.swo
 
 # Large Game Files / Binaries
 areaflags.map
@@ -51,11 +57,34 @@ areaflags.map
 *.db
 *.sqlite
 *.sqlite3
+*.json.backup
+*.log
+players_db.json
+economy.json
+clans.json
+bot_state.json
+links.json
 
-.kluster
+# OS
+.DS_Store
+Thumbs.db
 
 # Legacy and Large Backups
 BigodeBot/legacy/
 BigodeBot/.git_disabled_backup/
 .git_disabled_backup/
 legacy/
+backups/
+*.bak
+
+# Map tiles e imagens grandes
+static/tiles/
+new_dashboard/static/tiles/
+static/img/*.jpg
+static/img/*.png
+!static/img/logo_texas.png
+*.tif
+*.tiff
+test_tile_real.png
+test_real_tile.png
+chernarus_map_full.png

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - SERV. BRASIL SUL - XBOX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
+                    style="height: 40px; margin-right: 10px;">
+                <span style="font-size: 1.5rem;">SERV. BRASIL SUL - XBOX</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
+                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
+                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
+                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
+                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
+                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> Clã</a></li>
+                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Sul</a></li>
+                <li><a href="/dashboard" class="navbar-link active"><i class="ri-user-line"></i> Meu Perfil</a></li>
+                <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
+                </li>
+            </ul>
+            <a href="/logout" class="btn btn-secondary btn-sm"><i class="ri-logout-box-line"></i> Sair</a>
+        </div>
+    </nav>
+
+    <div class="container dashboard-container">
+        <!-- Perfil Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+            </div>
+            <div class="profile-info">
+                <h1 id="user-name">Carregando...</h1>
+                <p class="gamertag">Gamertag: <span id="user-gamertag" class="text-accent">...</span></p>
+                <div class="profile-badges">
+                    <span class="badge badge-vip">VIP</span>
+                    <span class="badge badge-veteran">Veterano</span>
+                </div>
+            </div>
+            <div class="profile-balance">
+                <div class="balance-label">Saldo Atual</div>
+                <div class="balance-amount"><span id="user-balance">0</span> 💰</div>
+                <a href="/shop" class="btn btn-primary btn-sm">Adicionar Fundos</a>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="tab-content active" id="tab-stats">
+            <div class="stats-section">
+                <h2><i class="ri-bar-chart-2-line"></i> Estatísticas de Combate</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-sword-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-kills">0</span>
+                            <span class="stat-label">Kills</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-skull-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-deaths">0</span>
+                            <span class="stat-label">Mortes</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-percent-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-kd">0.0</span>
+                            <span class="stat-label">K/D Ratio</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-ghost-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-zombies">0</span>
+                            <span class="stat-label">Zumbis Mortos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="mt-4"><i class="ri-map-pin-user-line"></i> Sobrevivência</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-time-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-playtime">0h</span>
+                            <span class="stat-label">Tempo Jogado</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-footprint-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-distance">0km</span>
+                            <span class="stat-label">Distância (Pé)</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-roadster-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-driving">0km</span>
+                            <span class="stat-label">Distância (Carro)</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-hammer-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-built">0</span>
+                            <span class="stat-label">Construções</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
+            <p style="margin: 0;">&copy; 2025 SERV. BRASIL SUL - XBOX. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+
+</html>
