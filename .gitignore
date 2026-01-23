@@ -53,3 +53,9 @@ areaflags.map
 *.sqlite3
 
 .kluster
+
+# Legacy and Large Backups
+BigodeBot/legacy/
+BigodeBot/.git_disabled_backup/
+.git_disabled_backup/
+legacy/
