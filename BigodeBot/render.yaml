@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: bigodetexas-dashboard
+    runtime: docker
+    plan: free # Can be upgraded to 'starter' for more persistence
+    region: ohio # Adjust if needed
+    envVars:
+      - key: FLASK_APP
+        value: new_dashboard/app.py
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bigodetexas-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.10.12
+
+databases:
+  - name: bigodetexas-db
+    plan: free # Start with free, can upgrade to 'starter' ($7/mo) for persistence
+    region: ohio
+    databaseName: bigodetexas
+    user: admin

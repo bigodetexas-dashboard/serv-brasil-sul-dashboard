@@ -1,11 +1,12 @@
 """
 FTP helper utilities for DayZ server file management.
-Provides functions for FTP connection and file upload operations.
+Provides functions for secure FTP_TLS connection and file upload operations.
 """
 
-import ftplib  # nosec B402
+import ftplib  # nosec B402 - FTP secured with FTP_TLS by default, see FTP_USE_TLS
 import json
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,14 +15,27 @@ FTP_HOST = os.getenv("FTP_HOST")
 FTP_PORT = int(os.getenv("FTP_PORT") or "21")
 FTP_USER = os.getenv("FTP_USER")
 FTP_PASS = os.getenv("FTP_PASS")
+# Use TLS by default for security, set to False only if server doesn't support it
+FTP_USE_TLS = os.getenv("FTP_USE_TLS", "True").lower() == "true"
 
 
 def connect_ftp():
-    """Estabelece conexão com o servidor FTP"""
+    """Estabelece conexão segura com o servidor FTP usando TLS"""
     try:
-        ftp = ftplib.FTP()  # nosec B321
-        ftp.connect(FTP_HOST, FTP_PORT)
-        ftp.login(FTP_USER, FTP_PASS)
+        # SECURITY: Use FTP_TLS for encrypted connections
+        if FTP_USE_TLS:
+            ftp = ftplib.FTP_TLS()  # nosec B321 - Using secure FTP_TLS with encryption
+            ftp.connect(FTP_HOST, FTP_PORT)
+            ftp.login(FTP_USER, FTP_PASS)
+            # Enable data channel protection (encrypt file transfers)
+            ftp.prot_p()
+        else:
+            # Fallback to plain FTP only if explicitly disabled
+            # WARNING: This transmits credentials in plain text!
+            ftp = ftplib.FTP()  # nosec B321 - Only used if FTP_USE_TLS=False (not recommended)
+            ftp.connect(FTP_HOST, FTP_PORT)
+            ftp.login(FTP_USER, FTP_PASS)
+
         return ftp
     except (ftplib.error_perm, OSError, ConnectionError) as e:
         print(f"Erro FTP: {e}")

@@ -8,9 +8,12 @@ import json
 from functools import wraps
 import secrets
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Mobile Admin Console - Independent Service
 app = Flask(__name__)
+# SECURITY: Enable ProxyFix for Cloudflare/Nginx proxy support
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 app.secret_key = secrets.token_hex(24)
 
 # Configuration Path
@@ -95,4 +98,8 @@ def logout():
 
 if __name__ == "__main__":
     # Running on a separate port for total isolation
-    app.run(host="0.0.0.0", port=5555, debug=True)
+    # SECURITY: Debug mode disabled in production
+    # Set FLASK_DEBUG=1 environment variable for development debugging
+    debug_mode = os.getenv("FLASK_DEBUG", "0") == "1"
+    # nosec B104 - Binding to 0.0.0.0 is intentional for remote access, secured with LOGIN_TOKEN
+    app.run(host="0.0.0.0", port=5555, debug=debug_mode)  # nosec B104

@@ -5,12 +5,37 @@ Sistema completo de dashboard para servidor DayZ (Unificado)
 
 import os
 from datetime import datetime
-from flask import Flask, render_template, session, redirect, url_for, jsonify, request
+from flask import (
+    Flask,
+    render_template,
+    session,
+    redirect,
+    url_for,
+    jsonify,
+    request,
+    abort,
+)
+from flask_socketio import SocketIO, emit, join_room
+from flask_wtf.csrf import CSRFProtect
+from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
 import sqlite3
 import sys
 import json
 import math
+import requests
+from itsdangerous import URLSafeTimedSerializer
+
+try:
+    import psycopg2
+    from psycopg2 import extras
+
+    POSTGRES_AVAILABLE = True
+except ImportError:
+    POSTGRES_AVAILABLE = False
 
 # Add project root to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -21,7 +46,153 @@ dotenv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 load_dotenv(dotenv_path)
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
+
+# SECURITY: Enable ProxyFix for Cloudflare/Nginx proxy support
+# This handles X-Forwarded-For, X-Forwarded-Proto, etc.
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
+
+def get_cloudflare_ip():
+    """Custom resolver to get the real user IP behind Cloudflare"""
+    # CF-Connecting-IP is the standard header from Cloudflare
+    return request.headers.get("CF-Connecting-IP", get_remote_address())
+
+
+# SECRET_KEY Validation
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY or SECRET_KEY == "dev-secret-key-change-in-production":
+    if os.getenv("FLASK_ENV") != "development":
+        raise RuntimeError("❌ SECRET_KEY must be set in production!")
+    else:
+        print("⚠️ [WARNING] Using insecure SECRET_KEY in development")
+        SECRET_KEY = "dev-secret-key-change-in-production"
+
+app.secret_key = SECRET_KEY
+
+# Security Configurations
+app.config.update(
+    SESSION_COOKIE_SECURE=True if not app.debug else False,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    PERMANENT_SESSION_LIFETIME=3600,
+    WTF_CSRF_TIME_LIMIT=None,
+    WTF_CSRF_SSL_STRICT=False if app.debug else True,
+)
+
+# Initialize Security Extensions
+csrf = CSRFProtect(app)
+
+# Rate Limiter - Protects against DDoS and brute-force
+limiter = Limiter(
+    app=app,
+    key_func=get_cloudflare_ip,  # Updated to be Cloudflare-aware
+    # Realistic limits: 10 per sec for burst, 500 per hr for active usage
+    default_limits=["2000 per day", "500 per hour", "10 per second"],
+    storage_uri="memory://",
+)
+
+# HTTPS Enforcement (Production only)
+if not app.debug:
+    Talisman(
+        app,
+        force_https=True,
+        strict_transport_security=True,
+        session_cookie_secure=True,
+        content_security_policy={
+            "default-src": "'self'",
+            "script-src": [
+                "'self'",
+                "'unsafe-inline'",
+                "https://cdn.socket.io",
+                "https://unpkg.com",  # Leaflet & Heatmap.js
+                "https://cdn.jsdelivr.net",  # Chart.js & Icons
+            ],
+            "style-src": [
+                "'self'",
+                "'unsafe-inline'",
+                "https://unpkg.com",  # Leaflet CSS
+                "https://cdn.jsdelivr.net",  # Icons
+                "https://fonts.googleapis.com",  # Google Fonts
+            ],
+            "font-src": ["'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net"],
+            "img-src": [
+                "'self'",
+                "data:",
+                "https:",
+                "https://*.tile.openstreetmap.org",  # Map tiles
+            ],
+            "connect-src": ["'self'", "wss:", "https:"],
+            "frame-src": ["'self'", "https://www.izurvive.com"],  # BASE page map
+        },
+    )
+
+# Inicializar SocketIO para WebSocket (threading mode para Python 3.12+)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+
+# Import security helpers
+from security_helpers import waf, ip_blacklist
+from email_service import send_2fa_code
+
+
+# ==================== SECURITY MIDDLEWARE ====================
+
+
+@app.before_request
+def security_middleware():
+    """WAF and IP blacklist check"""
+    ip = request.remote_addr
+
+    # Check IP blacklist
+    if ip_blacklist.is_blacklisted(ip):
+        print(f"[BLOCKED] Blacklisted IP: {ip}")
+        abort(403, "Access denied")
+
+    # WAF check on query params
+    for key, value in request.args.items():
+        is_attack, attack_type = waf.detect_attack(str(value))
+        if is_attack:
+            print(f"[WAF] {attack_type} detected from {ip}: {key}={value[:50]}")
+            ip_blacklist.record_violation(ip)
+            abort(403, "Malicious request detected")
+
+    # WAF check on JSON body
+    if request.is_json and request.json:
+        for key, value in request.json.items():
+            if isinstance(value, str):
+                is_attack, attack_type = waf.detect_attack(value)
+                if is_attack:
+                    print(f"[WAF] {attack_type} detected from {ip}")
+                    ip_blacklist.record_violation(ip)
+                    abort(403, "Malicious request detected")
+
+
+# Honeypot endpoints (detect scanners)
+@app.route("/admin.php")
+@app.route("/wp-admin/")
+@app.route("/phpmyadmin/")
+def honeypot():
+    """Honeypot to detect automated scanners"""
+    ip = request.remote_addr
+    print(f"[HONEYPOT] Scanner detected: {ip} -> {request.path}")
+    ip_blacklist.blacklist.add(ip)  # Immediate blacklist
+    abort(404)
+
+
+# Exempt API routes from CSRF (they use Bearer tokens)
+csrf.exempt("/api/mobile/auth")
+csrf.exempt("/api/mobile/push/register")
+csrf.exempt("/api/user/profile")
+csrf.exempt("/api/user/balance")
+csrf.exempt("/api/user/stats")
+csrf.exempt("/api/clan/my")
+csrf.exempt("/api/mural/banned")
+csrf.exempt("/api/mural/stats")
+csrf.exempt("/api/heatmap/kills")
+csrf.exempt("/api/shop/items")
+csrf.exempt("/api/shop/purchase")
+# 2FA routes
+csrf.exempt("/api/user/2fa/enable")
+csrf.exempt("/api/user/2fa/verify-setup")
 
 
 @app.before_request
@@ -34,6 +205,7 @@ def before_request():
         session["discord_user_id"] = "test_user_123"
         session["discord_username"] = "Jogador de Teste"
         session["discord_avatar"] = None
+        session["discord_email"] = "wellyton5@hotmail.com"  # For 2FA testing
 
 
 # Configuração do banco de dados (SQLite Unificado)
@@ -42,15 +214,96 @@ DB_PATH = os.path.join(
 )
 
 
+class PGCursorWrapper:
+    """Wrapper for PostgreSQL cursor to handle SQLite compatibility"""
+
+    def __init__(self, cursor):
+        self._cursor = cursor
+
+    def execute(self, query, params=None):
+        # Convert ? placeholders to %s for PostgreSQL
+        if query and "?" in query:
+            query = query.replace("?", "%s")
+        # Convert some SQLite specific functions if necessary
+        query = query.replace("datetime('now')", "CURRENT_TIMESTAMP")
+        return self._cursor.execute(query, params)
+
+    def fetchone(self):
+        return self._cursor.fetchone()
+
+    def fetchall(self):
+        return self._cursor.fetchall()
+
+    def close(self):
+        return self._cursor.close()
+
+    def __getattr__(self, name):
+        return getattr(self._cursor, name)
+
+
+class PGConnectionWrapper:
+    """Wrapper for PostgreSQL connection to handle SQLite compatibility"""
+
+    def __init__(self, conn):
+        self._conn = conn
+
+    def cursor(self, *args, **kwargs):
+        # Always use DictCursor for Row-like behavior
+        kwargs["cursor_factory"] = psycopg2.extras.DictCursor
+        return PGCursorWrapper(self._conn.cursor(*args, **kwargs))
+
+    def commit(self):
+        return self._conn.commit()
+
+    def rollback(self):
+        return self._conn.rollback()
+
+    def close(self):
+        return self._conn.close()
+
+    def __getattr__(self, name):
+        return getattr(self._conn, name)
+
+
 def get_db():
-    """Conexão com banco de dados SQLite"""
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        conn.row_factory = sqlite3.Row
-        return conn
-    except Exception as e:
-        print(f"Erro ao conectar SQLite: {e}")
-        return None
+    """Conexão com banco de dados (Suporta SQLite e PostgreSQL)"""
+    db_url = os.getenv("DATABASE_URL")
+
+    if db_url:
+        if not POSTGRES_AVAILABLE:
+            print("[ERROR] DATABASE_URL set but psycopg2 not installed")
+            return None
+        try:
+            conn = psycopg2.connect(db_url)
+            return PGConnectionWrapper(conn)
+        except Exception as e:
+            print(f"Erro ao conectar PostgreSQL: {e}")
+            return None
+    else:
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            conn.row_factory = sqlite3.Row
+            return conn
+        except Exception as e:
+            print(f"Erro ao conectar SQLite: {e}")
+            return None
+
+
+def get_current_user_id():
+    """Retorna ID do usuário da sessão ou do token Bearer"""
+    # 1. Tentar Sessão
+    if "discord_user_id" in session:
+        return session["discord_user_id"]
+
+    # 2. Tentar Token Bearer
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        data = verify_mobile_token(token)
+        if data:
+            return data.get("id")
+
+    return None
 
 
 # ==================== ROTAS PRINCIPAIS ====================
@@ -68,14 +321,20 @@ def heatmap():
 
 
 @app.route("/login")
+@limiter.limit("5 per minute")
 def login():
     """Redireciona para OAuth Discord"""
     from discord_auth import get_oauth_url
+
+    # Check mobile flag
+    if request.args.get("mobile") == "true":
+        session["mobile_login"] = True
 
     return redirect(get_oauth_url())
 
 
 @app.route("/callback")
+@limiter.limit("10 per minute")
 def callback():
     """Callback OAuth Discord"""
     from discord_auth import exchange_code, get_user_info
@@ -114,6 +373,29 @@ def callback():
         session["discord_email"] = user_info.get("email")
         session["xbox_gamertag"] = xbox_gamertag
 
+        # Salvar/Atualizar email no banco de dados
+        conn_temp = get_db()
+        if conn_temp:
+            cur_temp = conn_temp.cursor()
+            user_email = user_info.get("email")
+            if user_email:
+                # Verificar se usuário existe
+                cur_temp.execute("SELECT id FROM users WHERE discord_id = ?", (str(discord_id),))
+                if cur_temp.fetchone():
+                    # Atualizar email
+                    cur_temp.execute(
+                        "UPDATE users SET email = ?, discord_username = ? WHERE discord_id = ?",
+                        (user_email, user_info["username"], str(discord_id)),
+                    )
+                else:
+                    # Criar usuário
+                    cur_temp.execute(
+                        "INSERT INTO users (discord_id, discord_username, email, balance) VALUES (?, ?, ?, 0)",
+                        (str(discord_id), user_info["username"], user_email),
+                    )
+                conn_temp.commit()
+            conn_temp.close()
+
         # --- AUTO-LINK & VERIFICATION LOGIC (Via Discord Connection) ---
         if xbox_gamertag:
             from repositories.player_repository import PlayerRepository
@@ -133,6 +415,63 @@ def callback():
                 # Already matched, ensure verified flag is set
                 repo.set_verified(discord_id, True)
         # -----------------------------------------------------------
+
+        # -----------------------------------------------------------
+
+        # Check Mobile Redirect
+        if session.pop("mobile_login", False):
+            # Redirecionar para o App Expo (Dev)
+            # Ajuste o IP conforme necessário se for para produção
+            return redirect(f"exp://192.168.1.15:8081/--/auth?code={code}")
+
+        # Check if user has 2FA enabled
+        conn = get_db()
+        if conn:
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT twofa_enabled, discord_username FROM users WHERE discord_id = ?",
+                (str(discord_id),),
+            )
+            user = cur.fetchone()
+
+            if user and user["twofa_enabled"]:
+                # Generate and send OTP
+                from otp_manager import generate_otp, encrypt_otp
+                import time
+
+                otp_code = generate_otp()
+                encrypted_otp = encrypt_otp(otp_code)
+                expires_at = int(time.time()) + 300  # 5 minutos
+
+                # Save OTP to database
+                cur.execute(
+                    """UPDATE users
+                       SET twofa_otp_code = ?,
+                           twofa_otp_expires = ?,
+                           twofa_last_code_sent = ?
+                       WHERE discord_id = ?""",
+                    (encrypted_otp, expires_at, int(time.time()), str(discord_id)),
+                )
+                conn.commit()
+
+                # Send email with OTP
+                user_email = session.get("discord_email") or f"{discord_id}@discord.user"
+                from email_service import send_2fa_code
+
+                success, msg = send_2fa_code(user_email, otp_code)
+
+                if success:
+                    print(f"[2FA LOGIN] Código OTP enviado para {user_email}: {otp_code}")
+                else:
+                    print(f"[2FA LOGIN] Erro ao enviar email: {msg}")
+
+                # Set pending 2FA - user must verify before accessing dashboard
+                session["pending_2fa"] = discord_id
+                session["pending_2fa_email"] = user_email
+                conn.close()
+                return redirect(url_for("twofa_verify"))
+
+            conn.close()
 
         return redirect(url_for("dashboard"))
     except Exception as e:
@@ -285,6 +624,12 @@ def banco():
     return render_template("banco.html")
 
 
+@app.route("/mural")
+def mural():
+    """Mural da Vergonha - Hall of Shame"""
+    return render_template("mural.html")
+
+
 @app.route("/achievements")
 def achievements():
     """Página de conquistas"""
@@ -310,6 +655,66 @@ def settings():
         session["discord_user_id"] = "test_user_123"
         session["discord_username"] = "Jogador de Teste"
     return render_template("settings.html")
+
+
+# ==================== 2FA ROUTES ====================
+
+
+@app.route("/2fa/setup")
+def twofa_setup():
+    """2FA Setup Page"""
+    user_id = get_current_user_id()
+    if not user_id:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    # Check if 2FA already enabled
+    cur.execute("SELECT twofa_enabled FROM users WHERE discord_id = ?", (str(user_id),))
+    user = cur.fetchone()
+    conn.close()
+
+    if user and user["twofa_enabled"]:
+        return redirect(url_for("dashboard"))
+
+    return render_template("2fa_setup.html")
+
+
+@app.route("/2fa/verify")
+def twofa_verify():
+    """2FA Verification Page - Show during login if 2FA is enabled"""
+    if not session.get("pending_2fa"):
+        return redirect(url_for("dashboard"))
+
+    return render_template("2fa_verify.html")
+
+
+@app.before_request
+def check_2fa_verification():
+    """Middleware to check if user needs 2FA verification"""
+    # Skip check for certain routes
+    exempt_routes = [
+        "login",
+        "callback",
+        "logout",
+        "twofa_verify",
+        "static",
+        "health",
+        "index",
+    ]
+
+    # Skip API routes
+    if request.endpoint and (
+        request.endpoint in exempt_routes
+        or request.endpoint.startswith("api_")
+        or request.path.startswith("/api/")
+    ):
+        return
+
+    # Check if user has pending 2FA verification
+    if session.get("pending_2fa") and request.endpoint != "twofa_verify":
+        return redirect(url_for("twofa_verify"))
 
 
 # ==================== API ENDPOINTS ====================
@@ -366,7 +771,7 @@ def api_stats():
 @app.route("/api/user/profile")
 def api_user_profile():
     """Perfil do usuário logado"""
-    user_id = session.get("discord_user_id")
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
 
@@ -403,7 +808,7 @@ def api_user_profile():
 @app.route("/api/user/balance")
 def api_user_balance():
     """Saldo do usuário"""
-    user_id = session.get("discord_user_id")
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
 
@@ -414,6 +819,401 @@ def api_user_balance():
     conn.close()
 
     return jsonify({"balance": result["balance"] if result else 0, "user_id": user_id})
+
+
+@app.route("/api/settings/get")
+def api_settings_get():
+    """Get user settings"""
+    user_id = get_current_user_id()
+    if not user_id:
+        return jsonify({"error": "Not authenticated"}), 401
+
+    conn = get_db()
+    if not conn:
+        return jsonify({"error": "Database error"}), 500
+
+    cur = conn.cursor()
+    cur.execute(
+        """SELECT discord_username, nitrado_gamertag, twofa_enabled
+           FROM users WHERE discord_id = ?""",
+        (str(user_id),),
+    )
+    user = cur.fetchone()
+    conn.close()
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Get email from session (Discord OAuth)
+    email = session.get("discord_email", "")
+
+    return jsonify(
+        {
+            "email": email,
+            "username": user["discord_username"] or session.get("discord_username", ""),
+            "gamertag": user["nitrado_gamertag"] or "",
+            "notifications_enabled": True,  # Default value
+            "theme": "dark",  # Default theme
+            "language": "pt-BR",  # Default language
+            "twofa_enabled": bool(user["twofa_enabled"]),
+        }
+    )
+
+
+# ==================== 2FA API ROUTES ====================
+
+
+@app.route("/api/user/2fa/send-code", methods=["POST"])
+@csrf.exempt
+@limiter.limit("3 per 15 minutes")  # Stricter limit for email
+def api_2fa_send_code():
+    """Generate and send 2FA code via email - supports both setup and login flows"""
+    # Try getting authenticated user OR pending 2FA user
+    user_id = get_current_user_id()
+    user_email = session.get("discord_email")
+
+    # If not logged in, check pending logic
+    if not user_id:
+        user_id = session.get("pending_2fa")
+        user_email = session.get("pending_2fa_email")  # Email stored during callback
+
+    if not user_id or not user_email:
+        return jsonify({"error": "Not authenticated or no pending login"}), 401
+
+    from otp_manager import generate_otp, encrypt_otp
+    import time
+
+    # Generate Code
+    otp_code = generate_otp()
+    encrypted_otp = encrypt_otp(otp_code)
+    expires_at = int(time.time()) + 300  # 5 minutes
+
+    conn = get_db()
+    if not conn:
+        return jsonify({"error": "Database error"}), 500
+
+    try:
+        cur = conn.cursor()
+
+        # Save OTP to database
+        cur.execute(
+            """UPDATE users
+               SET twofa_otp_code = ?,
+                   twofa_otp_expires = ?,
+                   twofa_last_code_sent = ?
+               WHERE discord_id = ?""",
+            (encrypted_otp, expires_at, int(time.time()), str(user_id)),
+        )
+        conn.commit()
+    except Exception as e:
+        print(f"Error saving OTP: {e}")
+        conn.close()
+        return jsonify({"error": "Database update failed"}), 500
+
+    conn.close()
+
+    # Send Email
+    success, error_msg = send_2fa_code(user_email, otp_code)
+
+    if not success:
+        print(f"[2FA EMAIL ERROR] Failed to send to {user_email}: {error_msg}")
+        return jsonify(
+            {
+                "success": False,
+                "error": "Erro ao enviar email de verificação. Tente novamente mais tarde.",
+            }
+        ), 500
+
+    return jsonify({"success": True, "message": f"Código enviado para {user_email}"})
+
+
+@app.route("/api/user/2fa/enable", methods=["POST"])
+@csrf.exempt
+def api_2fa_enable():
+    """Enable 2FA for user - verify OTP and activate"""
+    user_id = get_current_user_id()
+    if not user_id:
+        return jsonify({"error": "Not authenticated"}), 401
+
+    data = request.get_json()
+    token = data.get("token")
+
+    if not token or len(token) != 6:
+        return jsonify({"error": "Invalid token format"}), 400
+
+    conn = get_db()
+    if not conn:
+        return jsonify({"error": "Database error"}), 500
+
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT twofa_otp_code, twofa_otp_expires FROM users WHERE discord_id = ?",
+            (str(user_id),),
+        )
+        user = cur.fetchone()
+
+        if not user or not user["twofa_otp_code"]:
+            conn.close()
+            return jsonify(
+                {"error": "Nenhum código solicitado. Clique em enviar código primeiro."}
+            ), 400
+
+        from otp_manager import decrypt_otp, is_expired, generate_backup_codes, encrypt_backup_codes
+
+        # Verify Expiration
+        if is_expired(user["twofa_otp_expires"]):
+            conn.close()
+            return jsonify({"error": "Código expirado. Solicite um novo."}), 400
+
+        # Verify Code
+        decrypted_code = decrypt_otp(user["twofa_otp_code"])
+        if decrypted_code != token:
+            conn.close()
+            return jsonify({"error": "Código inválido."}), 400
+
+        # Generate backup codes
+        backup_codes = generate_backup_codes()
+        encrypted_backup_codes = encrypt_backup_codes(backup_codes)
+
+        # Update user (Enable 2FA, clear OTP, save backup codes)
+        cur.execute(
+            """UPDATE users
+               SET twofa_enabled = 1,
+                   twofa_otp_code = NULL,
+                   twofa_otp_expires = NULL,
+                   twofa_backup_codes = ?
+               WHERE discord_id = ?""",
+            (encrypted_backup_codes, str(user_id)),
+        )
+        conn.commit()
+        conn.close()
+
+        print(f"[2FA] Enabled for user {user_id}")
+        return jsonify({"success": True, "backup_codes": backup_codes})
+
+    except Exception as e:
+        print(f"Error enabling 2FA: {e}")
+        if conn:
+            conn.close()
+        return jsonify({"error": "Failed to enable 2FA"}), 500
+
+
+@app.route("/api/user/2fa/status")
+@csrf.exempt
+def api_2fa_status():
+    """Check if user has 2FA enabled"""
+    user_id = get_current_user_id()
+    if not user_id:
+        return jsonify({"error": "Not authenticated"}), 401
+
+    conn = get_db()
+    if not conn:
+        return jsonify({"error": "Database error"}), 500
+
+    cur = conn.cursor()
+    cur.execute("SELECT twofa_enabled FROM users WHERE discord_id = ?", (str(user_id),))
+    user = cur.fetchone()
+    conn.close()
+
+    enabled = bool(user and user["twofa_enabled"]) if user else False
+    return jsonify({"enabled": enabled})
+
+
+@app.route("/api/user/2fa/disable", methods=["POST"])
+@csrf.exempt
+def api_2fa_disable():
+    """Disable 2FA for user - requires OTP verification"""
+    user_id = get_current_user_id()
+    if not user_id:
+        return jsonify({"error": "Not authenticated"}), 401
+
+    data = request.get_json()
+    token = data.get("token")
+
+    if not token or len(token) != 6:
+        return jsonify({"error": "Invalid token format"}), 400
+
+    conn = get_db()
+    if not conn:
+        return jsonify({"error": "Database error"}), 500
+
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT twofa_otp_code, twofa_otp_expires, twofa_enabled FROM users WHERE discord_id = ?",
+            (str(user_id),),
+        )
+        user = cur.fetchone()
+
+        if not user or not user["twofa_enabled"]:
+            conn.close()
+            return jsonify({"error": "2FA already disabled"}), 400
+
+        if not user["twofa_otp_code"]:
+            conn.close()
+            return jsonify({"error": "Please request a code first"}), 400
+
+        from otp_manager import decrypt_otp, is_expired
+
+        # Verify Expiration
+        if is_expired(user["twofa_otp_expires"]):
+            conn.close()
+            return jsonify({"error": "Code expired"}), 400
+
+        # Verify Code
+        if decrypt_otp(user["twofa_otp_code"]) != token:
+            conn.close()
+            return jsonify({"error": "Invalid code"}), 400
+
+        # Disable 2FA
+        cur.execute(
+            """UPDATE users
+               SET twofa_enabled = 0,
+                   twofa_otp_code = NULL,
+                   twofa_otp_expires = NULL,
+                   twofa_backup_codes = NULL
+               WHERE discord_id = ?""",
+            (str(user_id),),
+        )
+        conn.commit()
+        conn.close()
+
+        print(f"[2FA] Disabled for user {user_id}")
+        return jsonify({"success": True})
+
+    except Exception as e:
+        print(f"Error disabling 2FA: {e}")
+        if conn:
+            conn.close()
+        return jsonify({"error": "Failed to disable 2FA"}), 500
+
+
+@app.route("/api/user/2fa/verify", methods=["POST"])
+@csrf.exempt
+@limiter.limit("5 per minute")
+def api_2fa_verify():
+    """Verify 2FA token during login - supports both OTP and backup codes"""
+    # This route is usually accessed by session['pending_2fa'] user
+    user_id = session.get("pending_2fa")
+
+    if not user_id:
+        # Fallback: maybe they are already logged in and verifying again?
+        # But usually this is for LOGIN flow.
+        return jsonify({"error": "No 2FA verification pending"}), 400
+
+    data = request.get_json()
+    token = data.get("token")
+    backup_code = data.get("backup_code")
+
+    if not token and not backup_code:
+        return jsonify({"error": "Token or backup code required"}), 400
+
+    conn = get_db()
+    if not conn:
+        return jsonify({"error": "Database error"}), 500
+
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT twofa_otp_code, twofa_otp_expires, twofa_backup_codes FROM users WHERE discord_id = ?",
+            (str(user_id),),
+        )
+        user = cur.fetchone()
+
+        if not user:
+            conn.close()
+            return jsonify({"error": "User not found"}), 404
+
+        from otp_manager import (
+            decrypt_otp,
+            is_expired,
+            verify_backup_code,
+            decrypt_backup_codes,
+            encrypt_backup_codes,
+        )
+
+        # Verify Email OTP
+        if token:
+            if len(token) != 6:
+                conn.close()
+                return jsonify({"error": "Invalid token format"}), 400
+
+            if not user["twofa_otp_code"]:
+                conn.close()
+                return jsonify({"error": "No code requested. Use resend."}), 400
+
+            if is_expired(user["twofa_otp_expires"]):
+                conn.close()
+                return jsonify({"error": "Code expired"}), 400
+
+            if decrypt_otp(user["twofa_otp_code"]) != token:
+                conn.close()
+                return jsonify({"error": "Invalid verification code"}), 401
+
+            # Token valid - Complete Login
+
+            # Clear OTP fields
+            cur.execute(
+                "UPDATE users SET twofa_otp_code = NULL, twofa_otp_expires = NULL WHERE discord_id = ?",
+                (str(user_id),),
+            )
+            conn.commit()
+            conn.close()
+
+            # Finalize Session
+            session["discord_user_id"] = user_id
+            session.pop("pending_2fa", None)
+            session.pop("pending_2fa_email", None)
+
+            return jsonify({"success": True, "message": "Login successful"})
+
+        # Verify backup code
+        if backup_code:
+            if not user["twofa_backup_codes"]:
+                conn.close()
+                return jsonify({"error": "No backup codes configured"}), 400
+
+            # Decrypt backup codes
+            stored_codes = decrypt_backup_codes(user["twofa_backup_codes"])
+
+            # Verify and remove used code
+            is_valid, updated_codes = verify_backup_code(stored_codes, backup_code)
+
+            if not is_valid:
+                conn.close()
+                return jsonify({"error": "Invalid backup code"}), 401
+
+            # Update backup codes in database (remove used one)
+            encrypted_updated_codes = encrypt_backup_codes(updated_codes)
+            cur.execute(
+                "UPDATE users SET twofa_backup_codes = ? WHERE discord_id = ?",
+                (encrypted_updated_codes, str(user_id)),
+            )
+            conn.commit()
+            conn.close()
+
+            # Finalize Session
+            session["discord_user_id"] = user_id
+            session.pop("pending_2fa", None)
+            session.pop("pending_2fa_email", None)
+
+            # Warn if running low on backup codes
+            remaining = len(updated_codes)
+            message = "Login successful"
+            if remaining <= 2:
+                message += f". ⚠️ Only {remaining} backup codes remaining."
+
+            return jsonify({"success": True, "message": message, "remaining_codes": remaining})
+
+        conn.close()
+        return jsonify({"error": "Invalid request"}), 400
+
+    except Exception as e:
+        print(f"Error verifying 2FA: {e}")
+        if conn:
+            conn.close()
+        return jsonify({"error": "Verification failed"}), 500
 
 
 @app.route("/api/shop/items")
@@ -440,7 +1240,7 @@ def api_shop_items():
 @app.route("/api/user/stats")
 def api_user_stats():
     """Estatísticas do usuário reais do SQLite"""
-    user_id = session.get("discord_user_id")
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
 
@@ -493,7 +1293,7 @@ def api_user_stats():
 @app.route("/api/clan/my")
 def api_clan_my():
     """Informações do clã do usuário logado"""
-    user_id = session.get("discord_user_id")
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
 
@@ -1437,18 +2237,22 @@ def api_heatmap_hero_stats():
     try:
         cur = conn.cursor()
 
-        # Time filter
-        time_filter = ""
-        if time_range == "24h":
-            time_filter = "WHERE timestamp >= datetime('now', '-24 hours')"
-        elif time_range == "7d":
-            time_filter = "WHERE timestamp >= datetime('now', '-7 days')"
-        elif time_range == "30d":
-            time_filter = "WHERE timestamp >= datetime('now', '-30 days')"
-        # else: all time (no filter)
+        # SECURITY: Validate and construct time filter with whitelisted values only
+        # This prevents SQL injection by only allowing predefined filter values
+        VALID_TIME_FILTERS = {
+            "24h": "WHERE timestamp >= datetime('now', '-24 hours')",
+            "7d": "WHERE timestamp >= datetime('now', '-7 days')",
+            "30d": "WHERE timestamp >= datetime('now', '-30 days')",
+            "all": "",  # No filter for all time
+        }
+
+        # Use whitelisted value or default to empty (all time)
+        time_filter = VALID_TIME_FILTERS.get(time_range, "")
 
         # 1. Total Kills
-        cur.execute(f"SELECT COUNT(*) as total FROM pvp_kills {time_filter}")
+        # SECURITY: time_filter is from whitelist, safe to concatenate
+        query = "SELECT COUNT(*) as total FROM pvp_kills " + time_filter
+        cur.execute(query)
         total_kills = cur.fetchone()["total"] or 0
 
         # 2. Kills Today (last 24h)
@@ -1458,40 +2262,55 @@ def api_heatmap_hero_stats():
         kills_today = cur.fetchone()["total"] or 0
 
         # 3. Top Weapon
-        cur.execute(f"""
+        query = (
+            """
             SELECT weapon, COUNT(*) as count
             FROM pvp_kills
-            {time_filter}
+            """
+            + time_filter
+            + """
             AND weapon IS NOT NULL AND weapon != 'Desconhecida'
             GROUP BY weapon
             ORDER BY count DESC
             LIMIT 1
-        """)
+        """
+        )
+        cur.execute(query)
         top_weapon_row = cur.fetchone()
         top_weapon = top_weapon_row["weapon"] if top_weapon_row else "-"
 
         # 4. Top Player (killer_name)
-        cur.execute(f"""
+        query = (
+            """
             SELECT killer_name, COUNT(*) as count
             FROM pvp_kills
-            {time_filter}
+            """
+            + time_filter
+            + """
             AND killer_name IS NOT NULL
             GROUP BY killer_name
             ORDER BY count DESC
             LIMIT 1
-        """)
+        """
+        )
+        cur.execute(query)
         top_player_row = cur.fetchone()
         top_player = top_player_row["killer_name"] if top_player_row else "-"
 
         # 5. Peak Hour (horário com mais atividade)
-        cur.execute(f"""
+        query = (
+            """
             SELECT CAST(strftime('%H', timestamp) as INTEGER) as hour, COUNT(*) as count
             FROM pvp_kills
-            {time_filter}
+            """
+            + time_filter
+            + """
             GROUP BY hour
             ORDER BY count DESC
             LIMIT 1
-        """)
+        """
+        )
+        cur.execute(query)
         peak_hour_row = cur.fetchone()
         if peak_hour_row:
             h = peak_hour_row["hour"]
@@ -1500,17 +2319,22 @@ def api_heatmap_hero_stats():
             peak_hour = "-"
 
         # 6. Hottest Zone (usar lógica de top_locations)
-        cur.execute(f"""
+        query = (
+            """
             SELECT
                 CAST(game_x/1000 AS INTEGER)*1000 + 500 as center_x,
                 CAST(game_z/1000 AS INTEGER)*1000 + 500 as center_z,
                 COUNT(*) as deaths
             FROM pvp_kills
-            {time_filter}
+            """
+            + time_filter
+            + """
             GROUP BY CAST(game_x/1000 AS INTEGER), CAST(game_z/1000 AS INTEGER)
             ORDER BY deaths DESC
             LIMIT 1
-        """)
+        """
+        )
+        cur.execute(query)
         hottest_row = cur.fetchone()
         hottest_zone = "-"
         if hottest_row:
@@ -1850,8 +2674,375 @@ def api_admin_check_raid():
     )
 
 
+# ==================== MURAL DA VERGONHA API ====================
+
+
+@app.route("/api/mural/banned")
+def api_mural_banned():
+    """Lista todos os jogadores banidos com filtro opcional por categoria"""
+    try:
+        from repositories.mural_repository import MuralRepository
+
+        repo = MuralRepository()
+        category = request.args.get("category")
+
+        if category and category != "all":
+            banned_list = repo.get_banned_by_category(category)
+        else:
+            limit = int(request.args.get("limit", 100))
+            offset = int(request.args.get("offset", 0))
+            banned_list = repo.get_all_banned(limit=limit, offset=offset)
+
+        return jsonify(banned_list)
+
+    except Exception as e:
+        print(f"[ERROR] Erro ao buscar banidos: {e}")
+        return jsonify({"error": "Erro ao carregar dados"}), 500
+
+
+@app.route("/api/mural/stats")
+def api_mural_stats():
+    """Retorna estatísticas do Mural da Vergonha"""
+    try:
+        from repositories.mural_repository import MuralRepository
+
+        repo = MuralRepository()
+        stats = repo.get_mural_stats()
+
+        return jsonify(stats)
+
+    except Exception as e:
+        print(f"[ERROR] Erro ao buscar stats do mural: {e}")
+        return jsonify({"total_banned": 0, "recent_bans": 0, "by_category": []})
+
+
+# ==================== WEBSOCKET EVENTS ====================
+
+
+@socketio.on("connect")
+def handle_connect():
+    """Cliente conectou ao WebSocket"""
+    print(f"[WebSocket] Cliente conectado: {request.sid}")
+    emit(
+        "connection_response",
+        {
+            "status": "connected",
+            "message": "Conectado ao BigodeTexas em tempo real!",
+            "timestamp": datetime.now().isoformat(),
+        },
+    )
+
+
+@socketio.on("disconnect")
+def handle_disconnect():
+    """Cliente desconectou"""
+    print(f"[WebSocket] Cliente desconectado: {request.sid}")
+
+
+@socketio.on("subscribe_killfeed")
+def handle_subscribe_killfeed():
+    """Inscrever cliente no canal de killfeed"""
+    join_room("killfeed")
+    print(f"[WebSocket] Cliente {request.sid} inscrito no killfeed")
+    emit("subscribed", {"channel": "killfeed", "status": "success"})
+
+
+@socketio.on("subscribe_missions")
+def handle_subscribe_missions():
+    """Inscrever cliente no canal de missões"""
+    user_id = session.get("discord_user_id")
+    if user_id:
+        join_room(f"user_{user_id}")
+        print(f"[WebSocket] Cliente {request.sid} inscrito em missões (user_{user_id})")
+        emit("subscribed", {"channel": "missions", "status": "success"})
+
+
+@socketio.on("subscribe_market")
+def handle_subscribe_market():
+    """Inscrever cliente no canal de mercado"""
+    join_room("market")
+    print(f"[WebSocket] Cliente {request.sid} inscrito no mercado")
+    emit("subscribed", {"channel": "market", "status": "success"})
+
+
+@socketio.on("ping")
+def handle_ping():
+    """Responder ping para manter conexão viva"""
+    emit("pong", {"timestamp": datetime.now().isoformat()})
+
+
+# ==================== FUNÇÕES AUXILIARES WEBSOCKET ====================
+
+
+def broadcast_kill(kill_data):
+    """
+    Envia kill para todos os clientes conectados ao killfeed
+    Chamar esta função de cogs/killfeed.py quando processar um kill
+    """
+    socketio.emit("new_kill", kill_data, room="killfeed")
+    print(f"[WebSocket] Kill broadcast: {kill_data.get('killer')} -> {kill_data.get('victim')}")
+
+
+def notify_mission_complete(user_id, mission_data):
+    """
+    Notifica usuário específico sobre missão completa
+    """
+    socketio.emit("mission_completed", mission_data, room=f"user_{user_id}")
+    print(f"[WebSocket] Missão completa notificada para user_{user_id}")
+
+
+def broadcast_market_update(item_data):
+    """
+    Envia atualização de preço do mercado
+    """
+    socketio.emit("market_update", item_data, room="market")
+    print(f"[WebSocket] Mercado atualizado: {item_data.get('item_name')}")
+
+
+# ==================== MOBILE HELPER & AUTH ====================
+
+mobile_signer = URLSafeTimedSerializer(app.secret_key or "secret-key-mobile")
+
+
+def generate_mobile_token(user_id, username):
+    """Gera token assinado para o app mobile"""
+    return mobile_signer.dumps({"id": user_id, "username": username})
+
+
+def verify_mobile_token(token):
+    """Verifica e decodifica token mobile"""
+    try:
+        data = mobile_signer.loads(token, max_age=86400 * 30)  # 30 dias
+        return data
+    except Exception:
+        return None
+
+
+def send_push_notification(discord_id, title, body, data=None):
+    """Envia notificação Push via Expo"""
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT push_token FROM user_push_tokens WHERE discord_id = ?", (str(discord_id),)
+        )
+        row = cur.fetchone()
+        conn.close()
+
+        if row and row["push_token"]:
+            token = row["push_token"]
+            message = {
+                "to": token,
+                "sound": "default",
+                "title": title,
+                "body": body,
+                "data": data or {},
+            }
+            # SECURITY: Add timeout to prevent indefinite hanging
+            requests.post(
+                "https://exp.host/--/api/v2/push/send",
+                json=message,
+                headers={"Accept": "application/json", "Accept-encoding": "gzip, deflate"},
+                timeout=10,  # 10 second timeout
+            )
+            print(f"[PUSH] Sent to {discord_id}: {title}")
+    except Exception as e:
+        print(f"[PUSH ERROR] {e}")
+
+
+# ==================== MOBILE API ENDPOINTS ====================
+
+
+@app.route("/api/mobile/auth", methods=["POST"])
+def api_mobile_auth():
+    """Autenticação Mobile: Code -> Token JWT"""
+    data = request.get_json()
+    code = data.get("code")
+
+    if not code:
+        return jsonify({"error": "Code required"}), 400
+
+    try:
+        from discord_auth import exchange_code, get_user_info
+
+        token_data = exchange_code(code)
+        access_token = token_data.get("access_token")
+
+        if not access_token:
+            return jsonify({"error": "Failed to exchange code"}), 401
+
+        user_info = get_user_info(access_token)
+        discord_id = user_info["id"]
+        username = user_info["username"]
+
+        mobile_token = generate_mobile_token(discord_id, username)
+
+        return jsonify(
+            {
+                "token": mobile_token,
+                "user": {"id": discord_id, "username": username, "avatar": user_info.get("avatar")},
+            }
+        )
+    except Exception as e:
+        print(f"[MOBILE AUTH ERROR] {e}")
+        return jsonify({"error": "Auth failed"}), 500
+
+
+@app.route("/api/mobile/push/register", methods=["POST"])
+def api_mobile_push_register():
+    """Registra token Expo"""
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    token = auth_header.split(" ")[1]
+    user_data = verify_mobile_token(token)
+    if not user_data:
+        return jsonify({"error": "Invalid token"}), 401
+
+    data = request.get_json()
+    push_token = data.get("push_token")
+
+    if not push_token:
+        return jsonify({"error": "Push token required"}), 400
+
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            """
+            INSERT OR REPLACE INTO user_push_tokens (discord_id, push_token)
+            VALUES (?, ?)
+        """,
+            (user_data["id"], push_token),
+        )
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"[PUSH REGISTER ERROR] {e}")
+        return jsonify({"error": "Database error"}), 500
+
+
+# ==================== SOCKET.IO CHAT EVENTS ====================
+
+
+@socketio.on("join_clan")
+def on_join_clan(data):
+    """Entrar na sala do chat do clã"""
+    token = data.get("token")
+    user_data = verify_mobile_token(token)
+
+    if not user_data:
+        print(f"[SOCKET] Join failed: Invalid token")
+        emit("error", {"message": "Autenticação falhou."})
+        return
+
+    discord_id = user_data["id"]
+    username = user_data["username"]
+    from repositories.clan_repository import ClanRepository
+
+    repo = ClanRepository()
+    clan = repo.get_user_clan(discord_id)
+
+    if clan:
+        room = f"clan_{clan['id']}"
+        join_room(room)
+        print(f"[SOCKET] User {username} joined room {room}")
+        emit("joined", {"room": room, "clan_name": clan["name"]})
+
+        # Histórico (Simples)
+        try:
+            conn = get_db()
+            cur = conn.cursor()
+            cur.execute(
+                """
+                SELECT sender_name, message, timestamp
+                FROM clan_chat_history
+                WHERE clan_id = ?
+                ORDER BY timestamp DESC LIMIT 50
+            """,
+                (clan["id"],),
+            )
+            history = [dict(row) for row in cur.fetchall()]
+            conn.close()
+            emit("history", history[::-1])
+        except Exception as e:
+            print(f"[SOCKET ERROR] Fetching history: {e}")
+    else:
+        print(f"[SOCKET] User {username} tried to join clan chat but has no clan.")
+        emit("error", {"message": "Você não pertence a um clã."})
+
+
+@socketio.on("send_clan_message")
+def on_send_clan_message(data):
+    """Enviar mensagem no chat"""
+    token = data.get("token")
+    message = data.get("message")
+    user_data = verify_mobile_token(token)
+
+    if not user_data or not message:
+        print(f"[SOCKET] Send failed: Invalid data (Token: {bool(token)}, Msg: {bool(message)})")
+        return
+
+    discord_id = user_data["id"]
+    username = user_data["username"]
+
+    from repositories.clan_repository import ClanRepository
+
+    repo = ClanRepository()
+    clan = repo.get_user_clan(discord_id)
+
+    if clan:
+        room = f"clan_{clan['id']}"
+
+        # Salvar DB
+        try:
+            conn = get_db()
+            cur = conn.cursor()
+            cur.execute(
+                """
+                INSERT INTO clan_chat_history (clan_id, sender_discord_id, sender_name, message)
+                VALUES (?, ?, ?, ?)
+            """,
+                (clan["id"], discord_id, username, message),
+            )
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            print(f"[CHAT SAVE ERROR] {e}")
+
+        # Broadcast
+        emit(
+            "new_message",
+            {"sender": username, "message": message, "timestamp": datetime.now().isoformat()},
+            to=room,
+        )
+        print(f"[SOCKET] Message sent to {room}: {message}")
+    else:
+        print(f"[SOCKET] Send failed: User {username} has no clan.")
+        emit("error", {"message": "Você não está em um clã."})
+
+
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    """Handler for rate limited requests"""
+    return render_template("rate_limit.html"), 429
+
+
 if __name__ == "__main__":
     # Restricted to localhost for safety, use environment variable for external access (0.0.0.0)
-    host = os.getenv("FLASK_HOST", "127.0.0.1")
-    debug_mode = os.getenv("FLASK_DEBUG", "False").lower() == "true"
-    app.run(host=host, port=5000, debug=debug_mode)
+    host = os.getenv("DASHBOARD_HOST", "127.0.0.1")
+    port = int(os.getenv("DASHBOARD_PORT", 5000))
+    debug = os.getenv("FLASK_DEBUG", "1") == "1"
+
+    print("=" * 60)
+    print("BigodeTexas Dashboard v2.2 (WebSocket Edition)")
+    print("=" * 60)
+    print(f"WebSocket: ATIVO")
+    print(f"Servidor: http://{host}:{port}")
+    print(f"Debug: {'ON' if debug else 'OFF'}")
+    print("=" * 60)
+
+    # Usar socketio.run() ao invés de app.run() para suportar WebSocket
+    socketio.run(app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True)
