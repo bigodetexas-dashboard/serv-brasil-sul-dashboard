@@ -1,123 +1,83 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SERV. BRASIL SUL - XBOX - DayZ Server Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-</head>
+{% block title %}SERV. BRASIL SUL - XBOX - DayZ Server Dashboard{% endblock %}
 
-<body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">
-                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
-                    style="height: 40px; margin-right: 10px;">
-                <span style="font-size: 1.5rem;">SERV. BRASIL SUL - XBOX</span>
-            </a>
-            <ul class="navbar-menu">
-                <li><a href="/" class="navbar-link active"><i class="ri-home-line"></i> Início</a></li>
-                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
-                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
-                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
-                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
-                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> Clã</a></li>
-                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Sul</a></li>
-                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
-                <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
-                </li>
-            </ul>
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
 
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-background"></div>
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Bem-vindo ao <span>SERV. BRASIL SUL - XBOX</span>
-                </h1>
-                <p class="hero-subtitle">
-                    O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!
-                </p>
-                <div class="hero-stats">
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-players">0</div>
-                        <div class="stat-label">Jogadores</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-kills">0</div>
-                        <div class="stat-label">Kills</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-coins">0</div>
-                        <div class="stat-label">DZCoins</div>
-                    </div>
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-background"></div>
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Bem-vindo ao <span>SERV. BRASIL SUL - XBOX</span>
+            </h1>
+            <p class="hero-subtitle">
+                O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!
+            </p>
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-players">0</div>
+                    <div class="stat-label">Jogadores</div>
                 </div>
-                <div class="hero-actions">
-                    <a href="/shop" class="btn btn-primary btn-lg"><i class="ri-shopping-cart-2-line"></i> Visitar
-                        Loja</a>
-                    <a href="/leaderboard" class="btn btn-secondary btn-lg"><i class="ri-bar-chart-line"></i> Ver
-                        Rankings</a>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-kills">0</div>
+                    <div class="stat-label">Kills</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-coins">0</div>
+                    <div class="stat-label">DZCoins</div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <h2 class="section-title text-center">Recursos do Servidor</h2>
-            <div class="grid grid-3">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="ri-store-3-line"></i></div>
-                    <h3>Loja Completa</h3>
-                    <p>Compre armas, equipamentos e itens com DZCoins. Entrega no mapa!</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="ri-cup-line"></i></div>
-                    <h3>Rankings</h3>
-                    <p>Compete nos rankings de kills, K/D, riqueza e muito mais!</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="ri-pie-chart-line"></i></div>
-                    <h3>Estatísticas</h3>
-                    <p>Acompanhe seu progresso, armas favoritas e tempo de jogo.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="ri-map-pin-line"></i></div>
-                    <h3>Mapa Interativo</h3>
-                    <p>Escolha onde receber suas compras com mapa iZurvive integrado.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="ri-money-dollar-circle-line"></i></div>
-                    <h3>Sistema de Moedas</h3>
-                    <p>Ganhe DZCoins jogando e use na loja do servidor.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="ri-gamepad-line"></i></div>
-                    <h3>Discord Integrado</h3>
-                    <p>Login com Discord e notificações em tempo real.</p>
-                </div>
+            <div class="hero-actions">
+                <a href="/shop" class="btn btn-primary btn-lg"><i class="ri-shopping-cart-2-line"></i> Visitar
+                    Loja</a>
+                <a href="/leaderboard" class="btn btn-secondary btn-lg"><i class="ri-bar-chart-line"></i> Ver
+                    Rankings</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-            <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
-            <p style="margin: 0;">&copy; 2025 SERV. BRASIL SUL - XBOX. Todos os direitos reservados.</p>
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <h2 class="section-title text-center">Recursos do Servidor</h2>
+        <div class="grid grid-3">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="ri-store-3-line"></i></div>
+                <h3>Loja Completa</h3>
+                <p>Compre armas, equipamentos e itens com DZCoins. Entrega no mapa!</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="ri-cup-line"></i></div>
+                <h3>Rankings</h3>
+                <p>Compete nos rankings de kills, K/D, riqueza e muito mais!</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="ri-pie-chart-line"></i></div>
+                <h3>Estatísticas</h3>
+                <p>Acompanhe seu progresso, armas favoritas e tempo de jogo.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="ri-map-pin-line"></i></div>
+                <h3>Mapa Interativo</h3>
+                <p>Escolha onde receber suas compras com mapa iZurvive integrado.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="ri-money-dollar-circle-line"></i></div>
+                <h3>Sistema de Moedas</h3>
+                <p>Ganhe DZCoins jogando e use na loja do servidor.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="ri-gamepad-line"></i></div>
+                <h3>Discord Integrado</h3>
+                <p>Login com Discord e notificações em tempo real.</p>
+            </div>
         </div>
-    </footer>
-
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-</body>
-
-</html>
+    </div>
+</section>
+{% endblock %}

@@ -59,11 +59,11 @@ Role para baixo até **Environment Variables** e adicione:
 |-----|-------|
 | `DISCORD_CLIENT_ID` | (Seu Client ID do Discord) |
 | `DISCORD_CLIENT_SECRET` | (Seu Client Secret) |
-| `DISCORD_REDIRECT_URI` | `https://bigodetexas-dashboard.onrender.com/callback` |
+| `DISCORD_REDIRECT_URI` | `https://serv-brasil-sul-dashboard.onrender.com/callback` |
 | `SECRET_KEY` | (Sua chave secreta do .env) |
 
 > [!IMPORTANT]
-> Depois de criar o serviço, o Render vai gerar uma URL (ex: `https://bigodetexas-dashboard.onrender.com`).
+> Depois de criar o serviço, o Render vai gerar uma URL (ex: `https://serv-brasil-sul-dashboard.onrender.com`).
 > **Volte no Portal de Desenvolvedores do Discord** e adicione essa URL + `/callback` nos Redirects!
 
 ---

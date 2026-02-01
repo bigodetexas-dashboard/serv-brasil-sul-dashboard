@@ -124,6 +124,28 @@ def agradecimentos():
     """Página de agradecimentos aos amigos"""
     return render_template('agradecimentos.html')
 
+@app.route('/debug/oauth')
+def debug_oauth():
+    """Página de debug para OAuth"""
+    from discord_auth import get_oauth_url
+    import os
+
+    return jsonify({
+        'oauth_url': get_oauth_url(),
+        'client_id': os.getenv('DISCORD_CLIENT_ID'),
+        'redirect_uri': os.getenv('DISCORD_REDIRECT_URI'),
+        'client_secret_configured': bool(os.getenv('DISCORD_CLIENT_SECRET'))
+    })
+
+@app.route('/health')
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'timestamp': str(datetime.now()),
+        'version': '2.0'
+    })
+
 @app.route('/base')
 def base():
     """Página de registro de base"""
@@ -173,30 +195,40 @@ def settings():
 @app.route('/api/stats')
 def api_stats():
     """Estatísticas gerais do servidor"""
-    conn = get_db()
-    cur = conn.cursor()
-    
-    # Total de jogadores
-    cur.execute("SELECT COUNT(*) as total FROM players_db")
-    total_players = cur.fetchone()['total']
-    
-    # Total de kills
-    cur.execute("SELECT SUM(kills) as total FROM players_db")
-    total_kills = cur.fetchone()['total'] or 0
-    
-    # Total de moedas em circulação
-    cur.execute("SELECT SUM(balance) as total FROM economy")
-    total_coins = cur.fetchone()['total'] or 0
-    
-    cur.close()
-    conn.close()
-    
-    return jsonify({
-        'total_players': total_players,
-        'total_kills': total_kills,
-        'total_coins': total_coins,
-        'server_name': 'BigodeTexas'
-    })
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+
+        # Total de jogadores
+        cur.execute("SELECT COUNT(*) as total FROM players_db")
+        total_players = cur.fetchone()['total']
+
+        # Total de kills
+        cur.execute("SELECT SUM(kills) as total FROM players_db")
+        total_kills = cur.fetchone()['total'] or 0
+
+        # Total de moedas em circulação
+        cur.execute("SELECT SUM(balance) as total FROM economy")
+        total_coins = cur.fetchone()['total'] or 0
+
+        cur.close()
+        conn.close()
+
+        return jsonify({
+            'total_players': total_players,
+            'total_kills': total_kills,
+            'total_coins': total_coins,
+            'server_name': 'BigodeTexas'
+        })
+    except Exception as e:
+        print(f"Erro em /api/stats: {e}")
+        return jsonify({
+            'total_players': 0,
+            'total_kills': 0,
+            'total_coins': 0,
+            'server_name': 'BigodeTexas',
+            'error': 'Database temporarily unavailable'
+        })
 
 @app.route('/api/user/profile')
 def api_user_profile():

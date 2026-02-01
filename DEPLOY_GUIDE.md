@@ -20,7 +20,7 @@ URL: <https://dashboard.render.com/web/srv-d4jrhp8gjchc739odl2g>
 
 ### 4. Teste o Resultado
 
-Acesse: <https://bigodetexas-dashboard.onrender.com/checkout>
+Acesse: <https://serv-brasil-sul-dashboard.onrender.com/checkout>
 
 ### O que você deve ver:
 

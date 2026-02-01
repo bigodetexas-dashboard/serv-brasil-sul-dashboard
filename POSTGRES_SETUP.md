@@ -81,7 +81,7 @@ python migrate_to_postgres.py
 
 Depois de tudo configurado, teste:
 
-1. Acesse: <https://bigodetexas-dashboard.onrender.com/leaderboard>
+1. Acesse: <https://serv-brasil-sul-dashboard.onrender.com/leaderboard>
 2. Deve mostrar dados em tempo real do PostgreSQL
 3. No Discord, use `!link SeuGamertag`
 4. Verifique se aparece no painel imediatamente

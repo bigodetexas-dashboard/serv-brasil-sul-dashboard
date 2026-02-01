@@ -4,6 +4,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     loadStats();
     addDiscordFloat();
+    initHamburgerMenu();
 });
 
 function addDiscordFloat() {
@@ -57,4 +58,35 @@ function animateValue(id, start, end, duration) {
 
 function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// ==================== HAMBURGER MENU ====================
+function initHamburgerMenu() {
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const navbarMenu = document.getElementById('navbar-menu');
+
+    if (!hamburgerMenu || !navbarMenu) return;
+
+    // Toggle menu
+    hamburgerMenu.addEventListener('click', function () {
+        hamburgerMenu.classList.toggle('active');
+        navbarMenu.classList.toggle('active');
+    });
+
+    // Close menu when clicking on a link
+    const menuLinks = navbarMenu.querySelectorAll('.navbar-link');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function () {
+            hamburgerMenu.classList.remove('active');
+            navbarMenu.classList.remove('active');
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function (event) {
+        if (!hamburgerMenu.contains(event.target) && !navbarMenu.contains(event.target)) {
+            hamburgerMenu.classList.remove('active');
+            navbarMenu.classList.remove('active');
+        }
+    });
 }

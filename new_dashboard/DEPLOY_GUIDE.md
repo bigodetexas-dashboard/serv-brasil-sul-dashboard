@@ -33,7 +33,7 @@ Clique na aba **Environment** e adicione as seguintes variáveis (copie do seu a
 | `DATABASE_URL` | (Sua URL de conexão do Supabase) |
 | `DISCORD_CLIENT_ID` | (Seu ID de cliente do Discord Developer Portal) |
 | `DISCORD_CLIENT_SECRET` | (Seu segredo do Discord Developer Portal) |
-| `DISCORD_REDIRECT_URI` | `https://bigodetexas-dashboard.onrender.com/callback` (Ajuste a URL após o deploy) |
+| `DISCORD_REDIRECT_URI` | `https://serv-brasil-sul-dashboard.onrender.com/callback` (Ajuste a URL após o deploy) |
 
 ## 5. Finalizando
 

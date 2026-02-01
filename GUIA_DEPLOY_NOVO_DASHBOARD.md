@@ -9,7 +9,7 @@
 
 ### Site Antigo (Online)
 
-- **URL:** <https://bigodetexas-dashboard.onrender.com>
+- **URL:** <https://serv-brasil-sul-dashboard.onrender.com>
 - **Serviço:** srv-d4jrhp8gjchc739odl2g
 - **Status:** RODANDO (versão antiga)
 
@@ -172,7 +172,7 @@ SECRET_KEY=<sua_chave_secreta>
 DATABASE_URL=<url_postgresql_supabase>
 DISCORD_CLIENT_ID=<discord_app_id>
 DISCORD_CLIENT_SECRET=<discord_app_secret>
-DISCORD_REDIRECT_URI=https://bigodetexas-dashboard.onrender.com/callback
+DISCORD_REDIRECT_URI=https://serv-brasil-sul-dashboard.onrender.com/callback
 ```text
 
 ### **6. Aguardar Deploy**
@@ -192,7 +192,7 @@ O Render vai:
 ### **1. Verificar Homepage**
 
 ```text
-https://bigodetexas-dashboard.onrender.com/
+https://serv-brasil-sul-dashboard.onrender.com/
 ```text
 
 - [ ] Página carrega
@@ -202,7 +202,7 @@ https://bigodetexas-dashboard.onrender.com/
 ### **2. Testar Login Discord**
 
 ```text
-https://bigodetexas-dashboard.onrender.com/login
+https://serv-brasil-sul-dashboard.onrender.com/login
 ```text
 
 - [ ] Redireciona para Discord
@@ -212,9 +212,9 @@ https://bigodetexas-dashboard.onrender.com/login
 ### **3. Testar Novas Páginas**
 
 ```text
-https://bigodetexas-dashboard.onrender.com/achievements
-https://bigodetexas-dashboard.onrender.com/history
-https://bigodetexas-dashboard.onrender.com/settings
+https://serv-brasil-sul-dashboard.onrender.com/achievements
+https://serv-brasil-sul-dashboard.onrender.com/history
+https://serv-brasil-sul-dashboard.onrender.com/settings
 ```text
 
 - [ ] Achievements carrega conquistas do banco
@@ -227,15 +227,15 @@ https://bigodetexas-dashboard.onrender.com/settings
 
 # Achievements
 
-curl https://bigodetexas-dashboard.onrender.com/api/achievements/all
+curl https://serv-brasil-sul-dashboard.onrender.com/api/achievements/all
 
 # History
 
-curl https://bigodetexas-dashboard.onrender.com/api/history/events
+curl https://serv-brasil-sul-dashboard.onrender.com/api/history/events
 
 # Settings
 
-curl https://bigodetexas-dashboard.onrender.com/api/settings/get
+curl https://serv-brasil-sul-dashboard.onrender.com/api/settings/get
 ```text
 
 Deve retornar `401 Not authenticated` (correto!)
@@ -279,7 +279,7 @@ No painel do Render:
 ### Solução:
 
 1. Acessar Discord Developer Portal
-2. Adicionar: `https://bigodetexas-dashboard.onrender.com/callback`
+2. Adicionar: `https://serv-brasil-sul-dashboard.onrender.com/callback`
 3. Salvar mudanças
 
 ### **Erro: "Static files not found"**
@@ -355,7 +355,7 @@ python apply_partial.py
 
 # 5. Testar
 
-# https://bigodetexas-dashboard.onrender.com/
+# https://serv-brasil-sul-dashboard.onrender.com/
 
 ```text
 

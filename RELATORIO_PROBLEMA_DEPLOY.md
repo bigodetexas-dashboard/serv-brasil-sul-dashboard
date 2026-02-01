@@ -12,7 +12,7 @@
 
 #### **Site Antigo (ONLINE):**
 
-- **URL:** `https://bigodetexas-dashboard.onrender.com`
+- **URL:** `https://serv-brasil-sul-dashboard.onrender.com`
 - **Serviço Render:** `bigodetexas-dashboard`
 - **Código:** Versão antiga (sem Achievements, History, Settings)
 - **Status:** ✅ RODANDO
@@ -41,7 +41,7 @@
 
 ```bash
 ==> Running 'python bot_main.py'
-==> Available at https://bigodetexas-dashboard.onrender.com
+==> Available at https://serv-brasil-sul-dashboard.onrender.com
 ```text
 
 ### **2. Comando de Start Incorreto**
@@ -318,7 +318,7 @@ Se tiver API Key do Render, posso:
 * Running on http://127.0.0.1:10000
 
 ==> Your service is live 🎉
-==> Available at https://bigodetexas-dashboard.onrender.com
+==> Available at https://serv-brasil-sul-dashboard.onrender.com
 ```text
 
 ### Problema identificado:

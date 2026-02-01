@@ -156,7 +156,7 @@ Isso vai migrar todos os dados dos JSONs para o Supabase!
 
 No painel web:
 
-1. Acesse: <https://bigodetexas-dashboard.onrender.com/leaderboard>
+1. Acesse: <https://serv-brasil-sul-dashboard.onrender.com/leaderboard>
 2. Deve mostrar dados em tempo real!
 
 ---

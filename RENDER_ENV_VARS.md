@@ -11,7 +11,7 @@ Estas são as variáveis de ambiente necessárias para o serviço no Render:
 DISCORD_TOKEN=REDACTED_FOR_SECURITY
 DISCORD_CLIENT_ID=REDACTED_FOR_SECURITY
 DISCORD_CLIENT_SECRET=REDACTED_FOR_SECURITY
-DISCORD_REDIRECT_URI=https://bigodetexas-dashboard.onrender.com/callback
+DISCORD_REDIRECT_URI=https://serv-brasil-sul-dashboard.onrender.com/callback
 
 # Database (Supabase)
 

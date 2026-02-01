@@ -7,7 +7,7 @@
 
 Estamos no meio da configuração da conexão local com o banco de dados Supabase para realizar a migração dos dados.
 
-1. **Dashboard Online:** Deploy no Render concluído com sucesso (`https://bigodetexas-dashboard.onrender.com`).
+1. **Dashboard Online:** Deploy no Render concluído com sucesso (`https://serv-brasil-sul-dashboard.onrender.com`).
 2. **Bot Local:** Configurado e pronto, mas ainda usando arquivos JSON.
 3. **Banco de Dados:**
     * Tabelas criadas no Supabase.

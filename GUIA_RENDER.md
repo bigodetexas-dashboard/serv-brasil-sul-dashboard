@@ -70,7 +70,7 @@
 Após o deploy completar, vamos testar:
 
 1. Abra uma **nova aba anônima** (Ctrl + Shift + N no Chrome)
-2. Acesse: **<https://bigodetexas-dashboard.onrender.com/loja>**
+2. Acesse: **<https://serv-brasil-sul-dashboard.onrender.com/loja>**
 3. Aguarde a página carregar
 4. Verifique se os itens da loja aparecem (não deve ficar em "Carregando...")
 

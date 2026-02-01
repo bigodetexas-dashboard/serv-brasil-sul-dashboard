@@ -1,6 +1,6 @@
-﻿/* ==================== LEADERBOARD STYLES (HORROR APOCALYPSE) ==================== */
+/* ==================== LEADERBOARD STYLES (HORROR APOCALYPSE) ==================== */
 
-/* Fundo customizado para a página do Leaderboard */
+/* Fundo customizado para a p�gina do Leaderboard */
 body {
     background-image:
         linear-gradient(rgba(5, 0, 0, 0.5), rgba(10, 5, 5, 0.6)),

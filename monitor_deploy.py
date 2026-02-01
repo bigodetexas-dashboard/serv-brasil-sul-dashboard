@@ -7,7 +7,7 @@ import requests
 import time
 import sys
 
-RENDER_SERVICE_URL = "https://bigodetexas-dashboard.onrender.com"
+RENDER_SERVICE_URL = "https://serv-brasil-sul-dashboard.onrender.com"
 HEALTH_ENDPOINT = f"{RENDER_SERVICE_URL}/health"
 CHECKOUT_ENDPOINT = f"{RENDER_SERVICE_URL}/checkout"
 

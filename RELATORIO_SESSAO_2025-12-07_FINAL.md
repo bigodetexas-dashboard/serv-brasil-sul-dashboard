@@ -181,7 +181,7 @@ https://serv-brasil-sul-dashboard.onrender.com/settings
 ### **4. Apagar Site Antigo (Opcional)**
 
 **Status:** Pendente decisão do usuário  
-**Site:** `bigodetexas-dashboard.onrender.com`  
+**Site:** `serv-brasil-sul-dashboard.onrender.com`  
 **Ação:** Se tudo funcionar, pode apagar do Render
 
 ### **5. Integrar Logging Automático**
@@ -365,7 +365,7 @@ No painel do Render, clicar em "Logs"
 
 - **Local:** `http://localhost:5001` (servidor rodando)
 - **Produção:** `https://serv-brasil-sul-dashboard.onrender.com` (em deploy)
-- **Antigo:** `https://bigodetexas-dashboard.onrender.com` (pode apagar)
+- **Antigo:** `https://serv-brasil-sul-dashboard.onrender.com` (pode apagar)
 
 ### **Banco de Dados:**
 

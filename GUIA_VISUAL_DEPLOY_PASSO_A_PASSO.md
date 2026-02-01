@@ -26,7 +26,7 @@ URL Local: http://localhost:5001
 ### **Onde deve ficar online:**
 
 ```text
-URL Online: https://bigodetexas-dashboard.onrender.com
+URL Online: https://serv-brasil-sul-dashboard.onrender.com
 OU
 URL Online: https://serv-brasil-sul-dashboard.onrender.com
 ```text
@@ -157,7 +157,7 @@ Start Command: cd new_dashboard && gunicorn app:app
 ```text
 
 1. Aguardar status mudar para: "Live" (verde)
-2. Abrir em nova aba: https://bigodetexas-dashboard.onrender.com
+2. Abrir em nova aba: https://serv-brasil-sul-dashboard.onrender.com
 3. Verificar se carrega a homepage
 
 ```text
@@ -165,10 +165,10 @@ Start Command: cd new_dashboard && gunicorn app:app
 ### Teste rápido:
 
 ```text
-https://bigodetexas-dashboard.onrender.com/
-https://bigodetexas-dashboard.onrender.com/achievements
-https://bigodetexas-dashboard.onrender.com/history
-https://bigodetexas-dashboard.onrender.com/settings
+https://serv-brasil-sul-dashboard.onrender.com/
+https://serv-brasil-sul-dashboard.onrender.com/achievements
+https://serv-brasil-sul-dashboard.onrender.com/history
+https://serv-brasil-sul-dashboard.onrender.com/settings
 ```text
 
 **Se `/achievements` carregar:** ✅ SUCESSO!
@@ -389,7 +389,7 @@ git log --oneline -5
 ### **Site ERRADO (atual online):**
 
 ```text
-URL: https://bigodetexas-dashboard.onrender.com
+URL: https://serv-brasil-sul-dashboard.onrender.com
 
 Páginas:
 ✅ / (homepage)
@@ -410,7 +410,7 @@ Logs:
 ### **Site CORRETO (deve ficar assim):**
 
 ```text
-URL: https://bigodetexas-dashboard.onrender.com
+URL: https://serv-brasil-sul-dashboard.onrender.com
 
 Páginas:
 ✅ / (homepage)
@@ -445,7 +445,7 @@ Logs:
 
 Após seguir todos os passos:
 
-✅ Site online em: `https://bigodetexas-dashboard.onrender.com`
+✅ Site online em: `https://serv-brasil-sul-dashboard.onrender.com`
 ✅ Mesmas funcionalidades do localhost:5001
 ✅ Achievements, History, Settings funcionando
 ✅ APIs conectadas ao banco
@@ -499,7 +499,7 @@ Branch: main
 
 ```text
 Nome: bigodetexas-dashboard
-URL: https://bigodetexas-dashboard.onrender.com
+URL: https://serv-brasil-sul-dashboard.onrender.com
 Start Command CORRETO: cd new_dashboard && gunicorn app:app
 ```text
 

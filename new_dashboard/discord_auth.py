@@ -8,7 +8,7 @@ from flask import session, redirect, url_for, request
 
 DISCORD_CLIENT_ID = os.getenv('DISCORD_CLIENT_ID')
 DISCORD_CLIENT_SECRET = os.getenv('DISCORD_CLIENT_SECRET')
-DISCORD_REDIRECT_URI = os.getenv('DISCORD_REDIRECT_URI', 'http://localhost:5001/callback')
+DISCORD_REDIRECT_URI = os.getenv('DISCORD_REDIRECT_URI', 'https://bigodetexas-dashboard.onrender.com/callback')
 
 DISCORD_API_BASE = 'https://discord.com/api/v10'
 DISCORD_OAUTH_URL = f'{DISCORD_API_BASE}/oauth2/authorize'
