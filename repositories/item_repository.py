@@ -48,7 +48,7 @@ class ItemRepository(BaseRepository):
             query += " WHERE is_active = 1"
 
         rows = self.execute_query(query)
-        return [row[0] for row in rows]
+        return [row["category"] for row in rows]
 
     def update_item_image(self, item_id: int, image_url: str) -> bool:
         """Atualiza a URL da imagem de um item."""
@@ -61,17 +61,15 @@ class ItemRepository(BaseRepository):
         if not row:
             return {}
 
-        # Check if row has enough columns (basic backwards compatibility)
-        has_image = len(row) > 7  # id, key, cat, name, price, desc, active, image
-
+        # BaseRepository.execute_query já retorna dicionários,
+        # então apenas garantimos que todos os campos existam
         return {
-            "id": row[0],
-            "item_key": row[1],
-            "category": row[2],
-            "name": row[3],
-            "price": row[4],
-            "description": row[5],
-            "is_active": row[6],
-            # If the column exists in the row, use it, else generic default
-            "image_url": row[7] if len(row) > 7 else "/static/img/items/default.png",
+            "id": row.get("id"),
+            "item_key": row.get("item_key"),
+            "category": row.get("category"),
+            "name": row.get("name"),
+            "price": row.get("price"),
+            "description": row.get("description", ""),
+            "is_active": row.get("is_active", 1),
+            "image_url": row.get("image_url", "/static/img/items/default.png"),
         }
