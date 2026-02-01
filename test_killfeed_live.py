@@ -1,4 +1,3 @@
-import asyncio
 import unittest
 from unittest.mock import MagicMock
 import sys
@@ -47,7 +46,7 @@ class TestKillfeedLive(unittest.IsolatedAsyncioTestCase):
             
             elif "died" in line and "killed by" not in line:
                 if embed and "morreu" in embed.description:
-                    print(f"[SUCESSO] Morte Natural detectada.")
+                    print("[SUCESSO] Morte Natural detectada.")
                 else:
                     print("[ERRO] Morte natural não detectada.")
 
@@ -59,11 +58,11 @@ class TestKillfeedLive(unittest.IsolatedAsyncioTestCase):
                     victim_field = fields.get("⚰️ Finado (Vítima)")
                     
                     if "Bandit" in killer_field or "Pro" in killer_field:
-                        print(f"[SUCESSO] Kill detectada corretamente!")
+                        print("[SUCESSO] Kill detectada corretamente!")
                         print(f"   Assassino: {killer_field.split('**')[1]}")
                         print(f"   Vítima: {victim_field.split('**')[1]}")
                     else:
-                        print(f"[ERRO] Nomes incorretos no embed.")
+                        print("[ERRO] Nomes incorretos no embed.")
                 else:
                     print("[ERRO] Kill não gerou embed correto.")
 

@@ -1,7 +1,6 @@
 import json
 import matplotlib.pyplot as plt
 import os
-import sys
 
 def generate_heatmap():
     data_file = "heatmap_data.json"

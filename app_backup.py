@@ -460,7 +460,6 @@ def api_heatmap():
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
     from database import get_heatmap_data
-    from datetime import datetime, timedelta
     
     # Parâmetros da query
     time_range = request.args.get('range', '24h')  # 24h, 7d, all
@@ -579,7 +578,6 @@ def api_heatmap_top_locations():
     """
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from datetime import datetime, timedelta
     
     # Parâmetros da query
     time_range = request.args.get('range', '24h')
@@ -675,7 +673,6 @@ def api_heatmap_weapons():
     """
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from datetime import datetime, timedelta
     
     time_range = request.args.get('range', '24h')
     
@@ -906,7 +903,6 @@ def api_heatmap_timeline():
     """
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from datetime import datetime, timedelta
     
     time_range = request.args.get('range', '7d')
     
@@ -986,7 +982,6 @@ def api_heatmap_hourly():
     """
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from datetime import datetime, timedelta
     
     time_range = request.args.get('range', '7d')
     

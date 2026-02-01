@@ -126,7 +126,7 @@ def read_log_sample(log_path):
         content = bio.getvalue().decode('utf-8', errors='ignore')
         lines = content.split('\n')
         
-        print(f"✅ Arquivo baixado com sucesso!")
+        print("✅ Arquivo baixado com sucesso!")
         print(f"📊 Total de linhas: {len(lines)}")
         print(f"📏 Tamanho: {len(content)} bytes")
         

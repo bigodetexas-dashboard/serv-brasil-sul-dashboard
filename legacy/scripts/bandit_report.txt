@@ -1,0 +1,1866 @@
+Run started:2025-12-15 02:36:51.683544+00:00
+
+Test results:
+>> Issue: [B201:flask_debug_true] A Flask app appears to be run with debug=True, which exposes the Werkzeug debugger and allows the execution of arbitrary code.
+   Severity: High   Confidence: Medium
+   CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b201_flask_debug_true.html
+   Location: .\app_backup.py:1163:4
+1162	if __name__ == '__main__':
+1163	    app.run(host='0.0.0.0', port=5001, debug=True)
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\app_backup.py:1163:17
+1162	if __name__ == '__main__':
+1163	    app.run(host='0.0.0.0', port=5001, debug=True)
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: .\apply_schema.py:9:0
+8	import os
+9	import subprocess
+10	from dotenv import load_dotenv
+
+--------------------------------------------------
+>> Issue: [B607:start_process_with_partial_path] Starting a process with a partial executable path
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b607_start_process_with_partial_path.html
+   Location: .\apply_schema.py:48:17
+47	    try:
+48	        result = subprocess.run(
+49	            ["psql", database_url, "-f", schema_file],
+50	            capture_output=True,
+51	            text=True,
+52	            encoding='utf-8',
+53	            errors='replace'
+54	        )
+55	        
+
+--------------------------------------------------
+>> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b603_subprocess_without_shell_equals_true.html
+   Location: .\apply_schema.py:48:17
+47	    try:
+48	        result = subprocess.run(
+49	            ["psql", database_url, "-f", schema_file],
+50	            capture_output=True,
+51	            text=True,
+52	            encoding='utf-8',
+53	            errors='replace'
+54	        )
+55	        
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b324_hashlib.html
+   Location: .\auto_backup.py:18:15
+17	    """Calcula hash MD5 do arquivo"""
+18	    hash_md5 = hashlib.md5()
+19	    try:
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:8:0
+7	from datetime import datetime, timedelta, timezone
+8	import ftplib
+9	import re
+
+--------------------------------------------------
+>> Issue: [B405:blacklist] Using xml.etree.ElementTree to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+   Severity: Low   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b405-import-xml-etree
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:14:0
+13	import aiohttp
+14	import xml.etree.ElementTree as ET
+15	from flask import Flask
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:142:52
+141	# Rodar o servidor web em uma thread separada
+142	threading.Thread(target=lambda: health_app.run(host="0.0.0.0", port=int(os.getenv("PORT", 3000))), daemon=True).start()
+143	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:243:16
+242	                    await msg.delete()
+243	                except:
+244	                    pass
+245	                security_logger.log_admin_action(ctx.author.id, ctx.command.name)
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:253:16
+252	                    await msg.delete()
+253	                except:
+254	                    pass
+255	                return False
+
+--------------------------------------------------
+>> Issue: [B314:blacklist] Using xml.etree.ElementTree.parse to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.parse with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
+   Severity: Medium   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b313-b320-xml-bad-elementtree
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:357:15
+356	        bio.seek(0)
+357	        tree = ET.parse(bio)
+358	        root = tree.getroot()
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:645:14
+644	    try:
+645	        ftp = ftplib.FTP()
+646	        ftp.connect(FTP_HOST, FTP_PORT)
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:686:16
+685	                    ftp.cwd(path) 
+686	                except:
+687	                    pass
+688	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:862:16
+861	
+862	                except: pass
+863	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:900:12
+899	                pass
+900	            except: pass
+901	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:909:16
+908	                    heatmap_coords = (lx, lz)
+909	                except: pass
+910	            
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:1295:4
+1294	    try: ftp.quit()
+1295	    except: pass
+1296	
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:1480:13
+1479	
+1480	    reward = random.randint(100, 500)
+1481	    eco[user_id]["balance"] += reward
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:1598:16
+1597	                try: ftp.cwd("SC")
+1598	                except: pass
+1599	            
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:2118:8
+2117	                triggered.append((data['owner_id'], data['name'], dist))
+2118	        except: pass
+2119	        
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:3211:4
+3210	    # Executa script de geração em thread separada para não travar o bot
+3211	    import subprocess
+3212	    
+
+--------------------------------------------------
+>> Issue: [B607:start_process_with_partial_path] Starting a process with a partial executable path
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b607_start_process_with_partial_path.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:3215:21
+3214	        try:
+3215	            result = subprocess.run(["python", "generate_heatmap.py"], capture_output=True, text=True, cwd=os.getcwd())
+3216	            return result.returncode == 0, result.stdout + result.stderr
+
+--------------------------------------------------
+>> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b603_subprocess_without_shell_equals_true.html
+   Location: .\backups\auto_saves\backup_20251204_212813\bot_main.py:3215:21
+3214	        try:
+3215	            result = subprocess.run(["python", "generate_heatmap.py"], capture_output=True, text=True, cwd=os.getcwd())
+3216	            return result.returncode == 0, result.stdout + result.stderr
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\backups\auto_saves\backup_20251204_212813\database.py:59:16
+58	    # Arredonda as coordenadas para o múltiplo mais próximo de 'grid_size'
+59	    query = f'''
+60	    SELECT 
+61	        (CAST(game_x / {grid_size} AS INT) * {grid_size}) as gx,
+62	        (CAST(game_z / {grid_size} AS INT) * {grid_size}) as gz,
+63	        COUNT(*) as intensity
+64	    FROM events
+65	    WHERE timestamp >= ? AND event_type = 'kill'
+66	    GROUP BY gx, gz
+67	    '''
+68	    
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\backups\auto_saves\backup_20251204_212813\database.py:141:23
+140	        for _ in range(100):
+141	            x = 4500 + random.uniform(-300, 300)
+142	            z = 10000 + random.uniform(-300, 300)
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\backups\auto_saves\backup_20251204_212813\database.py:142:24
+141	            x = 4500 + random.uniform(-300, 300)
+142	            z = 10000 + random.uniform(-300, 300)
+143	            add_event('kill', x, 0, z, 'M4-A1', 'Survivor', 'Bandit', 50, now - timedelta(hours=random.randint(0, 24)))
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\backups\auto_saves\backup_20251204_212813\database.py:143:96
+142	            z = 10000 + random.uniform(-300, 300)
+143	            add_event('kill', x, 0, z, 'M4-A1', 'Survivor', 'Bandit', 50, now - timedelta(hours=random.randint(0, 24)))
+144	            
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\backups\auto_saves\backup_20251204_212813\database.py:147:23
+146	        for _ in range(50):
+147	            x = 6500 + random.uniform(-200, 200)
+148	            z = 2500 + random.uniform(-200, 200)
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\backups\auto_saves\backup_20251204_212813\database.py:148:23
+147	            x = 6500 + random.uniform(-200, 200)
+148	            z = 2500 + random.uniform(-200, 200)
+149	            add_event('kill', x, 0, z, 'BK-18', 'Freshie', 'Camper', 10, now - timedelta(hours=random.randint(0, 24)))
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\backups\auto_saves\backup_20251204_212813\database.py:149:95
+148	            z = 2500 + random.uniform(-200, 200)
+149	            add_event('kill', x, 0, z, 'BK-18', 'Freshie', 'Camper', 10, now - timedelta(hours=random.randint(0, 24)))
+150	            
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\database.py:198:8
+197	                economy_data = json.load(f)
+198	        except:
+199	            pass
+200	    
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\backups\auto_saves\backup_20251204_212813\database.py:232:4
+231	                    return discord_id
+232	    except:
+233	        pass
+234	    return None
+
+--------------------------------------------------
+>> Issue: [B201:flask_debug_true] A Flask app appears to be run with debug=True, which exposes the Werkzeug debugger and allows the execution of arbitrary code.
+   Severity: High   Confidence: Medium
+   CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b201_flask_debug_true.html
+   Location: .\backups\auto_saves\backup_20251204_212813\new_dashboard\app.py:854:4
+853	if __name__ == '__main__':
+854	    app.run(host='0.0.0.0', port=5001, debug=True)
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\backups\auto_saves\backup_20251204_212813\new_dashboard\app.py:854:17
+853	if __name__ == '__main__':
+854	    app.run(host='0.0.0.0', port=5001, debug=True)
+
+--------------------------------------------------
+>> Issue: [B201:flask_debug_true] A Flask app appears to be run with debug=True, which exposes the Werkzeug debugger and allows the execution of arbitrary code.
+   Severity: High   Confidence: Medium
+   CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b201_flask_debug_true.html
+   Location: .\backups\auto_saves\backup_20251204_213946\new_dashboard\app.py:985:4
+984	if __name__ == '__main__':
+985	    app.run(host='0.0.0.0', port=5001, debug=True)
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\backups\auto_saves\backup_20251204_213946\new_dashboard\app.py:985:17
+984	if __name__ == '__main__':
+985	    app.run(host='0.0.0.0', port=5001, debug=True)
+
+--------------------------------------------------
+>> Issue: [B201:flask_debug_true] A Flask app appears to be run with debug=True, which exposes the Werkzeug debugger and allows the execution of arbitrary code.
+   Severity: High   Confidence: Medium
+   CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b201_flask_debug_true.html
+   Location: .\backups\leaderboard_restaurado_20251202\app.py:940:4
+939	if __name__ == '__main__':
+940	    app.run(host='0.0.0.0', port=5001, debug=True)
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\backups\leaderboard_restaurado_20251202\app.py:940:17
+939	if __name__ == '__main__':
+940	    app.run(host='0.0.0.0', port=5001, debug=True)
+
+--------------------------------------------------
+>> Issue: [B605:start_process_with_a_shell] Starting a process with a shell: Seems safe, but may be changed in the future, consider rewriting without shell
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b605_start_process_with_a_shell.html
+   Location: .\bot_main.py:12:8
+11	        os.chdir('new_dashboard')
+12	        os.system('gunicorn app:app --bind 0.0.0.0:$PORT')
+13	        sys.exit(0)
+
+--------------------------------------------------
+>> Issue: [B607:start_process_with_partial_path] Starting a process with a partial executable path
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b607_start_process_with_partial_path.html
+   Location: .\bot_main.py:12:8
+11	        os.chdir('new_dashboard')
+12	        os.system('gunicorn app:app --bind 0.0.0.0:$PORT')
+13	        sys.exit(0)
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\bot_main.py:27:0
+26	from datetime import datetime, timedelta, timezone
+27	import ftplib
+28	import re
+
+--------------------------------------------------
+>> Issue: [B405:blacklist] Using xml.etree.ElementTree to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+   Severity: Low   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b405-import-xml-etree
+   Location: .\bot_main.py:33:0
+32	import aiohttp
+33	import xml.etree.ElementTree as ET
+34	from flask import Flask
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\bot_main.py:253:52
+252	# Rodar o servidor web em uma thread separada
+253	threading.Thread(target=lambda: health_app.run(host="0.0.0.0", port=int(os.getenv("PORT", 3000))), daemon=True).start()
+254	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\bot_main.py:354:16
+353	                    await msg.delete()
+354	                except:
+355	                    pass
+356	                security_logger.log_admin_action(ctx.author.id, ctx.command.name)
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\bot_main.py:364:16
+363	                    await msg.delete()
+364	                except:
+365	                    pass
+366	                return False
+
+--------------------------------------------------
+>> Issue: [B314:blacklist] Using xml.etree.ElementTree.parse to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.parse with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
+   Severity: Medium   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b313-b320-xml-bad-elementtree
+   Location: .\bot_main.py:468:15
+467	        bio.seek(0)
+468	        tree = ET.parse(bio)
+469	        root = tree.getroot()
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\bot_main.py:756:14
+755	    try:
+756	        ftp = ftplib.FTP()
+757	        ftp.connect(FTP_HOST, FTP_PORT)
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\bot_main.py:797:16
+796	                    ftp.cwd(path)
+797	                except:
+798	                    pass
+799	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\bot_main.py:987:16
+986	
+987	                except: pass
+988	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\bot_main.py:1025:12
+1024	                pass
+1025	            except: pass
+1026	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\bot_main.py:1034:16
+1033	                    heatmap_coords = (lx, lz)
+1034	                except: pass
+1035	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\bot_main.py:1420:4
+1419	    try: ftp.quit()
+1420	    except: pass
+1421	
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\bot_main.py:1605:13
+1604	
+1605	    reward = random.randint(100, 500)
+1606	    eco[user_id]["balance"] += reward
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\bot_main.py:1723:16
+1722	                try: ftp.cwd("SC")
+1723	                except: pass
+1724	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\bot_main.py:2243:8
+2242	                triggered.append((data['owner_id'], data['name'], dist))
+2243	        except: pass
+2244	
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: .\bot_main.py:3336:4
+3335	    # Executa script de geração em thread separada para não travar o bot
+3336	    import subprocess
+3337	
+
+--------------------------------------------------
+>> Issue: [B607:start_process_with_partial_path] Starting a process with a partial executable path
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b607_start_process_with_partial_path.html
+   Location: .\bot_main.py:3340:21
+3339	        try:
+3340	            result = subprocess.run(["python", "generate_heatmap.py"], capture_output=True, text=True, cwd=os.getcwd())
+3341	            return result.returncode == 0, result.stdout + result.stderr
+
+--------------------------------------------------
+>> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b603_subprocess_without_shell_equals_true.html
+   Location: .\bot_main.py:3340:21
+3339	        try:
+3340	            result = subprocess.run(["python", "generate_heatmap.py"], capture_output=True, text=True, cwd=os.getcwd())
+3341	            return result.returncode == 0, result.stdout + result.stderr
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: .\bot_wrapper.py:2:0
+1	import sys
+2	import subprocess
+3	import re
+
+--------------------------------------------------
+>> Issue: [B605:start_process_with_a_shell] Starting a process with a shell, possible injection detected, security issue.
+   Severity: High   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b605_start_process_with_a_shell.html
+   Location: .\bot_wrapper.py:21:4
+20	    """Imprime cabeçalho moderno do bot"""
+21	    os.system('cls' if os.name == 'nt' else 'clear')
+22	    print()
+
+--------------------------------------------------
+>> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b603_subprocess_without_shell_equals_true.html
+   Location: .\bot_wrapper.py:96:14
+95	    # Executar bot_main.py
+96	    process = subprocess.Popen(
+97	        [sys.executable, "bot_main.py"],
+98	        stdout=subprocess.PIPE,
+99	        stderr=subprocess.STDOUT,
+100	        universal_newlines=True,
+101	        bufsize=1
+102	    )
+103	    
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\change_render_slug.py:36:11
+35	
+36	response = requests.patch(
+37	    f"{BASE_URL}/services/{SERVICE_ID}",
+38	    headers=headers,
+39	    json=update_data
+40	)
+41	
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\check_database.py:77:30
+76	            if any(table_name in str(t) for t in tables):
+77	                cur.execute(f"SELECT COUNT(*) FROM {table_name}")
+78	                count = cur.fetchone()[0]
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\check_deployment.py:6:19
+5	        print(f"Checking {url}...")
+6	        response = requests.get(url)
+7	        if response.status_code == 200:
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\check_pvp_events.py:5:0
+4	"""
+5	import ftplib
+6	import os
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\check_pvp_events.py:30:6
+29	print(f"\nConectando ao FTP...")
+30	ftp = ftplib.FTP()
+31	ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\check_render_resources.py:26:11
+25	print("[1] Web Services:")
+26	response = requests.get(f"{BASE_URL}/services", headers=headers)
+27	if response.status_code == 200:
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\check_render_resources.py:40:11
+39	print("[2] Databases:")
+40	response = requests.get(f"{BASE_URL}/postgres", headers=headers)
+41	if response.status_code == 200:
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\check_render_resources.py:53:11
+52	print("[3] Redis:")
+53	response = requests.get(f"{BASE_URL}/redis", headers=headers)
+54	if response.status_code == 200:
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\check_render_resources.py:64:11
+63	print("[4] Verificando conta:")
+64	response = requests.get(f"{BASE_URL}/owners", headers=headers)
+65	if response.status_code == 200:
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\create_new_render_service.py:50:11
+49	
+50	response = requests.post(
+51	    f"{BASE_URL}/services",
+52	    headers=headers,
+53	    json=new_service
+54	)
+55	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\create_render_service_new.py:29:11
+28	print("[1] Buscando informacoes do servico existente...")
+29	response = requests.get(f"{BASE_URL}/services", headers=headers)
+30	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\create_render_service_new.py:63:11
+62	
+63	response = requests.post(
+64	    f"{BASE_URL}/services",
+65	    headers=headers,
+66	    json=new_service
+67	)
+68	
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\dashboard_simple.py:134:17
+133	    print("Pressione CTRL+C para parar\n")
+134	    app.run(host='0.0.0.0', port=5001, debug=False)
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\dashboard_with_oauth.py:20:17
+19	    # Run the combined app
+20	    app.run(host='0.0.0.0', port=5000, debug=False)
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\database.py:77:16
+76	    # Arredonda as coordenadas para o múltiplo mais próximo de 'grid_size'
+77	    query = f'''
+78	    SELECT 
+79	        (CAST(game_x / {grid_size} AS INT) * {grid_size}) as gx,
+80	        (CAST(game_z / {grid_size} AS INT) * {grid_size}) as gz,
+81	        COUNT(*) as intensity
+82	    FROM events
+83	    WHERE timestamp >= ? AND event_type = 'kill'
+84	    GROUP BY gx, gz
+85	    '''
+86	    
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\database.py:159:23
+158	        for _ in range(100):
+159	            x = 4500 + random.uniform(-300, 300)
+160	            z = 10000 + random.uniform(-300, 300)
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\database.py:160:24
+159	            x = 4500 + random.uniform(-300, 300)
+160	            z = 10000 + random.uniform(-300, 300)
+161	            add_event('kill', x, 0, z, 'M4-A1', 'Survivor', 'Bandit', 50, now - timedelta(hours=random.randint(0, 24)))
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\database.py:161:96
+160	            z = 10000 + random.uniform(-300, 300)
+161	            add_event('kill', x, 0, z, 'M4-A1', 'Survivor', 'Bandit', 50, now - timedelta(hours=random.randint(0, 24)))
+162	            
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\database.py:165:23
+164	        for _ in range(50):
+165	            x = 6500 + random.uniform(-200, 200)
+166	            z = 2500 + random.uniform(-200, 200)
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\database.py:166:23
+165	            x = 6500 + random.uniform(-200, 200)
+166	            z = 2500 + random.uniform(-200, 200)
+167	            add_event('kill', x, 0, z, 'BK-18', 'Freshie', 'Camper', 10, now - timedelta(hours=random.randint(0, 24)))
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\database.py:167:95
+166	            z = 2500 + random.uniform(-200, 200)
+167	            add_event('kill', x, 0, z, 'BK-18', 'Freshie', 'Camper', 10, now - timedelta(hours=random.randint(0, 24)))
+168	            
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\database.py:291:8
+290	                economy_data = json.load(f)
+291	        except:
+292	            pass
+293	    
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\database.py:328:4
+327	                    return discord_id
+328	    except:
+329	        pass
+330	    return None
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\database.py:373:8
+372	                    bases.append(data)
+373	        except: pass
+374	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\delete_old_service.py:28:11
+27	
+28	response = requests.delete(
+29	    f"{BASE_URL}/services/{OLD_SERVICE_ID}",
+30	    headers=headers
+31	)
+32	
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\delivery_processor.py:10:0
+9	from datetime import datetime, timedelta
+10	import ftplib
+11	import io
+
+--------------------------------------------------
+>> Issue: [B405:blacklist] Using xml.etree.ElementTree to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+   Severity: Low   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b405-import-xml-etree
+   Location: .\delivery_processor.py:12:0
+11	import io
+12	import xml.etree.ElementTree as ET
+13	from typing import Dict, List, Optional
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\delivery_processor.py:130:18
+129	        try:
+130	            ftp = ftplib.FTP()
+131	            ftp.connect(self.ftp_host, self.ftp_port)
+
+--------------------------------------------------
+>> Issue: [B314:blacklist] Using xml.etree.ElementTree.parse to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.parse with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
+   Severity: Medium   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b313-b320-xml-bad-elementtree
+   Location: .\delivery_processor.py:159:19
+158	            bio.seek(0)
+159	            tree = ET.parse(bio)
+160	            root = tree.getroot()
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\deploy_init.py:1:0
+1	import ftplib
+2	import os
+3	
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'hqPuAFd9'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b105_hardcoded_password_string.html
+   Location: .\deploy_init.py:7:11
+6	FTP_USER = "ni3622181_1"
+7	FTP_PASS = "hqPuAFd9"
+8	
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\deploy_init.py:18:14
+17	    try:
+18	        ftp = ftplib.FTP()
+19	        ftp.connect(FTP_HOST, FTP_PORT)
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\diagnose_db.py:35:27
+34	        # Listar colunas da tabela
+35	        cursor.execute(f"""
+36	            SELECT column_name, data_type 
+37	            FROM information_schema.columns 
+38	            WHERE table_name = '{table_name}'
+39	        """)
+40	        columns = cursor.fetchall()
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\diagnose_killfeed.py:5:0
+4	"""
+5	import ftplib
+6	import os
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\diagnose_killfeed.py:43:10
+42	try:
+43	    ftp = ftplib.FTP()
+44	    ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\diagnose_killfeed.py:99:16
+98	                    ftp.cwd(path)
+99	                except:
+100	                    pass
+101	    except Exception as e:
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\diagnose_schema_full.py:28:28
+27	            # Listar colunas
+28	            cur.execute(f"""
+29	                SELECT column_name, data_type 
+30	                FROM information_schema.columns 
+31	                WHERE table_name = '{table[0]}'
+32	            """)
+33	            columns = cur.fetchall()
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\discord_oauth.py:130:19
+129	    try:
+130	        response = requests.post(f"{DISCORD_API_BASE}/oauth2/token", data=data, headers=headers)
+131	        if response.status_code == 200:
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\discord_oauth.py:143:19
+142	    try:
+143	        response = requests.get(f"{DISCORD_API_BASE}/users/@me", headers=headers)
+144	        if response.status_code == 200:
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\fetch_init.py:1:0
+1	import ftplib
+2	import os
+3	
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'hqPuAFd9'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b105_hardcoded_password_string.html
+   Location: .\fetch_init.py:6:11
+5	FTP_USER = "ni3622181_1"
+6	FTP_PASS = "hqPuAFd9"
+7	
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\fetch_init.py:11:14
+10	    try:
+11	        ftp = ftplib.FTP()
+12	        ftp.connect(FTP_HOST, 21)
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\find_all_services.py:34:15
+33	    print(f"[*] Testando endpoint: {endpoint}")
+34	    response = requests.get(f"{BASE_URL}{endpoint}", headers=headers)
+35	    
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\generate_map_tiles.py:117:17
+116	            import random
+117	            px = random.randint(0, TILE_SIZE-1)
+118	            py = random.randint(0, TILE_SIZE-1)
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\generate_map_tiles.py:118:17
+117	            px = random.randint(0, TILE_SIZE-1)
+118	            py = random.randint(0, TILE_SIZE-1)
+119	            noise_color = (random.randint(40, 60), random.randint(45, 65), random.randint(45, 65))
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\generate_map_tiles.py:119:27
+118	            py = random.randint(0, TILE_SIZE-1)
+119	            noise_color = (random.randint(40, 60), random.randint(45, 65), random.randint(45, 65))
+120	            draw.point((px, py), fill=noise_color)
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\generate_map_tiles.py:119:51
+118	            py = random.randint(0, TILE_SIZE-1)
+119	            noise_color = (random.randint(40, 60), random.randint(45, 65), random.randint(45, 65))
+120	            draw.point((px, py), fill=noise_color)
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b311-random
+   Location: .\generate_map_tiles.py:119:75
+118	            py = random.randint(0, TILE_SIZE-1)
+119	            noise_color = (random.randint(40, 60), random.randint(45, 65), random.randint(45, 65))
+120	            draw.point((px, py), fill=noise_color)
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\killfeed.py:1:0
+1	import ftplib
+2	import time
+3	import re
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'hqPuAFd9'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b105_hardcoded_password_string.html
+   Location: .\killfeed.py:16:11
+15	FTP_USER = "ni3622181_1"
+16	FTP_PASS = "hqPuAFd9"
+17	
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\killfeed.py:102:14
+101	    try:
+102	        ftp = ftplib.FTP()
+103	        ftp.connect(FTP_HOST, FTP_PORT)
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\killfeed.py:144:16
+143	                    ftp.cwd(path) 
+144	                except:
+145	                    pass
+146	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\killfeed.py:177:17
+176	    try:
+177	        result = requests.post(DISCORD_WEBHOOK_URL, json=data)
+178	        if result.status_code == 204:
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\killfeed.py:378:8
+377	            ftp.quit()
+378	        except:
+379	            pass
+380	            
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\list_all_render_services.py:34:15
+33	    
+34	    response = requests.get(url, headers=headers)
+35	    
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\new_dashboard\app.py:1455:24
+1454	
+1455	        cur.execute(f"""
+1456	            SELECT
+1457	                id,
+1458	                event_type as type,
+1459	                icon,
+1460	                title,
+1461	                description,
+1462	                details,
+1463	                timestamp
+1464	            FROM activity_history
+1465	            WHERE {where_sql}
+1466	            ORDER BY timestamp DESC
+1467	            LIMIT %s
+1468	        """, params + [limit])
+1469	
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\new_dashboard\app.py:1507:24
+1506	
+1507	        cur.execute(f"""
+1508	            SELECT
+1509	                COUNT(*) as total_events,
+1510	                COUNT(*) FILTER (WHERE event_type = 'kill') as total_kills,
+1511	                COUNT(*) FILTER (WHERE event_type = 'death') as total_deaths,
+1512	                CASE
+1513	                    WHEN COUNT(*) FILTER (WHERE event_type = 'death') > 0
+1514	                    THEN ROUND(CAST(COUNT(*) FILTER (WHERE event_type = 'kill') AS NUMERIC) /
+1515	                               COUNT(*) FILTER (WHERE event_type = 'death'), 2)
+1516	                    ELSE COUNT(*) FILTER (WHERE event_type = 'kill')
+1517	                END as kd_ratio
+1518	            FROM activity_history
+1519	            WHERE discord_id = %s {period_filter}
+1520	        """, (str(user_id),))
+1521	
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\new_dashboard\app.py:1656:24
+1655	
+1656	        cur.execute(f"""
+1657	            UPDATE user_settings
+1658	            SET {update_sql}
+1659	            WHERE discord_id = %s
+1660	            RETURNING *
+1661	        """, params)
+1662	
+
+--------------------------------------------------
+>> Issue: [B201:flask_debug_true] A Flask app appears to be run with debug=True, which exposes the Werkzeug debugger and allows the execution of arbitrary code.
+   Severity: High   Confidence: Medium
+   CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b201_flask_debug_true.html
+   Location: .\new_dashboard\app.py:1690:4
+1689	if __name__ == '__main__':
+1690	    app.run(host='0.0.0.0', port=5001, debug=True)
+1691	
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\new_dashboard\app.py:1690:17
+1689	if __name__ == '__main__':
+1690	    app.run(host='0.0.0.0', port=5001, debug=True)
+1691	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\new_dashboard\discord_auth.py:42:15
+41	    
+42	    response = requests.post(DISCORD_TOKEN_URL, data=data, headers=headers)
+43	    return response.json()
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\new_dashboard\discord_auth.py:51:15
+50	    
+51	    response = requests.get(DISCORD_USER_URL, headers=headers)
+52	    return response.json()
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\nitrado_to_heatmap.py:9:0
+8	import requests
+9	from ftplib import FTP
+10	from datetime import datetime
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\nitrado_to_heatmap.py:132:18
+131	            # Conectar ao FTP
+132	            ftp = FTP(NITRADO_FTP_HOST)
+133	            ftp.login(NITRADO_FTP_USER, NITRADO_FTP_PASS)
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\push_notifications.py:55:23
+54	        try:
+55	            response = requests.post(self.webhook_url, json=payload)
+56	            return response.status_code == 204
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\recreate_render_service.py:32:11
+31	
+32	response = requests.post(
+33	    f"{BASE_URL}/services/{OLD_SERVICE_ID}/suspend",
+34	    headers=headers
+35	)
+36	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\recreate_render_service.py:51:11
+50	# Buscar owner ID
+51	response = requests.get(f"{BASE_URL}/services", headers=headers)
+52	if response.status_code == 200:
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\recreate_render_service.py:109:11
+108	
+109	response = requests.post(
+110	    f"{BASE_URL}/services",
+111	    headers=headers,
+112	    json=new_service
+113	)
+114	
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: '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'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b105_hardcoded_password_string.html
+   Location: .\rename_github_repo.py:13:15
+12	# Configurações
+13	GITHUB_TOKEN = "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"
+14	OWNER = "bigodetexas-dashboard"
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\rename_github_repo.py:31:11
+30	print(f"[1] Verificando repositorio atual: {OWNER}/{OLD_REPO_NAME}")
+31	response = requests.get(
+32	    f"https://api.github.com/repos/{OWNER}/{OLD_REPO_NAME}",
+33	    headers=headers
+34	)
+35	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\rename_github_repo.py:54:11
+53	
+54	response = requests.patch(
+55	    f"https://api.github.com/repos/{OWNER}/{OLD_REPO_NAME}",
+56	    headers=headers,
+57	    json=data
+58	)
+59	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\render_diagnostic.py:30:11
+29	print("[1] BUSCANDO SERVICOS...")
+30	response = requests.get(f"{BASE_URL}/services", headers=headers)
+31	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\render_diagnostic.py:61:34
+60	                print(f"[2] BUSCANDO DETALHES DO SERVICO: {service_name}")
+61	                detail_response = requests.get(f"{BASE_URL}/services/{service_id}", headers=headers)
+62	                
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\render_diagnostic.py:71:39
+70	                    print(f"[3] BUSCANDO DEPLOYS...")
+71	                    deploys_response = requests.get(f"{BASE_URL}/services/{service_id}/deploys", headers=headers)
+72	                    
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'FumKsv7MGrfa6zG0bxY7C3kqigM0zloo1FlQH3JqLeQ7siSoqw8DvLbAojdYqr_iheYUt-RYGcTC8rIHfoL662exac8yR8It21vS'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b105_hardcoded_password_string.html
+   Location: .\restart_manager.py:10:16
+9	# Gere em: https://server.nitrado.net/usa/pages/developer
+10	NITRADO_TOKEN = "FumKsv7MGrfa6zG0bxY7C3kqigM0zloo1FlQH3JqLeQ7siSoqw8DvLbAojdYqr_iheYUt-RYGcTC8rIHfoL662exac8yR8It21vS" 
+11	
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'SEU_TOKEN_AQUI'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b105_hardcoded_password_string.html
+   Location: .\restart_manager.py:17:24
+16	    """Envia comando de restart para a API da Nitrado."""
+17	    if NITRADO_TOKEN == "SEU_TOKEN_AQUI":
+18	        print("❌ ERRO: Você precisa configurar o NITRADO_TOKEN no arquivo!")
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'SEU_TOKEN_AQUI'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b105_hardcoded_password_string.html
+   Location: .\restart_manager.py:46:59
+45	    print(f"Service ID: {SERVICE_ID}")
+46	    print(f"Token Configurado: {'NÃO' if NITRADO_TOKEN == 'SEU_TOKEN_AQUI' else 'SIM'}")
+47	    print(f"Aguardando horários de Raid (Sáb/Dom - 21:00 e 23:00)...\n")
+
+--------------------------------------------------
+>> Issue: [B405:blacklist] Using xml.etree.ElementTree to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+   Severity: Low   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b405-import-xml-etree
+   Location: .\spawn_system.py:19:0
+18	
+19	import xml.etree.ElementTree as ET
+20	import xml.dom.minidom as minidom
+
+--------------------------------------------------
+>> Issue: [B408:blacklist] Using xml.dom.minidom to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.dom.minidom with the equivalent defusedxml package, or make sure defusedxml.defuse_stdlib() is called.
+   Severity: Low   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b408-import-xml-minidom
+   Location: .\spawn_system.py:20:0
+19	import xml.etree.ElementTree as ET
+20	import xml.dom.minidom as minidom
+21	from datetime import datetime
+
+--------------------------------------------------
+>> Issue: [B318:blacklist] Using xml.dom.minidom.parseString to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.dom.minidom.parseString with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
+   Severity: Medium   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b313-b320-xml-bad-minidom
+   Location: .\spawn_system.py:125:15
+124	    rough_string = ET.tostring(elem, encoding='unicode')
+125	    reparsed = minidom.parseString(rough_string)
+126	    return reparsed.toprettyxml(indent="    ")
+
+--------------------------------------------------
+>> Issue: [B314:blacklist] Using xml.etree.ElementTree.parse to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.parse with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
+   Severity: Medium   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b313-b320-xml-bad-elementtree
+   Location: .\spawn_system.py:166:19
+165	        if os.path.exists(events_xml_path):
+166	            tree = ET.parse(events_xml_path)
+167	            root = tree.getroot()
+
+--------------------------------------------------
+>> Issue: [B314:blacklist] Using xml.etree.ElementTree.parse to parse untrusted XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.parse with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib() is called
+   Severity: Medium   Confidence: High
+   CWE: CWE-20 (https://cwe.mitre.org/data/definitions/20.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b313-b320-xml-bad-elementtree
+   Location: .\spawn_system.py:212:19
+211	        if os.path.exists(positions_xml_path):
+212	            tree = ET.parse(positions_xml_path)
+213	            root = tree.getroot()
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\test_apis.py:17:23
+16	        if method == "GET":
+17	            response = requests.get(url)
+18	        elif method == "POST":
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\test_apis.py:19:23
+18	        elif method == "POST":
+19	            response = requests.post(url, json=data)
+20	        
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\test_clan_war.py:105:0
+104	    os.remove(LINKS_FILE)
+105	except: pass
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\test_discord.py:15:15
+14	try:
+15	    response = requests.post(WEBHOOK_URL, json=data)
+16	    if response.status_code == 204:
+
+--------------------------------------------------
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: .\test_heatmap.py:4:0
+3	import time
+4	import subprocess
+5	
+
+--------------------------------------------------
+>> Issue: [B607:start_process_with_partial_path] Starting a process with a partial executable path
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b607_start_process_with_partial_path.html
+   Location: .\test_heatmap.py:23:9
+22	print("Running generate_heatmap.py...")
+23	result = subprocess.run(["python", "generate_heatmap.py"], capture_output=True, text=True)
+24	
+
+--------------------------------------------------
+>> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b603_subprocess_without_shell_equals_true.html
+   Location: .\test_heatmap.py:23:9
+22	print("Running generate_heatmap.py...")
+23	result = subprocess.run(["python", "generate_heatmap.py"], capture_output=True, text=True)
+24	
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\test_heatmap_system.py:16:19
+15	    try:
+16	        response = requests.get(f'{API_BASE}/api/heatmap?range=all&grid=50')
+17	        data = response.json()
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\test_heatmap_system.py:45:19
+44	    try:
+45	        response = requests.post(
+46	            f'{API_BASE}/api/parse_log',
+47	            json={'text': test_log, 'source': 'test'},
+48	            headers={'Content-Type': 'application/json'}
+49	        )
+50	        
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\test_new_features.py:27:4
+26	        sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+27	    except Exception:
+28	        pass
+29	
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\test_nitrado_integration.py:15:0
+14	
+15	import ftplib
+16	import io
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\test_nitrado_integration.py:38:14
+37	        print(f"🔌 Conectando em {FTP_HOST}:{FTP_PORT}...")
+38	        ftp = ftplib.FTP()
+39	        ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\test_nitrado_integration.py:62:14
+61	    try:
+62	        ftp = ftplib.FTP()
+63	        ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\test_nitrado_integration.py:118:14
+117	    try:
+118	        ftp = ftplib.FTP()
+119	        ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\test_nitrado_simple.py:16:0
+15	
+16	import ftplib
+17	import io
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\test_nitrado_simple.py:49:10
+48	    print(f"Conectando em {FTP_HOST}:{FTP_PORT}...")
+49	    ftp = ftplib.FTP()
+50	    ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\test_nitrado_simple.py:79:10
+78	try:
+79	    ftp = ftplib.FTP()
+80	    ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\test_nitrado_simple.py:144:10
+143	try:
+144	    ftp = ftplib.FTP()
+145	    ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\test_read_adm.py:5:0
+4	"""
+5	import ftplib
+6	import os
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\test_read_adm.py:30:6
+29	print(f"\nConectando ao FTP...")
+30	ftp = ftplib.FTP()
+31	ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\test_suite_v2.py:303:8
+302	            pass
+303	        except Exception as e:
+304	            # O loop task não pode ser awaitado diretamente assim se não estiver startado, 
+305	            # ou se comportar diferente.
+306	            # Vamos assumir OK se o módulo carregou.
+307	            pass
+308	        print("[OK] Autosave (Verificação Estática)")
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\try_env_key.py:34:12
+33	        print("Testing connection to Render API...")
+34	        r = requests.get("https://api.render.com/v1/owners", headers=headers)
+35	        print(f"Status Code: {r.status_code}")
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: .\update_env.py:75:69
+74	        f.write(f"DASHBOARD_PORT={final_config.get('DASHBOARD_PORT', '5000')}\n")
+75	        f.write(f"DASHBOARD_HOST={final_config.get('DASHBOARD_HOST', '0.0.0.0')}\n\n")
+76	        
+
+--------------------------------------------------
+>> Issue: [B402:blacklist] A FTP-related module is being imported.  FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_imports.html#b402-import-ftplib
+   Location: .\upload_gameplay.py:1:0
+1	import ftplib
+2	import os
+3	
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'hqPuAFd9'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b105_hardcoded_password_string.html
+   Location: .\upload_gameplay.py:8:11
+7	FTP_USER = "ni3622181_1"
+8	FTP_PASS = "hqPuAFd9"
+9	
+
+--------------------------------------------------
+>> Issue: [B321:blacklist] FTP-related functions are being called. FTP is considered insecure. Use SSH/SFTP/SCP or some other encrypted protocol.
+   Severity: High   Confidence: High
+   CWE: CWE-319 (https://cwe.mitre.org/data/definitions/319.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/blacklists/blacklist_calls.html#b321-ftplib
+   Location: .\upload_gameplay.py:24:14
+23	        print(f"Conectando ao FTP {FTP_HOST}...")
+24	        ftp = ftplib.FTP()
+25	        ftp.connect(FTP_HOST, FTP_PORT)
+
+--------------------------------------------------
+>> Issue: [B113:request_without_timeout] Call to requests without timeout
+   Severity: Medium   Confidence: Low
+   CWE: CWE-400 (https://cwe.mitre.org/data/definitions/400.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b113_request_without_timeout.html
+   Location: .\verify_slug_change.py:30:11
+29	print("[1] Verificando status atual...")
+30	response = requests.get(f"{BASE_URL}/services/{SERVICE_ID}", headers=headers)
+31	
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\verify_supabase_data.py:19:8
+18	            value = json.loads(value)
+19	        except:
+20	            pass
+21	    return value
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.2/plugins/b110_try_except_pass.html
+   Location: .\web_dashboard.py:34:8
+33	                json.dump({}, f)
+34	        except:
+35	            pass
+36	        return {}
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 17619
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 79
+		Medium: 57
+		High: 37
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 35
+		Medium: 29
+		High: 109
+Files skipped (0):

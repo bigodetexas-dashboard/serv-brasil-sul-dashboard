@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja - SERV. BRASIL SUL - XBOX</title>
+    <title>Loja - BIGODETEXAS - XBOX</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/shop.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -18,7 +18,7 @@
             <a href="/" class="navbar-brand">
                 <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
                     style="height: 40px; margin-right: 10px;">
-                <span style="font-size: 1.5rem;">SERV. BRASIL SUL - XBOX</span>
+                <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
             </a>
             <ul class="navbar-menu">
                 <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
@@ -27,7 +27,7 @@
                 <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
                 <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
                 <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> Clã</a></li>
-                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Sul</a></li>
+                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Texas</a></li>
                 <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
                 <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
                 </li>
@@ -38,7 +38,7 @@
     <div class="container shop-container">
         <!-- Header da Loja -->
         <div class="shop-header">
-            <h1 class="shop-title"><i class="ri-store-3-line"></i> Loja SERV. BRASIL SUL - XBOX</h1>
+            <h1 class="shop-title"><i class="ri-store-3-line"></i> Loja BIGODETEXAS - XBOX</h1>
             <p class="shop-subtitle">Compre itens com DZCoins e receba no mapa!</p>
         </div>
 
@@ -112,6 +112,31 @@
         </div>
     </div>
 
+    <!-- Modal de Upload de Imagem (Admin) -->
+    <div id="upload-modal" class="modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+        <div class="modal-content"
+            style="background: #1a1a1a; padding: 2rem; border-radius: 1rem; width: 90%; max-width: 500px; position: relative; border: 1px solid rgba(255,255,255,0.1);">
+            <button onclick="closeUploadModal()"
+                style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h2 style="margin-bottom: 1.5rem;">Alterar Imagem do Item</h2>
+            <h3 id="upload-item-name" style="color: var(--accent); margin-bottom: 1rem;">Nome do Item</h3>
+
+            <input type="hidden" id="upload-item-id">
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem;">Selecione uma imagem (PNG, JPG, GIF):</label>
+                <input type="file" id="upload-file" accept="image/*"
+                    style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 0.5rem; color: white;">
+            </div>
+
+            <button onclick="submitImageUpload()"
+                style="width: 100%; padding: 1rem; background: var(--accent); border: none; border-radius: 0.5rem; font-weight: bold; cursor: pointer;">
+                Enviar Imagem
+            </button>
+        </div>
+    </div>
+
     <!-- Display Flutuante de Saldo -->
     <div class="balance-float" id="balance-float">
         <i class="ri-money-dollar-circle-line"></i>
@@ -129,7 +154,7 @@
     <footer class="footer">
         <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
             <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
-            <p style="margin: 0;">&copy; 2025 SERV. BRASIL SUL - XBOX. Todos os direitos reservados.</p>
+            <p style="margin: 0;">&copy; 2025 BIGODETEXAS - XBOX. Todos os direitos reservados.</p>
         </div>
     </footer>
 

@@ -123,7 +123,7 @@ def create_tile(z, x, y):
 
 def generate_tiles(max_zoom=6):
     """Gera todos os tiles para todos os níveis de zoom"""
-    print(f"[MAP] Gerando tiles do mapa Chernarus...")
+    print("[MAP] Gerando tiles do mapa Chernarus...")
     print(f"[SIZE] Tamanho do mapa: {MAP_SIZE}x{MAP_SIZE} metros")
     print(f"[ZOOM] Niveis de zoom: 0 ate {max_zoom}")
     
@@ -155,7 +155,7 @@ def generate_tiles(max_zoom=6):
     
     print(f"\n[DONE] Concluido! Total: {total_tiles} tiles gerados")
     print(f"[PATH] Localizacao: {os.path.abspath(OUTPUT_DIR)}")
-    print(f"\n[INFO] Copie a pasta 'tiles' para 'server/public/static/tiles'")
+    print("\n[INFO] Copie a pasta 'tiles' para 'server/public/static/tiles'")
 
 if __name__ == "__main__":
     # Criar diretório de saída

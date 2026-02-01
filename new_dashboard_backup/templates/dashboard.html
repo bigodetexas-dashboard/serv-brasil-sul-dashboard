@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - BIGODETEXAS - XBOX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
+                    style="height: 40px; margin-right: 10px;">
+                <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
+            </a>
+            <button class="hamburger-menu" id="hamburger-menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <ul class="navbar-menu" id="navbar-menu">
+                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
+                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
+                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
+                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
+                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
+                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> Clã</a></li>
+                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Texas</a></li>
+                <li><a href="/dashboard" class="navbar-link active"><i class="ri-user-line"></i> Meu Perfil</a></li>
+                <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
+                </li>
+
+                <!-- Ações Mobile -->
+                <li class="mobile-only-action">
+                    <hr style="border: 0; border-top: 1px solid rgba(107, 140, 66, 0.2); margin: 10px 20px;">
+                    <a href="/logout" class="navbar-link" style="color: var(--danger);">
+                        <i class="ri-logout-box-line"></i> Sair da Conta
+                    </a>
+                </li>
+            </ul>
+            <div class="navbar-actions">
+                <a href="/logout" class="btn btn-secondary btn-sm"><i class="ri-logout-box-line"></i> Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container dashboard-container">
+        <!-- Perfil Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+            </div>
+            <div class="profile-info">
+                <h1 id="user-name">Carregando...</h1>
+                <p class="gamertag">Gamertag: <span id="user-gamertag" class="text-accent">...</span></p>
+                <div class="profile-badges">
+                    <span class="badge badge-vip">VIP</span>
+                    <span class="badge badge-veteran">Veterano</span>
+                    <span id="xbox-verified-badge" class="badge badge-success"
+                        style="display: none; background-color: #107c10; color: white;">
+                        <i class="ri-xbox-line"></i> Xbox Verificado
+                    </span>
+                </div>
+            </div>
+            <div class="profile-balance">
+                <div class="balance-label">Saldo Atual</div>
+                <div class="balance-amount"><span id="user-balance">0</span> 💰</div>
+                <button onclick="document.getElementById('modal-transfer').style.display='flex'"
+                    class="btn btn-primary btn-sm">Transferir Coins</button>
+            </div>
+        </div>
+
+        <!-- Alerta de Verificação -->
+        <div id="verification-warning" class="alert alert-warning mt-4"
+            style="display: none; background: rgba(255, 165, 0, 0.1); border: 1px solid rgba(255, 165, 0, 0.3); border-radius: 8px; padding: 20px;">
+            <div style="display: flex; gap: 15px; align-items: flex-start;">
+                <div style="font-size: 2rem; color: #ffa500;"><i class="ri-error-warning-line"></i></div>
+                <div>
+                    <h3 style="color: #ffa500; margin-bottom: 5px; font-size: 1.2rem;">Sua conta Xbox não está
+                        verificada!</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 15px; font-size: 0.95rem;">
+                        Você precisa verificar sua Gamertag para realizar compras na loja e acessar recursos exclusivos.
+                    </p>
+                    <div class="mt-4"
+                        style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                            <div class="verify-step">
+                                <div class="step-icon"><i class="ri-discord-fill"></i></div>
+                                <h4>1. No Discord</h4>
+                                <p>Vá em <strong>Configurações > Conexões</strong></p>
+                            </div>
+                            <div class="verify-step">
+                                <div class="step-icon" style="color: #107c10;"><i class="ri-xbox-line"></i></div>
+                                <h4>2. Vincule</h4>
+                                <p>Conecte sua conta do <strong>Xbox</strong></p>
+                            </div>
+                            <div class="verify-step">
+                                <div class="step-icon" style="color: #4facfe;"><i class="ri-eye-line"></i></div>
+                                <h4>3. Exiba</h4>
+                                <p>Ative <strong>"Exibir no perfil"</strong></p>
+                            </div>
+                            <div class="verify-step">
+                                <div class="step-icon" style="color: #ffcc00;"><i class="ri-refresh-line"></i></div>
+                                <h4>4. Finalize</h4>
+                                <p>Clique no botão abaixo para concluir</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            <a href="/logout" class="btn btn-primary"
+                                style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 12px 30px; font-weight: 600;">
+                                <i class="ri-refresh-line"></i> JÁ VINCULEI! ATUALIZAR AGORA
+                            </a>
+                            <p style="margin-top: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.5);">
+                                (Você será deslogado para que o bot leia suas novas conexões)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="tab-content active" id="tab-stats">
+            <div class="stats-section">
+                <h2><i class="ri-bar-chart-2-line"></i> Estatísticas de Combate</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-sword-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-kills">0</span>
+                            <span class="stat-label">Kills</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-skull-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-deaths">0</span>
+                            <span class="stat-label">Mortes</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-percent-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-kd">0.0</span>
+                            <span class="stat-label">K/D Ratio</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-ghost-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-zombies">0</span>
+                            <span class="stat-label">Zumbis Mortos</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-fire-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-streak">0</span>
+                            <span class="stat-label">Melhor Série</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="mt-4"><i class="ri-map-pin-user-line"></i> Sobrevivência</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-time-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-playtime">0h</span>
+                            <span class="stat-label">Tempo Jogado</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-footprint-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-distance">0km</span>
+                            <span class="stat-label">Distância (Pé)</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-roadster-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-driving">0km</span>
+                            <span class="stat-label">Distância (Carro)</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon"><i class="ri-hammer-line"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-built">0</span>
+                            <span class="stat-label">Construções</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h2 class="section-title"><i class="ri-team-line"></i> Clã e Comunicação</h2>
+
+                    <!-- Clan Status -->
+                    <div id="clan-status-container" class="mt-3">
+                        <p class="text-muted">Carregando informações do clã...</p>
+                    </div>
+
+                    <!-- Clan Chat (Rádio) -->
+                    <div id="clan-chat-container" class="clan-chat-box mt-4" style="display: none;">
+                        <div class="chat-header">
+                            <h3><i class="ri-broadcast-line"></i> Rádio de Clã (Chat Interno)</h3>
+                            <span class="status-indicator">● AO VIVO</span>
+                        </div>
+                        <div id="chat-messages" class="chat-messages-area">
+                            <!-- Messages injected by JS -->
+                            <div class="text-center p-4 text-muted">Aguardando mensagens...</div>
+                        </div>
+                        <form id="chat-form" class="chat-input-area">
+                            <input type="text" id="chat-input" placeholder="Digite uma mensagem tática..."
+                                maxlength="200" autocomplete="off">
+                            <button type="submit" class="btn-send"><i class="ri-send-plane-2-line"></i></button>
+                        </form>
+                    </div>
+
+                    <div id="invites-container" class="mt-3" style="display:none;">
+                        <h3 style="font-size: 1.1rem; color: var(--accent); margin-bottom: 10px;">Convites Pendentes
+                        </h3>
+                        <div id="invites-list" style="display: grid; gap: 10px;"></div>
+                    </div>
+                </div>
+
+                <div class="mt-5" id="clan-war-section" style="display: none;">
+                    <h2 class="section-title" style="color: #ff4d4d;"><i class="ri-sword-line"></i> Guerra de Clãs</h2>
+                    <div id="clan-war-container" class="war-card mt-3">
+                        <!-- War info injected by JS -->
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h2 class="section-title"><i class="ri-money-dollar-circle-line"></i> Bumbas Ativas (Bounties)</h2>
+                    <div id="bounties-container" class="bounties-list mt-3">
+                        <p class="text-muted">Nenhuma recompensa ativa no momento.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
+            <p style="margin: 0;">&copy; 2025 BIGODETEXAS - XBOX. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- ONBOARDING MODAL (TUTORIAL) -->
+    <div id="onboarding-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glass-panel">
+            <button class="modal-close" onclick="closeTutorial()">
+                <i class="ri-close-line"></i>
+            </button>
+
+            <div class="tutorial-slider">
+                <!-- Slide 1: Welcome -->
+                <div class="tutorial-slide active" data-step="1">
+                    <div class="slide-icon-container">
+                        <img src="{{ url_for('static', filename='img/logo_texas.png') }}" class="slide-logo pulse-anim">
+                    </div>
+                    <h2>Bem-vindo ao BigodeTexas</h2>
+                    <p>Seu painel de controle completo para o apocalipse.</p>
+                    <div class="slide-content">
+                        <p>Aqui você gerencia sua sobrevivência, economia e reputação no servidor mais brabo do Xbox.
+                        </p>
+                        <ul class="feature-list">
+                            <li><i class="ri-shield-check-line"></i> Proteção de Base</li>
+                            <li><i class="ri-money-dollar-circle-line"></i> Economia Real</li>
+                            <li><i class="ri-skull-line"></i> Killfeed & Ranking</li>
+                        </ul>
+                    </div>
+                    <div class="slide-actions">
+                        <button class="btn btn-primary btn-lg" onclick="nextSlide()">Começar Tour <i
+                                class="ri-arrow-right-line"></i></button>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Xbox Verification -->
+                <div class="tutorial-slide" data-step="2">
+                    <div class="slide-icon-container">
+                        <i class="ri-xbox-fill slide-icon xbox-color"></i>
+                    </div>
+                    <h2>União de Contas</h2>
+                    <p>O Fim das Contas Fantasmas.</p>
+                    <div class="slide-content">
+                        <div class="info-card warning-border">
+                            <h3><i class="ri-alert-line"></i> Por que vincular?</h3>
+                            <p>Ao vincular, o sistema UNE seu Discord e Xbox em <strong>UMA ÚNICA IDENTIDADE</strong>.
+                            </p>
+                            <p style="margin-top: 5px;">Isso evita duplicidade e garante que seu dinheiro e ranking
+                                sejam atribuídos corretamente.</p>
+                        </div>
+                    </div>
+                    <div class="slide-actions">
+                        <button class="btn btn-secondary" onclick="prevSlide()">Voltar</button>
+                        <button class="btn btn-primary" onclick="nextSlide()">Próximo <i
+                                class="ri-arrow-right-line"></i></button>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Clan & Base -->
+                <div class="tutorial-slide" data-step="3">
+                    <div class="slide-icon-container">
+                        <i class="ri-shield-star-line slide-icon gold-color"></i>
+                    </div>
+                    <h2>Proteção Total</h2>
+                    <p>Dorme tranquilo. O BigodeBot vigia sua base.</p>
+                    <div class="slide-content">
+                        <div class="grid-2-mini">
+                            <div class="mini-card">
+                                <h4><i class="ri-team-line"></i> Clã</h4>
+                                <p>Crie um clã para compartilhar permissões de portas e bancos com seus amigos.</p>
+                            </div>
+                            <div class="mini-card">
+                                <h4><i class="ri-home-wifi-line"></i> Base</h4>
+                                <p>Registre sua base (comando !alarme). O bot bane quem tentar "glitchar" ou invadir
+                                    ilegalmente!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide-actions">
+                        <button class="btn btn-secondary" onclick="prevSlide()">Voltar</button>
+                        <button class="btn btn-primary" onclick="nextSlide()">Próximo <i
+                                class="ri-arrow-right-line"></i></button>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Benefits -->
+                <div class="tutorial-slide" data-step="4">
+                    <div class="slide-icon-container">
+                        <i class="ri-vip-crown-2-line slide-icon royal-color"></i>
+                    </div>
+                    <h2>Vantagens Exclusivas</h2>
+                    <p>Jogue, lucre e domine o ranking.</p>
+                    <div class="slide-content">
+                        <ul class="benefit-list">
+                            <li><span>💰</span> <strong>Salário:</strong> Ganhe coins a cada 10min online.</li>
+                            <li><span>🛒</span> <strong>Shop:</strong> Compre itens e receba no jogo (Spawn automático).
+                            </li>
+                            <li><span>📊</span> <strong>Ranking:</strong> Dispute o Top 1 Kill/Death do servidor.</li>
+                        </ul>
+                        <div class="final-msg">Tudo pronto? Vamos nessa!</div>
+                    </div>
+                    <div class="slide-actions">
+                        <button class="btn btn-secondary" onclick="prevSlide()">Voltar</button>
+                        <button class="btn btn-primary btn-lg" onclick="finishTutorial()">ACESSAR PAINEL <i
+                                class="ri-check-double-line"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-progress">
+                <div class="step active" id="step-dot-1"></div>
+                <div class="step" id="step-dot-2"></div>
+                <div class="step" id="step-dot-3"></div>
+                <div class="step" id="step-dot-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TRANSFERÊNCIA -->
+    <div id="modal-transfer" class="modal-overlay"
+        style="display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999;">
+        <div class="modal-content glass-panel" style="max-width: 400px; position: relative;">
+            <button class="modal-close" onclick="document.getElementById('modal-transfer').style.display='none'"
+                style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: white; cursor: pointer; font-size: 1.5rem;">
+                <i class="ri-close-line"></i>
+            </button>
+            <div class="text-center mb-4" style="text-align: center; margin-bottom: 20px;">
+                <i class="ri-bank-line" style="font-size: 3rem; color: var(--primary);"></i>
+                <h2 class="mt-2">Banco Texas</h2>
+                <p class="text-muted">Transferência de DZ Coins</p>
+            </div>
+
+            <form id="transfer-form">
+                <div class="form-group mb-3" style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Gamertag do Destinatário</label>
+                    <input type="text" id="transfer-target" class="form-control" placeholder="Ex: Player123" required
+                        style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 6px;">
+                </div>
+                <div class="form-group mb-4" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px;">Valor (DZ Coins)</label>
+                    <input type="number" id="transfer-amount" class="form-control" min="1" placeholder="0" required
+                        style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 6px;">
+                </div>
+                <button type="submit" class="btn btn-primary w-100"
+                    style="width: 100%; padding: 12px; font-weight: bold;">
+                    <i class="ri-exchange-dollar-line"></i> Confirmar Transferência
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mural da Vergonha - BIGODE TEXAS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/logo_texas.png') }}" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Estilos específicos do Mural injetados aqui para rapidez */
+        .mural-container {
+            max-width: 1200px;
+            margin: 100px auto 50px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .wanted-card {
+            background-color: #f4e4bc;
+            background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
+            color: #2c1e1e;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #5a3a2a;
+            box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+
+        .wanted-card:nth-child(even) {
+            transform: rotate(2deg);
+        }
+
+        .wanted-card:hover {
+            transform: scale(1.05) rotate(0deg);
+            z-index: 10;
+        }
+
+        .wanted-header {
+            font-family: 'Creepster', cursive;
+            font-size: 3rem;
+            color: #8b0000;
+            margin-bottom: 10px;
+            border-bottom: 3px double #2c1e1e;
+            padding-bottom: 5px;
+        }
+
+        .wanted-photo {
+            width: 100%;
+            height: 250px;
+            background-color: #000;
+            margin-bottom: 15px;
+            border: 2px solid #2c1e1e;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wanted-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(100%) contrast(120%);
+        }
+
+        .banned-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            border: 5px solid #d32f2f;
+            color: #d32f2f;
+            font-size: 2.5rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            font-family: 'Special Elite', cursive;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+
+        .wanted-name {
+            font-family: 'Special Elite', cursive;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
+
+        .wanted-reason {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .wanted-date {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .pin {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle at 10px 10px, #ffffff, #c0c0c0, #333333);
+            border-radius: 50%;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .empty-mural {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: white;
+            font-family: 'Special Elite', cursive;
+            font-size: 1.5rem;
+            padding: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'layout.html' %}
+
+    <!-- Necessário para o navbar funcionar se layout não for extendido corretamente -->
+    <!-- Mas como estamos usando include, precisamos garantir o navbar -->
+
+    <div class="mural-container" id="mural-grid">
+        <!-- Cards serão injetados aqui via JS -->
+        <div class="empty-mural">Carregando lista de foragidos...</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/mural/banned');
+                const bans = await response.json();
+                const grid = document.getElementById('mural-grid');
+
+                if (bans.length === 0) {
+                    grid.innerHTML = '<div class="empty-mural">O servidor está limpo... por enquanto.</div>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+
+                bans.forEach(ban => {
+                    const card = document.createElement('div');
+                    card.className = 'wanted-card';
+
+                    // Avatar ou Default
+                    const avatarUrl = ban.discord_avatar
+                        ? `https://cdn.discordapp.com/avatars/${ban.discord_id}/${ban.discord_avatar}.png`
+                        : 'https://i.imgur.com/6Xq6XqL.png'; // Silhouette default
+
+                    // Formatar data
+                    const date = new Date(ban.banned_at).toLocaleDateString('pt-BR');
+
+                    card.innerHTML = `
+                        <div class="pin"></div>
+                        <div class="wanted-header">PROCURADO</div>
+                        <div class="wanted-photo">
+                            <img src="${avatarUrl}" alt="${ban.discord_username}">
+                            <div class="banned-stamp">BANIDO</div>
+                        </div>
+                        <div class="wanted-name">${ban.discord_username}</div>
+                        <div class="wanted-reason">CRIME: ${ban.ban_reason || 'Violação de Regras'}</div>
+                        <div class="wanted-date">SENTENÇA: ${date}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar mural:', error);
+                document.getElementById('mural-grid').innerHTML =
+                    '<div class="empty-mural">Erro ao carregar dados do servidor.</div>';
+            }
+        });
+    </script>
+</body>
+
+</html>

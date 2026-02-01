@@ -62,7 +62,7 @@ async def top(ctx, categoria: str = None):
     elif categoria == "playtime":
         await show_playtime_leaderboard(ctx, players_db)
     else:
-        await ctx.send(f"❌ Categoria inválida! Use `!top` para ver as opções.")
+        await ctx.send("❌ Categoria inválida! Use `!top` para ver as opções.")
 
 async def show_kills_leaderboard(ctx, players_db):
     """Mostra ranking de kills"""

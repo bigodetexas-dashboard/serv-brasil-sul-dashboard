@@ -28,7 +28,7 @@ def main():
         print("Defina no .env ou passe como argumento")
         return False
     
-    print(f"[OK] Conectando ao banco de producao...")
+    print("[OK] Conectando ao banco de producao...")
     print(f"[INFO] Host: {database_url.split('@')[1].split('/')[0] if '@' in database_url else 'local'}")
     print()
     

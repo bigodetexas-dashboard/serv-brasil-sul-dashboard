@@ -1,7 +1,5 @@
 import requests
 import os
-import time
-import random
 
 # Tenta baixar tiles reais simulando um navegador
 # Fonte: Dayz.GG (Ginfo) - Mencionado no projeto DayZ-Map-DL

@@ -168,16 +168,16 @@ try:
     print(f"   Ultima linha lida: {last_lines}")
     
     if current_file != latest_log['name']:
-        print(f"\n   [PROBLEMA DETECTADO!]")
+        print("\n   [PROBLEMA DETECTADO!]")
         print(f"   O bot esta lendo: {current_file}")
         print(f"   Mas o log mais recente e: {latest_log['name']}")
-        print(f"\n   [SOLUCAO] Atualize bot_state.json ou delete o arquivo para forcar re-deteccao.")
+        print("\n   [SOLUCAO] Atualize bot_state.json ou delete o arquivo para forcar re-deteccao.")
     else:
-        print(f"   [OK] Bot esta apontando para o log correto!")
+        print("   [OK] Bot esta apontando para o log correto!")
         
         if last_lines >= total_lines:
             print(f"\n   [PROBLEMA] Bot ja leu todas as linhas ({last_lines} >= {total_lines})")
-            print(f"   [SOLUCAO] Aguarde novas mortes ou reduza 'last_read_lines' para reprocessar.")
+            print("   [SOLUCAO] Aguarde novas mortes ou reduza 'last_read_lines' para reprocessar.")
         
 except FileNotFoundError:
     print("   [AVISO] Arquivo bot_state.json nao encontrado (sera criado na primeira execucao)")
@@ -188,7 +188,7 @@ except Exception as e:
 print("\n" + "=" * 60)
 print("RESUMO DO DIAGNOSTICO")
 print("=" * 60)
-print(f"Conexao FTP: OK")
+print("Conexao FTP: OK")
 print(f"Logs encontrados: {len(found_logs)}")
 print(f"Log mais recente: {latest_log['name']}")
 print(f"Total de linhas: {total_lines if 'total_lines' in locals() else 'N/A'}")

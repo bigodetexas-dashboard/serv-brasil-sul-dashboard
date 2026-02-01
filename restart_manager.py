@@ -2,7 +2,6 @@ import asyncio
 import aiohttp
 import datetime
 from datetime import timedelta
-import time
 
 # --- CONFIGURAÇÃO ---
 # ⚠️ VOCÊ PRECISA COLOCAR SEU TOKEN AQUI
@@ -41,10 +40,10 @@ async def restart_server():
         return False
 
 async def scheduler():
-    print(f"\n=== BOT DE RESTART NITRADO ===")
+    print("\n=== BOT DE RESTART NITRADO ===")
     print(f"Service ID: {SERVICE_ID}")
     print(f"Token Configurado: {'NÃO' if NITRADO_TOKEN == 'SEU_TOKEN_AQUI' else 'SIM'}")
-    print(f"Aguardando horários de Raid (Sáb/Dom - 21:00 e 23:00)...\n")
+    print("Aguardando horários de Raid (Sáb/Dom - 21:00 e 23:00)...\n")
     
     while True:
         # Horário de Brasília (UTC-3)

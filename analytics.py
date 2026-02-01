@@ -1,7 +1,7 @@
 import json
 import csv
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 def load_json(filename):
     if not os.path.exists(filename):

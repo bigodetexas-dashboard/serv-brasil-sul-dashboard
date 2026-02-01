@@ -151,7 +151,7 @@ def restore_backup(backup_index):
             shutil.copy2(src, file)
             print(f"[OK] Restaurado: {file}")
     
-    print(f"\n[SUCESSO] Backup restaurado com sucesso!")
+    print("\n[SUCESSO] Backup restaurado com sucesso!")
 
 if __name__ == "__main__":
     import sys

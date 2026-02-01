@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - BIGODETEXAS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .admin-sidebar {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            height: fit-content;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .sidebar-btn:hover,
+        .sidebar-btn.active {
+            background: rgba(255, 179, 0, 0.1);
+            color: var(--accent);
+        }
+
+        .admin-content h2 {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .user-item {
+            background: var(--bg-dark);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-online {
+            background: rgba(46, 213, 115, 0.2);
+            color: #2ed573;
+        }
+
+        .status-banned {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">
+                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
+                    style="height: 40px; margin-right: 10px;">
+                <span style="font-size: 1.5rem;">ADMIN PANEL</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="/dashboard" class="navbar-link"><i class="ri-arrow-left-line"></i> Voltar ao Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container admin-grid">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <ul class="sidebar-menu">
+                <li><button class="sidebar-btn active" onclick="showTab('dashboard')"><i class="ri-dashboard-line"></i>
+                        Visão Geral</button></li>
+                <li><button class="sidebar-btn" onclick="showTab('users')"><i class="ri-user-settings-line"></i>
+                        Usuários</button></li>
+                <li><button class="sidebar-btn" onclick="showTab('logs')"><i class="ri-file-list-3-line"></i> Logs
+                        (ADM)</button></li>
+                <li><button class="sidebar-btn" onclick="showTab('nitrado')"><i class="ri-server-line"></i> Nitrado
+                        Server</button></li>
+                <li><button class="sidebar-btn" onclick="showTab('texano')"
+                        style="color: #00f2fe; border-left: 3px solid #00f2fe;"><i class="ri-robot-line"></i> TEXANO
+                        (IA)</button></li>
+            </ul>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="admin-content" id="content-area">
+            <!-- Dashboard Tab -->
+            <div id="tab-dashboard">
+                <h2>📊 Status do Sistema</h2>
+
+                <!-- Server Stats Grid -->
+                <div class="grid grid-3">
+                    <div class="stat-card">
+                        <div class="stat-value" id="admin-db-bases">-</div>
+                        <div class="stat-label">Bases Cadastradas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="admin-online-count">-</div>
+                        <div class="stat-label">Jogadores Online</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="admin-total-users">-</div>
+                        <div class="stat-label">Total Gamertags</div>
+                    </div>
+                </div>
+
+                <!-- Server Controls Grid -->
+                <h3 style="margin-top: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">⚙️
+                    Controles do Servidor</h3>
+                <div class="grid grid-2" style="margin-top: 1rem;">
+                    <!-- Raid Mode Toggle -->
+                    <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0;">Modo Raid (Override Manual)</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Ativa/Desativa o raid
+                                imediatamente ignorando o agendamento.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-raid" onchange="updateSettings('raid')">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <!-- Build Mode Toggle -->
+                    <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0;">Modo Construção</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Restrito (Perto de
+                                bases) ou Livre</p>
+                            <span id="build-status-text" class="badge">Restrito</span>
+                        </div>
+                        <button class="btn btn-small" id="btn-toggle-build"
+                            onclick="updateSettings('build')">Alternar</button>
+                    </div>
+                </div>
+
+                <!-- Raid Schedule Config -->
+                <h3 style="margin-top: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">🕒
+                    Agendamento Automático de Raid</h3>
+                <div class="card" style="margin-top: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Dias da Semana</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px;" id="raid-days-container">
+                                <label class="checkbox-label"><input type="checkbox" value="0"> Seg</label>
+                                <label class="checkbox-label"><input type="checkbox" value="1"> Ter</label>
+                                <label class="checkbox-label"><input type="checkbox" value="2"> Qua</label>
+                                <label class="checkbox-label"><input type="checkbox" value="3"> Qui</label>
+                                <label class="checkbox-label"><input type="checkbox" value="4"> Sex</label>
+                                <label class="checkbox-label"><input type="checkbox" value="5"> Sáb</label>
+                                <label class="checkbox-label"><input type="checkbox" value="6"> Dom</label>
+                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">(Selecione os
+                                dias em que o raid estará ativo)</p>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Horário de
+                                Funcionamento</label>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="flex: 1;">
+                                    <span style="font-size: 0.8rem; color: var(--text-secondary);">Início (Hora)</span>
+                                    <input type="number" id="raid-start-hour" class="search-box"
+                                        style="margin: 5px 0 0 0; padding: 8px;" min="0" max="23" value="20">
+                                </div>
+                                <span style="margin-top: 20px;">até</span>
+                                <div style="flex: 1;">
+                                    <span style="font-size: 0.8rem; color: var(--text-secondary);">Fim (Hora)</span>
+                                    <input type="number" id="raid-end-hour" class="search-box"
+                                        style="margin: 5px 0 0 0; padding: 8px;" min="0" max="23" value="22">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="margin-top: 15px; width: 100%;"
+                                onclick="saveRaidSchedule()">
+                                <i class="ri-save-line"></i> Salvar Agendamento
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Online Players List -->
+                <h3 style="margin-top: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">🟢
+                    Jogadores Online</h3>
+                <div class="card" style="margin-top: 1rem; max-height: 400px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 1px solid var(--border-color);">
+                                <th style="padding: 10px;">Gamertag</th>
+                                <th style="padding: 10px;">Tempo</th>
+                                <th style="padding: 10px; text-align: right;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="online-players-list">
+                            <tr>
+                                <td colspan="3" style="text-align: center; padding: 20px;">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Users Tab -->
+            <div id="tab-users" style="display: none;">
+                <h2>👥 Gerenciar Usuários</h2>
+                <input type="text" class="search-box" placeholder="Buscar por Discord ID, Gamertag ou Nome..."
+                    onkeyup="filterUsers(this.value)">
+                <div class="user-list" id="users-list-container">
+                    <p style="text-align: center;">Carregando...</p>
+                </div>
+            </div>
+
+            <!-- Logs Tab -->
+            <div id="tab-logs" style="display: none;">
+                <h2>📜 Logs do Jogo (ADM/RPT)</h2>
+                <div class="log-viewer"
+                    style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; max-height: 500px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse; color: #ddd;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #444;">
+                                <th style="text-align: left; padding: 10px;">Data/Hora</th>
+                                <th style="text-align: left; padding: 10px;">Evento</th>
+                                <th style="text-align: left; padding: 10px;">Jogador</th>
+                                <th style="text-align: left; padding: 10px;">Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-table-body">
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 20px;">Carregando logs...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Nitrado Tab -->
+            <div id="tab-nitrado" style="display: none;">
+                <h2>🎮 Controles Nitrado</h2>
+                <div class="card" style="background: rgba(0,0,0,0.5);">
+                    <h3>🛑 Ações de Perigo</h3>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn" style="background: #e67e22;" onclick="restartServer()">
+                            <i class="ri-refresh-line"></i> Reiniciar Servidor
+                        </button>
+                        <button class="btn" style="background: #c0392b;" onclick="stopServer()">
+                            <i class="ri-shut-down-line"></i> Parar Servidor
+                        </button>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 1rem;">
+                    <h3>Anti-Raid Dashboard (Simulador)</h3>
+                    <p>Status: <span class="badge badge-success">Ativo</span></p>
+                    <div style="margin-top: 20px; display: flex; gap: 10px; align-items: flex-end;">
+                        <div>
+                            <label style="font-size: 0.8rem; display: block; margin-bottom: 5px;">Coord X</label>
+                            <input type="number" id="raid-x" class="search-box" style="margin: 0; padding: 10px;"
+                                placeholder="Ex: 4600">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; display: block; margin-bottom: 5px;">Coord Z</label>
+                            <input type="number" id="raid-z" class="search-box" style="margin: 0; padding: 10px;"
+                                placeholder="Ex: 10000">
+                        </div>
+                        <button class="btn btn-small" onclick="testAntiRaid()" style="height: 42px;">Simular
+                            Violação</button>
+                    </div>
+                    <div id="raid-result"
+                        style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; display: none;">
+                    </div>
+                </div>
+                <!-- Texano Tab -->
+                <div id="tab-texano" style="display: none;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2><i class="ri-robot-line"></i> TEXANO: Assistente Tático</h2>
+                        <span class="badge"
+                            style="background: rgba(0, 242, 254, 0.2); color: #00f2fe; border: 1px solid #00f2fe;">LOG
+                            ROBOT: ONLINE</span>
+                    </div>
+
+                    <div class="grid grid-2" style="margin-bottom: 2rem;">
+                        <div class="card" style="border-left: 4px solid #00f2fe;">
+                            <h4><i class="ri-pulse-line"></i> Pulso do Sistema</h4>
+                            <div id="texano-vitals" style="font-size: 0.9rem; margin-top: 10px;">
+                                <p>🔍 Analisando conexões recentes...</p>
+                            </div>
+                        </div>
+                        <div class="card" style="border-left: 4px solid #f1c40f;">
+                            <h4><i class="ri-alert-line"></i> Alerta de Alts</h4>
+                            <div id="texano-alerts" style="font-size: 0.9rem; margin-top: 10px;">
+                                <p>✅ Nenhuma suspeita de hardware duplicado agora.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Interface -->
+                    <div class="card"
+                        style="height: 450px; display: flex; flex-direction: column; background: rgba(0,0,0,0.4);">
+                        <div id="texano-chat-box"
+                            style="flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                            <div
+                                style="background: rgba(0, 242, 254, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #00f2fe; max-width: 80%;">
+                                <strong>Texano:</strong> Pronto para o combate, Xerife. O que você precisa saber sobre
+                                as identidades do servidor ou o status dos spawns?
+                            </div>
+                        </div>
+                        <div
+                            style="padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px;">
+                            <input type="text" id="texano-input" class="search-box" style="margin: 0;"
+                                placeholder="Pergunte algo técnico (ex: 'Status das entregas' ou 'Verificar IPs')">
+                            <button class="btn btn-primary" style="background: #00f2fe; color: #000;"
+                                onclick="askTexano()">
+                                <i class="ri-send-plane-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            showTab('dashboard'); // Force load dashboard first
+        });
+
+        // Global state tracking
+        let currentBuildMode = 'restricted';
+        let currentRaidMode = false;
+
+        function showTab(tabName) {
+            document.querySelectorAll('[id^="tab-"]').forEach(el => el.style.display = 'none');
+            document.getElementById(`tab-${tabName}`).style.display = 'block';
+            document.querySelectorAll('.sidebar-btn').forEach(btn => btn.classList.remove('active'));
+            // Find button that calls showTab(tabName)
+            const btns = document.querySelectorAll('.sidebar-btn');
+            btns.forEach(b => {
+                if (b.getAttribute('onclick').includes(tabName)) b.classList.add('active');
+            });
+
+            if (tabName === 'users') loadUsers();
+            if (tabName === 'dashboard') loadStats();
+            if (tabName === 'logs') loadLogs();
+            if (tabName === 'texano') monitorTexano();
+        }
+
+        async function monitorTexano() {
+            const vitals = document.getElementById('texano-vitals');
+            const alerts = document.getElementById('texano-alerts');
+
+            vitals.innerHTML = '<p><i class="ri-loader-4-line ri-spin"></i> Lendo base de conhecimento...</p>';
+
+            const res = await fetchAPI('admin/texano/vitals');
+            if (res && res.success) {
+                vitals.innerHTML = `
+                    <p><i class="ri-database-line"></i> <strong>Banco:</strong> ${res.db_status}</p>
+                    <p><i class="ri-truck-line"></i> <strong>Entregas:</strong> ${res.pending_deliveries} pendentes</p>
+                    <p><i class="ri-user-search-line"></i> <strong>Identidades:</strong> ${res.total_identities} vinculadas</p>
+                `;
+
+                if (res.suspicious_alts.length > 0) {
+                    alerts.innerHTML = `<p style="color: #ff4757;"><i class="ri-error-warning-fill"></i> ${res.suspicious_alts.length} suspeitas de mult-conta ativa!</p>`;
+                }
+            }
+        }
+
+        async function askTexano() {
+            const input = document.getElementById('texano-input');
+            const chatBox = document.getElementById('texano-chat-box');
+            const prompt = input.value.trim();
+
+            if (!prompt) return;
+
+            // Add user message
+            chatBox.innerHTML += `
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px; align-self: flex-end; max-width: 80%; border-right: 3px solid #fff;">
+                    <strong>Você:</strong> ${prompt}
+                </div>
+            `;
+
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Log de "Pensando..."
+            const thinkingId = 'thinking-' + Date.now();
+            chatBox.innerHTML += `
+                <div id="${thinkingId}" style="background: rgba(0, 242, 254, 0.05); padding: 1rem; border-radius: 8px; border-left: 3px solid #00f2fe; max-width: 80%; opacity: 0.6;">
+                    <i class="ri-loader-4-line ri-spin"></i> Texano está processando dados técnicos...
+                </div>
+            `;
+
+            try {
+                const res = await fetchAPI('admin/texano/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+
+                document.getElementById(thinkingId).remove();
+
+                if (res && res.response) {
+                    chatBox.innerHTML += `
+                        <div style="background: rgba(0, 242, 254, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #00f2fe; max-width: 80%;">
+                            <strong>Texano:</strong> ${res.response}
+                        </div>
+                    `;
+                } else {
+                    chatBox.innerHTML += `<div style="color: #ff4757; font-size: 0.8rem;">Erro na comunicação com o assistente.</div>`;
+                }
+            } catch (e) {
+                document.getElementById(thinkingId).innerText = "Erro ao conectar com o motor tático.";
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function loadStats() {
+            const res = await fetchAPI('admin/dashboard_stats');
+            if (res && !res.error) {
+                // Update Counts
+                document.getElementById('admin-db-bases').textContent = res.total_bases || 0;
+                document.getElementById('admin-online-count').textContent = res.online_count || 0;
+                // Currently returning total_bases in 'dashboard_stats'.
+                // Since this view asks for 'total_bases' specifically in one card, and 'total_users' in another
+                // We might want to fix backend to return total_users too.
+                // For now, let's just make sure cards have IDs matching HTML
+
+                // Update Config Toggles
+                currentRaidMode = res.raid_active;
+                document.getElementById('toggle-raid').checked = currentRaidMode;
+
+                currentBuildMode = res.build_mode;
+                updateBuildBadge(currentBuildMode);
+
+                // Update Raid Schedule UI
+                if (res.raid_days) {
+                    const checkboxes = document.querySelectorAll('#raid-days-container input');
+                    checkboxes.forEach(cb => {
+                        cb.checked = res.raid_days.includes(parseInt(cb.value));
+                    });
+                }
+                if (res.raid_start !== undefined) document.getElementById('raid-start-hour').value = res.raid_start;
+                if (res.raid_end !== undefined) document.getElementById('raid-end-hour').value = res.raid_end;
+
+                // Update Online List
+                renderOnlinePlayers(res.online_players);
+            }
+        }
+
+        async function saveRaidSchedule() {
+            const selectedDays = [];
+            document.querySelectorAll('#raid-days-container input:checked').forEach(cb => {
+                selectedDays.push(parseInt(cb.value));
+            });
+
+            const payload = {
+                raid_days: selectedDays,
+                raid_start: document.getElementById('raid-start-hour').value,
+                raid_end: document.getElementById('raid-end-hour').value
+            };
+
+            const res = await fetchAPI('admin/update_settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res && res.success) {
+                showToast('Agendamento de Raid atualizado!', 'success');
+            } else {
+                showToast('Erro ao salvar agendamento.', 'error');
+            }
+        }
+
+        function updateBuildBadge(mode) {
+            const badge = document.getElementById('build-status-text');
+            if (mode === 'free') {
+                badge.textContent = 'Livre';
+                badge.className = 'badge badge-success';
+                badge.style.background = 'rgba(46, 213, 115, 0.2)';
+                badge.style.color = '#2ed573';
+            } else {
+                badge.textContent = 'Restrito';
+                badge.className = 'badge badge-warning';
+                badge.style.background = 'rgba(255, 179, 0, 0.2)';
+                badge.style.color = '#ffa502';
+            }
+        }
+
+        function renderOnlinePlayers(players) {
+            const list = document.getElementById('online-players-list');
+            if (!players || players.length === 0) {
+                list.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 20px; color: var(--text-secondary);">Nenhum jogador online no momento.</td></tr>';
+                return;
+            }
+
+            list.innerHTML = players.map(p => {
+                // Nitrado 'players' object varies. Assuming {name, time, id} based on typical DayZ API
+                const name = p.name || 'Desconhecido';
+                const time = p.time || '0s';
+                return `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 10px;">${name}</td>
+                    <td style="padding: 10px;">${time}</td>
+                    <td style="padding: 10px; text-align: right;">
+                         <button class="btn btn-small" style="background: #ff4757; padding: 2px 10px; font-size: 0.7rem;" onclick="banPlayerDirect('${name}')">Banir</button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        async function updateSettings(type) {
+            let payload = {};
+            if (type === 'raid') {
+                payload.raid_active = document.getElementById('toggle-raid').checked;
+            } else if (type === 'build') {
+                const newMode = currentBuildMode === 'restricted' ? 'free' : 'restricted';
+                payload.build_mode = newMode;
+            }
+
+            const res = await fetchAPI('admin/update_settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res && res.success) {
+                if (type === 'build') {
+                    currentBuildMode = res.config.build_mode;
+                    updateBuildBadge(currentBuildMode);
+                }
+                showToast('Configuração atualizada!', 'success');
+            } else {
+                showToast('Erro ao atualizar.', 'error');
+                // Revert toggle if failed
+                if (type === 'raid') document.getElementById('toggle-raid').checked = !payload.raid_active;
+            }
+        }
+
+        async function banPlayerDirect(gamertag) {
+            if (!confirm(`Banir ${gamertag}? Esta ação é enviada para a Nitrado imediatamente.`)) return;
+            // Since our toggle_ban uses discord_id, we ideally need a direct gamertag ban route
+            alert('Funcionalidade de banir por Gamertag direto será implementada na próxima etapa. Use a aba "Usuários" para banir contas vinculadas.');
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await fetchAPI('admin/users');
+                const container = document.getElementById('users-list-container');
+
+                if (!res || !res.users) {
+                    container.innerHTML = '<p>Erro ao carregar usuários</p>';
+                    return;
+                }
+
+                if (res.users.length === 0) {
+                    container.innerHTML = '<p style="text-align: center;">Nenhum usuário encontrado.</p>';
+                    return;
+                }
+
+                container.innerHTML = res.users.map(u => `
+                    <div class="user-item">
+                        <div>
+                            <div style="font-weight: 700;">${u.username || 'Desconhecido'}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">GT: ${u.gamertag || 'N/A'} | ID: ${u.discord_id}</div>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span class="status-badge ${u.banned ? 'status-banned' : 'status-online'}">
+                                ${u.banned ? 'Banido' : 'Ativo'}
+                            </span>
+                            <button class="btn btn-small" style="background: ${u.banned ? '#2ed573' : '#ff4757'}" onclick="toggleBan('${u.discord_id}')">
+                                ${u.banned ? 'Desbanir' : 'Banir'}
+                            </button>
+                            <button class="btn btn-small" style="background: #0984e3;" onclick="checkAlts('${u.gamertag}')">
+                                <i class="ri-search-eye-line"></i> Alts
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function filterUsers(query) {
+            const term = query.toLowerCase();
+            document.querySelectorAll('.user-item').forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(term) ? 'flex' : 'none';
+            });
+        }
+
+        async function toggleBan(discordId) {
+            if (!confirm('Tem certeza que deseja alterar o status de banimento?')) return;
+
+            const res = await fetchAPI('admin/toggle_ban', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ discord_id: discordId })
+            });
+
+            if (res && res.success) {
+                showToast(`Status alterado. Novo status: ${res.new_status ? 'Banido' : 'Ativo'}`);
+                loadUsers();
+            } else {
+                showToast(res.error || 'Erro ao alterar status', 'error');
+            }
+        }
+
+        async function checkAlts(gamertag) {
+            if (!gamertag || gamertag === 'N/A') return showToast('Gamertag inválida', 'error');
+
+            const res = await fetchAPI('admin/check_alts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ gamertag })
+            });
+
+            if (res && res.success) {
+                let msg = `🔎 Análise de Alts: ${gamertag}\n\n`;
+                if (res.alts_count > 0) {
+                    msg += `🚨 ${res.alts_count} CONTA(S) VINCULADA(S) DETECTADA(S)! 🚨\n`;
+                    msg += `\nAlvos: ${res.alts.join(', ')}`;
+                    msg += `\n\nIP Recente: ${res.identity.last_ip || 'Oculto'}`;
+                    alert(msg);
+                } else {
+                    msg += "✅ Nenhuma conta secundária detectada (Limpo).";
+                    msg += `\nIP Recente: ${res.identity.last_ip || 'Oculto'}`;
+                    alert(msg);
+                }
+            } else {
+                showToast('Erro ao verificar alts', 'error');
+            }
+        }
+
+        async function testAntiRaid() {
+            const x = document.getElementById('raid-x').value;
+            const z = document.getElementById('raid-z').value;
+            if (!x || !z) return showToast('Preencha as coordenadas X e Z', 'warning');
+
+            const resultDiv = document.getElementById('raid-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Verificando base de dados...';
+
+            const res = await fetchAPI('admin/check_raid_zone', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ x, z })
+            });
+
+            if (res && res.success) {
+                let html = '';
+                if (res.is_violation) {
+                    html = `<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                                <i class="ri-alarm-warning-fill" style="color: #ff4757; font-size: 2rem;"></i>
+                                <div><strong style="color: #ff4757; font-size: 1.2rem;">⛔ VIOLAÇÃO DETECTADA!</strong><br>O bot baniria jogador construindo aqui.</div>
+                            </div>`;
+                } else if (res.triggered.length > 0) {
+                    html = `<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                                <i class="ri-error-warning-fill" style="color: #ffa502; font-size: 2rem;"></i>
+                                <div><strong style="color: #ffa502; font-size: 1.2rem;">⚠️ ZONA DE ALERTA</strong><br>Perto de base, mas fora do raio de banimento (100m).</div>
+                            </div>`;
+                } else {
+                    html = `<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                                <i class="ri-checkbox-circle-fill" style="color: #2ed573; font-size: 2rem;"></i>
+                                <div><strong style="color: #2ed573; font-size: 1.2rem;">✅ ZONA SEGURA</strong><br>Nenhum conflito encontrado.</div>
+                            </div>`;
+                }
+                resultDiv.innerHTML = html;
+            } else {
+                showToast(res.error || 'Erro na verificação', 'error');
+            }
+        }
+
+        async function loadLogs() {
+            const res = await fetchAPI('admin/logs');
+            const tbody = document.getElementById('logs-table-body');
+
+            if (res && Array.isArray(res)) {
+                if (res.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">Nenhum log encontrado.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = res.map(log => {
+                    let color = '#fff';
+                    if (log.event_type === 'connection') color = '#2ed573';
+                    if (log.event_type === 'zombie_kill') color = '#eccc68';
+                    if (log.event_type === 'place') color = '#70a1ff';
+
+                    let details = '-';
+                    if (log.event_type === 'connection') details = `IP: ${log.ip || '?'}`;
+                    if (log.event_type === 'place') details = `Item: ${log.extra.item}`;
+                    if (log.event_type === 'zombie_kill') details = 'Matou Zumbi';
+
+                    return `
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <td style="padding: 10px;">${log.timestamp || '-'}</td>
+                            <td style="padding: 10px; color: ${color}; font-weight: bold;">${log.event_type.toUpperCase()}</td>
+                            <td style="padding: 10px;">${log.gamertag}</td>
+                            <td style="padding: 10px; color: #aaa;">${details}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red;">Erro ao carregar logs.</td></tr>';
+            }
+        }
+
+        async function restartServer() {
+            if (confirm('ATENÇÃO: Isso irá reiniciar o servidor REAL DayZ. Continuar?')) {
+                const res = await fetchAPI('admin/nitrado/restart', { method: 'POST' });
+                if (res && res.success) {
+                    showToast('Comando de REINÍCIO enviado com sucesso!', 'success');
+                } else {
+                    showToast(res.error || 'Erro ao reiniciar', 'error');
+                }
+            }
+        }
+
+        async function stopServer() {
+            if (confirm('ATENÇÃO: Isso irá PARAR o servidor REAL DayZ. Tem certeza?')) {
+                const res = await fetchAPI('admin/nitrado/stop', { method: 'POST' });
+                if (res && res.success) {
+                    showToast('Comando de PARADA enviado com sucesso!', 'success');
+                } else {
+                    showToast(res.error || 'Erro ao parar', 'error');
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

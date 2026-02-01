@@ -1,7 +1,5 @@
 import os
-import sys
 from PIL import Image
-import math
 
 # Configurações
 # Caminho da imagem fonte (ajuste conforme sua escolha: _sat.jpg ou _top.jpg)

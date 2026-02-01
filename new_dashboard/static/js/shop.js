@@ -144,14 +144,17 @@ function renderItems(searchTerm = '') {
     // Renderizar
     grid.innerHTML = filtered.map(item => `
         <div class="item-card" data-item-code="${item.code}">
-            <div class="item-image">
-                ${categoryIcons[item.category] || '📦'}
+            <div class="item-image" style="position: relative;">
+                ${item.image_url && item.image_url.includes('.') ? `<img src="${item.image_url}" style="width:100%; height:100%; object-fit:contain;">` : (categoryIcons[item.category] || '📦')}
+                <button onclick="openUploadModal('${item.id}', '${item.name}')" style="position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <i class="ri-pencil-line" style="font-size: 0.9rem;"></i>
+                </button>
             </div>
             <div class="item-name">${item.name}</div>
             <div class="item-description">${item.description}</div>
             <div class="item-footer">
                 <div class="item-price">${formatNumber(item.price)} 💰</div>
-                <button class="add-to-cart-btn" onclick="addToCart('${item.code}')">
+                <button class="add-to-cart-btn" onclick="addToCart('${item.item_key}')">
                     Adicionar
                 </button>
             </div>
@@ -290,4 +293,49 @@ function showNotification(message) {
 // Formatar número
 function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// ==================== IMAGE UPLOAD LOGIC ====================
+
+function openUploadModal(itemId, itemName) {
+    document.getElementById('upload-modal').style.display = 'flex';
+    document.getElementById('upload-item-name').textContent = itemName;
+    document.getElementById('upload-item-id').value = itemId;
+}
+
+function closeUploadModal() {
+    document.getElementById('upload-modal').style.display = 'none';
+}
+
+async function submitImageUpload() {
+    const itemId = document.getElementById('upload-item-id').value;
+    const fileInput = document.getElementById('upload-file');
+
+    if (fileInput.files.length === 0) {
+        alert("Selecione uma imagem!");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('item_id', itemId);
+    formData.append('image', fileInput.files[0]);
+
+    try {
+        const response = await fetch('/api/shop/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Imagem atualizada com sucesso!");
+            closeUploadModal();
+            loadItems(); // Reload grid to show new image
+        } else {
+            alert("Erro: " + (data.error || "Desconhecido"));
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Erro na conexão");
+    }
 }

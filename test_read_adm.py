@@ -26,7 +26,7 @@ print("TESTE DE LEITURA DO LOG ADM")
 print("=" * 60)
 
 # Conectar FTP
-print(f"\nConectando ao FTP...")
+print("\nConectando ao FTP...")
 ftp = ftplib.FTP()
 ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
 ftp.login(FTP_USER, FTP_PASS)
@@ -58,17 +58,17 @@ for idx, line in enumerate(lines, 1):
     elif "died" in line and "Player" in line and "committed suicide" not in line:
         death_events.append((idx, line))
 
-print(f"\n[RESULTADO]")
+print("\n[RESULTADO]")
 print(f"  Eventos 'killed by Player': {len(kill_events)}")
 print(f"  Eventos 'died': {len(death_events)}")
 
 if kill_events:
-    print(f"\n[ULTIMOS 5 KILLS]")
+    print("\n[ULTIMOS 5 KILLS]")
     for idx, line in kill_events[-5:]:
         print(f"  Linha {idx}: {line[:120]}")
 
 if death_events:
-    print(f"\n[ULTIMAS 5 MORTES]")
+    print("\n[ULTIMAS 5 MORTES]")
     for idx, line in death_events[-5:]:
         print(f"  Linha {idx}: {line[:120]}")
 

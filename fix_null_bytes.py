@@ -1,5 +1,4 @@
 
-import os
 
 file_path = 'new_dashboard/app.py'
 

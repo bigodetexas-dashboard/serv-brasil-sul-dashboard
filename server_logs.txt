@@ -1,0 +1,8 @@
+[2026-01-30 20:01:15] Player "Survivor1" (id=76561198012345678 ip=192.168.1.10:2302) connected
+[2026-01-30 20:05:22] Player "BanditKing" (id=76561198087654321 ip=10.0.0.50:2302) connected
+[2026-01-30 20:10:05] Player "Survivor1" (id=76561198012345678) placed Land_Fence_Kit at [4500.5, 300.2, 12000.1]
+[2026-01-30 20:12:30] Player "BanditKing" (id=76561198087654321) killed Zombie
+[2026-01-30 20:15:00] Player "Survivor1" (id=76561198012345678) killed Zombie
+[2026-01-30 20:20:45] Player "Unknown" (ip=203.0.113.1:2302) connected
+[2026-01-30 20:22:10] Player "BanditKing" (id=76561198087654321) killed Infested
+[2026-01-30 20:25:33] Player "Survivor1" (id=76561198012345678) killed Player "BanditKing" (id=76561198087654321) with M4A1

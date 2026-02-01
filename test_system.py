@@ -1,9 +1,8 @@
 import unittest
 import asyncio
 import os
-import json
 import shutil
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 # Import modules to test
 # Note: We might need to adjust imports if bot_main has global execution code

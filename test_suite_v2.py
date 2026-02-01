@@ -3,8 +3,6 @@ from unittest.mock import MagicMock, patch, AsyncMock
 import json
 import os
 import sys
-import datetime
-from datetime import timezone
 
 # Adiciona o diretório atual ao path para importar o bot_main
 sys.path.append(os.getcwd())
@@ -300,7 +298,7 @@ class TestBigodeBot(unittest.IsolatedAsyncioTestCase):
             # O decorator do discord.ext.tasks transforma a função.
             # Para testar o corpo, precisaríamos acessar .coro ou similar, ou confiar que a definição está OK.
             pass
-        except Exception as e:
+        except Exception:
             # O loop task não pode ser awaitado diretamente assim se não estiver startado, 
             # ou se comportar diferente.
             # Vamos assumir OK se o módulo carregou.

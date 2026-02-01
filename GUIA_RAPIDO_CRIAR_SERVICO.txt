@@ -1,0 +1,110 @@
+# 🚀 GUIA RÁPIDO: CRIAR SERVIÇO NO RENDER
+
+**O navegador deve ter aberto em:** https://dashboard.render.com/select-repo?type=web
+
+---
+
+## ✅ **PASSO A PASSO**
+
+### 1. PROCURAR REPOSITÓRIO
+- Procure por: **serv-brasil-sul-dashboard**
+- Deve aparecer: `bigodetexas-dashboard/serv-brasil-sul-dashboard`
+- Clique em **"Connect"**
+
+### 2. CONFIGURAR SERVIÇO
+
+**Name (Nome):**
+```
+serv-brasil-sul-dashboard-novo
+```
+
+**Region:**
+```
+Oregon (US West)
+```
+
+**Branch:**
+```
+main
+```
+
+**Root Directory:**
+```
+new_dashboard
+```
+
+**Build Command:**
+```
+pip install -r requirements.txt
+```
+
+**Start Command:**
+```
+gunicorn app:app
+```
+
+**Instance Type:**
+```
+Free
+```
+
+### 3. VARIÁVEIS DE AMBIENTE
+
+Clique em "Advanced" e adicione:
+
+**Opção A: Copiar do serviço antigo**
+1. Abra em outra aba: https://dashboard.render.com/web/srv-d4jrhp8gjchc739odl2g
+2. Vá em "Environment"
+3. Copie TODAS as 5 variáveis
+
+**Opção B: Adicionar manualmente**
+```
+SECRET_KEY=4ba0cf9c9cbfe18a82202b546f497c7d4d449d6e73b3fdf45503ebb8d1d5547e
+
+DATABASE_URL=(copie do serviço antigo - linha que começa com postgresql://)
+
+DISCORD_CLIENT_ID=1442959269141020892
+
+DISCORD_CLIENT_SECRET=iw9RzpjUTvU5R0_cmzBiVzYPnldCNOJS
+
+DISCORD_REDIRECT_URI=https://serv-brasil-sul-dashboard-novo.onrender.com/callback
+```
+
+### 4. CRIAR SERVIÇO
+
+1. Revise todas as configurações
+2. Clique em **"Create Web Service"**
+3. Aguarde 5-10 minutos (deploy)
+
+---
+
+## ⏱️ **AGUARDE O DEPLOY**
+
+Você verá:
+- "Building..." → "Live" (quando terminar)
+- Logs aparecerão mostrando o progresso
+
+---
+
+## 🎯 **URL ESPERADA**
+
+Após criar, a URL será algo como:
+```
+https://serv-brasil-sul-dashboard-novo.onrender.com
+```
+
+Ou similar (baseado no nome do repositório renomeado)
+
+---
+
+## 💬 **ME AVISE QUANDO**
+
+- ✅ Serviço criado
+- ✅ Status "Live"
+- ✅ Qual URL foi gerada
+
+Então continuaremos com os próximos passos!
+
+---
+
+**Boa sorte!** 🚀

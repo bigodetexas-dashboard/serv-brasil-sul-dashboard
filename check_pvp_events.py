@@ -26,7 +26,7 @@ print("VERIFICACAO DE EVENTOS PVP (killed by Player)")
 print("=" * 80)
 
 # Conectar FTP
-print(f"\nConectando ao FTP...")
+print("\nConectando ao FTP...")
 ftp = ftplib.FTP()
 ftp.connect(FTP_HOST, FTP_PORT, timeout=10)
 ftp.login(FTP_USER, FTP_PASS)

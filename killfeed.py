@@ -5,7 +5,6 @@ import requests
 import discord
 import os
 import json
-from datetime import datetime
 import io
 import asyncio
 
@@ -123,7 +122,7 @@ def find_latest_adm_log(ftp):
                 items = []
                 for name in ftp.nlst():
                     items.append((name, {'type': 'unknown'}))
-            except Exception as e:
+            except Exception:
                 return
 
         for name, facts in items:

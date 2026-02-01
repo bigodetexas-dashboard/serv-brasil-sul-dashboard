@@ -7,6 +7,7 @@ let userBalance = 0;
 document.addEventListener('DOMContentLoaded', function () {
     loadCheckoutCart();
     loadUserBalance();
+    loadIdentities();
     setupEventListeners();
 });
 
@@ -22,6 +23,28 @@ async function loadUserBalance() {
     } catch (error) {
         console.error('Erro ao carregar saldo:', error);
         userBalance = 0;
+    }
+}
+
+// Carregar identidades vinculadas
+async function loadIdentities() {
+    try {
+        const response = await fetch('/api/user/identities');
+        const data = await response.json();
+        const select = document.getElementById('target-gamertag');
+
+        if (data && data.length > 0) {
+            select.innerHTML = data.map(id =>
+                `<option value="${id.gamertag}">${id.gamertag} ${id.nitrado_id ? '(Verificada)' : '(Aguardando Robô)'}</option>`
+            ).join('');
+        } else {
+            select.innerHTML = '<option value="">Nenhuma conta vinculada!</option>';
+        }
+    } catch (error) {
+        console.error('Erro ao carregar identidades:', error);
+        if (document.getElementById('target-gamertag')) {
+            document.getElementById('target-gamertag').innerHTML = '<option value="">Erro ao carregar</option>';
+        }
     }
 }
 
@@ -96,6 +119,12 @@ function validateCoords() {
 async function confirmOrder() {
     const x = parseInt(document.getElementById('coord-x').value);
     const z = parseInt(document.getElementById('coord-z').value);
+    const targetGamertag = document.getElementById('target-gamertag').value;
+
+    if (!targetGamertag) {
+        alert('Por favor, selecione uma conta de destino!');
+        return;
+    }
 
     if (!x || !z || x < 0 || x > 15360 || z < 0 || z > 15360) {
         alert('Por favor, insira coordenadas válidas (0-15360)!');
@@ -117,6 +146,7 @@ async function confirmOrder() {
             price: item.price
         })),
         coordinates: { x, z },
+        gamertag: targetGamertag,
         total: orderTotal
     };
 
@@ -139,7 +169,7 @@ async function confirmOrder() {
                     total: orderTotal
                 });
             }
-            
+
             // Limpar carrinho
             localStorage.removeItem('cart');
             localStorage.removeItem('checkout-cart');

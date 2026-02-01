@@ -3,7 +3,6 @@
 Alterar slug do serviço Render para serv-brasil-sul-dashboard
 """
 import requests
-import json
 import sys
 
 if sys.platform == 'win32':
@@ -29,7 +28,7 @@ update_data = {
     "slug": "serv-brasil-sul-dashboard"
 }
 
-print(f"[*] Alterando slug para: serv-brasil-sul-dashboard")
+print("[*] Alterando slug para: serv-brasil-sul-dashboard")
 print(f"[*] Service ID: {SERVICE_ID}")
 print()
 

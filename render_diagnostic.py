@@ -67,7 +67,7 @@ if response.status_code == 200:
                     print()
                     
                     # Buscar deploys
-                    print(f"[3] BUSCANDO DEPLOYS...")
+                    print("[3] BUSCANDO DEPLOYS...")
                     deploys_response = requests.get(f"{BASE_URL}/services/{service_id}/deploys", headers=headers)
                     
                     if deploys_response.status_code == 200:

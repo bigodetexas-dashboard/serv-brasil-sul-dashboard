@@ -152,7 +152,7 @@ try:
     content = bio.getvalue().decode('utf-8', errors='ignore')
     lines = content.split('\n')
     
-    print(f"[OK] Arquivo baixado com sucesso!")
+    print("[OK] Arquivo baixado com sucesso!")
     print(f"Total de linhas: {len(lines)}")
     print(f"Tamanho: {len(content)} bytes")
     

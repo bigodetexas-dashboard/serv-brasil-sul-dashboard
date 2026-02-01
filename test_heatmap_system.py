@@ -4,7 +4,6 @@ Valida todas as funcionalidades implementadas
 """
 
 import requests
-import json
 
 API_BASE = 'http://localhost:5001'
 
@@ -17,7 +16,7 @@ def test_heatmap_api():
         data = response.json()
         
         if data['success']:
-            print(f"✅ API funcionando!")
+            print("✅ API funcionando!")
             print(f"   - Pontos retornados: {len(data['points'])}")
             print(f"   - Total de eventos: {data['total_events']}")
             print(f"   - Range: {data['range']}")
@@ -51,7 +50,7 @@ Kill: John killed Mike at [6000, 0, 8000] with M4A1
         data = response.json()
         
         if data['success']:
-            print(f"✅ Parser funcionando!")
+            print("✅ Parser funcionando!")
             print(f"   - Eventos parseados: {data['events_parsed']}")
             print(f"   - Eventos salvos: {data['events_saved']}")
             return True
@@ -78,7 +77,7 @@ def test_database():
         since = datetime.now() - timedelta(days=30)
         data = get_heatmap_data(since, grid_size=50)
         
-        print(f"✅ Banco de dados funcionando!")
+        print("✅ Banco de dados funcionando!")
         print(f"   - Pontos agregados: {len(data)}")
         print(f"   - Total de eventos: {sum(p['count'] for p in data)}")
         
@@ -106,13 +105,13 @@ def test_parser_function():
         event1 = parse_rpt_line(line1)
         
         if event1:
-            print(f"✅ Formato 1 reconhecido!")
+            print("✅ Formato 1 reconhecido!")
             print(f"   - Killer: {event1['killer_name']}")
             print(f"   - Victim: {event1['victim_name']}")
             print(f"   - Coords: X={event1['game_x']}, Z={event1['game_z']}")
             print(f"   - Weapon: {event1['weapon']}")
         else:
-            print(f"❌ Formato 1 não reconhecido")
+            print("❌ Formato 1 não reconhecido")
             return False
         
         # Testar formato 2
@@ -120,12 +119,12 @@ def test_parser_function():
         event2 = parse_rpt_line(line2)
         
         if event2:
-            print(f"✅ Formato 2 reconhecido!")
+            print("✅ Formato 2 reconhecido!")
             print(f"   - Killer: {event2['killer_name']}")
             print(f"   - Victim: {event2['victim_name']}")
             print(f"   - Coords: X={event2['game_x']}, Z={event2['game_z']}")
         else:
-            print(f"❌ Formato 2 não reconhecido")
+            print("❌ Formato 2 não reconhecido")
             return False
         
         return True

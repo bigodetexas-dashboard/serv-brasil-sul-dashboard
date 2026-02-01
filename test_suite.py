@@ -6,7 +6,6 @@ Testes automatizados para validar funcionalidades
 import os
 import json
 import requests
-import time
 from datetime import datetime
 
 # Colors for terminal output
@@ -209,7 +208,7 @@ if __name__ == "__main__":
                 'results': results
             }, f, indent=4)
         
-        print(f"Results saved to: test_results.json\n")
+        print("Results saved to: test_results.json\n")
         
     except KeyboardInterrupt:
         print(f"\n{Colors.YELLOW}Tests interrupted by user{Colors.END}")

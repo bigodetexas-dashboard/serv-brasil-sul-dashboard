@@ -1,0 +1,40 @@
+
+GUIA DE INSTALAÇÃO - WINTER CHERNARUS (XBOX/NITRADO)
+=====================================================
+
+PASSO 1: ARQUIVOS DE CONFIGURAÇÃO (O que já está pronto aqui)
+-------------------------------------------------------------
+1. Copie o arquivo 'cfggameplay.json' para a pasta 'dayzOffline.chernarusplus' no seu File Browser do Nitrado.
+2. Copie o arquivo 'cfgweather.xml' para a mesma pasta.
+3. Copie o arquivo 'types.xml' para a pasta 'db' (dentro de 'dayzOffline.chernarusplus').
+
+PASSO 2: O CHÃO DE NEVE (Don Sibley Files)
+------------------------------------------
+Você precisa baixar os arquivos visuais (JSON) do GitHub do Don Sibley.
+Link: https://github.com/DonSibleyGames/WinterDayZConsole
+
+1. Baixe o ZIP do GitHub dele.
+2. Extraia os arquivos.
+3. No seu Nitrado, dentro da pasta 'dayzOffline.chernarusplus', crie uma nova pasta chamada 'custom'.
+4. Dentro de 'custom', crie outra pasta chamada 'winter'.
+5. Coloque os arquivos .json que você baixou dentro dessa pasta 'winter'.
+
+PASSO 3: LIGAR OS PONTOS
+------------------------
+1. Abra o arquivo 'cfggameplay.json' que você acabou de subir.
+2. Procure a linha "objectSpawnersArr".
+3. Eu já deixei 3 exemplos lá:
+   "custom/winter/Winter_Map_Data.json"
+   "custom/winter/Winter_Trees.json"
+   
+   IMPORTANTE: Você deve renomear os arquivos dentro do array para EXATAMENTE o nome dos arquivos que você baixou do Don Sibley.
+   Se o arquivo dele se chamar "Chernarus_Snow_V3.json", você deve alterar no cfggameplay.json para:
+   "custom/winter/Chernarus_Snow_V3.json"
+
+PASSO 4: ATIVAR
+---------------
+1. Vá nas Configurações Gerais (General Settings) do Nitrado.
+2. Marque a caixa "Enable cfggameplay.json".
+3. Reinicie o servidor.
+
+BOA SORTE, SOBREVIVENTE!

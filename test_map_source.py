@@ -1,5 +1,4 @@
 import requests
-import os
 
 # Baseado na estrutura comum de servidores de tiles do iZurvive/DayZ Community
 # Tenta baixar um tile central do Chernarus (Zoom 2, tile 1,1 ou similar)

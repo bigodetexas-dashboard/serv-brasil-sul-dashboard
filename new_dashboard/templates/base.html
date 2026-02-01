@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 
-{% block title %}Registrar Base - SERV. BRASIL SUL - XBOX{% endblock %}
+{% block title %}Gerenciar Bases - BIGODETEXAS{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
     .base-container {
         max-width: 1400px;
@@ -16,54 +15,142 @@
         margin-bottom: 3rem;
     }
 
-    .base-header h1 {
-        font-size: 2.5rem;
+    .manage-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-btn {
+        padding: 1rem 2rem;
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+    }
+
+    .base-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(10px);
+    }
+
+    .base-info h3 {
+        margin: 0 0 0.5rem 0;
+        color: var(--accent);
+    }
+
+    .base-info p {
+        margin: 0;
+        color: var(--text-secondary);
+    }
+
+    .action-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: #1a1a1a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        border-radius: 1rem;
+        width: 100%;
+        max-width: 600px;
+        position: relative;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .perm-list {
+        margin-top: 1rem;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .perm-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 0.5rem;
         margin-bottom: 0.5rem;
     }
 
-    .base-grid {
+    .add-perm-form {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
         display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 2rem;
+        grid-template-columns: 2fr 1fr auto;
+        gap: 0.5rem;
     }
 
+    input,
+    select {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+    }
+
+    /* Input map section styling copy */
     .map-section {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 1rem;
-        padding: 1.5rem;
-    }
-
-    #base-map {
-        height: 600px;
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .info-section {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 1rem;
-        padding: 1.5rem;
-    }
-
-    .info-card {
-        background: rgba(255, 255, 255, 0.03);
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .info-card h3 {
-        margin-bottom: 0.5rem;
-        color: var(--accent);
-    }
-
-    .coord-display {
-        font-family: 'Share Tech Mono', monospace;
-        font-size: 1.2rem;
-        color: var(--accent);
-        margin: 1rem 0;
+        height: 500px;
+        overflow: hidden;
+        margin-bottom: 2rem;
     }
 
     .register-btn {
@@ -76,210 +163,252 @@
         font-weight: 700;
         font-size: 1.1rem;
         cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .register-btn:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-    }
-
-    .register-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .warning-box {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .success-box {
-        background: rgba(34, 197, 94, 0.1);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-        color: #22c55e;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    @media (max-width: 1024px) {
-        .base-grid {
-            grid-template-columns: 1fr;
-        }
     }
 </style>
-</head>
+{% endblock %}
 
 {% block content %}
 <div class="base-container">
     <div class="base-header">
-        <h1><i class="ri-map-pin-fill" style="color: var(--accent);"></i> Registrar Base</h1>
-        <p>Clique no mapa para selecionar a localização da sua base</p>
+        <h1><i class="ri-shield-user-fill" style="color: var(--accent);"></i> Gerenciar Bases</h1>
+        <p>Controle suas bases e gerencie permissões de acesso.</p>
     </div>
 
-    <div class="base-grid">
+    <div class="manage-tabs">
+        <button class="tab-btn active" onclick="switchTab('my-bases')">Minhas Bases</button>
+        <button class="tab-btn" onclick="switchTab('register-base')">Criar Nova Base</button>
+    </div>
+
+    <!-- TAB 1: My Bases -->
+    <div id="tab-my-bases" class="tab-content">
+        <div id="bases-list">
+            <!-- Loading or list populated by JS -->
+            <p style="text-align:center; color: var(--text-secondary);">Carregando bases...</p>
+        </div>
+    </div>
+
+    <!-- TAB 2: Register Base -->
+    <div id="tab-register-base" class="tab-content" style="display: none;">
         <div class="map-section">
-            <h2>Mapa de Chernarus</h2>
-            <div id="base-map"></div>
-            <p style="color: var(--text-secondary); font-size: 0.9rem;">
-                <i class="ri-information-line"></i> Clique no mapa para selecionar as coordenadas da sua base
-            </p>
+            <iframe src="https://www.izurvive.com/chernarusplussatmap/" width="100%" height="100%" frameborder="0"
+                style="border:0;" allowfullscreen></iframe>
         </div>
 
-        <div class="info-section">
-            <h2>Informações da Base</h2>
-
-            <div id="no-selection" class="warning-box">
-                <i class="ri-alert-line"></i> Nenhuma localização selecionada
+        <div class="info-card">
+            <h3>Nova Base</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <input type="text" id="base-name" placeholder="Nome da Base" style="grid-column: span 2;">
+                <input type="number" id="coord-x" placeholder="Coord X" min="0" max="15360">
+                <input type="number" id="coord-z" placeholder="Coord Z" min="0" max="15360">
             </div>
-
-            <div id="selection-info" style="display: none;">
-                <div class="info-card">
-                    <h3>Coordenadas Selecionadas</h3>
-                    <div class="coord-display" id="coord-display">X: 0, Y: 0</div>
-                </div>
-
-                <div class="info-card">
-                    <h3>Nome da Base (Opcional)</h3>
-                    <input type="text" id="base-name" class="search-input" placeholder="Ex: Fortaleza do Texas"
-                        maxlength="50">
-                </div>
-
-                <div class="info-card">
-                    <h3>Raio de Proteção</h3>
-                    <p style="color: var(--text-secondary);">50 metros (padrão)</p>
-                    <small>Apenas membros do seu clã poderão construir nesta área</small>
-                </div>
-
-                <div class="warning-box">
-                    <strong><i class="ri-alert-line"></i> ATENÇÃO:</strong><br>
-                    • Você só pode registrar 1 base<br>
-                    • A localização não pode ser alterada depois<br>
-                    • Escolha com cuidado!
-                </div>
-
-                <button class="register-btn" id="register-btn" onclick="registerBase()">
-                    <i class="ri-save-line"></i> Registrar Base
-                </button>
-            </div>
-
-            <div id="success-message" style="display: none;" class="success-box">
-                <i class="ri-checkbox-circle-line"></i> Base registrada com sucesso!
-            </div>
+            <button class="register-btn" onclick="registerBase()">Registrar Base</button>
         </div>
     </div>
 </div>
 
+<!-- PERMISSIONS MODAL -->
+<div id="perm-modal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+        <h2 id="modal-base-name">Permissões de Acesso</h2>
+        <input type="hidden" id="current-base-id">
+
+        <div class="perm-list" id="perm-list-container">
+            <!-- Permissions populated by JS -->
+        </div>
+
+        <div class="add-perm-form">
+            <input type="text" id="new-perm-id" placeholder="Discord ID do Jogador">
+            <select id="new-perm-level">
+                <option value="GUEST">Convidado</option>
+                <option value="BUILDER">Construtor</option>
+                <option value="CO_OWNER">Co-Dono</option>
+            </select>
+            <button class="action-btn" style="background: var(--accent); color: black;" onclick="addPermission()">
+                <i class="ri-add-line"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
 {% block extra_scripts %}
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    let selectedCoords = null;
-    let marker = null;
+    // --- TAB SWITCHING ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
 
-    // Inicializar mapa
-    const map = L.map('base-map', {
-        crs: L.CRS.Simple,
-        minZoom: -2,
-        maxZoom: 4
-    });
+        document.getElementById('tab-' + tabId).style.display = 'block';
+        event.target.classList.add('active');
 
-    const bounds = [[0, 0], [15360, 15360]];
-    const image = L.imageOverlay('/static/img/chernarus_map.jpg', bounds).addTo(map);
-    map.fitBounds(bounds);
+        if (tabId === 'my-bases') loadMyBases();
+    }
 
-    // Círculo de proteção
-    let protectionCircle = null;
+    // --- LOAD BASES ---
+    async function loadMyBases() {
+        const container = document.getElementById('bases-list');
+        container.innerHTML = '<p style="text-align:center;">Carregando...</p>';
 
-    // Click no mapa
-    map.on('click', function (e) {
-        const latlng = e.latlng;
-        const x = Math.round(latlng.lng);
-        const y = Math.round(15360 - latlng.lat);
+        try {
+            const res = await fetch('/api/base/my');
+            const bases = await res.json();
 
-        selectedCoords = { x, y, z: 0 };
+            if (bases.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding: 3rem; background: rgba(255,255,255,0.03); border-radius: 1rem;">
+                        <h3>Nenhuma base encontrada</h3>
+                        <p style="color: var(--text-secondary);">Você ainda não registrou nenhuma base.</p>
+                        <button class="action-btn" style="margin-top:1rem;" onclick="switchTab('register-base')">Registrar Agora</button>
+                    </div>`;
+                return;
+            }
 
-        // Remover marker anterior
-        if (marker) {
-            map.removeLayer(marker);
+            container.innerHTML = bases.map(base => `
+                <div class="base-card">
+                    <div class="base-info">
+                        <h3>${base.name}</h3>
+                        <p><i class="ri-map-pin-line"></i> ${base.location || 'Sem localização'}</p>
+                        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Criada em: ${new Date(base.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <div>
+                        <button class="action-btn" onclick="openPermModal(${base.id}, '${base.name}')">
+                            <i class="ri-group-line"></i> Permissões
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p style="color:red; text-align:center;">Erro ao carregar bases.</p>';
         }
-        if (protectionCircle) {
-            map.removeLayer(protectionCircle);
-        }
+    }
 
-        // Adicionar novo marker
-        marker = L.marker(latlng, {
-            icon: L.divIcon({
-                className: 'custom-marker',
-                html: '<div style="background: #f59e0b; width: 20px; height: 20px; border-radius: 50%; border: 3px solid #fff;"></div>',
-                iconSize: [20, 20]
-            })
-        }).addTo(map);
-
-        // Adicionar círculo de proteção (50m)
-        protectionCircle = L.circle(latlng, {
-            radius: 50,
-            color: '#f59e0b',
-            fillColor: '#f59e0b',
-            fillOpacity: 0.2
-        }).addTo(map);
-
-        // Atualizar UI
-        document.getElementById('no-selection').style.display = 'none';
-        document.getElementById('selection-info').style.display = 'block';
-        document.getElementById('coord-display').textContent = `X: ${x}, Y: ${y}`;
-    });
-
+    // --- REGISTER BASE ---
     async function registerBase() {
-        if (!selectedCoords) {
-            alert('Selecione uma localização no mapa primeiro!');
+        const name = document.getElementById('base-name').value;
+        const x = document.getElementById('coord-x').value;
+        const z = document.getElementById('coord-z').value;
+
+        if (!name || !x || !z) {
+            alert("Preencha todos os campos!");
             return;
         }
 
-        const baseName = document.getElementById('base-name').value || null;
-        const btn = document.getElementById('register-btn');
-        btn.disabled = true;
-        btn.textContent = 'Registrando...';
-
         try {
-            const response = await fetch('/api/base/register', {
+            const res = await fetch('/api/base/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    coord_x: selectedCoords.x,
-                    coord_y: selectedCoords.y,
-                    coord_z: selectedCoords.z,
-                    name: baseName
+                    name: name,
+                    location: `${x} / ${z}`
                 })
             });
+            const data = await res.json();
 
-            const data = await response.json();
-
-            if (response.ok) {
-                document.getElementById('selection-info').style.display = 'none';
-                document.getElementById('success-message').style.display = 'block';
-                setTimeout(() => {
-                    window.location.href = '/clan';
-                }, 2000);
+            if (data.success) {
+                alert("Base registrada com sucesso!");
+                document.getElementById('base-name').value = '';
+                switchTab('my-bases');
             } else {
-                alert(data.error || 'Erro ao registrar base');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="ri-save-line"></i> Registrar Base';
+                alert("Erro: " + (data.error || "Desconhecido"));
             }
-        } catch (error) {
-            console.error('Erro:', error);
-            alert('Erro ao registrar base');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="ri-save-line"></i> Registrar Base';
+        } catch (e) {
+            alert("Erro de conexão");
         }
     }
-</script>
 
-<!-- Sistema de Notificações -->
-<script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
-{% endblock %}
+    // --- PERMISSIONS MODAL ---
+    async function openPermModal(baseId, baseName) {
+        document.getElementById('perm-modal').style.display = 'flex';
+        document.getElementById('modal-base-name').textContent = `Permissões: ${baseName}`;
+        document.getElementById('current-base-id').value = baseId;
+        loadPermissions(baseId);
+    }
+
+    function closeModal() {
+        document.getElementById('perm-modal').style.display = 'none';
+    }
+
+    async function loadPermissions(baseId) {
+        const list = document.getElementById('perm-list-container');
+        list.innerHTML = 'Carregando...';
+
+        try {
+            const res = await fetch(`/api/base/${baseId}/permissions`);
+            const perms = await res.json();
+
+            if (perms.length === 0) {
+                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Nenhuma permissão concedida ainda.</p>';
+                return;
+            }
+
+            list.innerHTML = perms.map(p => `
+                <div class="perm-item">
+                    <div>
+                        <strong>${p.discord_id}</strong>
+                        <span style="display:block; font-size:0.8rem; color: var(--accent);">${p.level}</span>
+                    </div>
+                    <button class="action-btn" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);"
+                            onclick="revokePermission(${baseId}, '${p.discord_id}')">
+                        <i class="ri-delete-bin-line"></i>
+                    </button>
+                </div>
+            `).join('');
+
+        } catch (e) {
+            list.innerHTML = 'Erro ao carregar permissões.';
+        }
+    }
+
+    async function addPermission() {
+        const baseId = document.getElementById('current-base-id').value;
+        const discordId = document.getElementById('new-perm-id').value;
+        const level = document.getElementById('new-perm-level').value;
+
+        if (!discordId) return;
+
+        try {
+            const res = await fetch(`/api/base/${baseId}/permission`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ discord_id: discordId, level: level })
+            });
+
+            if (res.ok) {
+                document.getElementById('new-perm-id').value = '';
+                loadPermissions(baseId);
+            } else {
+                alert("Erro ao adicionar permissão");
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function revokePermission(baseId, discordId) {
+        if (!confirm("Remover permissão deste usuário?")) return;
+
+        try {
+            const res = await fetch(`/api/base/${baseId}/permission`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ discord_id: discordId })
+            });
+
+            if (res.ok) {
+                loadPermissions(baseId);
+            } else {
+                alert("Erro ao remover permissão");
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // Initial Load
+    loadMyBases();
+</script>
 {% endblock %}

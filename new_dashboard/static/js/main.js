@@ -90,3 +90,136 @@ function initHamburgerMenu() {
         }
     });
 }
+
+// ==================== TOAST SYSTEM = :cowboy: ====================
+function showToast(message, type = 'success', title = '') {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    const icons = {
+        success: 'ri-checkbox-circle-line',
+        error: 'ri-error-warning-line',
+        warning: 'ri-alert-line',
+        info: 'ri-information-line'
+    };
+
+    const icon = icons[type] || icons.info;
+    if (!title) {
+        title = type.charAt(0).toUpperCase() + type.slice(1);
+        if (type === 'success') title = 'Sucesso';
+        if (type === 'error') title = 'Erro';
+        if (type === 'warning') title = 'Aviso';
+    }
+
+    toast.innerHTML = `
+        <div class="toast-icon"><i class="${icon}"></i></div>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+    `;
+
+    container.appendChild(toast);
+
+    // Auto remove
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+}
+
+// ==================== API HELPER ====================
+async function fetchAPI(endpoint, options = {}) {
+    const baseUrl = '/api/';
+
+    // Add CSRF Token if available
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (csrfToken) {
+        options.headers = {
+            ...options.headers,
+            'X-CSRFToken': csrfToken
+        };
+    }
+
+    try {
+        const response = await fetch(`${baseUrl}${endpoint}`, options);
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(`API Error (${endpoint}):`, error);
+        return null;
+    }
+}
+
+
+/* =========================================
+   CAROUSEL LOGIC FOR AGRADECIMENTOS PAGE
+   ========================================= */
+document.addEventListener('DOMContentLoaded', function () {
+    const slides = document.querySelectorAll('.carousel-slide');
+    if (slides.length > 0) {
+        const indicators = document.querySelectorAll('.indicator');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let currentSlide = 0;
+        let slideInterval;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            indicators[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            indicators[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function startSlideShow() {
+            slideInterval = setInterval(nextSlide, 5000); // 5 seconds per slide
+        }
+
+        function stopSlideShow() {
+            clearInterval(slideInterval);
+        }
+
+        // Event Listeners
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            stopSlideShow();
+            startSlideShow();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            stopSlideShow();
+            startSlideShow();
+        });
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                showSlide(index);
+                stopSlideShow();
+                startSlideShow();
+            });
+        });
+
+        // Initialize
+        startSlideShow();
+    }
+});

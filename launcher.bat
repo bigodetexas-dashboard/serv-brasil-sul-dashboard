@@ -55,11 +55,11 @@ echo        ╚═════════════════════�
 echo.
 echo        Iniciando bot...
 timeout /t 1 /nobreak >nul
-python bot_wrapper.py
+python guard_dog.py
 goto END
 
 :FULL_DIAGNOSTIC
-call run_bot.bat
+python guard_dog.py
 goto END
 
 :OPEN_DASHBOARD

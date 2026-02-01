@@ -61,7 +61,7 @@ def monitor_deploy(max_wait_minutes=15):
             if tiles_ok != last_tiles_status:
                 if tiles_ok:
                     print(f"[{minutes:02d}:{seconds:02d}] [SUCCESS] Tiles deployados!")
-                    print(f"\n[DONE] Deploy concluido com sucesso!")
+                    print("\n[DONE] Deploy concluido com sucesso!")
                     print(f"[URL] Acesse: {CHECKOUT_ENDPOINT}")
                     return True
                 last_tiles_status = tiles_ok

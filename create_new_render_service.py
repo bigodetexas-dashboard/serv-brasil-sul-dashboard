@@ -3,7 +3,6 @@
 Criar novo serviço no Render com slug correto
 """
 import requests
-import json
 import sys
 
 if sys.platform == 'win32':

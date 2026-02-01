@@ -3,9 +3,7 @@
 Verificar se slug foi alterado e tentar método alternativo
 """
 import requests
-import json
 import sys
-import time
 
 if sys.platform == 'win32':
     sys.stdout.reconfigure(encoding='utf-8')
@@ -40,7 +38,7 @@ if response.status_code == 200:
     
     if current_slug == "serv-brasil-sul-dashboard":
         print("[OK] Slug ja esta correto!")
-        print(f"URL do site: https://serv-brasil-sul-dashboard.onrender.com")
+        print("URL do site: https://serv-brasil-sul-dashboard.onrender.com")
     else:
         print("[*] Slug ainda nao foi alterado.")
         print()

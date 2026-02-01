@@ -97,14 +97,14 @@ async def on_ready():
                             (response.embeds and expected in str(response.embeds[0].to_dict())))
                 
                 if found:
-                    print(f"  [OK] PASSOU")
+                    print("  [OK] PASSOU")
                     test_results.append({"test": test['name'], "status": "OK"})
                 else:
-                    print(f"  [!] AVISO - Texto nao encontrado")
+                    print("  [!] AVISO - Texto nao encontrado")
                     test_results.append({"test": test['name'], "status": "AVISO"})
                 
             except asyncio.TimeoutError:
-                print(f"  [X] TIMEOUT")
+                print("  [X] TIMEOUT")
                 test_results.append({"test": test['name'], "status": "TIMEOUT"})
             
         except Exception as e:

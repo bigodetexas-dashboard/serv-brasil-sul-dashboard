@@ -1,5 +1,4 @@
 import ftplib
-import os
 
 FTP_HOST = "brsp012.gamedata.io"
 FTP_USER = "ni3622181_1"

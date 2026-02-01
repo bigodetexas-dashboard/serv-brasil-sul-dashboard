@@ -1,5 +1,4 @@
 from PIL import Image
-import os
 
 def create_ico_from_png(png_path, ico_path):
     """Converte PNG para ICO (ícone do Windows)"""

@@ -89,7 +89,7 @@ def update_env_file():
     print(f"  - DISCORD_CLIENT_ID: {oauth_config['DISCORD_CLIENT_ID']}")
     print(f"  - DISCORD_CLIENT_SECRET: {oauth_config['DISCORD_CLIENT_SECRET'][:20]}...")
     print(f"  - DISCORD_REDIRECT_URI: {oauth_config['DISCORD_REDIRECT_URI']}")
-    print(f"  - SECRET_KEY: Configurada")
+    print("  - SECRET_KEY: Configurada")
     
     print("\nAinda precisa configurar:")
     if final_config.get('DISCORD_TOKEN', '').startswith('seu_'):

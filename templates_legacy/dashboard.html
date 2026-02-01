@@ -1,0 +1,173 @@
+{% extends "layout.html" %}
+
+{% block title %}Meu Perfil - BIGODETEXAS - XBOX{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+    .survival-manual {
+        margin-top: 3rem;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .manual-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .manual-card {
+        background: var(--bg-glass);
+        backdrop-filter: var(--glass-blur);
+        border: var(--glass-border);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        transition: var(--transition-normal);
+    }
+
+    .manual-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-5px);
+    }
+
+    .manual-icon {
+        font-size: 2rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container dashboard-container">
+    <!-- Perfil Header -->
+    <div class="profile-header card">
+        <div class="profile-avatar">
+            <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
+        </div>
+        <div class="profile-info">
+            <h1 id="user-name">Carregando...</h1>
+            <p class="gamertag">Gamertag: <span id="user-gamertag" class="text-accent">...</span></p>
+            <div class="profile-badges">
+                <span class="badge badge-vip">VIP</span>
+                <span class="badge badge-veteran">Veterano</span>
+            </div>
+        </div>
+        <div class="profile-balance">
+            <div class="balance-label">Saldo Atual</div>
+            <div class="balance-amount"><span id="user-balance">0</span> 💰</div>
+            <a href="/shop" class="btn btn-primary btn-sm">Adicionar Fundos</a>
+        </div>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="tab-content active" id="tab-stats">
+        <div class="stats-section">
+            <h2 class="section-title"><i class="ri-bar-chart-2-line"></i> Estatísticas de Combate</h2>
+            <div class="stats-grid">
+                <div class="stat-box card">
+                    <div class="stat-icon"><i class="ri-sword-line"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-kills">0</span>
+                        <span class="stat-label">Kills</span>
+                    </div>
+                </div>
+                <div class="stat-box card">
+                    <div class="stat-icon"><i class="ri-skull-line"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-deaths">0</span>
+                        <span class="stat-label">Mortes</span>
+                    </div>
+                </div>
+                <div class="stat-box card">
+                    <div class="stat-icon"><i class="ri-percent-line"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-kd">0.0</span>
+                        <span class="stat-label">K/D Ratio</span>
+                    </div>
+                </div>
+                <div class="stat-box card">
+                    <div class="stat-icon"><i class="ri-ghost-line"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-zombies">0</span>
+                        <span class="stat-label">Zumbis Mortos</span>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title mt-4"><i class="ri-map-pin-user-line"></i> Sobrevivência</h2>
+            <div class="stats-grid">
+                <div class="stat-box card">
+                    <div class="stat-icon"><i class="ri-time-line"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-playtime">0h</span>
+                        <span class="stat-label">Tempo Jogado</span>
+                    </div>
+                </div>
+                <div class="stat-box card">
+                    <div class="stat-icon"><i class="ri-footprint-line"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-distance">0km</span>
+                        <span class="stat-label">Distância (Pé)</span>
+                    </div>
+                </div>
+                <div class="stat-box card">
+                    <div class="stat-icon"><i class="ri-roadster-line"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-driving">0km</span>
+                        <span class="stat-label">Distância (Carro)</span>
+                    </div>
+                </div>
+                <div class="stat-box card">
+                    <div class="stat-icon"><i class="ri-hammer-line"></i></div>
+                    <div class="stat-data">
+                        <span class="stat-value" id="stat-built">0</span>
+                        <span class="stat-label">Construções</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual do Sobrevivente -->
+    <section class="survival-manual">
+        <h2 class="section-title"><i class="ri-book-open-line"></i> Manual do Sobrevivente</h2>
+        <div class="manual-grid">
+            <div class="manual-card">
+                <div class="manual-icon"><i class="ri-coins-line"></i></div>
+                <h3>DZCoins</h3>
+                <p>Nossa moeda oficial. Você ganha jogando, matando zumbis (pouco) ou completando bounties. Use na loja
+                    para itens exclusivos!</p>
+            </div>
+            <div class="manual-card">
+                <div class="manual-icon"><i class="ri-shopping-cart-line"></i></div>
+                <h3>Loja Texas</h3>
+                <p>Todos os itens comprados aqui são entregues diretamente no jogo via comandos do bot. Certifique-se de
+                    estar em um local seguro!</p>
+            </div>
+            <div class="manual-card">
+                <div class="manual-icon"><i class="ri-xbox-line"></i></div>
+                <h3>Gamertag</h3>
+                <p>Vincule sua conta Xbox no Discord para que suas estatísticas apareçam aqui em tempo real. Sem
+                    vínculo, sem ranking!</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

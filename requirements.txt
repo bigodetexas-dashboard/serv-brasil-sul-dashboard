@@ -5,6 +5,10 @@ python-dotenv
 gunicorn
 psycopg2-binary
 discord.py
+aiohttp
+google-genai
 matplotlib
 pillow
 pytz
+flask-socketio
+eventlet

@@ -143,10 +143,10 @@ def fix_markdown_file(filepath: Path) -> bool:
         if content != original_content:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write(content)
-            print(f"   [OK] Corrigido!")
+            print("   [OK] Corrigido!")
             return True
         else:
-            print(f"   [INFO] Nenhuma correcao necessaria")
+            print("   [INFO] Nenhuma correcao necessaria")
             return False
             
     except Exception as e:

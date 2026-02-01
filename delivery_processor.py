@@ -5,8 +5,7 @@ Processa entregas pendentes e spawna itens no servidor DayZ
 
 import json
 import os
-import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 import ftplib
 import io
 import xml.etree.ElementTree as ET

@@ -2,8 +2,8 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-from flask import Flask, render_template, session, redirect, url_for
-from discord_oauth import init_oauth, login_required
+from flask import Flask
+from discord_oauth import init_oauth
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')

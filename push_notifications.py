@@ -4,9 +4,8 @@ Envia notificações em tempo real via Discord Webhooks
 """
 
 import requests
-import json
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 class PushNotificationManager:
     """Gerenciador de notificações push"""

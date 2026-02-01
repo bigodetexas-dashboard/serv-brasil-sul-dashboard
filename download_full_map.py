@@ -1,5 +1,4 @@
 import requests
-import os
 
 # URLs para testar no repositório oficial da Bohemia
 URLS = [

@@ -1,0 +1,65 @@
+# ✅ CONFIGURAÇÃO FINAL DO SERVIÇO RENDER
+
+## Use estas configurações ao criar o serviço:
+
+### BÁSICO
+```
+Name: bigodetexas-dashboard
+Region: Oregon (US West)
+Branch: main
+Root Directory: new_dashboard
+```
+
+### BUILD & DEPLOY
+```
+Build Command: pip install -r requirements.txt
+Start Command: gunicorn app:app
+Instance Type: Free ← IMPORTANTE!
+```
+
+### VARIÁVEIS DE AMBIENTE (18 variáveis)
+
+Clique em "Add from .env" e cole:
+
+```
+SECRET_KEY=399a2d81b3710671c6ab9ff055fee0af8cf0c48f9c4fb789e52a5635d0119ec8
+DATABASE_URL=postgresql://postgres:Lissy%402000@db.uvyhpedcgmroddvkngdl.supabase.co:5432/postgres
+DISCORD_CLIENT_ID=1442959269141020892
+DISCORD_CLIENT_SECRET=K7TpzNNTVI0Zj0zfpuwF_i-GLDu2S5c0
+DISCORD_REDIRECT_URI=https://bigodetexas-dashboard.onrender.com/callback
+DISCORD_TOKEN=ODQ3NDU2NjUyMjUzMDY5Mzgy.GN2g88.GGCUohzjGJmtBpnNELLJJB6abbjSQx2rQAWyzg
+ADMIN_PASSWORD=Lissy@2000
+ADMIN_WHITELIST=831391383981522964
+FOOTER_ICON=https://cdn.discordapp.com/attachments/1442262893188878496/1442286419539394682/logo_texas.png
+FTP_HOST=brsp012.gamedata.io
+FTP_PASS=hqPuAFd9
+FTP_PORT=21
+FTP_USER=ni3622181_1
+NITRADO_TOKEN=FumKsv7MGrfa6zG0bxW7C3kqigM0zloo1FlQH3JqLeQ7siSoqw8DvLbAojdYqr_iheYUt-RYGcTC8rIHfoL662exac8yR8It21vS
+NOTIFICATION_WEBHOOK_URL=https://discord.com/api/webhooks/1441892129591922782/20eO0Z6wurnlD47-BgQ7yP5ePt0mK-2pXF8iQUuLfllqkPyVGdkVuSdTr6vd5sBEWCz2
+PYTHON_VERSION=3.11.9
+RATE_LIMIT_ENABLED=true
+SERVICE_ID=3622181
+```
+
+---
+
+## 🎯 URL FINAL
+
+```
+https://bigodetexas-dashboard.onrender.com
+```
+
+---
+
+## ⏱️ APÓS CRIAR
+
+1. Aguarde deploy (~10 min)
+2. Status: "Live"
+3. Me avise!
+4. Eu atualizo o código
+5. Pronto! ✅
+
+---
+
+**Tempo total: ~20 minutos**

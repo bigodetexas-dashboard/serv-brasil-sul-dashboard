@@ -25,7 +25,7 @@ def apply_rls():
             
             # 1. Habilitar RLS
             cur.execute(f"ALTER TABLE public.{table} ENABLE ROW LEVEL SECURITY;")
-            print(f"  [OK] RLS habilitado.")
+            print("  [OK] RLS habilitado.")
             
             # 2. Política para 'postgres' (Admin/Bot) - Acesso Total
             # O usuário postgres geralmente é superuser e ignora RLS, mas isso garante explicitamente.
@@ -39,7 +39,7 @@ def apply_rls():
                 USING (true)
                 WITH CHECK (true);
             """)
-            print(f"  [OK] Politica 'postgres' criada.")
+            print("  [OK] Politica 'postgres' criada.")
 
             # 3. Política para 'service_role' (Supabase API Admin) - Acesso Total
             policy_name_sr = f"Enable all for service_role on {table}"
@@ -52,7 +52,7 @@ def apply_rls():
                 USING (true)
                 WITH CHECK (true);
             """)
-            print(f"  [OK] Politica 'service_role' criada.")
+            print("  [OK] Politica 'service_role' criada.")
             
             # 4. Política para 'anon' (Público) - Apenas Leitura (Opcional, mas bom para Dashboard futuro via API)
             # Por enquanto, vamos deixar bloqueado para anon (padrão do RLS) para segurança máxima.

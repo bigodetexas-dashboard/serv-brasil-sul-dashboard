@@ -1,5 +1,4 @@
 from PIL import Image
-import sys
 
 def image_to_ascii(image_path, width=100):
     """Converte imagem para ASCII art"""

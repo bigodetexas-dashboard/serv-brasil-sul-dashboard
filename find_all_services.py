@@ -3,7 +3,6 @@
 Buscar TODOS os serviços incluindo suspensos e inativos
 """
 import requests
-import json
 import sys
 
 if sys.platform == 'win32':

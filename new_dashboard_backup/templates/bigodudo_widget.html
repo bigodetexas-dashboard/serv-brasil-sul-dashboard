@@ -1,0 +1,337 @@
+<!-- Bigodudo Chat Widget -->
+<div id="bigodudo-widget" class="bigodudo-widget">
+    <button id="bigodudo-toggle" class="bigodudo-toggle-v2" title="Falar com o Bigodudo">
+        <img src="{{ url_for('static', filename='img/destintivo.png') }}?v=4" alt="Badge" id="bigodudo-icon-img"
+            onerror="this.src='{{ url_for('static', filename='img/logo_texas.png') }}'; this.onerror=null;">
+        <span class="bigodudo-fallback" style="display: none;">🥸</span>
+    </button>
+
+    <div id="bigodudo-chat" class="bigodudo-chat hidden">
+        <div class="bigodudo-header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="{{ url_for('static', filename='img/destintivo.png') }}?v=4" alt="Badge"
+                    style="width: 70px; height: 70px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); object-fit: contain;">
+                <div>
+                    <h3 style="margin: 0; font-size: 20px;">Bigodudo</h3>
+                    <p style="margin: 2px 0 0 0; font-size: 13px; opacity: 0.9;">O sobrevivente raiz de Chernarus</p>
+                </div>
+            </div>
+            <button id="bigodudo-close" class="bigodudo-close">×</button>
+        </div>
+
+        <div id="bigodudo-messages" class="bigodudo-messages">
+            <div class="bigodudo-message bigodudo-bot">
+                <strong>Bigodudo:</strong> E aí, parceiro! Me faz uma pergunta aí!
+            </div>
+        </div>
+
+        <div class="bigodudo-suggestions">
+            <p>Sugestões:</p>
+            <div id="bigodudo-suggestions-list"></div>
+        </div>
+
+        <div class="bigodudo-input-container">
+            <input type="text" id="bigodudo-input" placeholder="Pergunte algo ao Bigodudo..." maxlength="500" />
+            <button id="bigodudo-send">Enviar</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bigodudo-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999999;
+    }
+
+    .bigodudo-toggle-v2 {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: transparent !important;
+        border: none !important;
+        cursor: pointer;
+        transition: transform 0.2s, filter 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 0;
+        box-shadow: none !important;
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+    }
+
+    #bigodudo-icon-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .bigodudo-fallback {
+        font-size: 50px;
+        display: none;
+    }
+
+    .bigodudo-toggle-v2:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .bigodudo-chat {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        width: 350px;
+        height: 500px;
+        background: #1a1a1a;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .bigodudo-chat.hidden {
+        display: none;
+    }
+
+    .bigodudo-header {
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        padding: 15px;
+        color: #000;
+        position: relative;
+    }
+
+    .bigodudo-header h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .bigodudo-header p {
+        margin: 5px 0 0 0;
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
+    .bigodudo-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #000;
+    }
+
+    .bigodudo-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background: #2a2a2a;
+    }
+
+    .bigodudo-message {
+        margin-bottom: 12px;
+        padding: 10px;
+        border-radius: 8px;
+        animation: fadeIn 0.3s;
+    }
+
+    .bigodudo-message.bigodudo-user {
+        background: #3a3a3a;
+        text-align: right;
+    }
+
+    .bigodudo-message.bigodudo-bot {
+        background: #4a4a4a;
+    }
+
+    .bigodudo-suggestions {
+        padding: 10px;
+        background: #1a1a1a;
+        border-top: 1px solid #3a3a3a;
+    }
+
+    .bigodudo-suggestions p {
+        margin: 0 0 8px 0;
+        font-size: 12px;
+        color: #888;
+    }
+
+    #bigodudo-suggestions-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .suggestion-btn {
+        background: #3a3a3a;
+        border: 1px solid #4a4a4a;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .suggestion-btn:hover {
+        background: #4a4a4a;
+    }
+
+    .bigodudo-input-container {
+        display: flex;
+        padding: 10px;
+        background: #1a1a1a;
+        border-top: 1px solid #3a3a3a;
+    }
+
+    #bigodudo-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #3a3a3a;
+        border-radius: 8px;
+        background: #2a2a2a;
+        color: #fff;
+    }
+
+    #bigodudo-send {
+        margin-left: 8px;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        border: none;
+        border-radius: 8px;
+        color: #000;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    // Bigodudo Chat Widget
+    const bigodudoToggle = document.getElementById('bigodudo-toggle');
+    const bigodudoChat = document.getElementById('bigodudo-chat');
+    const bigodudoClose = document.getElementById('bigodudo-close');
+    const bigodudoInput = document.getElementById('bigodudo-input');
+    const bigodudoSend = document.getElementById('bigodudo-send');
+    const bigodudoMessages = document.getElementById('bigodudo-messages');
+    const suggestionsList = document.getElementById('bigodudo-suggestions-list');
+
+    console.log('Bigodudo Widget inicializado');
+
+    // Toggle chat
+    bigodudoToggle.addEventListener('click', () => {
+        console.log('Bigodudo Toggle clicado');
+        bigodudoChat.classList.toggle('hidden');
+        if (!bigodudoChat.classList.contains('hidden')) {
+            bigodudoInput.focus();
+            loadSuggestions();
+        }
+    });
+
+    bigodudoClose.addEventListener('click', () => {
+        bigodudoChat.classList.add('hidden');
+    });
+
+    // Load suggestions
+    async function loadSuggestions() {
+        try {
+            const response = await fetch('/api/bigodudo/suggestions');
+            const data = await response.json();
+
+            suggestionsList.innerHTML = data.suggestions
+                .slice(0, 5)
+                .map(s => `<button class="suggestion-btn" onclick="askBigodudo('${s}')">${s}</button>`)
+                .join('');
+        } catch (error) {
+            console.error('Erro ao carregar sugestões:', error);
+        }
+    }
+
+    // Send message
+    async function sendMessage() {
+        const message = bigodudoInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        addMessage(message, 'user');
+        bigodudoInput.value = '';
+
+        // Show typing indicator
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'bigodudo-message bigodudo-bot';
+        typingDiv.innerHTML = '<strong>Bigodudo:</strong> <em>Digitando...</em>';
+        typingDiv.id = 'typing-indicator';
+        bigodudoMessages.appendChild(typingDiv);
+        bigodudoMessages.scrollTop = bigodudoMessages.scrollHeight;
+
+        try {
+            const response = await fetch('/api/bigodudo/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await response.json();
+
+            // Remove typing indicator
+            document.getElementById('typing-indicator')?.remove();
+
+            if (data.success) {
+                addMessage(data.response, 'bot');
+            } else {
+                addMessage(data.error || 'Erro ao processar mensagem', 'bot');
+            }
+        } catch (error) {
+            document.getElementById('typing-indicator')?.remove();
+            addMessage('Rapaz, deu ruim na conexão... Tenta de novo!', 'bot');
+        }
+    }
+
+    function addMessage(text, type) {
+        const div = document.createElement('div');
+        div.className = `bigodudo-message bigodudo-${type}`;
+
+        if (type === 'bot') {
+            div.innerHTML = `
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <img src="{{ url_for('static', filename='img/destintivo.png') }}?v=4"
+                         style="width: 25px; height: 25px; object-fit: contain; flex-shrink: 0;" alt="Badge">
+                    <div>
+                        <strong style="color: #FFD700;">Bigodudo:</strong><br>
+                        <div style="color: #eee; line-height: 1.4;">${text}</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            div.innerHTML = `<strong style="color: #fff;">Você:</strong><p style="margin: 5px 0 0 0; color: #ccc;">${text}</p>`;
+        }
+
+        bigodudoMessages.appendChild(div);
+        bigodudoMessages.scrollTop = bigodudoMessages.scrollHeight;
+    }
+
+    function askBigodudo(question) {
+        bigodudoInput.value = question;
+        sendMessage();
+    }
+
+    bigodudoSend.addEventListener('click', sendMessage);
+    bigodudoInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+</script>

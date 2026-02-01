@@ -83,7 +83,7 @@ class MockNotificationManager:
                 'notifications': self.notifications_sent
             }, f, indent=4, ensure_ascii=False)
         
-        print(f"\nRelatorio salvo em: notifications_test_report.json")
+        print("\nRelatorio salvo em: notifications_test_report.json")
         print(f"Total de notificacoes testadas: {len(self.notifications_sent)}")
 
 if __name__ == "__main__":

@@ -2,7 +2,6 @@ import discord
 import asyncio
 import os
 import json
-import time
 from dotenv import load_dotenv
 
 # Carrega variáveis de ambiente

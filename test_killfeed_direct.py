@@ -31,7 +31,7 @@ async def main():
         print("❌ Erro: killfeed_channel não configurado no config.json")
         return
 
-    print(f"Token encontrado. Tentando conectar...")
+    print("Token encontrado. Tentando conectar...")
     print(f"Canal Alvo ID: {channel_id}")
 
     intents = discord.Intents.default()
