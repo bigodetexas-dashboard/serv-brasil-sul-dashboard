@@ -327,6 +327,32 @@
                     </div>
                 </div>
 
+                <!-- ALARME DE BASE SECTION -->
+                <div class="glass-card"
+                    style="border-left: 4px solid var(--primary); background: rgba(var(--primary-rgb), 0.05);">
+                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);">🚨
+                        Alarme de Base</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        Receba notificações de invasão no seu dispositivo!
+                    </p>
+                    <div class="metric-mini" style="margin-bottom: 1rem;">
+                        <span class="text-muted">Seu Telegram ID</span>
+                        <strong id="telegram-id-display" style="color: #60a5fa;">{{ player_id if player_id else
+                            'Consulte no Bot' }}</strong>
+                    </div>
+                    <div
+                        style="background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.75rem;">
+                        <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem;">Como
+                            ativar:</span>
+                        <code
+                            style="color: #fbbf24; display: block; word-break: break-all;">!alarme set [Nome] [X] [Z] [Raio] [ID] false</code>
+                    </div>
+                    <a href="https://t.me/BRASILSULALARMEBOT" target="_blank" class="btn btn-sm btn-secondary"
+                        style="margin-top: 1rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <i class="ri-telegram-line"></i> Abrir Bot
+                    </a>
+                </div>
+
                 <a href="/leaderboard" class="btn btn-secondary" style="width: 100%; text-align: center;">← Voltar ao
                     Ranking</a>
             </div>
