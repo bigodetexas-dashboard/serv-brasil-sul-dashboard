@@ -20,6 +20,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_caching import Cache
 from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
 import sqlite3
@@ -95,6 +96,9 @@ limiter = Limiter(
     default_limits=["2000 per day", "500 per hour", "10 per second"],
     storage_uri="memory://",
 )
+
+# Cache Configuration (v11.0)
+cache = Cache(app, config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 60})
 
 # HTTPS Enforcement & Security Headers
 # SECURITY: Talisman is active in all environments to ensure CSP/HSTS/XSS protection
@@ -377,6 +381,7 @@ def admin_redirect():
 
 
 @app.route("/heatmap")
+@cache.cached(timeout=30)
 def heatmap():
     return render_template("heatmap.html")
 
@@ -693,6 +698,7 @@ def player_profile(name):
 
 
 @app.route("/api/player/<name>")
+@cache.cached(timeout=60)
 def api_player_stats(name):
     """Estatísticas públicas de um jogador"""
     from repositories.player_repository import PlayerRepository
@@ -1013,6 +1019,7 @@ def api_revoke_base_permission(base_id):
 
 
 @app.route("/api/stats")
+@cache.cached(timeout=300)  # 5 minutos para stats globais
 def api_stats():
     """Estatísticas gerais do servidor"""
     try:

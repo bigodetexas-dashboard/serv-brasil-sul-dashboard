@@ -21,8 +21,14 @@
 
   --bg-dark: #050505;
   --bg-darker: #020202;
-  --bg-card: rgba(15, 15, 15, 0.95);
-  --bg-card-hover: rgba(25, 25, 25, 0.98);
+  --bg-card: rgba(15, 15, 15, 0.7);
+  --bg-card-hover: rgba(25, 25, 25, 0.85);
+
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(15, 15, 15, 0.7);
+  --glass-border: rgba(107, 140, 66, 0.2);
+  --glass-blur: blur(12px);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
 
   --text-primary: #f0f0f0;
   --text-secondary: #b0b0b0;
