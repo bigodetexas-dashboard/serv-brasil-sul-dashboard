@@ -137,4 +137,50 @@ class BaseRepository:
                 query = query.replace("datetime('now')", "CURRENT_TIMESTAMP")
 
                 # PostgreSQL INSERT ID RETRIEVAL FIX
-                # SQLite uses cursor.lastrowid. Postgres needs "RETURNING id
+                # SQLite uses cursor.lastrowid. Postgres needs "RETURNING id"
+                if (
+                    query.strip().upper().startswith("INSERT")
+                    and "RETURNING" not in query.upper()
+                ):
+                    # We blindly add RETURNING id assuming 'id' is the pkey.
+                    # This covers 99% of our cases (users, clans, items).
+                    query += " RETURNING id"
+            else:
+                cur = conn.cursor()
+
+            cur.execute(query, params)
+
+            normalized_rows = []
+            if (
+                query.strip().upper().startswith("SELECT")
+                or "RETURNING" in query.upper()
+            ):
+                rows = cur.fetchall()
+
+                # If it was an INSERT with RETURNING, return the ID directly to mimic lastrowid
+                if query.strip().upper().startswith("INSERT") and is_pg:
+                    if rows:
+                        return rows[0][0]  # Return the first column of first row (ID)
+                    return None
+
+                if is_pg:
+                    # Convert psycopg2 DictRow to standard dict for compatibility
+                    normalized_rows = [dict(row) for row in rows]
+                else:
+                    normalized_rows = [dict(row) for row in rows]
+                return normalized_rows
+            else:
+                conn.commit()
+                return getattr(cur, "lastrowid", True)
+        except Exception as e:
+            print(f"[ERROR] Query Failed: {e}")
+            print(f"[ERROR] Query: {query}")
+            if not self._shared_conn:
+                conn.rollback()
+            return None
+        finally:
+            if not self._shared_conn:
+                if self.db_type == "postgres":
+                    self.release_conn(conn)
+                else:
+                    conn.close()
