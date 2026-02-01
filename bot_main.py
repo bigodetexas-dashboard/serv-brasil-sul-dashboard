@@ -70,6 +70,7 @@ from utils.helpers import (
 from utils.ftp_helpers import connect_ftp
 from utils.decorators import rate_limit, require_admin_password
 from utils.dashboard_api import send_dashboard_event  # NEW
+from utils.n8n_dispatcher import send_n8n_base_alert
 
 
 async def restart_server():
@@ -689,7 +690,12 @@ async def parse_log_line(line):
 
                     # VERIFICA ALARMES 🚨
                     triggered = check_alarms(lx, lz, f"Morte de {victim_name}")
-                    for owner_id, base_name, dist in triggered:
+                    for alarm in triggered:
+                        owner_id = alarm["owner_id"]
+                        base_name = alarm["base_name"]
+                        dist = alarm["dist"]
+
+                        # 1. Alerta via Discord
                         try:
                             owner = await bot.fetch_user(int(owner_id))
                             alert_embed = discord.Embed(
@@ -704,6 +710,17 @@ async def parse_log_line(line):
                             await owner.send(embed=alert_embed)
                         except Exception as e:
                             print(f"Erro ao enviar DM de alarme: {e}")
+
+                        # 2. Alerta via Telegram (n8n)
+                        if alarm.get("telegram_id"):
+                            await send_n8n_base_alert(
+                                player_name=killer_name,
+                                coords=f"{lx:.0f}, {lz:.0f}",
+                                base_name=base_name,
+                                chat_id=alarm["telegram_id"],
+                                is_group=alarm.get("is_group", False),
+                                event_type=f"Morte de {victim_name}",
+                            )
 
                     # VERIFICA ZONA QUENTE 🔥
                     is_hot, count = check_hotzone(lx, lz)
@@ -1578,7 +1595,15 @@ def check_alarms(x, z, _event_desc):
             dist = math.sqrt((x - ax) ** 2 + (z - az) ** 2)
 
             if dist <= radius:
-                triggered.append((data["owner_id"], data["name"], dist))
+                triggered.append(
+                    {
+                        "owner_id": data["owner_id"],
+                        "base_name": data["name"],
+                        "dist": dist,
+                        "telegram_id": data.get("telegram_id"),
+                        "is_group": data.get("is_group", False),
+                    }
+                )
         except Exception:
             pass
 
