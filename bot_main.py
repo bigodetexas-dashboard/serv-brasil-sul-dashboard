@@ -173,6 +173,10 @@ async def on_ready():
         killfeed_loop.start()
         print("✅ Monitor de Killfeed iniciado.")
 
+    if not sync_queue_loop.is_running():
+        sync_queue_loop.start()
+        print("✅ Sincronizador de Fila iniciado.")
+
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
     print("------")
 
@@ -621,7 +625,34 @@ def check_construction(x, z, y, player_name, item_name):
 
 async def parse_log_line(line):
     line = line.strip()
-    if not line or "committed suicide" in line:
+    if not line:
+        return None
+
+    # --- DETECÇÃO DE LOGIN (SUSPEITOS) ---
+    if "connected" in line.lower() and "ip" in line.lower():
+        try:
+            # Ex: 12:00:00 | Player "Wellyton" (id=...) connected (ip=1.2.3.4)
+            name = line.split('Player "')[1].split('"')[0]
+            ip = line.split("ip=")[1].split(")")[0]
+
+            print(f"[LOG] Jogador {name} conectando com IP: {ip}")
+
+            # TODO: Comparar com lista de banidos/alts no DB
+            is_suspect = False
+            # if database.check_suspect(name, ip): is_suspect = True
+
+            if is_suspect:
+                embed = discord.Embed(
+                    title="🚨 ALERTA DE JOGADOR SUSPEITO!",
+                    description=f"**Jogador:** {name}\n**IP:** {ip}\n**Motivo:** Possível Alt ou Banido!",
+                    color=discord.Color.red(),
+                )
+                embed.set_footer(text="Segurança BigodeTexas", icon_url=FOOTER_ICON)
+                return embed
+        except Exception:
+            pass
+
+    if "committed suicide" in line:
         return None
 
     if "killed by Player" in line:
@@ -778,20 +809,38 @@ async def parse_log_line(line):
                 save_bounties(bounties)
 
             if discord_id:
-                database.update_balance(
-                    discord_id, total_reward, "kill", f"Kill: {victim_name}"
-                )
-                reward_msg += f"\n💰 **Total Ganho:** +{total_reward} DZ Coins"
+                try:
+                    database.update_balance(
+                        discord_id, total_reward, "kill", f"Kill: {victim_name}"
+                    )
+                except Exception as e:
+                    print(
+                        f"[ERROR] Falha ao atualizar saldo, salvando na fila local: {e}"
+                    )
+                    from utils.event_queue import add_to_queue
+
+                    add_to_queue(
+                        "kill_reward",
+                        killer_name,
+                        {
+                            "discord_id": discord_id,
+                            "amount": total_reward,
+                            "victim": victim_name,
+                        },
+                    )
 
                 # Verifica conquistas
-                new_achievements = check_achievements(discord_id)
-                if new_achievements:
-                    for _ach_id, ach_def in new_achievements:
-                        reward_msg += (
-                            f"\n🏆 **CONQUISTA DESBLOQUEADA:** {ach_def['name']}!"
-                        )
-                        if ach_def["reward"] > 0:
-                            reward_msg += f" (+{ach_def['reward']} DZ Coins)"
+                try:
+                    new_achievements = check_achievements(discord_id)
+                    if new_achievements:
+                        for _ach_id, ach_def in new_achievements:
+                            reward_msg += (
+                                f"\n🏆 **CONQUISTA DESBLOQUEADA:** {ach_def['name']}!"
+                            )
+                            if ach_def["reward"] > 0:
+                                reward_msg += f" (+{ach_def['reward']} DZ Coins)"
+                except Exception:
+                    pass
 
             # TEMA BIGODE TEXAS 🤠
             embed = discord.Embed(
@@ -1162,7 +1211,7 @@ def save_state(_file_name, _lines_read):
 
 
 # --- TASKS (LOOP) ---
-@tasks.loop(seconds=30)
+@tasks.loop(seconds=15)
 async def killfeed_loop():
     global last_read_lines, current_log_file
 
@@ -1261,11 +1310,48 @@ async def killfeed_loop():
 @tasks.loop(minutes=1)
 async def save_data_loop():
     """Salva periodicamente todos os dados críticos para garantir persistência."""
-    # Como usamos save_json a cada operação crítica, os arquivos já devem estar atualizados.
-    # Mas isso serve como redundância e para garantir flushing se mudarmos para cache em memória.
-    # Por enquanto, apenas imprime um log de checkpoint.
     print(f"[AUTOSAVE] Dados verificados em {datetime.now().strftime('%H:%M:%S')}")
-    # Futuramente: Se migrarmos para DB em memória, aqui chamamos save_all()
+
+
+@tasks.loop(minutes=5)
+async def sync_queue_loop():
+    """Tenta processar eventos da fila local salvos durante falhas do DB."""
+    from utils.event_queue import load_queue, clear_queue
+
+    pending = load_queue()
+    if not pending:
+        return
+
+    print(f"[SYNC] Processando {len(pending)} eventos pendentes...")
+    processed_count = 0
+
+    for event in pending:
+        try:
+            if event["type"] == "kill_reward":
+                data = event["data"]
+                database.update_balance(
+                    data["discord_id"],
+                    data["amount"],
+                    "kill_sync",
+                    f"Sync Kill: {data['victim']}",
+                )
+                processed_count += 1
+        except Exception as e:
+            print(f"[SYNC] Erro ao processar evento: {e}")
+            # Mantém os restantes na fila se falhar de novo
+            break
+
+    if processed_count == len(pending):
+        clear_queue()
+        print("[SYNC] Todos os eventos sincronizados com sucesso!")
+    elif processed_count > 0:
+        # Atualiza a fila apenas com o que sobrou
+        from utils.event_queue import save_queue
+
+        save_queue(pending[processed_count:])
+        print(
+            f"[SYNC] {processed_count} eventos sincronizados. Restam {len(pending) - processed_count}."
+        )
 
 
 # --- LOOP DE BACKUP AUTOMÁTICO ---
