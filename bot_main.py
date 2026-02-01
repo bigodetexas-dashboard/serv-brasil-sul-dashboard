@@ -1,12 +1,9 @@
 import os
-import asyncio
 import json
 import io
 import time
 import math
 import threading
-import uuid
-import subprocess
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 
@@ -20,7 +17,6 @@ from dotenv import load_dotenv
 # Local Application Imports
 import database
 from security import (
-    security_logger,
     AdminWhitelist,
     backup_manager,
 )
@@ -1194,22 +1190,6 @@ def ban_player(gamertag, reason="Banido pelo Bot"):
 STATE_FILE = "bot_state.json"
 
 
-def load_state():
-    return load_json(STATE_FILE)
-
-
-def save_state(_file_name, _lines_read):
-    if not save_data_loop.is_running():
-        print("[LOOP] Iniciando save_data_loop...")
-        save_data_loop.start()
-
-    if not backup_loop.is_running():
-        print("[LOOP] Iniciando backup_loop...")
-        backup_loop.start()
-
-    print("[READY] Todos os sistemas operacionais! 🚀\n")
-
-
 # --- TASKS (LOOP) ---
 @tasks.loop(seconds=15)
 async def killfeed_loop():
@@ -1234,7 +1214,7 @@ async def killfeed_loop():
     try:
         # 1. State Recovery
         if not current_log_file:
-            state = load_state()
+            state = load_json(STATE_FILE)
             if state:
                 current_log_file = state.get("current_log_file")
                 last_byte_offset = state.get(
@@ -1253,7 +1233,13 @@ async def killfeed_loop():
 
                 # Use global var tracking
                 last_read_lines = last_byte_offset
-                save_state(current_log_file, last_byte_offset)
+                save_json(
+                    STATE_FILE,
+                    {
+                        "current_log_file": current_log_file,
+                        "last_read_lines": last_byte_offset,
+                    },
+                )
 
         else:
             # 3. Check for Update
@@ -1268,7 +1254,7 @@ async def killfeed_loop():
                 print("Log rotation detected (File smaller). Resetting...")
                 current_log_file = ""
                 last_read_lines = 0
-                save_state("", 0)
+                save_json(STATE_FILE, {"current_log_file": "", "last_read_lines": 0})
 
             elif server_size > last_byte_offset:
                 # NEW DATA FOUND
@@ -1291,7 +1277,13 @@ async def killfeed_loop():
 
                 # Update Offset
                 last_read_lines = server_size
-                save_state(current_log_file, server_size)
+                save_json(
+                    STATE_FILE,
+                    {
+                        "current_log_file": current_log_file,
+                        "last_read_lines": server_size,
+                    },
+                )
 
     except Exception as e:
         print(f"Loop Error: {e}")
@@ -1299,7 +1291,7 @@ async def killfeed_loop():
         if "550" in str(e):
             current_log_file = ""
             last_read_lines = 0
-            save_state("", 0)
+            save_json(STATE_FILE, {"current_log_file": "", "last_read_lines": 0})
 
     try:
         ftp.quit()
