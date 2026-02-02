@@ -21,119 +21,145 @@ from utils.log_parser import DayZLogParser
 load_dotenv()
 
 # Caminho do banco de dados unificado
-DB_PATH = os.path.join(project_root, "new_dashboard", "bigode_unified.db")
+DB_PATH = os.path.join(project_root, "bigode_unified.db")
 
 
 def sync_logs():
     """Executa uma rodada de sincronização com tratamento de erros."""
-    print(f"[{datetime.now()}] Iniciando sincronização de logs...")
+    print(f"[{datetime.now()}] Iniciando ciclo autônomo de logs...")
 
     try:
         parser = DayZLogParser()
         local_log = "monitor_server_logs.txt"
 
-        # 1. Baixar Logs (O parser já tenta credenciais dinâmicas)
+        # 1. Baixar Logs (.ADM ou .RPT)
         if not parser.fetch_logs(local_log):
-            print("[ERRO] Falha ao baixar logs. Verificando conexão...")
             return False
 
-        # 2. Parsear Conexões
-        connections = parser.parse_connections(local_log)
-        if not connections:
-            print("[INFO] Log processado. Nenhuma nova conexão.")
+        # 2. Parsear Eventos
+        events = parser.parse_log_events(local_log)
+        if not events:
+            print("[INFO] Nenhum evento novo detectado.")
+            if os.path.exists(local_log):
+                os.remove(local_log)
             return True
 
-        print(f"[INFO] Processando {len(connections)} eventos de log...")
+        print(f"[INFO] Processando {len(events)} eventos encontrados...")
 
         # 3. Conectar ao Banco
         conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
         cur = conn.cursor()
 
-        updated_count = 0
-        unknown_count = 0
+        stats = {"conn": 0, "pvp": 0, "coins": 0}
 
-        for event in connections:
-            gamertag = event.get("gamertag")
-            nitrado_id = event.get("player_id")
-            ip = event.get("ip")
+        for event in events:
+            e_type = event.get("type")
 
-            if not nitrado_id:
-                continue
+            # A. PROCESSAMENTO DE CONEXÃO (Identidades e IPs)
+            if e_type == "connection":
+                gt, pid, ip = event["gamertag"], event["player_id"], event["ip"]
+                cur.execute(
+                    "SELECT discord_id FROM player_identities WHERE LOWER(gamertag) = LOWER(?)",
+                    (gt,),
+                )
+                row = cur.fetchone()
 
-            # Tenta encontrar o jogador pela Gamertag para ver se já vinculou no site
-            cur.execute(
-                "SELECT gamertag, discord_id, xbox_id FROM player_identities WHERE LOWER(gamertag) = LOWER(?)",
-                (gamertag,),
-            )
-            row = cur.fetchone()
+                if row:
+                    cur.execute(
+                        "UPDATE player_identities SET nitrado_id = ?, last_ip = ?, last_seen = datetime('now') WHERE LOWER(gamertag) = LOWER(?)",
+                        (pid, ip, gt),
+                    )
+                else:
+                    cur.execute(
+                        "INSERT OR IGNORE INTO player_identities (gamertag, nitrado_id, last_ip, last_seen) VALUES (?, ?, ?, datetime('now'))",
+                        (gt, pid, ip),
+                    )
+                stats["conn"] += 1
 
-            if row:
-                existing_discord_id = row[1]
-                existing_xbox_id = row[2]
+            # B. PROCESSAMENTO DE PVP (Kills e Recompensas)
+            elif e_type == "pvp_kill":
+                killer, victim, weapon = (
+                    event["killer"],
+                    event["victim"],
+                    event["weapon"],
+                )
+                dist, pos = event["distance"], event["pos"]
 
-                # 1. Atualiza IDs técnicos vindos do jogo (Nitrado e IP)
+                # 1. Registrar na tabela 'events' para o Heatmap
                 cur.execute(
                     """
-                    UPDATE player_identities
-                    SET nitrado_id = ?, last_ip = ?, last_seen = datetime('now')
-                    WHERE LOWER(gamertag) = LOWER(?)
+                    INSERT INTO events (event_type, killer_name, victim_name, weapon, distance, game_x, game_z, timestamp)
+                    VALUES ('kill', ?, ?, ?, ?, ?, ?, ?)
                 """,
-                    (nitrado_id, ip, gamertag),
+                    (killer, victim, weapon, dist, pos[0], pos[1], event["timestamp"]),
                 )
-                updated_count += 1
+                stats["pvp"] += 1
 
-                # 2. DETECTOR DE ALTS POR REDE (IP)
-                if ip:
-                    cur.execute(
-                        "SELECT gamertag, discord_id FROM player_identities WHERE last_ip = ? AND discord_id != ? AND discord_id IS NOT NULL",
-                        (ip, existing_discord_id),
-                    )
-                    alt_network = cur.fetchone()
-                    if alt_network:
-                        print(
-                            f"⚠️ [ALERTA ALT NETWORK] {gamertag} compartilha IP ({ip}) com {alt_network[0]} (Discord: {alt_network[1]})"
-                        )
-
-                # 3. DETECTOR DE ALTS POR HARDWARE (Xbox ID)
-                if existing_xbox_id:
-                    cur.execute(
-                        "SELECT gamertag, discord_id FROM player_identities WHERE xbox_id = ? AND discord_id != ? AND discord_id IS NOT NULL",
-                        (existing_xbox_id, existing_discord_id),
-                    )
-                    alt_hardware = cur.fetchone()
-                    if alt_hardware:
-                        print(
-                            f"🔥 [ALERTA ALT HARDWARE] {gamertag} usa o MESMO CONSOLE de {alt_hardware[0]} (Discord: {alt_hardware[1]})"
-                        )
-            else:
-                # Jogador novo (sem vínculo no site), verificamos se o IP dele "dedura" um Alt
+                # 2. CREDITAR RECOMPENSA (150 DZCoins)
+                # Tenta achar o Discord ID pelo Gamertag
                 cur.execute(
-                    "SELECT discord_id, gamertag FROM player_identities WHERE last_ip = ? AND discord_id IS NOT NULL",
-                    (ip,),
+                    "SELECT discord_id FROM player_identities WHERE LOWER(gamertag) = LOWER(?) AND discord_id IS NOT NULL",
+                    (killer,),
                 )
-                alt_tracker = cur.fetchone()
-                if alt_tracker:
+                row = cur.fetchone()
+
+                if row:
+                    d_id = row["discord_id"]
+                    reward = 150
                     print(
-                        f"🔍 [ALERTA ALT TRACK] Novo jogador {gamertag} detectado no IP de {alt_tracker[1]} (Discord: {alt_tracker[0]})"
+                        f"💰 [ECONOMIA] Creditando {reward} coins para {killer} (ID: {d_id}) por kill em {victim}"
                     )
 
-                try:
+                    # Atualiza balance na tabela users
                     cur.execute(
-                        """
-                        INSERT INTO player_identities (gamertag, nitrado_id, last_ip, last_seen)
-                        VALUES (?, ?, ?, datetime('now'))
-                    """,
-                        (gamertag, nitrado_id, ip),
+                        "UPDATE users SET balance = balance + ? WHERE discord_id = ?",
+                        (reward, d_id),
                     )
-                    unknown_count += 1
-                except sqlite3.IntegrityError:
-                    pass
 
+                    # Tenta registrar histórico se a tabela existir
+                    try:
+                        cur.execute(
+                            "INSERT INTO dashboard_events (event_type, discord_id, content, timestamp) VALUES ('reward', ?, ?, datetime('now'))",
+                            (d_id, f"Recebeu {reward} DZCoins por eliminar {victim}"),
+                        )
+                    except Exception:
+                        pass
+                    stats["coins"] += 1
+                else:
+                    print(
+                        f"⚠️ [AVISO] {killer} fez uma kill mas não tem Discord vinculado para receber coins."
+                    )
+
+            # C. PROCESSAMENTO DE CONSTRUÇÃO (Build e Placement)
+            elif e_type in ["build_action", "placement"]:
+                player = event.get("player")
+                item = event.get("item")
+                pos = event.get("pos")
+                action = event.get("action", "placed")
+                tool = event.get("tool", "none")
+
+                # Registrar como evento para o Heatmap/Logs
+                cur.execute(
+                    """
+                    INSERT INTO events (event_type, killer_name, victim_name, weapon, game_x, game_z, timestamp)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                    (
+                        e_type,
+                        player,
+                        item,
+                        tool if tool != "none" else action,
+                        pos[0],
+                        pos[1],
+                        event["timestamp"],
+                    ),
+                )
         conn.commit()
         conn.close()
 
         print(
-            f"[OK] Fim do ciclo. Atualizados: {updated_count}, Novos: {unknown_count}"
+            f"[OK] Fim do ciclo. Conexões: {stats['conn']}, Kills: {stats['pvp']}, Recompensas: {stats['coins']}"
         )
 
         if os.path.exists(local_log):
@@ -141,7 +167,10 @@ def sync_logs():
         return True
 
     except Exception as e:
-        print(f"[CRÍTICO] Falha no ciclo de monitoramento: {e}")
+        print(f"[CRÍTICO] Erro no monitor de logs: {e}")
+        import traceback
+
+        traceback.print_exc()
         return False
 
 

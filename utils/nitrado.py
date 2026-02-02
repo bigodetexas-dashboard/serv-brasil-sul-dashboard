@@ -90,7 +90,7 @@ async def ban_player(target_arg):
     }
     payload = {"identifier": identifier}
 
-    print(f"[BAN] Tentando banir {gamertag}...")
+    print(f"[BAN] Tentando banir {identifier}...")
 
     try:
         async with aiohttp.ClientSession() as session:
@@ -98,7 +98,7 @@ async def ban_player(target_arg):
                 if response.status == 200:
                     data = await response.json()
                     if data.get("status") == "success":
-                        print(f"[SUCESSO] {gamertag} foi banido!")
+                        print(f"[SUCESSO] {identifier} foi banido!")
                         return True
                     else:
                         print(f"[ERRO BAN] API Resposta: {data}")
@@ -118,14 +118,16 @@ async def kick_player(target_arg):
     if isinstance(target_arg, dict):
         identifier = target_arg.get("name")  # Kick geralmente usa nome
 
-    url = f"https://api.nitrado.net/services/{SERVICE_ID}/gameservers/games/players/kick"
+    url = (
+        f"https://api.nitrado.net/services/{SERVICE_ID}/gameservers/games/players/kick"
+    )
     headers = {
         "Authorization": f"Bearer {NITRADO_TOKEN}",
         "Content-Type": "application/json",
     }
     payload = {"identifier": identifier}
 
-    print(f"[KICK] Tentando expulsar {gamertag}...")
+    print(f"[KICK] Tentando expulsar {identifier}...")
 
     try:
         async with aiohttp.ClientSession() as session:
@@ -133,7 +135,7 @@ async def kick_player(target_arg):
                 if response.status == 200:
                     data = await response.json()
                     if data.get("status") == "success":
-                        print(f"[SUCESSO] {gamertag} foi expulso!")
+                        print(f"[SUCESSO] {identifier} foi expulso!")
                         return True
                     else:
                         print(f"[ERRO KICK] API Resposta: {data}")
@@ -256,7 +258,9 @@ async def get_online_players():
             # Só consulta FTP se o cache expirou (60s)
             log_players = []
             if now - _ftp_players_cache["timestamp"] > 60:
-                print(f"[NITRADO] Lista parcial ({len(players)}/{p_count}). Sincronizando logs...")
+                print(
+                    f"[NITRADO] Lista parcial ({len(players)}/{p_count}). Sincronizando logs..."
+                )
                 # Passa p_count como meta para o FTP buscar em múltiplos arquivos se precisar
                 log_players = await get_players_from_logs(min_target=p_count)
 
@@ -300,7 +304,9 @@ async def get_online_players():
                         return val.get("time", 0)
                     return val  # é float
 
-                candidates = [p for p in _player_history_cache.keys() if p not in combined_map]
+                candidates = [
+                    p for p in _player_history_cache.keys() if p not in combined_map
+                ]
                 candidates.sort(key=get_time, reverse=True)
 
                 filled = candidates[:needed]
@@ -340,3 +346,17 @@ async def get_server_status():
     except Exception as e:
         print(f"[NITRADO] Erro inesperado ao buscar status: {e}")
         return None
+
+
+async def get_ftp_credentials():
+    """Busca credenciais de FTP via API da Nitrado."""
+    data = await get_server_status()
+    if data and "data" in data and "gameserver" in data["data"]:
+        gs = data["data"]["gameserver"]
+        return {
+            "primary_ip": gs.get("ip"),
+            "host": gs.get("ip"),
+            "user": gs.get("username"),
+            "port": gs.get("ftp_port", 21),
+        }
+    return None

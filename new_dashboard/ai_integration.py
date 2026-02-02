@@ -1,0 +1,295 @@
+"""
+Hybrid AI Integration Module - Texano AI (Bigodudo)
+Uses Groq as primary provider with Gemini as fallback
+Total capacity: ~15,900 requests/day
+"""
+
+import os
+import asyncio
+from typing import Optional
+from dotenv import load_dotenv
+
+# Load environment variables from correct path
+env_path = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"
+)
+load_dotenv(env_path)
+print(f"[AI] Loading .env from: {env_path}")
+
+# Import context builders
+from utils.ai_context import AIContextBuilder
+from utils.ai_knowledge import get_knowledge_context
+
+# Configuration
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+# Models
+GROQ_MODEL = "llama-3.3-70b-versatile"  # Updated model (fast and smart)
+GEMINI_MODEL = "models/gemini-flash-latest"
+
+# System prompt for Bigodudo personality
+SYSTEM_PROMPT = """
+Você é o Bigodudo, um sobrevivente veterano e raiz de Chernarus no servidor BigodeTexas.
+
+PERSONALIDADE:
+- Fala de forma descontraída, usando gírias brasileiras
+- É direto e objetivo, mas sempre amigável
+- Usa expressões como "parceiro", "rapaz", "mano"
+- Ocasionalmente usa emojis (🤠, 💀, 🔥, 💰)
+- Nunca é grosseiro ou desrespeitoso
+
+CONHECIMENTO:
+- Você conhece TUDO sobre o servidor BigodeTexas
+- Sabe as regras, mecânicas, economia e eventos
+- Tem acesso aos dados do jogador em tempo real
+- Pode consultar rankings, clãs e atividades
+
+ESTILO DE RESPOSTA:
+- Respostas curtas e diretas (máximo 3-4 linhas)
+- Se a pergunta for complexa, divida em tópicos
+- Sempre mencione valores exatos (coins, kills, etc)
+- Use dados do contexto quando disponível
+
+EXEMPLOS:
+Pergunta: "Quanto eu tenho de coins?"
+Resposta: "E aí, parceiro! Você tem 2.450 DZ Coins no bolso. 💰 Tá juntando pra quê?"
+
+Pergunta: "Quem me matou?"
+Resposta: "Rapaz, foi o JoãoSniper123 que te pegou com um M4-A1 a 150m. Ele tá com 15 kills hoje! 💀"
+
+Pergunta: "Como ganho coins rápido?"
+Resposta: "Ó as dicas, mano:
+1. Faz o /daily todo dia (100 coins)
+2. Participa dos eventos (500-2000 coins)
+3. Caça bounties (100-1000 coins)
+4. PvP nas zonas militares (150 por kill) 🔥"
+
+IMPORTANTE:
+- SEMPRE use os dados do contexto fornecido
+- Se não souber algo, seja honesto
+- Nunca invente informações
+- Mantenha o tom amigável e acessível
+"""
+
+# Statistics
+ai_stats = {
+    "groq_calls": 0,
+    "gemini_calls": 0,
+    "groq_errors": 0,
+    "gemini_errors": 0,
+    "total_calls": 0,
+}
+
+
+async def ask_groq(question: str, discord_id: str) -> str:
+    """
+    Ask Groq AI (Primary provider)
+
+    Args:
+        question: User's question
+        discord_id: Discord ID for context retrieval
+
+    Returns:
+        AI response string
+    """
+    # Reload env to ensure we have latest values
+    groq_key = os.getenv("GROQ_API_KEY")
+    print(f"[GROQ] API Key loaded: {groq_key[:20] if groq_key else 'NOT FOUND'}...")
+
+    if not groq_key:
+        raise Exception("GROQ_API_KEY not configured")
+
+    try:
+        from groq import Groq
+
+        # Build context from database
+        context_builder = AIContextBuilder()
+        game_context = context_builder.build_context_string(discord_id, question)
+
+        # Get knowledge base context
+        knowledge_context = get_knowledge_context(question)
+
+        # Combine contexts
+        full_context = (
+            f"{game_context}\n\n{knowledge_context}"
+            if game_context
+            else knowledge_context
+        )
+
+        # Build prompt
+        user_prompt = f"""
+CONTEXTO:
+{full_context}
+
+PERGUNTA DO USUÁRIO:
+{question}
+
+Responda como o Bigodudo, usando o contexto acima.
+"""
+
+        full_prompt = f"{SYSTEM_PROMPT}\n\n{user_prompt}"
+
+        # Initialize Groq client
+        client = Groq(api_key=GROQ_API_KEY)
+
+        # Generate response
+        response = client.chat.completions.create(
+            model=GROQ_MODEL,
+            messages=[{"role": "user", "content": full_prompt}],
+            temperature=0.8,
+            max_tokens=300,
+            top_p=0.9,
+        )
+
+        ai_stats["groq_calls"] += 1
+        ai_stats["total_calls"] += 1
+
+        if response and response.choices and response.choices[0].message.content:
+            return response.choices[0].message.content.strip()
+        else:
+            raise Exception("Empty response from Groq")
+
+    except Exception as e:
+        ai_stats["groq_errors"] += 1
+        print(f"[GROQ ERROR] {e}")
+        raise
+
+
+async def ask_gemini(question: str, discord_id: str) -> str:
+    """
+    Ask Gemini AI (Fallback provider)
+
+    Args:
+        question: User's question
+        discord_id: Discord ID for context retrieval
+
+    Returns:
+        AI response string
+    """
+    if not GEMINI_API_KEY:
+        raise Exception("GEMINI_API_KEY not configured")
+
+    try:
+        from google import genai
+
+        # Build context from database
+        context_builder = AIContextBuilder()
+        game_context = context_builder.build_context_string(discord_id, question)
+
+        # Get knowledge base context
+        knowledge_context = get_knowledge_context(question)
+
+        # Combine contexts
+        full_context = (
+            f"{game_context}\n\n{knowledge_context}"
+            if game_context
+            else knowledge_context
+        )
+
+        # Build prompt
+        user_prompt = f"""
+CONTEXTO:
+{full_context}
+
+PERGUNTA DO USUÁRIO:
+{question}
+
+Responda como o Bigodudo, usando o contexto acima.
+"""
+
+        full_prompt = f"{SYSTEM_PROMPT}\n\n{user_prompt}"
+
+        # Initialize Gemini client and generate response
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        try:
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=full_prompt,
+                config={
+                    "temperature": 0.8,
+                    "max_output_tokens": 300,
+                    "top_p": 0.9,
+                },
+            )
+
+            ai_stats["gemini_calls"] += 1
+            ai_stats["total_calls"] += 1
+
+            if response and response.text:
+                return response.text.strip()
+            else:
+                raise Exception("Resposta vazia do Gemini")
+        finally:
+            # Note: For google-genai, the client itself doesn't have an __aexit__
+            # that closes the session automatically in older versions,
+            # but we can try to close if it has the method or just rely on local scope.
+            # In some versions, client.close() or client.aclose() exists.
+            if hasattr(client, "close"):
+                client.close()
+
+    except Exception as e:
+        ai_stats["gemini_errors"] += 1
+        print(f"[GEMINI ERROR] {e}")
+        raise
+
+
+async def ask_ai_hybrid(question: str, discord_id: str) -> str:
+    """
+    Sistema de IA Híbrido com fallback automático
+
+    Prioridade:
+    1. Groq (primário - 14.400 req/dia, mais rápido)
+    2. Gemini (fallback - 1.500 req/dia gratuito)
+
+    Args:
+        question: User's question
+        discord_id: Discord ID for context retrieval
+
+    Returns:
+        AI response string
+    """
+    # Try Groq first (primary)
+    try:
+        print("[AI] Tentando Groq (primario)...")
+        response = await ask_groq(question, discord_id)
+        print(f"[AI] [OK] Groq respondeu ({len(response)} chars)")
+        return response
+    except Exception as e:
+        print(f"[AI] [ERRO] Groq falhou: {e}")
+
+        # Fallback to Gemini
+        try:
+            print("[AI] Tentando Gemini (fallback)...")
+            response = await ask_gemini(question, discord_id)
+            print(f"[AI] [OK] Gemini respondeu ({len(response)} chars)")
+            return response
+        except Exception as e2:
+            print(f"[AI] [ERRO] Gemini falhou: {e2}")
+
+            # Both failed
+            return "Rapaz, deu ruim em todas as IAs... Tenta de novo em alguns segundos! (Erro de Conexao)"
+
+
+# Synchronous wrapper for compatibility
+def ask_ai_sync(question: str, discord_id: str) -> str:
+    """Synchronous wrapper for ask_ai_hybrid"""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        return loop.run_until_complete(ask_ai_hybrid(question, discord_id))
+    finally:
+        loop.close()
+
+
+def get_ai_stats() -> dict:
+    """Get AI usage statistics"""
+    return {
+        **ai_stats,
+        "groq_success_rate": (ai_stats["groq_calls"] / max(ai_stats["total_calls"], 1))
+        * 100,
+        "gemini_usage_rate": (
+            ai_stats["gemini_calls"] / max(ai_stats["total_calls"], 1)
+        )
+        * 100,
+    }

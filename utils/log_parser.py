@@ -29,7 +29,7 @@ class DayZLogParser:
         import asyncio
         from utils.nitrado import get_ftp_credentials
 
-        # Try to get dynamic credentials first
+        # 1. Tentar obter credenciais dinâmicas do Nitrado API
         try:
             creds = asyncio.run(get_ftp_credentials())
             if creds:
@@ -39,18 +39,13 @@ class DayZLogParser:
                 self.ftp_host = creds["host"]
                 self.ftp_user = creds["user"]
                 self.ftp_port = int(creds["port"])
-                # Password logic: API often doesn't return password.
-                # If 'FTP_PASS' is in .env, use it. Otherwise try NITRADO_TOKEN or warn user.
-                if not self.ftp_pass:
-                    print(
-                        "[LOG PARSER] AVISO: FTP_PASS não definido no .env. Tentando usar Token..."
-                    )
-                    # self.ftp_pass = os.getenv("NITRADO_TOKEN") # Risky assumption
+                if not self.ftp_pass and os.getenv("FTP_PASS"):
+                    self.ftp_pass = os.getenv("FTP_PASS")
         except Exception as e:
             print(f"[LOG PARSER] Falha ao obter credenciais dinâmicas: {e}")
 
         if not self.ftp_host or not self.ftp_user or not self.ftp_pass:
-            print("[LOG PARSER] ERRO: Credenciais FTP incompletas. Verifique o .env")
+            print("[LOG PARSER] ERRO: Credenciais FTP incompletas no .env")
             return False
 
         try:
@@ -59,128 +54,147 @@ class DayZLogParser:
             ftp.connect(self.ftp_host, self.ftp_port, timeout=30)
             ftp.login(self.ftp_user, self.ftp_pass)
 
-            # Try to find the log file
+            # Os logs do Xbox costumam estar na pasta 'profile'
             target_dirs = [
-                "/dayzxb_missions/dayzOffline.chernarusplus",
-                "/dayzxb/config",
-                "/dayzxb/profile",
+                "dayzxb/profile",
+                "dayzxb_missions/dayzOffline.chernarusplus",
+                "",
             ]
 
-            found = False
+            found_file = None
             for d in target_dirs:
                 try:
-                    ftp.cwd(d)
+                    ftp.cwd("/" + d if d else "/")
                     files = ftp.nlst()
-                    # Look for ADM log or RPT
-                    target_file = None
-                    for f in files:
-                        if "ADM" in f and f.endswith(".log"):
-                            target_file = f
-                            break
-                        if f.endswith(".RPT"):  # Fallback
-                            target_file = f
 
-                    if target_file:
-                        print(f"[LOG PARSER] Encontrado log: {d}/{target_file}")
-                        self.log_path = f"{d}/{target_file}"
-                        found = True
+                    # Prioridade 1: Arquivos .ADM (Mais completos para DayZ)
+                    adm_files = sorted(
+                        [f for f in files if f.upper().endswith(".ADM")], reverse=True
+                    )
+                    if adm_files:
+                        found_file = (d + "/" if d else "") + adm_files[0]
+                        break
+
+                    # Prioridade 2: Arquivos .RPT
+                    rpt_files = sorted(
+                        [f for f in files if f.upper().endswith(".RPT")], reverse=True
+                    )
+                    if rpt_files:
+                        found_file = (d + "/" if d else "") + rpt_files[0]
                         break
                 except:
                     continue
 
-            if not found:
+            if not found_file:
                 print(
-                    "[LOG PARSER] Nenhum log ADM/RPT encontrado nos diretórios padrão."
+                    "[LOG PARSER] ERRO: Nenhum arquivo .ADM ou .RPT encontrado no FTP."
                 )
-                # Try default path as last resort
+                ftp.quit()
+                return False
 
-            print(f"[LOG PARSER] Baixando: {self.log_path}")
+            print(f"[LOG PARSER] Baixando: {found_file}")
             with open(local_file, "wb") as f:
-                ftp.retrbinary(f"RETR {self.log_path}", f.write)
+                ftp.retrbinary(f"RETR {found_file}", f.write)
 
             ftp.quit()
-            print(f"[LOG PARSER] Log salvo em: {local_file}")
             return True
 
         except Exception as e:
-            print(f"[LOG PARSER] Erro ao baixar logs: {e}")
+            print(f"[LOG PARSER] Erro crítico no FTP: {e}")
             return False
 
-    def parse_connections(self, log_file="server_logs.txt"):
-        """Extrai conexoes do arquivo de log"""
-        connections = []
+    def parse_log_events(self, log_file="server_logs.txt"):
+        """Extrai conexoes, PvP Kills e eventos importantes do log."""
+        events = []
 
-        # Padroes possiveis de log DayZ (com player ID)
-        patterns = [
-            # Padrao 1: Player "Name" (id=76561198123456789 ip=192.168.1.100:12345)
-            r'Player "([^"]+)".*id=([0-9]+).*ip=([0-9.]+):(\d+)',
-            # Padrao 2: Player "Name" (ip=192.168.1.100:12345) - sem ID
-            r'Player "([^"]+)".*ip=([0-9.]+):(\d+)',
-            # Padrao 3: Connected: Name | IP: 192.168.1.100
-            r"Connected:\s*([^\|]+)\s*\|\s*IP:\s*([0-9.]+)",
-            # Padrao 4: [timestamp] Name connected from 192.168.1.100
-            r"\]\s*([^\s]+)\s+connected from\s+([0-9.]+)",
-            # Padrao 5: Name (192.168.1.100) connected
-            r"([^\s]+)\s+\(([0-9.]+)\)\s+connected",
-            # Padrao 6: Player "Name" (id=...) placed Base_Fence at [x, y, z]
-            r'Player "([^"]+)".*placed\s+([A-Za-z0-9_]+)\s+at\s+\[([0-9.-]+),\s*([0-9.-]+),\s*([0-9.-]+)\]',
-            # Padrao 7: Player "Name" (id=...) killed Zombie
-            r'Player "([^"]+)".*killed\s+(Zombie|Infected)',
-            # Padrao 8: Player "Name" (id=...) caught Fish
-            r'Player "([^"]+)".*caught\s+([A-Za-z0-9_]+)',
-        ]
+        # Regex Patterns
+        p_conn = r'Player "([^"]+)".*id=([0-9]+).*ip=([0-9.]+):(\d+)'
+        p_kill_adm = r"PlayerKill: Killer=\"(?P<killer>[^\"]+)\".*Victim=\"(?P<victim>[^\"]+)\".*Pos=<(?P<x>[-0-9.]+),.*,\s*(?P<z>[-0-9.]+)>, Weapon=(?P<weapon>[^,]+), Distance=(?P<dist>\d+)"
+        p_kill_rpt = r"Kill: (?P<killer>[^\"]+) killed (?P<victim>[^\"]+) at \[(?P<x>[-0-9.]+),.*,\s*(?P<z>[-0-9.]+)\] with (?P<weapon>[^\(]+) \(?(?P<dist>\d+)?m?"
+        p_zombie = r'Player "([^"]+)".*killed\s+(Zombie|Infected)'
+        p_placement = r'Player "(?P<player>[^"]+)" .* pos=<(?P<x>[-0-9.]+),.*,\s*(?P<z>[-0-9.]+)>.*placed (?P<item>.+)'
+        p_build = r'Player "(?P<player>[^"]+)" .* pos=<(?P<x>[-0-9.]+),.*,\s*(?P<z>[-0-9.]+)>.*(?P<action>built|dismantled) (?P<item>.+) with (?P<tool>.+)'
 
         try:
             with open(log_file, "r", encoding="utf-8", errors="ignore") as f:
                 for line in f:
-                    for i, pattern in enumerate(patterns):
-                        match = re.search(pattern, line)
-                        if match:
-                            # Padrao 1 tem player_id
-                            if i == 0 and len(match.groups()) >= 4:
-                                gamertag = match.group(1).strip()
-                                player_id = match.group(2).strip()
-                                ip = match.group(3).strip()
-                                port = match.group(4).strip()
-                            else:
-                                gamertag = match.group(1).strip()
-                                ip = match.group(2).strip()
-                                player_id = None
-                                port = None
+                    ts = self._extract_timestamp(line)
 
-                            # Extrair timestamp se possivel
-                            timestamp = self._extract_timestamp(line)
+                    # 1. PvP Kill (Prioridade Máxima)
+                    m = re.search(p_kill_adm, line) or re.search(p_kill_rpt, line)
+                    if m:
+                        events.append(
+                            {
+                                "type": "pvp_kill",
+                                "killer": m.group("killer").strip(),
+                                "victim": m.group("victim").strip(),
+                                "weapon": m.group("weapon").strip(),
+                                "distance": float(m.group("dist") or 0),
+                                "pos": (float(m.group("x")), float(m.group("z"))),
+                                "timestamp": ts,
+                            }
+                        )
+                        continue
 
-                            # Definir tipo de evento baseado no padrao
-                            event_type = "connection"
-                            extra_data = {}
+                    # 2. Conexão
+                    m = re.search(p_conn, line)
+                    if m:
+                        events.append(
+                            {
+                                "type": "connection",
+                                "gamertag": m.group(1).strip(),
+                                "player_id": m.group(2).strip(),
+                                "ip": m.group(3).strip(),
+                                "timestamp": ts,
+                            }
+                        )
+                        continue
 
-                            if i == 5:  # Placed
-                                event_type = "place"
-                                extra_data = {"item": match.group(2)}
-                            elif i == 6:  # Killed Zombie
-                                event_type = "zombie_kill"
-                            elif i == 7:  # Caught Fish
-                                event_type = "fish_caught"
+                    # 3. Zombie Kill
+                    m = re.search(p_zombie, line)
+                    if m:
+                        events.append(
+                            {
+                                "type": "zombie_kill",
+                                "gamertag": m.group(1).strip(),
+                                "timestamp": ts,
+                            }
+                        )
+                        continue
 
-                            connections.append(
-                                {
-                                    "gamertag": gamertag,
-                                    "ip": ip if i < 5 else None,
-                                    "event_type": event_type,
-                                    "extra": extra_data,
-                                    "player_id": player_id,
-                                    "timestamp": timestamp,
-                                }
-                            )
-                            break
+                    # 4. Build Ações (Construção/Desmonte)
+                    m = re.search(p_build, line)
+                    if m:
+                        events.append(
+                            {
+                                "type": "build_action",
+                                "player": m.group("player").strip(),
+                                "action": m.group("action").strip(),
+                                "item": m.group("item").strip(),
+                                "tool": m.group("tool").strip(),
+                                "pos": (float(m.group("x")), float(m.group("z"))),
+                                "timestamp": ts,
+                            }
+                        )
+                        continue
 
-        except FileNotFoundError:
-            print(f"[LOG PARSER] Arquivo {log_file} nao encontrado")
+                    # 5. Placement
+                    m = re.search(p_placement, line)
+                    if m:
+                        events.append(
+                            {
+                                "type": "placement",
+                                "player": m.group("player").strip(),
+                                "item": m.group("item").strip(),
+                                "pos": (float(m.group("x")), float(m.group("z"))),
+                                "timestamp": ts,
+                            }
+                        )
+
         except Exception as e:
             print(f"[LOG PARSER] Erro ao parsear logs: {e}")
 
-        return connections
+        return events
 
     def _extract_timestamp(self, line):
         """Extrai timestamp da linha de log"""

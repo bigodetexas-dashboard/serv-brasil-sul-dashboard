@@ -16,7 +16,7 @@ body {
     padding: 5rem 0 2rem;
     text-align: center;
     overflow: hidden;
-    min-height: 90vh;
+    min-height: auto;
     display: flex;
     align-items: center;
     justify-content: center;

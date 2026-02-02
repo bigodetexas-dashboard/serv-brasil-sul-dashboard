@@ -82,7 +82,8 @@ app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["PERMANENT_SESSION_LIFETIME"] = 7200  # 2 hours
 app.config.update(
     WTF_CSRF_TIME_LIMIT=None,
-    WTF_CSRF_SSL_STRICT=False if app.debug else True,
+    WTF_CSRF_SSL_STRICT=False,
+    WTF_CSRF_ENABLED=True,
 )
 
 # Initialize Security Extensions
@@ -249,6 +250,8 @@ def honeypot():
 # Exempt API routes from CSRF (Only those for mobile/external services)
 csrf.exempt("/api/mobile/auth")
 csrf.exempt("/api/mobile/push/register")
+csrf.exempt("/api/bigodudo/chat")
+csrf.exempt("/api/bigodudo/suggestions")
 # REMOVED: /api/settings/update and others now require CSRF for Web UI security
 
 

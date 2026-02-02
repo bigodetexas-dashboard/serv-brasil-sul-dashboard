@@ -4,7 +4,6 @@ Retrieves relevant game data from database to provide context for AI responses
 """
 
 from typing import Dict, List, Optional
-from datetime import datetime, timedelta
 import sys
 import os
 
@@ -26,14 +25,18 @@ class AIContextBuilder(BaseRepository):
                 weapon,
                 distance,
                 timestamp
-            FROM pvp_kills
-            WHERE killer_name = (
+            FROM events
+            WHERE event_type = 'kill' AND killer_name = (
                 SELECT nitrado_gamertag FROM users WHERE discord_id = ?
             )
             ORDER BY timestamp DESC
             LIMIT ?
         """
-        return self.execute_query(query, (discord_id, limit))
+        try:
+            return self.execute_query(query, (discord_id, limit)) or []
+        except Exception as e:
+            print(f"[AI Context] Erro ao buscar kills: {e}")
+            return []
 
     def get_recent_deaths(self, discord_id: str, limit: int = 5) -> List[Dict]:
         """Get user's recent deaths"""
@@ -44,32 +47,62 @@ class AIContextBuilder(BaseRepository):
                 weapon,
                 distance,
                 timestamp
-            FROM pvp_kills
-            WHERE victim_name = (
+            FROM events
+            WHERE event_type = 'kill' AND victim_name = (
                 SELECT nitrado_gamertag FROM users WHERE discord_id = ?
             )
             ORDER BY timestamp DESC
             LIMIT ?
         """
-        return self.execute_query(query, (discord_id, limit))
+        try:
+            return self.execute_query(query, (discord_id, limit)) or []
+        except Exception as e:
+            print(f"[AI Context] Erro ao buscar mortes: {e}")
+            return []
 
     def get_user_stats(self, discord_id: str) -> Optional[Dict]:
         """Get user's overall stats"""
+        # Try to get basic stats. Since kills/deaths might not be in users table yet,
+        # we try to get them safely or default to 0.
         query = """
             SELECT
                 discord_username,
                 nitrado_gamertag,
-                balance,
-                kills,
-                deaths,
-                CASE WHEN deaths > 0 THEN CAST(kills AS REAL) / deaths ELSE kills END as kd_ratio,
-                best_killstreak,
-                total_playtime
+                balance
             FROM users
             WHERE discord_id = ?
         """
-        result = self.execute_query(query, (discord_id,))
-        return result[0] if result else None
+        try:
+            result = self.execute_query(query, (discord_id,))
+            if not result:
+                return None
+
+            user_data = result[0]
+            gt = user_data.get("nitrado_gamertag")
+
+            # Dynamic kills/deaths calculation from events table
+            if gt:
+                k_query = "SELECT COUNT(*) as k FROM events WHERE killer_name = ? AND event_type = 'kill'"
+                d_query = "SELECT COUNT(*) as d FROM events WHERE victim_name = ? AND event_type = 'kill'"
+
+                k_res = self.execute_query(k_query, (gt,))
+                d_res = self.execute_query(d_query, (gt,))
+
+                user_data["kills"] = k_res[0]["k"] if k_res else 0
+                user_data["deaths"] = d_res[0]["d"] if d_res else 0
+
+                kills = user_data["kills"]
+                deaths = user_data["deaths"]
+                user_data["kd_ratio"] = (kills / deaths) if deaths > 0 else kills
+            else:
+                user_data["kills"] = 0
+                user_data["deaths"] = 0
+                user_data["kd_ratio"] = 0
+
+            return user_data
+        except Exception as e:
+            print(f"[AI Context] Erro ao buscar stats: {e}")
+            return None
 
     def get_clan_info(self, discord_id: str) -> Optional[Dict]:
         """Get user's clan information"""
@@ -83,8 +116,12 @@ class AIContextBuilder(BaseRepository):
             JOIN clan_members cm ON c.id = cm.clan_id
             WHERE cm.discord_id = ?
         """
-        result = self.execute_query(query, (discord_id,))
-        return result[0] if result else None
+        try:
+            result = self.execute_query(query, (discord_id,))
+            return result[0] if result else None
+        except Exception as e:
+            print(f"[AI Context] Erro ao buscar clan: {e}")
+            return None
 
     def get_top_players(self, metric: str = "kills", limit: int = 5) -> List[Dict]:
         """Get leaderboard"""
@@ -96,16 +133,18 @@ class AIContextBuilder(BaseRepository):
             SELECT
                 discord_username,
                 nitrado_gamertag,
-                {metric},
-                kills,
-                deaths,
-                CASE WHEN deaths > 0 THEN CAST(kills AS REAL) / deaths ELSE kills END as kd_ratio
+                {metric}
             FROM users
             WHERE {metric} > 0
             ORDER BY {metric} DESC
             LIMIT ?
         """
-        return self.execute_query(query, (limit,))
+        try:
+            # Note: Leaderboards might be simplified if kills/deaths columns are missing in users
+            return self.execute_query(query, (limit,)) or []
+        except Exception as e:
+            print(f"[AI Context] Erro ao buscar top players: {e}")
+            return []
 
     def get_server_activity_summary(self, hours: int = 24) -> Dict:
         """Get server activity in last N hours"""
@@ -115,11 +154,15 @@ class AIContextBuilder(BaseRepository):
                 COUNT(DISTINCT killer_name) as unique_killers,
                 COUNT(DISTINCT victim_name) as unique_victims,
                 AVG(distance) as avg_kill_distance
-            FROM pvp_kills
-            WHERE timestamp > datetime('now', '-' || ? || ' hours')
+            FROM events
+            WHERE event_type = 'kill' AND timestamp > datetime('now', '-' || ? || ' hours')
         """
-        result = self.execute_query(query, (hours,))
-        return result[0] if result else {}
+        try:
+            result = self.execute_query(query, (hours,))
+            return result[0] if result else {}
+        except Exception as e:
+            print(f"[AI Context] Erro ao buscar atividade do servidor: {e}")
+            return {}
 
     def get_recent_purchases(self, discord_id: str, limit: int = 3) -> List[Dict]:
         """Get user's recent shop purchases"""
@@ -134,22 +177,19 @@ class AIContextBuilder(BaseRepository):
             ORDER BY created_at DESC
             LIMIT ?
         """
-        return self.execute_query(query, (discord_id, limit))
+        try:
+            return self.execute_query(query, (discord_id, limit)) or []
+        except Exception as e:
+            print(f"[AI Context] Erro ao buscar compras: {e}")
+            return []
 
     def build_context_string(self, discord_id: str, question: str) -> str:
         """
         Build a context string for AI based on user question
-
-        Args:
-            discord_id: User's Discord ID
-            question: User's question
-
-        Returns:
-            Formatted context string
         """
         context_parts = []
 
-        # 📚 NOVO: Adicionar conhecimento da base de dados
+        # Adicionar conhecimento da base de dados
         try:
             from utils.ai_knowledge import get_knowledge_context
 
@@ -170,7 +210,8 @@ class AIContextBuilder(BaseRepository):
 
         # Check if question is about kills/deaths
         if any(
-            word in question.lower() for word in ["matei", "kill", "eliminei", "morte", "morri"]
+            word in question.lower()
+            for word in ["matei", "kill", "eliminei", "morte", "morri"]
         ):
             recent_kills = self.get_recent_kills(discord_id, limit=3)
             recent_deaths = self.get_recent_deaths(discord_id, limit=3)
@@ -196,14 +237,16 @@ class AIContextBuilder(BaseRepository):
         # Check if question is about clan
         if any(word in question.lower() for word in ["clan", "clã", "grupo"]):
             clan = self.get_clan_info(discord_id)
-            if clan:
+            if clan and isinstance(clan, dict):  # Check if clan is a valid dict
                 context_parts.append(
-                    f"Clã: {clan['clan_name']} ({clan['member_count']} membros)\n"
-                    f"Cargo: {clan['user_role']}, Banco do Clã: {clan['clan_balance']} DZCoins"
+                    f"Clã: {clan.get('clan_name')} ({clan.get('member_count')} membros)\n"
+                    f"Cargo: {clan.get('user_role')}, Banco do Clã: {clan.get('clan_balance')} DZCoins"
                 )
 
         # Check if question is about leaderboard/ranking
-        if any(word in question.lower() for word in ["ranking", "top", "melhor", "líder"]):
+        if any(
+            word in question.lower() for word in ["ranking", "top", "melhor", "líder"]
+        ):
             top_players = self.get_top_players("kills", limit=5)
             if top_players:
                 rank_text = "\n".join(
@@ -215,7 +258,10 @@ class AIContextBuilder(BaseRepository):
                 context_parts.append(f"Top 5 Jogadores:\n{rank_text}")
 
         # Check if question is about server activity
-        if any(word in question.lower() for word in ["servidor", "ativo", "online", "guerra"]):
+        if any(
+            word in question.lower()
+            for word in ["servidor", "ativo", "online", "guerra"]
+        ):
             activity = self.get_server_activity_summary(24)
             if activity:
                 context_parts.append(
@@ -226,10 +272,14 @@ class AIContextBuilder(BaseRepository):
                 )
 
         # Check if question is about purchases
-        if any(word in question.lower() for word in ["compra", "item", "entrega", "loja"]):
+        if any(
+            word in question.lower() for word in ["compra", "item", "entrega", "loja"]
+        ):
             purchases = self.get_recent_purchases(discord_id, limit=3)
             if purchases:
-                purchase_text = "\n".join([f"- {p['item_name']}: {p['status']}" for p in purchases])
+                purchase_text = "\n".join(
+                    [f"- {p['item_name']}: {p['status']}" for p in purchases]
+                )
                 context_parts.append(f"Últimas compras:\n{purchase_text}")
 
         if context_parts:
