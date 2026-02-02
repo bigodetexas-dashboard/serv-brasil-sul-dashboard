@@ -8,6 +8,7 @@ import os
 import sys
 import sqlite3
 import time
+import math
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -17,11 +18,257 @@ if project_root not in sys.path:
     sys.path.append(project_root)
 
 from utils.log_parser import DayZLogParser
+from utils.ftp_helpers import connect_ftp
 
 load_dotenv()
 
 # Caminho do banco de dados unificado
 DB_PATH = os.path.join(project_root, "bigode_unified.db")
+
+# Rastreador de spam de construção
+spam_tracker = {}  # {player_name: [timestamps]}
+
+
+# ==================== FUNÇÕES DE PROTEÇÃO ====================
+
+
+def is_raid_time():
+    """Verifica se está no horário de RAID (Sexta 18h - Domingo 23h59)."""
+    now = datetime.now()
+    weekday = now.weekday()  # 0=Segunda, 4=Sexta, 6=Domingo
+    hour = now.hour
+
+    # Sexta após 18h
+    if weekday == 4 and hour >= 18:
+        return True
+    # Sábado (dia inteiro)
+    if weekday == 5:
+        return True
+    # Domingo até 23h59
+    if weekday == 6:
+        return True
+
+    return False
+
+
+def check_spam(player_name, item_name):
+    """Verifica se o jogador está spamando itens (Lag Machine)."""
+    if "fencekit" not in item_name.lower():
+        return False
+
+    now = time.time()
+    if player_name not in spam_tracker:
+        spam_tracker[player_name] = []
+
+    # Limpa timestamps antigos (60 segundos)
+    spam_tracker[player_name] = [t for t in spam_tracker[player_name] if now - t < 60]
+
+    # Adiciona atual
+    spam_tracker[player_name].append(now)
+
+    # Limite: 10 kits em 1 minuto
+    if len(spam_tracker[player_name]) > 10:
+        return True
+    return False
+
+
+def check_construction(x, z, y, player_name, item_name, conn):
+    """
+    Verifica se a construção é permitida.
+    Retorna (allowed: bool, reason: str)
+    """
+    item_lower = item_name.lower()
+
+    # 1. BANIMENTO DE JARDIM (GardenPlot)
+    if "gardenplot" in item_lower:
+        return False, "GardenPlot"
+
+    # 2. SKY BASE (Altura > 1000m)
+    if y > 1000:
+        return False, "SkyBase"
+
+    # 3. UNDERGROUND BASE (Altura < -10m)
+    if y < -10:
+        return False, "UndergroundBase"
+
+    # 4. PROTEÇÃO DE BASE
+    cur = conn.cursor()
+
+    # Busca bases ativas do PostgreSQL
+    try:
+        cur.execute("""
+            SELECT b.id, b.owner_discord_id, b.clan_id, b.name, b.coord_x, b.coord_z, b.radius,
+                   c.name as clan_name
+            FROM bases_v2 b
+            LEFT JOIN clans c ON b.clan_id = c.id
+        """)
+        active_bases = cur.fetchall()
+    except Exception:
+        # Se não tiver PostgreSQL, tenta SQLite local
+        try:
+            cur.execute(
+                "SELECT id, owner_id, name, x, z, radius, clan_id FROM bases_v2"
+            )
+            active_bases = cur.fetchall()
+        except Exception:
+            # Sem bases registradas
+            return True, "OK"
+
+    for base in active_bases:
+        # Adapta para diferentes estruturas de banco
+        if isinstance(base, dict):
+            base_x = base.get("coord_x") or base.get("x")
+            base_z = base.get("coord_z") or base.get("z")
+            base_radius = base.get("radius", 100)
+            base_owner = base.get("owner_discord_id") or base.get("owner_id")
+            base_name = base.get("name", "Base")
+            base_id = base.get("id")
+            base_clan_id = base.get("clan_id")
+        else:
+            # Tupla do SQLite
+            try:
+                (
+                    base_id,
+                    base_owner,
+                    base_clan_id,
+                    base_name,
+                    base_x,
+                    base_z,
+                    base_radius,
+                ) = base[:7]
+            except:
+                continue
+
+        if not base_x or not base_z:
+            continue
+
+        # Calcula distância
+        dist = math.sqrt((x - base_x) ** 2 + (z - base_z) ** 2)
+
+        if dist <= base_radius:
+            # --- REGRAS ESPECÍFICAS DE BASE ---
+
+            # A. PNEUS (Glitch) -> BANIMENTO IMEDIATO
+            if "wheel" in item_lower or "tire" in item_lower:
+                return False, f"BannedItemBase:{item_name}"
+
+            # B. SHELTER (Glitch de Visão) -> BANIMENTO IMEDIATO
+            if "improvisedshelter" in item_lower:
+                return False, f"BannedItemBase:{item_name}"
+
+            # C. FOGUEIRA/CONSTRUÇÃO -> APENAS AUTORIZADOS
+
+            # Busca Discord ID do jogador
+            cur.execute(
+                "SELECT discord_id FROM player_identities WHERE LOWER(gamertag) = LOWER(?)",
+                (player_name,),
+            )
+            row = cur.fetchone()
+
+            if not row:
+                # Se não tem conta vinculada, é considerado INIMIGO na área protegida
+                return False, f"UnauthorizedBase:{base_name}"
+
+            builder_id = row[0] if isinstance(row, tuple) else row.get("discord_id")
+
+            # 1. É o Dono?
+            if str(base_owner) == str(builder_id):
+                return True, "Owner"
+
+            # 2. Tem permissão explícita?
+            try:
+                cur.execute(
+                    "SELECT level FROM base_permissions WHERE base_id = ? AND discord_id = ?",
+                    (base_id, str(builder_id)),
+                )
+                perm_row = cur.fetchone()
+                if perm_row:
+                    return True, "PermittedUser"
+            except Exception:
+                pass
+
+            # 3. É do Clã da Base?
+            if base_clan_id:
+                try:
+                    cur.execute(
+                        "SELECT clan_id FROM clan_members_v2 WHERE discord_id = ?",
+                        (str(builder_id),),
+                    )
+                    member_row = cur.fetchone()
+                    if member_row:
+                        member_clan_id = (
+                            member_row[0]
+                            if isinstance(member_row, tuple)
+                            else member_row.get("clan_id")
+                        )
+                        if member_clan_id == base_clan_id:
+                            return True, "ClanBaseMember"
+                except Exception:
+                    pass
+
+            return False, f"UnauthorizedBase:{base_name}"
+
+    return True, "OK"
+
+
+def ban_player(gamertag, reason="Banido pelo Bot"):
+    """
+    Adiciona o jogador ao arquivo ban.txt no servidor via FTP.
+    Retorna True se sucesso, False se falhou.
+    """
+    try:
+        ftp = connect_ftp()
+        if not ftp:
+            print(f"[ERRO] Não foi possível conectar ao FTP para banir {gamertag}")
+            return False
+
+        # Caminho do arquivo de banimentos
+        ban_file_path = "/dayzxb_config/ban.txt"
+
+        # Baixa o arquivo atual
+        ban_list = []
+        try:
+            from io import BytesIO
+
+            bio = BytesIO()
+            ftp.retrbinary(f"RETR {ban_file_path}", bio.write)
+            bio.seek(0)
+            ban_list = bio.read().decode("utf-8", errors="ignore").splitlines()
+        except Exception:
+            # Arquivo não existe ainda
+            pass
+
+        # Verifica se já está banido
+        if gamertag.lower() in [b.lower() for b in ban_list]:
+            print(f"[INFO] {gamertag} já está banido")
+            ftp.quit()
+            return True
+
+        # Adiciona novo ban
+        ban_list.append(
+            f"{gamertag}  // {reason} - {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+        )
+
+        # Upload do arquivo atualizado
+        from io import BytesIO
+
+        bio = BytesIO("\n".join(ban_list).encode("utf-8"))
+        bio.seek(0)
+        ftp.storbinary(f"STOR {ban_file_path}", bio)
+
+        ftp.quit()
+        print(f"✅ [BANIMENTO] {gamertag} foi banido: {reason}")
+        return True
+
+    except Exception as e:
+        print(f"[ERRO] Falha ao banir {gamertag}: {e}")
+        import traceback
+
+        traceback.print_exc()
+        return False
+
+
+# ==================== FIM DAS FUNÇÕES DE PROTEÇÃO ====================
 
 
 def sync_logs():
@@ -138,6 +385,57 @@ def sync_logs():
                 pos = event.get("pos")
                 action = event.get("action", "placed")
                 tool = event.get("tool", "none")
+
+                # Extrai coordenadas (x, y, z)
+                x, y, z = pos[0], pos[2] if len(pos) > 2 else 0, pos[1]
+
+                # 🛡️ PROTEÇÃO ATIVA: Verifica SPAM
+                if check_spam(player, item):
+                    print(f"🚫 [SPAM DETECTADO] {player} está spamando {item}!")
+                    ban_player(player, "Spam de Construção/Lag Machine")
+                    stats["conn"] += 1  # Conta como evento processado
+                    continue
+
+                # 🛡️ PROTEÇÃO ATIVA: Verifica Regras de Construção
+                allowed, reason = check_construction(x, z, y, player, item, conn)
+
+                if not allowed:
+                    # BANIMENTO AUTOMÁTICO
+                    if reason == "GardenPlot":
+                        print(f"🚫 [BANIMENTO] {player} tentou plantar GardenPlot!")
+                        ban_player(player, "GardenPlot Proibido")
+
+                    elif reason == "SkyBase":
+                        print(
+                            f"🚫 [BANIMENTO] {player} tentou construir Sky Base (y={y}m)!"
+                        )
+                        ban_player(player, f"Sky Base Detectada (Altura: {y}m)")
+
+                    elif reason == "UndergroundBase":
+                        print(
+                            f"🚫 [BANIMENTO] {player} tentou construir Underground Base (y={y}m)!"
+                        )
+                        ban_player(player, f"Underground Base Detectada (Altura: {y}m)")
+
+                    elif reason.startswith("BannedItemBase"):
+                        banned_item = reason.split(":")[1]
+                        print(
+                            f"🚫 [BANIMENTO] {player} usou item proibido em base: {banned_item}!"
+                        )
+                        ban_player(player, f"Glitch Item em Base: {banned_item}")
+
+                    elif reason.startswith("UnauthorizedBase"):
+                        base_name = reason.split(":")[1]
+                        print(
+                            f"🚫 [BANIMENTO] {player} construiu ilegalmente na base {base_name}!"
+                        )
+                        ban_player(player, f"Construção Ilegal em Base: {base_name}")
+
+                    stats["conn"] += 1  # Conta como evento processado
+                    continue
+
+                # ✅ CONSTRUÇÃO PERMITIDA - Registra no banco
+                print(f"✅ [CONSTRUÇÃO OK] {player} colocou {item} ({reason})")
 
                 # Registrar como evento para o Heatmap/Logs
                 cur.execute(
