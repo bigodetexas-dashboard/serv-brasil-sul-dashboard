@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed de Mortes - BigodeTexas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .deaths-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(20, 20, 30, 0.8);
+            border: 1px solid #8B0000;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .death-card {
+            background: rgba(30, 30, 40, 0.9);
+            border-left: 4px solid #8B0000;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+
+        .death-card:hover {
+            transform: translateX(5px);
+            border-left-color: #ff0000;
+        }
+
+        .death-card.pvp {
+            border-left-color: #ff4444;
+        }
+
+        .death-card.animal {
+            border-left-color: #ffa500;
+        }
+
+        .death-header {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .death-details {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .death-details span {
+            margin-right: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+
+        .badge.headshot {
+            background: #ff0000;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="deaths-container">
+        <h1>💀 Feed de Mortes</h1>
+
+        <!-- Estatísticas -->
+        <div class="stats-grid" id="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-total">-</div>
+                <div class="stat-label">Total (24h)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-pvp">-</div>
+                <div class="stat-label">PvP</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-animal">-</div>
+                <div class="stat-label">Animais</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-headshots">-</div>
+                <div class="stat-label">Headshots</div>
+            </div>
+        </div>
+
+        <!-- Feed de Mortes -->
+        <div id="deaths-feed">
+            <div class="loading">Carregando mortes...</div>
+        </div>
+    </div>
+
+    <script>
+        // Carregar estatísticas
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/deaths/stats');
+                const data = await res.json();
+
+                document.getElementById('stat-total').textContent = data.total_deaths || 0;
+                document.getElementById('stat-pvp').textContent = data.pvp || 0;
+                document.getElementById('stat-animal').textContent = data.animal || 0;
+                document.getElementById('stat-headshots').textContent = data.headshots || 0;
+            } catch (err) {
+                console.error('Erro ao carregar stats:', err);
+            }
+        }
+
+        // Carregar feed de mortes
+        async function loadDeaths() {
+            try {
+                const res = await fetch('/api/deaths/recent?per_page=50');
+                const data = await res.json();
+
+                const feed = document.getElementById('deaths-feed');
+
+                if (!data.deaths || data.deaths.length === 0) {
+                    feed.innerHTML = '<div class="loading">Nenhuma morte registrada ainda.</div>';
+                    return;
+                }
+
+                feed.innerHTML = data.deaths.map(death => {
+                    if (death.death_type === 'pvp') {
+                        return `
+                            <div class="death-card pvp">
+                                <div class="death-header">
+                                    🔫 <strong>${death.killer}</strong> matou <strong>${death.victim}</strong>
+                                    ${death.is_headshot ? '<span class="badge headshot">HEADSHOT</span>' : ''}
+                                </div>
+                                <div class="death-details">
+                                    <span>📍 ${death.location || 'Desconhecido'}</span>
+                                    <span>🎯 ${death.weapon || 'N/A'}</span>
+                                    <span>📏 ${death.distance || 0}m</span>
+                                    <span>⏰ ${death.time_ago}</span>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="death-card animal">
+                                <div class="death-header">
+                                    ${death.death_cause === 'wolf' ? '🐺' : '🐻'} <strong>${death.victim}</strong> foi morto por ${death.death_cause === 'wolf' ? 'Lobo' : 'Urso'}
+                                </div>
+                                <div class="death-details">
+                                    <span>📍 ${death.location || 'Desconhecido'}</span>
+                                    <span>⏰ ${death.time_ago}</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }).join('');
+
+            } catch (err) {
+                console.error('Erro ao carregar mortes:', err);
+                document.getElementById('deaths-feed').innerHTML =
+                    '<div class="loading">Erro ao carregar mortes. Tente novamente.</div>';
+            }
+        }
+
+        // Carregar dados iniciais
+        loadStats();
+        loadDeaths();
+
+        // Atualizar a cada 30 segundos
+        setInterval(() => {
+            loadStats();
+            loadDeaths();
+        }, 30000);
+    </script>
+</body>
+
+</html>
