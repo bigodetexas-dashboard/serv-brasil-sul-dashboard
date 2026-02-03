@@ -71,6 +71,7 @@ from utils.ftp_helpers import connect_ftp
 from utils.decorators import rate_limit, require_admin_password
 from utils.dashboard_api import send_dashboard_event  # NEW
 from utils.n8n_dispatcher import send_n8n_base_alert
+from utils.auto_failover import auto_failover  # 🔄 AUTO-FAILOVER AUTÔNOMO
 
 
 async def restart_server():
@@ -1211,6 +1212,14 @@ STATE_FILE = "bot_state.json"
 @tasks.loop(seconds=15)
 async def killfeed_loop():
     global last_read_lines, current_log_file
+
+    # 🔄 AUTO-FAILOVER: Verifica se deve ativar modo backup
+    should_backup = auto_failover.should_activate_backup()
+    if should_backup:
+        auto_failover.send_backup_heartbeat()
+    else:
+        # Sistema principal está ativo, não processar logs aqui
+        return
 
     # NOTE: 'last_read_lines' is reused here as 'last_byte_offset' to avoid global renaming chaos
     last_byte_offset = last_read_lines
