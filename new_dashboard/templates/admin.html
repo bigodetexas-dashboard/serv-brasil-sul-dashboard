@@ -327,53 +327,52 @@
                         style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; display: none;">
                     </div>
                 </div>
-                <!-- Texano Tab -->
-                <div id="tab-texano" style="display: none;">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                        <h2><i class="ri-robot-line"></i> TEXANO: Assistente Tático</h2>
-                        <span class="badge"
-                            style="background: rgba(0, 242, 254, 0.2); color: #00f2fe; border: 1px solid #00f2fe;">LOG
-                            ROBOT: ONLINE</span>
-                    </div>
+            </div>
 
-                    <div class="grid grid-2" style="margin-bottom: 2rem;">
-                        <div class="card" style="border-left: 4px solid #00f2fe;">
-                            <h4><i class="ri-pulse-line"></i> Pulso do Sistema</h4>
-                            <div id="texano-vitals" style="font-size: 0.9rem; margin-top: 10px;">
-                                <p>🔍 Analisando conexões recentes...</p>
-                            </div>
-                        </div>
-                        <div class="card" style="border-left: 4px solid #f1c40f;">
-                            <h4><i class="ri-alert-line"></i> Alerta de Alts</h4>
-                            <div id="texano-alerts" style="font-size: 0.9rem; margin-top: 10px;">
-                                <p>✅ Nenhuma suspeita de hardware duplicado agora.</p>
-                            </div>
+            <!-- Texano Tab -->
+            <div id="tab-texano" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2><i class="ri-robot-line"></i> TEXANO: Assistente Tático</h2>
+                    <span class="badge"
+                        style="background: rgba(0, 242, 254, 0.2); color: #00f2fe; border: 1px solid #00f2fe;">LOG
+                        ROBOT: ONLINE</span>
+                </div>
+
+                <div class="grid grid-2" style="margin-bottom: 2rem;">
+                    <div class="card" style="border-left: 4px solid #00f2fe;">
+                        <h4><i class="ri-pulse-line"></i> Pulso do Sistema</h4>
+                        <div id="texano-vitals" style="font-size: 0.9rem; margin-top: 10px;">
+                            <p>🔍 Analisando conexões recentes...</p>
                         </div>
                     </div>
-
-                    <!-- Chat Interface -->
-                    <div class="card"
-                        style="height: 450px; display: flex; flex-direction: column; background: rgba(0,0,0,0.4);">
-                        <div id="texano-chat-box"
-                            style="flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 1rem;">
-                            <div
-                                style="background: rgba(0, 242, 254, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #00f2fe; max-width: 80%;">
-                                <strong>Texano:</strong> Pronto para o combate, Xerife. O que você precisa saber sobre
-                                as identidades do servidor ou o status dos spawns?
-                            </div>
-                        </div>
-                        <div
-                            style="padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px;">
-                            <input type="text" id="texano-input" class="search-box" style="margin: 0;"
-                                placeholder="Pergunte algo técnico (ex: 'Status das entregas' ou 'Verificar IPs')">
-                            <button class="btn btn-primary" style="background: #00f2fe; color: #000;"
-                                onclick="askTexano()">
-                                <i class="ri-send-plane-fill"></i>
-                            </button>
+                    <div class="card" style="border-left: 4px solid #f1c40f;">
+                        <h4><i class="ri-alert-line"></i> Alerta de Alts</h4>
+                        <div id="texano-alerts" style="font-size: 0.9rem; margin-top: 10px;">
+                            <p>✅ Nenhuma suspeita de hardware duplicado agora.</p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Chat Interface -->
+                <div class="card"
+                    style="height: 450px; display: flex; flex-direction: column; background: rgba(0,0,0,0.4);">
+                    <div id="texano-chat-box"
+                        style="flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <div
+                            style="background: rgba(0, 242, 254, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #00f2fe; max-width: 80%;">
+                            <strong>Texano:</strong> Posição confirmada, Xerife. Estou monitorando os sinais vitais
+                            do sistema e a rede Nitrado. O que temos para hoje no perímetro?
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px;">
+                        <input type="text" id="texano-input" class="search-box" style="margin: 0;"
+                            placeholder="Pergunte algo técnico (ex: 'Status das entregas' ou 'Verificar IPs')">
+                        <button class="btn btn-primary" style="background: #00f2fe; color: #000;" onclick="askTexano()">
+                            <i class="ri-send-plane-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -407,18 +406,20 @@
             const vitals = document.getElementById('texano-vitals');
             const alerts = document.getElementById('texano-alerts');
 
-            vitals.innerHTML = '<p><i class="ri-loader-4-line ri-spin"></i> Lendo base de conhecimento...</p>';
+            vitals.innerHTML = '<p><i class="ri-loader-4-line ri-spin"></i> Sincronizando sinais vitais com o Texano...</p>';
 
-            const res = await fetchAPI('admin/texano/vitals');
+            const res = await fetchAPI('texano/vitals', { baseUrl: '/admin/api/' });
             if (res && res.success) {
                 vitals.innerHTML = `
-                    <p><i class="ri-database-line"></i> <strong>Banco:</strong> ${res.db_status}</p>
-                    <p><i class="ri-truck-line"></i> <strong>Entregas:</strong> ${res.pending_deliveries} pendentes</p>
-                    <p><i class="ri-user-search-line"></i> <strong>Identidades:</strong> ${res.total_identities} vinculadas</p>
+                    <p><i class="ri-database-line"></i> <strong>Banco de Dados:</strong> ${res.db_status === 'HEALTHY' ? '<span style="color:#2ed573">ESTÁVEL</span>' : '<span style="color:#ff4757">INSTÁVEL</span>'}</p>
+                    <p><i class="ri-truck-line"></i> <strong>Fila de Entregas:</strong> ${res.pending_deliveries} pacotes</p>
+                    <p><i class="ri-user-search-line"></i> <strong>Identidades:</strong> ${res.total_identities} registradas</p>
                 `;
 
                 if (res.suspicious_alts.length > 0) {
-                    alerts.innerHTML = `<p style="color: #ff4757;"><i class="ri-error-warning-fill"></i> ${res.suspicious_alts.length} suspeitas de mult-conta ativa!</p>`;
+                    alerts.innerHTML = `<p style="color: #ff4757;"><i class="ri-error-warning-fill"></i> <strong>ALERTA:</strong> Detectei ${res.suspicious_alts.length} possíveis fura-olhos (mult-contas)!</p>`;
+                } else {
+                    alerts.innerHTML = `<p style="color: #2ed573;"><i class="ri-checkbox-circle-fill"></i> Perímetro limpo, Xerife. Nenhuma cópia detectada.</p>`;
                 }
             }
         }
@@ -449,10 +450,11 @@
             `;
 
             try {
-                const res = await fetchAPI('admin/texano/ask', {
+                const res = await fetchAPI('texano/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt })
+                    body: JSON.stringify({ prompt: prompt }),
+                    baseUrl: '/admin/api/'
                 });
 
                 document.getElementById(thinkingId).remove();

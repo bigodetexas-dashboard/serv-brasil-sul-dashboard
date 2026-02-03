@@ -12,15 +12,17 @@ from functools import wraps
 import sqlite3
 import os
 import json
-import asyncio
 from datetime import datetime, timedelta
 
-# Import integrations
-from ai_integration import ask_gemini
-from security_helpers import ip_blacklist, waf
+# Import integrations - Importar do diretório atual
+import sys
+import os
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ai_integration import ask_ai_admin_sync
 
 # Define Blueprint
-admin_bp = Blueprint("admin", __name__, url_prefix="/api/admin")
+admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 
 # --- DATABASE HELPER ---
@@ -146,7 +148,7 @@ def get_system_diagnostics():
     return diagnostics
 
 
-@admin_bp.route("/texano/vitals", methods=["GET"])
+@admin_bp.route("/api/texano/vitals", methods=["GET"])
 @csrf_exempt
 @admin_required
 def texano_vitals():
@@ -179,7 +181,7 @@ def texano_vitals():
     )
 
 
-@admin_bp.route("/texano/ask", methods=["POST"])
+@admin_bp.route("/api/texano/ask", methods=["POST"])
 @csrf_exempt
 @admin_required
 def texano_ask():
@@ -190,9 +192,8 @@ def texano_ask():
     if not prompt:
         return jsonify({"error": "Prompt vazio"}), 400
 
-    # 1. Coletar Contexto do Sistema (O "Cérebro" do J.A.R.V.I.S.)
+    # 1. Coletar Contexto do Sistema
     diagnostics = get_system_diagnostics()
-
     context_str = f"""
     [SYSTEM TELEMETRY]
     - Status DB: {diagnostics.get("db_status")}
@@ -202,32 +203,11 @@ def texano_ask():
     - Alertas Ativos: {", ".join(diagnostics.get("alerts", []))}
     """
 
-    # 2. Enviar para IA
+    # 2. Enviar para IA (Versão Admin dedicada)
     try:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        # Usamos uma função específica para o Texano se quisermos um prompt de sistema diferente,
-        # mas por hora vamos usar ask_gemini injetando o contexto.
-        # Mas como o usuário quer que ele seja um "Programador Avançado", vamos instruir isso no prompt.
+        from ai_integration import ask_ai_admin_sync
 
-        full_prompt = f"""
-        [CONTEXTO TÉCNICO AVANÇADO]
-        {context_str}
-
-        [SUA PERSONA: TEXANO]
-        Você é o Texano, uma IA de Elite e Engenheiro de Software Sênior do BigodeTexas.
-        Você monitora o servidor DayZ e o código Python/Flask.
-        - Se ver alertas de segurança, sugira bloqueio de IP.
-        - Se ver entregas pendentes, sugira verificar o `delivery_processor.py`.
-        - Fale de forma técnica, mas direta ("Xerife").
-        - Você NÃO executa comandos, apenas diagnóstica e sugere.
-
-        [PERGUNTA DO ADMIN]
-        {prompt}
-        """
-
-        response = loop.run_until_complete(ask_gemini(full_prompt))
-        loop.close()
+        response = ask_ai_admin_sync(prompt, context_str)
 
         return jsonify({"success": True, "response": response})
     except Exception as e:
@@ -237,7 +217,7 @@ def texano_ask():
 # ==================== USER MANAGEMENT ====================
 
 
-@admin_bp.route("/check_alts", methods=["POST"])
+@admin_bp.route("/api/admin/check_alts", methods=["POST"])
 @csrf_exempt
 @admin_required
 def check_alts():
@@ -304,7 +284,7 @@ def check_alts():
     )
 
 
-@admin_bp.route("/users", methods=["GET"])
+@admin_bp.route("/api/admin/users", methods=["GET"])
 @admin_required
 def list_users():
     """Lista usuários para gerenciamento"""
@@ -317,7 +297,7 @@ def list_users():
     return jsonify({"users": [dict(u) for u in users]})
 
 
-@admin_bp.route("/toggle_ban", methods=["POST"])
+@admin_bp.route("/api/admin/toggle_ban", methods=["POST"])
 @csrf_exempt
 @admin_required
 def toggle_ban():
@@ -347,7 +327,7 @@ def toggle_ban():
 # ==================== SERVER CONTROLS ====================
 
 
-@admin_bp.route("/logs", methods=["GET"])
+@admin_bp.route("/api/admin/logs", methods=["GET"])
 @admin_required
 def get_logs():
     """Retorna logs do sistema (Simulado/Real)"""
@@ -383,7 +363,7 @@ def get_logs():
     return jsonify([dict(l) for l in logs])
 
 
-@admin_bp.route("/update_settings", methods=["POST"])
+@admin_bp.route("/api/admin/update_settings", methods=["POST"])
 @csrf_exempt
 @admin_required
 def update_settings():
@@ -412,7 +392,7 @@ def update_settings():
         return jsonify({"error": str(e)}), 500
 
 
-@admin_bp.route("/dashboard_stats", methods=["GET"])
+@admin_bp.route("/api/admin/dashboard_stats", methods=["GET"])
 @admin_required
 def dashboard_stats():
     """Estatísticas gerais para o Admin Dashboard"""
@@ -448,7 +428,7 @@ def dashboard_stats():
     )
 
 
-@admin_bp.route("/check_raid_zone", methods=["POST"])
+@admin_bp.route("/api/admin/check_raid_zone", methods=["POST"])
 @csrf_exempt
 @admin_required
 def check_raid_zone():
