@@ -3789,6 +3789,177 @@ def api_emit_event():
     return jsonify({"success": True})
 
 
+# ==================== DEATHS (KILL FEED) ROUTES ====================
+
+
+@app.route("/deaths")
+def deaths_page():
+    """Página do feed de mortes"""
+    return render_template("deaths.html")
+
+
+@app.route("/api/deaths/recent", methods=["GET"])
+@cache.cached(timeout=30, query_string=True)
+def api_deaths_recent():
+    """Retorna mortes recentes com paginação"""
+    page = int(request.args.get("page", 1))
+    per_page = int(request.args.get("per_page", 20))
+    offset = (page - 1) * per_page
+
+    conn = get_db()
+    if not conn:
+        return jsonify({"error": "Database connection failed"}), 500
+
+    cur = conn.cursor()
+
+    try:
+        # Total
+        cur.execute("SELECT COUNT(*) FROM deaths_log")
+        result = cur.fetchone()
+        total = result[0] if result else 0
+
+        # Mortes recentes
+        cur.execute(
+            """
+            SELECT
+                id, killer_gamertag, victim_gamertag, death_type, death_cause,
+                weapon, distance, is_headshot,
+                coord_x, coord_z, location_name, occurred_at
+            FROM deaths_log
+            ORDER BY occurred_at DESC
+            LIMIT ? OFFSET ?
+        """,
+            (per_page, offset),
+        )
+
+        deaths = []
+        for row in cur.fetchall():
+            death = {
+                "id": row[0],
+                "killer": row[1],
+                "victim": row[2],
+                "death_type": row[3],
+                "death_cause": row[4],
+                "weapon": row[5],
+                "distance": row[6],
+                "is_headshot": row[7],
+                "coords": [row[8], row[9]],
+                "location": row[10],
+                "timestamp": row[11] if row[11] else None,
+                "time_ago": get_time_ago_deaths(row[11]) if row[11] else "Desconhecido",
+            }
+            deaths.append(death)
+
+        return jsonify(
+            {"deaths": deaths, "total": total, "page": page, "per_page": per_page}
+        )
+
+    except Exception as e:
+        print(f"[DEATHS API] Erro: {e}")
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
+
+
+@app.route("/api/deaths/stats", methods=["GET"])
+@cache.cached(timeout=60)
+def api_deaths_stats():
+    """Retorna estatísticas de mortes (últimas 24h)"""
+    conn = get_db()
+    if not conn:
+        return jsonify({"error": "Database connection failed"}), 500
+
+    cur = conn.cursor()
+
+    try:
+        # Stats básicas
+        cur.execute("""
+            SELECT
+                COUNT(*) as total,
+                SUM(CASE WHEN death_type = 'pvp' THEN 1 ELSE 0 END) as pvp,
+                SUM(CASE WHEN death_type = 'animal' THEN 1 ELSE 0 END) as animal,
+                SUM(CASE WHEN is_headshot = 1 THEN 1 ELSE 0 END) as headshots
+            FROM deaths_log
+            WHERE occurred_at >= datetime('now', '-24 hours')
+        """)
+
+        stats = cur.fetchone()
+
+        # Arma mais usada
+        cur.execute("""
+            SELECT weapon, COUNT(*) as count
+            FROM deaths_log
+            WHERE death_type = 'pvp' AND occurred_at >= datetime('now', '-24 hours')
+            GROUP BY weapon
+            ORDER BY count DESC
+            LIMIT 1
+        """)
+        most_weapon = cur.fetchone()
+
+        # Local mais mortal
+        cur.execute("""
+            SELECT location_name, COUNT(*) as count
+            FROM deaths_log
+            WHERE occurred_at >= datetime('now', '-24 hours')
+            GROUP BY location_name
+            ORDER BY count DESC
+            LIMIT 1
+        """)
+        most_location = cur.fetchone()
+
+        return jsonify(
+            {
+                "total_deaths": stats[0] if stats else 0,
+                "pvp": stats[1] if stats else 0,
+                "animal": stats[2] if stats else 0,
+                "headshots": stats[3] if stats else 0,
+                "deaths_per_hour": round((stats[0] if stats else 0) / 24, 1),
+                "most_used_weapon": most_weapon[0] if most_weapon else "N/A",
+                "most_deadly_location": most_location[0] if most_location else "N/A",
+            }
+        )
+
+    except Exception as e:
+        print(f"[DEATHS STATS] Erro: {e}")
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
+
+
+def get_time_ago_deaths(timestamp_str):
+    """Converte timestamp para 'há X minutos/horas'"""
+    if not timestamp_str:
+        return "Desconhecido"
+
+    try:
+        from datetime import datetime, timezone
+
+        # Parse timestamp
+        if isinstance(timestamp_str, str):
+            timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+        else:
+            timestamp = timestamp_str
+
+        now = datetime.now(timezone.utc)
+        diff = now - timestamp.replace(tzinfo=timezone.utc)
+        seconds = diff.total_seconds()
+
+        if seconds < 60:
+            return "há poucos segundos"
+        elif seconds < 3600:
+            minutes = int(seconds / 60)
+            return f"há {minutes} min"
+        elif seconds < 86400:
+            hours = int(seconds / 3600)
+            return f"há {hours}h"
+        else:
+            days = int(seconds / 86400)
+            return f"há {days}d"
+    except Exception as e:
+        print(f"[TIME AGO] Erro: {e}")
+        return "Desconhecido"
+
+
 if __name__ == "__main__":
     host = os.getenv("DASHBOARD_HOST", "127.0.0.1")
     port = int(os.getenv("DASHBOARD_PORT", 5000))
