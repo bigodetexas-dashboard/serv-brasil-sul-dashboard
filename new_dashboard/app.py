@@ -184,8 +184,9 @@ def start_log_robot():
 
 
 # Inicia o robô junto com o app
-with app.app_context():
-    start_log_robot()
+# TEMPORARIAMENTE DESABILITADO para testes
+# with app.app_context():
+#     start_log_robot()
 
 
 # ==================== SECURITY MIDDLEWARE ====================
