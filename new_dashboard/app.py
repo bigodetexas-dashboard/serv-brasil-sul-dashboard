@@ -165,6 +165,12 @@ app.register_blueprint(bigodudo_bp)
 app.register_blueprint(admin_bp)
 
 
+@app.route("/regras")
+def regras():
+    """Página de Regras (Estilo Arquivo Confidencial)"""
+    return render_template("regras.html")
+
+
 # ==================== AUTO-START LOG ROBOT ====================
 def start_log_robot():
     """Inicia o robô de logs em uma thread separada para autonomia total."""

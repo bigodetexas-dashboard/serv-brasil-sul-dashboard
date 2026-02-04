@@ -41,6 +41,7 @@ taskkill /F /IM python.exe /T
 - **Dashboard**: Migrado para `new_dashboard/app.py` (Versão correta com Log Robot integrado).
 - **Bot**: Rodando via `start_bot.py` com correção de encoding UTF-8.
 - **Killfeed**: Corrigido em `monitor_logs.py` para gravar na tabela `deaths_log` (Dashboard agora mostra as mortes).
+- **Regras**: Nova página `/regras` com design "FBI Dossier" implementada.
 - **Banco de Dados**: Tabelas `shop_orders`, `clans` verificadas e íntegras.
 
 ### ⚠️ Pontos de Atenção
