@@ -112,11 +112,11 @@ class DayZLogParser:
 
         # Regex Patterns
         p_conn = r'Player "([^"]+)".*id=([0-9]+).*ip=([0-9.]+):(\d+)'
-        p_kill_adm = r"PlayerKill: Killer=\"(?P<killer>[^\"]+)\".*Victim=\"(?P<victim>[^\"]+)\".*Pos=<(?P<x>[-0-9.]+),.*,\s*(?P<z>[-0-9.]+)>, Weapon=(?P<weapon>[^,]+), Distance=(?P<dist>\d+)"
-        p_kill_rpt = r"Kill: (?P<killer>[^\"]+) killed (?P<victim>[^\"]+) at \[(?P<x>[-0-9.]+),.*,\s*(?P<z>[-0-9.]+)\] with (?P<weapon>[^\(]+) \(?(?P<dist>\d+)?m?"
+        p_kill_adm = r"PlayerKill: Killer=\"(?P<killer>[^\"]+)\".*Victim=\"(?P<victim>[^\"]+)\".*Pos=<(?P<x>[-0-9.]+),\s*(?P<y>[-0-9.]+),\s*(?P<z>[-0-9.]+)>, Weapon=(?P<weapon>[^,]+), Distance=(?P<dist>\d+)"
+        p_kill_rpt = r"Kill: (?P<killer>[^\"]+) killed (?P<victim>[^\"]+) at \[(?P<x>[-0-9.]+),\s*(?P<y>[-0-9.]+),\s*(?P<z>[-0-9.]+)\] with (?P<weapon>[^\(]+) \(?(?P<dist>\d+)?m?"
         p_zombie = r'Player "([^"]+)".*killed\s+(Zombie|Infected)'
-        p_placement = r'Player "(?P<player>[^"]+)" .* pos=<(?P<x>[-0-9.]+),.*,\s*(?P<z>[-0-9.]+)>.*placed (?P<item>.+)'
-        p_build = r'Player "(?P<player>[^"]+)" .* pos=<(?P<x>[-0-9.]+),.*,\s*(?P<z>[-0-9.]+)>.*(?P<action>built|dismantled) (?P<item>.+) with (?P<tool>.+)'
+        p_placement = r'Player "(?P<player>[^"]+)" .* pos=<(?P<x>[-0-9.]+),\s*(?P<y>[-0-9.]+),\s*(?P<z>[-0-9.]+)>.*placed (?P<item>.+)'
+        p_build = r'Player "(?P<player>[^"]+)" .* pos=<(?P<x>[-0-9.]+),\s*(?P<y>[-0-9.]+),\s*(?P<z>[-0-9.]+)>.*(?P<action>built|dismantled) (?P<item>.+) with (?P<tool>.+)'
 
         try:
             with open(log_file, "r", encoding="utf-8", errors="ignore") as f:
@@ -133,7 +133,11 @@ class DayZLogParser:
                                 "victim": m.group("victim").strip(),
                                 "weapon": m.group("weapon").strip(),
                                 "distance": float(m.group("dist") or 0),
-                                "pos": (float(m.group("x")), float(m.group("z"))),
+                                "pos": (
+                                    float(m.group("x")),
+                                    float(m.group("y")),
+                                    float(m.group("z")),
+                                ),
                                 "timestamp": ts,
                             }
                         )
@@ -175,7 +179,11 @@ class DayZLogParser:
                                 "action": m.group("action").strip(),
                                 "item": m.group("item").strip(),
                                 "tool": m.group("tool").strip(),
-                                "pos": (float(m.group("x")), float(m.group("z"))),
+                                "pos": (
+                                    float(m.group("x")),
+                                    float(m.group("y")),
+                                    float(m.group("z")),
+                                ),
                                 "timestamp": ts,
                             }
                         )
@@ -189,7 +197,11 @@ class DayZLogParser:
                                 "type": "placement",
                                 "player": m.group("player").strip(),
                                 "item": m.group("item").strip(),
-                                "pos": (float(m.group("x")), float(m.group("z"))),
+                                "pos": (
+                                    float(m.group("x")),
+                                    float(m.group("y")),
+                                    float(m.group("z")),
+                                ),
                                 "timestamp": ts,
                             }
                         )

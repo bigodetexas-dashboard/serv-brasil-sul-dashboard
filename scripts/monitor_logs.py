@@ -29,6 +29,21 @@ DB_PATH = os.path.join(project_root, "bigode_unified.db")
 
 # Rastreador de spam de construção
 spam_tracker = {}  # {player_name: [timestamps]}
+# Rastreador de logins (Anti-Dupe)
+login_tracker = {}  # {player_name: [timestamps]}
+
+# 🏙️ ZONAS URBANAS (SECURITY 3.0)
+# Se estiver aqui, o teto é baixo (120m). Se fora, é alto (700m - Montanhas).
+CITY_ZONES = {
+    "Chernogorsk": {"center": (6600, 2600), "radius": 1500},
+    "Elektrozavodsk": {"center": (10400, 2300), "radius": 1500},
+    "Berezino": {"center": (12900, 9500), "radius": 2000},
+    "Zelenogorsk": {"center": (2700, 5200), "radius": 1000},
+    "Severograd": {"center": (8400, 12700), "radius": 1000},
+    "Novodmitrovsk": {"center": (11500, 14500), "radius": 1500},
+    "Vybor/NWAF": {"center": (4500, 10000), "radius": 2000},  # Base Militar
+    "Svetloyarsk": {"center": (13900, 13400), "radius": 1000},
+}
 
 
 # ==================== FUNÇÕES DE PROTEÇÃO ====================
@@ -72,6 +87,55 @@ def check_spam(player_name, item_name):
     if len(spam_tracker[player_name]) > 10:
         return True
     return False
+
+
+def check_duplication(player_name):
+    """Verifica se o jogador está relogando rapido demais (Duplication)."""
+    now = time.time()
+    if player_name not in login_tracker:
+        login_tracker[player_name] = []
+
+    # Limpa timestamps antigos (150 segundos = 2.5 min)
+    login_tracker[player_name] = [
+        t for t in login_tracker[player_name] if now - t < 150
+    ]
+
+    # Adiciona atual
+    login_tracker[player_name].append(now)
+
+    # Limite: 4 logins em 2.5 minutos
+    if len(login_tracker[player_name]) >= 4:
+        return True
+    return False
+
+
+def check_height_limit(x, z, y):
+    """
+    Verifica altura com contexto (Cidade vs Floresta).
+    Retorna (Allowed: bool, Reason: str)
+    """
+    # 1. Hard Cap Global (Anti-Avião/Heli Glitch)
+    if y > 700:
+        return False, f"Global Hard Cap ({y:.1f}m > 700m)"
+
+    # 2. Contexto Urbano
+    for city_name, data in CITY_ZONES.items():
+        cx, cz = data["center"]
+        radius = data["radius"]
+
+        # Distância até o centro da cidade
+        dist = math.sqrt((x - cx) ** 2 + (z - cz) ** 2)
+
+        if dist <= radius:
+            # Está na Cidade - Limite Estrito (120m)
+            # Cobre Prédios (50m) e Guindastes (70m) com folga.
+            if y > 120:
+                return False, f"City Glitch em {city_name} ({y:.1f}m > 120m)"
+            return True, "City Safe"
+
+    # 3. Zona Rural/Montanha
+    # Permitido até 700m (Global Cap)
+    return True, "Wilderness OK"
 
 
 def check_construction(x, z, y, player_name, item_name, conn):
@@ -333,6 +397,14 @@ def sync_logs():
                         "INSERT OR IGNORE INTO player_identities (gamertag, nitrado_id, last_ip, last_seen) VALUES (?, ?, ?, datetime('now'))",
                         (gt, pid, ip),
                     )
+
+                # 🛡️ PROTEÇÃO ATIVA: Anti-Dupe
+                if check_duplication(gt):
+                    print(
+                        f"🚫 [ANTI-DUPE] {gt} relogou rápido demais (Possível Duplicação)!"
+                    )
+                    ban_player(gt, "Tentativa de Duplicação (Fast Relog)")
+
                 stats["conn"] += 1
 
             # B. PROCESSAMENTO DE PVP (Kills e Recompensas)
@@ -344,13 +416,22 @@ def sync_logs():
                 )
                 dist, pos = event["distance"], event["pos"]
 
+                # 🛡️ PROTEÇÃO ATIVA: Anti-SkyWalk (Inteligente)
+                # pos é (x, y, z) agora
+                if len(pos) >= 3:
+                    x, y, z = pos[0], pos[1], pos[2]
+                    allowed, reason = check_height_limit(x, z, y)
+
+                    if not allowed:
+                        print(f"🚫 [SKY-KILL] {killer} detectado: {reason}")
+                        ban_player(killer, reason)
+
                 # 1. Registrar na tabela 'events' para o Heatmap
                 cur.execute(
                     """
                     INSERT INTO events (event_type, killer_name, victim_name, weapon, distance, game_x, game_z, timestamp)
-                    VALUES ('kill', ?, ?, ?, ?, ?, ?, ?)
                 """,
-                    (killer, victim, weapon, dist, pos[0], pos[1], event["timestamp"]),
+                    (killer, victim, weapon, dist, pos[0], pos[2], event["timestamp"]),
                 )
 
                 # 1.1 Registrar na tabela 'deaths_log' (Visualizada no Dashboard)
@@ -367,7 +448,7 @@ def sync_logs():
                             weapon,
                             dist,
                             pos[0],
-                            pos[1],
+                            pos[2],
                             event["timestamp"],
                         ),
                     )
@@ -419,8 +500,12 @@ def sync_logs():
                 action = event.get("action", "placed")
                 tool = event.get("tool", "none")
 
-                # Extrai coordenadas (x, y, z)
-                x, y, z = pos[0], pos[2] if len(pos) > 2 else 0, pos[1]
+                # Extrai coordenadas (x, y, z) do parser atualizado (x, y, z)
+                x, y, z = (
+                    pos[0],
+                    pos[1] if len(pos) > 2 else 0,
+                    pos[2] if len(pos) > 2 else 0,
+                )
 
                 # 🛡️ PROTEÇÃO ATIVA: Verifica SPAM
                 if check_spam(player, item):
@@ -442,6 +527,7 @@ def sync_logs():
                         print(
                             f"🚫 [BANIMENTO] {player} tentou construir Sky Base (y={y}m)!"
                         )
+                        # Sky Base é construção. Sky Walk seria movimento, mas se construir lá em cima também pega.
                         ban_player(player, f"Sky Base Detectada (Altura: {y}m)")
 
                     elif reason == "UndergroundBase":
@@ -482,7 +568,7 @@ def sync_logs():
                         item,
                         tool if tool != "none" else action,
                         pos[0],
-                        pos[1],
+                        pos[2],  # Z agora é indice 2
                         event["timestamp"],
                     ),
                 )
