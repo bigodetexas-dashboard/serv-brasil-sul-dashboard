@@ -352,6 +352,28 @@ def sync_logs():
                 """,
                     (killer, victim, weapon, dist, pos[0], pos[1], event["timestamp"]),
                 )
+
+                # 1.1 Registrar na tabela 'deaths_log' (Visualizada no Dashboard)
+                try:
+                    cur.execute(
+                        """
+                        INSERT INTO deaths_log
+                        (killer_gamertag, victim_gamertag, death_type, death_cause, weapon, distance, coord_x, coord_z, occurred_at)
+                        VALUES (?, ?, 'pvp', 'weapon', ?, ?, ?, ?, ?)
+                        """,
+                        (
+                            killer,
+                            victim,
+                            weapon,
+                            dist,
+                            pos[0],
+                            pos[1],
+                            event["timestamp"],
+                        ),
+                    )
+                except Exception as e:
+                    print(f"⚠️ [AVISO] Falha ao gravar no deaths_log: {e}")
+
                 stats["pvp"] += 1
 
                 # 2. CREDITAR RECOMPENSA (150 DZCoins)

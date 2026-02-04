@@ -40,6 +40,7 @@ taskkill /F /IM python.exe /T
 - **Gerenciamento de Processos**: Limpeza de 12 processos zumbis realizada.
 - **Dashboard**: Migrado para `new_dashboard/app.py` (Versão correta com Log Robot integrado).
 - **Bot**: Rodando via `start_bot.py` com correção de encoding UTF-8.
+- **Killfeed**: Corrigido em `monitor_logs.py` para gravar na tabela `deaths_log` (Dashboard agora mostra as mortes).
 - **Banco de Dados**: Tabelas `shop_orders`, `clans` verificadas e íntegras.
 
 ### ⚠️ Pontos de Atenção
