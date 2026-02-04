@@ -137,7 +137,7 @@ function showToast(message, type = 'success', title = '') {
 
 // ==================== API HELPER ====================
 async function fetchAPI(endpoint, options = {}) {
-    const baseUrl = '/api/';
+    const baseUrl = options.baseUrl || '/api/';
 
     // Add CSRF Token if available
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');

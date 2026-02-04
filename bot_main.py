@@ -139,13 +139,15 @@ bot.footer_icon = FOOTER_ICON
 
 
 async def load_extensions():
-    for filename in os.listdir("./cogs"):
+    # Usar caminho absoluto para a pasta cogs
+    cogs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cogs")
+    for filename in os.listdir(cogs_dir):
         if filename.endswith(".py") and not filename.startswith("__"):
             try:
                 await bot.load_extension(f"cogs.{filename[:-3]}")
-                print(f"  ✅ Módulo carregado: {filename}")
+                print(f"  [OK] Modulo carregado: {filename}")
             except Exception as e:
-                print(f"  ❌ Erro ao carregar {filename}: {e}")
+                print(f"  [ERROR] Erro ao carregar {filename}: {e}")
 
 
 # Substituir o antigo load_extensions
@@ -1823,4 +1825,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n[ERRO CRITICO] O bot falhou ao iniciar: {e}")
         print("Verifique se o TOKEN esta correto e se a internet esta funcionando.")
-        input("Pressione ENTER para fechar...")
+        # input("Pressione ENTER para fechar...")
+        pass

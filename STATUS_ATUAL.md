@@ -1,142 +1,75 @@
 # 🚀 BigodeTexas Dashboard - Status e Próximos Passos
 
-**Última Atualização:** 01/02/2026 17:40
-**Status:** ✅ Sistema 100% Funcional Localmente
+**Última Atualização:** 03/02/2026 20:30
+**Status:** ✅ Sistema 100% Funcional (Recuperado de Travamentos)
 
 ---
 
-## ⚡ Início Rápido
+## ⚡ Início Rápido (Recuperação)
 
-### Rodar o Dashboard Localmente
+Em caso de novos travamentos, use este comando para limpar processos fantasmas:
 
 ```bash
-cd "d:\dayz xbox\BigodeBot"
-python dashboard_with_oauth.py
+taskkill /F /IM python.exe /T
 ```
 
-### Sincronizar Itens da Loja
+### Rodar o Sistema (Processos Corretos)
 
-```bash
-python scripts\sync_items.py
-```
+1. **Dashboard + Log Robot**:
 
-### Testar Repositórios
+   ```bash
+   cd "d:\dayz xbox\BigodeBot"
+   python new_dashboard/app.py
+   # Roda na porta 5001
+   ```
 
-```bash
-python test_items_quick.py
-```
+2. **Bot do Discord**:
 
----
-
-## 📊 Status Atual
-
-### ✅ Implementado e Funcionando
-
-- **Dashboard Gold Elite** (`new_dashboard/`)
-- **24 Repositórios** (PlayerRepository, ItemRepository, etc.)
-- **Texano AI** (22 funções admin)
-- **Detector de Alts** (IP + Hardware ID)
-- **Robô de Logs** (`monitor_logs.py`)
-- **Sistema de Loja** (150 itens em 13 categorias)
-- **Economia Unificada** (Multi-conta)
-
-### ⚠️ Pendente (Deploy)
-
-- [ ] Configurar variáveis no Render
-- [ ] Remover modo DEV
-- [ ] Migrar banco para Supabase (produção)
-- [ ] Testes de campo
+   ```bash
+   # Em outro terminal:
+   $env:PYTHONIOENCODING="utf-8"; python start_bot.py
+   # Roda na porta 3000
+   ```
 
 ---
 
-## 🔧 Correções Recentes (01/02/2026)
+## 📊 Status Atual (Pós-Crise)
 
-### ItemRepository - CORRIGIDO ✅
+### ✅ Recuperado e Estável
 
-**Problema:** `KeyError: 0` ao carregar itens
-**Solução:**
+- **Gerenciamento de Processos**: Limpeza de 12 processos zumbis realizada.
+- **Dashboard**: Migrado para `new_dashboard/app.py` (Versão correta com Log Robot integrado).
+- **Bot**: Rodando via `start_bot.py` com correção de encoding UTF-8.
+- **Banco de Dados**: Tabelas `shop_orders`, `clans` verificadas e íntegras.
 
-- Corrigidos métodos `_row_to_dict` e `get_all_categories`
-- Criada tabela `shop_items` em ambos os bancos
-- Sincronizados 148 itens do `items.json`
+### ⚠️ Pontos de Atenção
 
-**Resultado:** 150 itens carregados com sucesso
-
----
-
-## 📁 Arquivos Importantes
-
-### Repositórios
-
-- `repositories/player_repository.py` - 44 métodos
-- `repositories/item_repository.py` - ✅ CORRIGIDO
-- `repositories/base_repository.py` - Base para todos
-
-### Scripts
-
-- `scripts/sync_items.py` - Sincronização de itens
-- `scripts/monitor_logs.py` - Robô autônomo
-- `scripts/check_shop_table.py` - Verificação DB
-
-### Admin
-
-- `new_dashboard/admin_routes.py` - 22 funções
-- `new_dashboard/templates/admin.html` - Interface
-
-### Dados
-
-- `items.json` - 148 itens em 13 categorias
-- `bigode_unified.db` - Banco raiz (150 itens)
-- `new_dashboard/bigode_unified.db` - Banco dashboard (148 itens)
+- **Disco C:**: Espaço livre crítico (< 8GB). Monitorar.
+- **Memória**: Estável após limpeza. Evitar abrir múltiplos terminais desnecessários.
 
 ---
 
-## 🎯 Próximos Passos
+## 📁 Arquivos Críticos de Execução
 
-### 1. Deploy no Render
-
-```bash
-# Variáveis necessárias:
-NITRADO_TOKEN=...
-FTP_PASS=...
-ADMIN_DISCORD_IDS=...
-DISCORD_CLIENT_ID=...
-```
-
-### 2. Testes de Produção
-
-- Validar fluxo de compra
-- Testar sistema multi-conta
-- Verificar Texano AI
-- Testar detector de Alts
-
-### 3. Melhorias Futuras
-
-- Webhooks Discord
-- Logs em tempo real (WebSocket)
-- Dashboard de Clãs avançado
-- Sistema de empréstimos
+- `new_dashboard/app.py`: **Entry Point do Dashboard** (Contém a thread do Robô de Logs).
+- `start_bot.py`: **Entry Point do Bot** (Lança o `bot_main.py` em loop).
+- `task.md`: Checklist desta sessão de recuperação.
+- `walkthrough.md`: Relatório completo da recuperação.
 
 ---
 
-## 📚 Documentação Completa
+## 🎯 Próximos Passos (Retomada)
 
-Consulte os seguintes arquivos para mais detalhes:
+### 1. Manter Estabilidade
 
-1. **`HANDOVER_FINAL.md`** - Documento completo de handover
-2. **`RELATORIO_CONSOLIDADO_30JAN_01FEV.md`** - Análise de trabalhos anteriores
-3. **`walkthrough.md`** - Correções do ItemRepository
-4. **`task.md`** - Checklist de tarefas
+- Não fechar os terminais abruptamente. Use `CTRL+C` uma vez.
+- Se o bot travar, verificar se o processo antigo morreu antes de iniciar outro.
 
----
+### 2. Retomar Desenvolvimento
 
-## 🆘 Problemas Conhecidos
-
-### Nenhum problema crítico no momento! ✅
-
-Sistema está estável e pronto para deploy.
+- Voltar ao plano original de migração ou feature nova, agora que o ambiente está limpo.
 
 ---
 
-**Última Sessão:** 01/02/2026 17h11-17h40 (30 min)
-**Próximo Marco:** Deploy no Render 🚀
+**Última Sessão:** 03/02/2026 (Recuperação de Crise)
+**Responsável:** Antigravity AI

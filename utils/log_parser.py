@@ -54,10 +54,13 @@ class DayZLogParser:
             ftp.connect(self.ftp_host, self.ftp_port, timeout=30)
             ftp.login(self.ftp_user, self.ftp_pass)
 
-            # Os logs do Xbox costumam estar na pasta 'profile'
+            # Os logs do Xbox costumam estar na pasta 'profile' ou 'missions'
             target_dirs = [
+                "profile",
                 "dayzxb/profile",
                 "dayzxb_missions/dayzOffline.chernarusplus",
+                "missions/dayzOffline.chernarusplus",
+                "config",
                 "",
             ]
 

@@ -19,8 +19,8 @@ if project_root not in sys.path:
 
 from utils.log_parser import DayZLogParser
 from utils.ftp_helpers import connect_ftp
-from utils.heartbeat import send_heartbeat
-from utils.sync_manager import SyncManager
+# from utils.heartbeat import send_heartbeat  # Opcional - comentado temporariamente
+# from utils.sync_manager import SyncManager  # Opcional - comentado temporariamente
 
 load_dotenv()
 
@@ -279,13 +279,13 @@ def sync_logs():
 
     try:
         # 🔄 FAILOVER: Envia heartbeat para indicar que está vivo
-        send_heartbeat("primary")
+        # send_heartbeat("primary")  # Comentado temporariamente
 
         # 🔄 FAILOVER: Verifica se há eventos do backup para sincronizar
-        sync_mgr = SyncManager()
-        if sync_mgr.has_pending_sync():
-            print("[SYNC] Eventos pendentes detectados! Sincronizando...")
-            sync_mgr.process_backup_events()
+        # sync_mgr = SyncManager()  # Comentado temporariamente
+        # if sync_mgr.has_pending_sync():
+        #     print("[SYNC] Eventos pendentes detectados! Sincronizando...")
+        #     sync_mgr.process_backup_events()
 
         parser = DayZLogParser()
         local_log = "monitor_server_logs.txt"

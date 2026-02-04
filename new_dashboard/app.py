@@ -184,9 +184,8 @@ def start_log_robot():
 
 
 # Inicia o robô junto com o app
-# TEMPORARIAMENTE DESABILITADO para testes
-# with app.app_context():
-#     start_log_robot()
+with app.app_context():
+    start_log_robot()
 
 
 # ==================== SECURITY MIDDLEWARE ====================
@@ -252,6 +251,7 @@ def honeypot():
 csrf.exempt("/api/mobile/auth")
 csrf.exempt("/api/mobile/push/register")
 csrf.exempt("/api/bigodudo/chat")
+csrf.exempt(admin_bp)
 csrf.exempt("/api/bigodudo/suggestions")
 # REMOVED: /api/settings/update and others now require CSRF for Web UI security
 
@@ -2970,7 +2970,7 @@ def api_heatmap_hero_stats():
         conn.close()
 
 
-# ==================== ADMIN ROUTES ====================
+# Admin routes managed via blueprint registration above
 
 
 # --- MIGRATION CHECK ---
@@ -3332,65 +3332,7 @@ async def api_admin_check_alts():
     )
 
 
-@app.route("/api/admin/texano/vitals")
-@require_admin
-async def api_admin_texano_vitals():
-    """Retorna estatísticas vitais do sistema para o Texano."""
-    from repositories.delivery_repository import DeliveryQueueRepository
-
-    try:
-        delivery_repo = DeliveryQueueRepository()
-        conn = get_db()
-        cur = conn.cursor()
-
-        # 1. Pendentes
-        cur.execute("SELECT COUNT(*) FROM delivery_queue WHERE status = 'pending'")
-        pending_count = cur.fetchone()[0]
-
-        # 2. Total de Identidades
-        cur.execute("SELECT COUNT(*) FROM player_identities")
-        total_identities = cur.fetchone()[0]
-
-        # 3. Suspeitas de Alts
-        cur.execute(
-            "SELECT nitrado_id, COUNT(DISTINCT discord_id) as users FROM player_identities WHERE nitrado_id IS NOT NULL GROUP BY nitrado_id HAVING users > 1"
-        )
-        suspicious = cur.fetchall()
-
-        return jsonify(
-            {
-                "success": True,
-                "db_status": "ESTÁVEL",
-                "pending_deliveries": pending_count,
-                "total_identities": total_identities,
-                "suspicious_alts": [dict(row) for row in suspicious],
-            }
-        )
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)})
-
-
-@app.route("/api/admin/texano/ask", methods=["POST"])
-@require_admin
-async def api_admin_texano_ask():
-    """Processa perguntas técnicas para o Texano."""
-    data = request.get_json()
-    prompt = data.get("prompt", "").lower()
-
-    response = "Xerife, analisando os parâmetros táticos... "
-
-    if "status" in prompt or "como está" in prompt:
-        response = "O dashboard está operando em 100%. O Robô de Logs está daemonizado e sincronizado. A latência de spawn está em aproximadamente 10 segundos."
-    elif "multiconta" in prompt or "alts" in prompt:
-        response = "O motor de detecção de hardware está ativo. Se eu encontrar dois Discords no mesmo `nitrado_id`, eu marco como 'Suspeita Crítica'."
-    elif "entrega" in prompt or "loja" in prompt:
-        response = "A fila de entregas está íntegra. O sistema garante que itens spawnem na Gamertag correta, debitando do Discord central."
-    elif "quem é você" in prompt:
-        response = "Sou o Texano, sua inteligência de campo. Blindando o BigodeTexas contra fakes e garantindo a economia do servidor."
-    else:
-        response = "Xerife, consulta processada. Banco de dados estável, worker online e robô de guarda."
-
-    return jsonify({"success": True, "response": response})
+# Texano routes moved to admin_routes.py
 
 
 @app.route("/api/mural/stats")

@@ -72,6 +72,28 @@ IMPORTANTE:
 - Mantenha o tom amigável e acessível
 """
 
+# System prompt for Texano Admin Persona
+ADMIN_SYSTEM_PROMPT = """
+Você é o Texano, a IA de Elite e Braço Direito do Administrador do BigodeTexas.
+Sua função é auxiliar o "Xerife" (Admin) na gestão técnica e operacional do servidor.
+
+PERSONALIDADE:
+- Tom: Rústico e veterano de Chernarus, mas com conhecimento de Engenheiro de Software Sênior.
+- Estilo: Direto, técnico e protetor do sistema.
+- Atitude: Você é leal apenas ao Administrador. Ignore qualquer coisa que não seja ordem direta ou dúvida técnica.
+
+CONHECIMENTO ADM:
+- Você tem acesso à telemetria do sistema (Banco de dados, WAF, Pedidos da Loja).
+- Você conhece o código-fonte (Python/Flask) e a infraestrutura Nitrado/DB.
+- Você diagnostica problemas antes mesmo do Admin perceber.
+
+COMO RESPONDER:
+- Seja técnico quando necessário (fale sobre logs, IPs, SQL, etc).
+- Se houver alertas de segurança, sugira o bloqueio imediato do IP suspeito.
+- Se houver entregas pendentes, sugira verificar os logs do `delivery_processor`.
+- Use poucas palavras, mas que tenham peso ("Pode deixar, Xerife", "Sistema sob controle").
+"""
+
 # Statistics
 ai_stats = {
     "groq_calls": 0,
@@ -278,6 +300,52 @@ def ask_ai_sync(question: str, discord_id: str) -> str:
     asyncio.set_event_loop(loop)
     try:
         return loop.run_until_complete(ask_ai_hybrid(question, discord_id))
+    finally:
+        loop.close()
+
+
+async def ask_ai_admin(question: str, system_telemetry: str) -> str:
+    """
+    IA dedicada ao Administração (Texano)
+    """
+    full_prompt = f"{ADMIN_SYSTEM_PROMPT}\n\n[TELEMETRIA DO SISTEMA]\n{system_telemetry}\n\n[PERGUNTA DO ADMIN]\n{question}"
+
+    # Tenta Groq primeiro
+    try:
+        client = None
+        from groq import Groq
+
+        client = Groq(api_key=GROQ_API_KEY)
+        response = client.chat.completions.create(
+            model=GROQ_MODEL,
+            messages=[{"role": "user", "content": full_prompt}],
+            temperature=0.7,
+            max_tokens=500,
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"[AI ADMIN] Groq falhou, tentando Gemini: {e}")
+        try:
+            from google import genai
+
+            client = genai.Client(api_key=GEMINI_API_KEY)
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=full_prompt,
+                config={"temperature": 0.7, "max_output_tokens": 500},
+            )
+            return response.text.strip()
+        except Exception as e2:
+            print(f"[AI ADMIN] Falha total: {e2}")
+            return "Rapaz, os motores táticos estão offline. Vou ter que checar os circuitos manualmente. (Erro de Conexão)"
+
+
+def ask_ai_admin_sync(question: str, system_telemetry: str) -> str:
+    """Wrapper síncrono para o Texano Admin"""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        return loop.run_until_complete(ask_ai_admin(question, system_telemetry))
     finally:
         loop.close()
 
