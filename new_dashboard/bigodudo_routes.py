@@ -28,25 +28,25 @@ def chat():
     """
     if "discord_user_id" not in session:
         return jsonify(
-            {"error": "Você precisa estar logado para falar com o Bigodudo!"}
+            {"error": "VocÃª precisa estar logado para falar com o Bigodudo!"}
         ), 401
 
     data = request.get_json()
     if not data:
-        return jsonify({"error": "Payload inválido!"}), 400
+        return jsonify({"error": "Payload invÃ¡lido!"}), 400
 
     pergunta = data.get("message", "").strip()
 
     if not pergunta:
         return jsonify(
-            {"error": "Rapaz, você não perguntou nada! Escreve alguma coisa aí."}
+            {"error": "Rapaz, vocÃª nÃ£o perguntou nada! Escreve alguma coisa aÃ­."}
         ), 400
 
     try:
         discord_id = str(session["discord_user_id"])
 
-        # Chamar IA Híbrida (Groq + Gemini fallback)
-        # Usar o wrapper síncrono que já gerencia o loop
+        # Chamar IA HÃ­brida (Groq + Gemini fallback)
+        # Usar o wrapper sÃ­ncrono que jÃ¡ gerencia o loop
         from ai_integration import ask_ai_sync
 
         resposta = ask_ai_sync(pergunta, discord_id)
@@ -67,14 +67,14 @@ def chat():
 
 @bigodudo_bp.route("/api/bigodudo/suggestions", methods=["GET"])
 def suggestions():
-    """Retorna sugestões de perguntas baseadas no estado do jogador"""
+    """Retorna sugestÃµes de perguntas baseadas no estado do jogador"""
     return jsonify(
         {
             "suggestions": [
                 "Quem me matou?",
                 "Quanto eu tenho de coins?",
                 "Onde fica NWAF?",
-                "Como ganho coins rápido?",
+                "Como ganho coins rÃ¡pido?",
                 "Qual meu K/D?",
             ]
         }

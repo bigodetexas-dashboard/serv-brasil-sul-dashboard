@@ -96,7 +96,7 @@ class AchievementsEngine:
                     "achievement",
                     icon,
                     "Conquista Desbloqueada!",
-                    f"Você desbloqueou: {name}",
+                    f"VocÃª desbloqueou: {name}",
                     {"key": achievement_key},
                 )
 
@@ -136,8 +136,8 @@ class AchievementsEngine:
         AchievementsEngine.log_activity(
             killer_id,
             "kill",
-            "⚔️",
-            "Eliminação Confirmada",
+            "âš”ï¸",
+            "EliminaÃ§Ã£o Confirmada",
             f"Eliminou um jogador a {distance}m",
             {"weapon": weapon, "distance": distance, "victim": victim_id},
         )

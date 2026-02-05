@@ -29,7 +29,7 @@ def _save_guid_to_cache(gamertag, xbox_guid):
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
 
-        # Verifica se já existe
+        # Verifica se jÃ¡ existe
         cursor.execute(
             "SELECT first_seen FROM player_guid_cache WHERE gamertag = ? COLLATE NOCASE",
             (gamertag,),
@@ -37,7 +37,7 @@ def _save_guid_to_cache(gamertag, xbox_guid):
         existing = cursor.fetchone()
 
         if existing:
-            # Atualiza last_seen e GUID (caso tenha mudado, improvável mas possível)
+            # Atualiza last_seen e GUID (caso tenha mudado, improvÃ¡vel mas possÃ­vel)
             cursor.execute(
                 """UPDATE player_guid_cache
                    SET xbox_guid = ?, last_seen = CURRENT_TIMESTAMP
@@ -81,7 +81,7 @@ def get_guid_from_cache(gamertag):
 async def get_players_from_logs(min_target=0):
     """
     Analisa os arquivos de log .ADM recentes via FTP para determinar os jogadores online.
-    Scaneia até 3 arquivos (mais recentes) para encontrar jogadores que conectaram há muito tempo.
+    Scaneia atÃ© 3 arquivos (mais recentes) para encontrar jogadores que conectaram hÃ¡ muito tempo.
     """
     ftp = None
     try:
@@ -115,11 +115,11 @@ async def get_players_from_logs(min_target=0):
         # Ordenar por nome (mais recente primeiro)
         adm_files.sort(reverse=True)
 
-        # Limita a busca (safety cap 15) mas só para se atingir a meta
+        # Limita a busca (safety cap 15) mas sÃ³ para se atingir a meta
         files_to_check = adm_files[:15]
 
         online_players = {}  # Map: name -> {'name': name, 'id': id}
-        seen_players = set()  # Rastreia quem já vimos (seja connect ou disconnect)
+        seen_players = set()  # Rastreia quem jÃ¡ vimos (seja connect ou disconnect)
 
         # Regex robusta para Xbox: Captura o nome limpo (sem DEAD) e o ID (Hex)
         # Ex: Player "Grafftking"(id=F250...) ou Player "Name" (DEAD) (id=...)
@@ -128,8 +128,8 @@ async def get_players_from_logs(min_target=0):
         print(f"[FTP] Buscando players em {len(files_to_check)} arquivos (Met: {min_target})...")
 
         for filename in files_to_check:
-            # Se já achamos gente suficiente, paramos (otimização)
-            # Mas só se min_target for definido e alcançado
+            # Se jÃ¡ achamos gente suficiente, paramos (otimizaÃ§Ã£o)
+            # Mas sÃ³ se min_target for definido e alcanÃ§ado
             if min_target > 0 and len(online_players) >= min_target:
                 break
 
@@ -143,7 +143,7 @@ async def get_players_from_logs(min_target=0):
             content = bio.getvalue().decode("utf-8", errors="ignore")
             lines = content.splitlines()
 
-            # Processar as linhas de TRÁS PARA FRENTE (do mais recente para o antigo)
+            # Processar as linhas de TRÃS PARA FRENTE (do mais recente para o antigo)
             for line in reversed(lines):
                 if not line.strip():
                     continue
@@ -153,13 +153,13 @@ async def get_players_from_logs(min_target=0):
                     p_name = m.group(1)
                     p_id = m.group(2)
 
-                    # Se já vimos o estado mais recente deste player (neste ou em arquivos futuros/mais novos), ignoramos
+                    # Se jÃ¡ vimos o estado mais recente deste player (neste ou em arquivos futuros/mais novos), ignoramos
                     if p_name in seen_players:
                         continue
 
                     seen_players.add(p_name)
 
-                    # Se o evento mais recente for desconexão, ele está OFF
+                    # Se o evento mais recente for desconexÃ£o, ele estÃ¡ OFF
                     if "disconnected" in line.lower():
                         continue
 
@@ -168,7 +168,7 @@ async def get_players_from_logs(min_target=0):
                     p_ip = ip_match.group(1) if ip_match else None
                     p_port = int(ip_match.group(2)) if ip_match else None
 
-                    # Se o evento mais recente for qualquer outro (pos, connect, list dump), ele está ON
+                    # Se o evento mais recente for qualquer outro (pos, connect, list dump), ele estÃ¡ ON
                     online_players[p_name] = {
                         "name": p_name,
                         "id": p_id,
@@ -184,10 +184,10 @@ async def get_players_from_logs(min_target=0):
             if player_data.get("id"):
                 _save_guid_to_cache(player_data["name"], player_data["id"])
 
-        # Enriquece com geolocalização (busca IP do banco de dados)
+        # Enriquece com geolocalizaÃ§Ã£o (busca IP do banco de dados)
         enriched_players = await _enrich_with_geolocation(list(online_players.values()))
 
-        # Retorna lista de dicionários
+        # Retorna lista de dicionÃ¡rios
         return sorted(enriched_players, key=lambda x: x["name"])
 
     except Exception as e:
@@ -205,7 +205,7 @@ async def get_players_from_logs(min_target=0):
 
 
 def read_remote_file(path):
-    """Lê um arquivo do servidor FTP com tratamento de erro aprimorado."""
+    """LÃª um arquivo do servidor FTP com tratamento de erro aprimorado."""
     ftp = None
     try:
         ftp = get_ftp_connection()
@@ -225,8 +225,8 @@ def read_remote_file(path):
 
 async def _enrich_with_geolocation(players):
     """
-    Enriquece a lista de jogadores com informações de geolocalização.
-    Busca o IP do banco de dados (player_identities) e adiciona localização.
+    Enriquece a lista de jogadores com informaÃ§Ãµes de geolocalizaÃ§Ã£o.
+    Busca o IP do banco de dados (player_identities) e adiciona localizaÃ§Ã£o.
     """
     try:
         conn = sqlite3.connect("bigode_unified.db")
@@ -240,7 +240,7 @@ async def _enrich_with_geolocation(players):
             # Prioridade 1: IP que veio dos logs (mais recente)
             ip = player.get("ip")
 
-            # Prioridade 2: Busca IP do jogador no banco se não veio dos logs
+            # Prioridade 2: Busca IP do jogador no banco se nÃ£o veio dos logs
             if not ip:
                 cursor.execute(
                     "SELECT last_ip FROM player_identities WHERE gamertag = ? COLLATE NOCASE",
@@ -250,7 +250,7 @@ async def _enrich_with_geolocation(players):
                 if result and result[0]:
                     ip = result[0]
 
-            # Se temos IP, busca geolocalização
+            # Se temos IP, busca geolocalizaÃ§Ã£o
             if ip:
                 location_data = await get_location_by_ip(ip)
 
@@ -268,7 +268,7 @@ async def _enrich_with_geolocation(players):
         return players
     except Exception as e:
         print(f"[GEO] Erro ao enriquecer jogadores: {e}")
-        # Retorna jogadores sem geolocalização em caso de erro
+        # Retorna jogadores sem geolocalizaÃ§Ã£o em caso de erro
         for player in players:
             if "location" not in player:
                 player["location"] = "Unknown"
@@ -278,5 +278,5 @@ async def _enrich_with_geolocation(players):
 
 
 async def get_messages_xml():
-    """Busca o conteúdo do arquivo messages.xml via FTP."""
+    """Busca o conteÃºdo do arquivo messages.xml via FTP."""
     return read_remote_file("dayzxb/config/messages.xml")

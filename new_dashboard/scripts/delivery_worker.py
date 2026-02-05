@@ -50,27 +50,27 @@ def process_delivery(delivery: dict, repo: DeliveryQueueRepository) -> bool:
         if success:
             # Mark as delivered
             repo.mark_delivered(delivery_id)
-            print(f"[WORKER] ✅ Delivery #{delivery_id} successful")
+            print(f"[WORKER] âœ… Delivery #{delivery_id} successful")
             return True
         else:
             # Mark as failed (will retry if attempts remain)
             error_msg = "FTP upload failed"
             repo.mark_failed(delivery_id, error_msg)
-            print(f"[WORKER] ❌ Delivery #{delivery_id} failed: {error_msg}")
+            print(f"[WORKER] âŒ Delivery #{delivery_id} failed: {error_msg}")
             return False
 
     except Exception as e:
         # Mark as failed with error
         error_msg = f"Exception: {str(e)}"
         repo.mark_failed(delivery_id, error_msg)
-        print(f"[WORKER] ❌ Delivery #{delivery_id} exception: {e}")
+        print(f"[WORKER] âŒ Delivery #{delivery_id} exception: {e}")
         return False
 
 
 def worker_loop():
     """Main worker loop"""
     print("=" * 60)
-    print("🚁 DELIVERY WORKER STARTED")
+    print("ðŸš DELIVERY WORKER STARTED")
     print(f"Poll Interval: {POLL_INTERVAL}s")
     print(f"Batch Size: {BATCH_SIZE}")
     print("=" * 60)
@@ -119,7 +119,7 @@ def worker_loop():
 if __name__ == "__main__":
     # Check if DATABASE_URL is set
     if not os.getenv("DATABASE_URL"):
-        print("❌ ERROR: DATABASE_URL not set in environment")
+        print("âŒ ERROR: DATABASE_URL not set in environment")
         print("This worker requires PostgreSQL to run")
         sys.exit(1)
 

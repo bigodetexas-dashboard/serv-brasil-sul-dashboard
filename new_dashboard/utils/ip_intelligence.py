@@ -131,7 +131,7 @@ class IPIntelligence:
         3. Bans the last known IP.
         4. Finds ALL alts and bans them too.
         """
-        print(f"[IP INTEL] 🚨 INITIATING BAN CASCADE FOR: {gamertag}")
+        print(f"[IP INTEL] ðŸš¨ INITIATING BAN CASCADE FOR: {gamertag}")
         conn = self._get_conn()
         cur = conn.cursor()
 
@@ -176,10 +176,10 @@ class IPIntelligence:
             alts = self.get_alts(gamertag)
             if alts:
                 print(
-                    f"[IP INTEL] ⚠️  Found {len(alts)} linked accounts (Alts). Banning them all..."
+                    f"[IP INTEL] âš ï¸  Found {len(alts)} linked accounts (Alts). Banning them all..."
                 )
                 for alt in alts:
-                    print(f"[IP INTEL] 🔨 Banning Alt: {alt}")
+                    print(f"[IP INTEL] ðŸ”¨ Banning Alt: {alt}")
                     await nitrado_ban(alt)
 
             return True, len(alts)

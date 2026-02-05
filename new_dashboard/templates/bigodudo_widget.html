@@ -3,7 +3,7 @@
     <button id="bigodudo-toggle" class="bigodudo-toggle-v2" title="Falar com o Bigodudo">
         <img src="{{ url_for('static', filename='img/destintivo.png') }}?v=4" alt="Badge" id="bigodudo-icon-img"
             onerror="this.src='{{ url_for('static', filename='img/logo_texas.png') }}'; this.onerror=null;">
-        <span class="bigodudo-fallback" style="display: none;">🥸</span>
+        <span class="bigodudo-fallback" style="display: none;">ðŸ¥¸</span>
     </button>
 
     <div id="bigodudo-chat" class="bigodudo-chat hidden">
@@ -16,17 +16,17 @@
                     <p style="margin: 2px 0 0 0; font-size: 13px; opacity: 0.9;">O sobrevivente raiz de Chernarus</p>
                 </div>
             </div>
-            <button id="bigodudo-close" class="bigodudo-close">×</button>
+            <button id="bigodudo-close" class="bigodudo-close">Ã—</button>
         </div>
 
         <div id="bigodudo-messages" class="bigodudo-messages">
             <div class="bigodudo-message bigodudo-bot">
-                <strong>Bigodudo:</strong> E aí, parceiro! Me faz uma pergunta aí!
+                <strong>Bigodudo:</strong> E aÃ­, parceiro! Me faz uma pergunta aÃ­!
             </div>
         </div>
 
         <div class="bigodudo-suggestions">
-            <p>Sugestões:</p>
+            <p>SugestÃµes:</p>
             <div id="bigodudo-suggestions-list"></div>
         </div>
 
@@ -258,7 +258,7 @@
                 .map(s => `<button class="suggestion-btn" onclick="askBigodudo('${s}')">${s}</button>`)
                 .join('');
         } catch (error) {
-            console.error('Erro ao carregar sugestões:', error);
+            console.error('Erro ao carregar sugestÃµes:', error);
         }
     }
 
@@ -304,7 +304,7 @@
             }
         } catch (error) {
             document.getElementById('typing-indicator')?.remove();
-            addMessage('Rapaz, deu ruim na conexão... Tenta de novo!', 'bot');
+            addMessage('Rapaz, deu ruim na conexÃ£o... Tenta de novo!', 'bot');
         }
     }
 
@@ -324,7 +324,7 @@
                 </div>
             `;
         } else {
-            div.innerHTML = `<strong style="color: #fff;">Você:</strong><p style="margin: 5px 0 0 0; color: #ccc;">${text}</p>`;
+            div.innerHTML = `<strong style="color: #fff;">VocÃª:</strong><p style="margin: 5px 0 0 0; color: #ccc;">${text}</p>`;
         }
 
         bigodudoMessages.appendChild(div);

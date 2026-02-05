@@ -391,10 +391,10 @@
     <div class="main-content">
         <nav class="navbar">
             <div class="navbar-container">
-                <a href="/" class="navbar-brand">🤠 BigodeTexas</a>
+                <a href="/" class="navbar-brand">ðŸ¤  BigodeTexas</a>
                 <ul class="navbar-nav">
-                    <li><a href="/" class="nav-link">Início</a></li>
-                    <li><a href="/stats" class="nav-link">Estatísticas</a></li>
+                    <li><a href="/" class="nav-link">InÃ­cio</a></li>
+                    <li><a href="/stats" class="nav-link">EstatÃ­sticas</a></li>
                     <li><a href="/leaderboard" class="nav-link">Ranking</a></li>
                     <li><a href="/shop" class="nav-link">Loja</a></li>
                     <li><a href="/heatmap" class="nav-link">Mapa de Calor</a></li>
@@ -403,25 +403,25 @@
         </nav>
 
         <div class="container">
-            <h1 class="fade-in">🛒 Loja BigodeTexas</h1>
+            <h1 class="fade-in">ðŸ›’ Loja BigodeTexas</h1>
             <p class="text-secondary fade-in">Adicione itens ao carrinho e finalize sua compra</p>
 
             <div class="category-tabs">
-                <button class="category-tab active" onclick="filterCategory('todos')" data-category="todos">🌟
+                <button class="category-tab active" onclick="filterCategory('todos')" data-category="todos">ðŸŒŸ
                     Todos</button>
-                <button class="category-tab" onclick="filterCategory('armas')" data-category="armas">🔫 Armas</button>
-                <button class="category-tab" onclick="filterCategory('municao')" data-category="municao">💥
-                    Munição</button>
-                <button class="category-tab" onclick="filterCategory('medico')" data-category="medico">🏥
-                    Médico</button>
-                <button class="category-tab" onclick="filterCategory('roupas')" data-category="roupas">👕 Roupas
+                <button class="category-tab" onclick="filterCategory('armas')" data-category="armas">ðŸ”« Armas</button>
+                <button class="category-tab" onclick="filterCategory('municao')" data-category="municao">ðŸ’¥
+                    MuniÃ§Ã£o</button>
+                <button class="category-tab" onclick="filterCategory('medico')" data-category="medico">ðŸ¥
+                    MÃ©dico</button>
+                <button class="category-tab" onclick="filterCategory('roupas')" data-category="roupas">ðŸ‘• Roupas
                     Comuns</button>
-                <button class="category-tab" onclick="filterCategory('militares')" data-category="militares">🎖️ Roupas
+                <button class="category-tab" onclick="filterCategory('militares')" data-category="militares">ðŸŽ–ï¸ Roupas
                     Militares</button>
-                <button class="category-tab" onclick="filterCategory('construcao')" data-category="construcao">🏗️
-                    Construção</button>
-                <button class="category-tab" onclick="filterCategory('veiculos')" data-category="veiculos">🚗 Peças de
-                    Veículo</button>
+                <button class="category-tab" onclick="filterCategory('construcao')" data-category="construcao">ðŸ—ï¸
+                    ConstruÃ§Ã£o</button>
+                <button class="category-tab" onclick="filterCategory('veiculos')" data-category="veiculos">ðŸš— PeÃ§as de
+                    VeÃ­culo</button>
             </div>
 
             <div id="shop-container" class="shop-grid">
@@ -434,7 +434,7 @@
     <!-- Carrinho Lateral -->
     <div class="cart-sidebar">
         <div class="cart-header">
-            <div class="cart-title">🛒 Carrinho</div>
+            <div class="cart-title">ðŸ›’ Carrinho</div>
             <div class="cart-badge" id="cart-badge">0</div>
         </div>
 
@@ -443,8 +443,8 @@
         </div>
 
         <div class="cart-summary">
-            <div class="user-balance" id="user-balance">Saldo: 0 💰</div>
-            <div class="cart-total" id="cart-total">Total: 0 💰</div>
+            <div class="user-balance" id="user-balance">Saldo: 0 ðŸ’°</div>
+            <div class="cart-total" id="cart-total">Total: 0 ðŸ’°</div>
             <button class="checkout-btn" onclick="openCheckout()" id="checkout-btn">
                 Finalizar Compra
             </button>
@@ -454,8 +454,8 @@
     <!-- Modal de Checkout -->
     <div class="checkout-modal" id="checkout-modal">
         <div class="modal-content">
-            <h2>📍 Selecione o Local de Entrega</h2>
-            <p>Clique no mapa para escolher onde seus itens serão entregues</p>
+            <h2>ðŸ“ Selecione o Local de Entrega</h2>
+            <p>Clique no mapa para escolher onde seus itens serÃ£o entregues</p>
 
             <div class="map-container" id="map-container">
                 <div class="map-image-container">
@@ -477,19 +477,19 @@
 
     <script src="/static/js/shop_cart.js"></script>
     <script>
-        console.log('[SHOP] Página carregada');
+        console.log('[SHOP] PÃ¡gina carregada');
 
         let allItems = [];
         let currentCategory = 'todos';
 
         const categoryMap = {
             'armas': ['armas'],
-            'municao': ['municao', 'munição', 'carregadores'],
-            'medico': ['medico', 'médico'],
+            'municao': ['municao', 'muniÃ§Ã£o', 'carregadores'],
+            'medico': ['medico', 'mÃ©dico'],
             'roupas': ['roupas'],
             'militares': ['militares', 'militar'],
-            'construcao': ['construcao', 'construção'],
-            'veiculos': ['veiculos', 'veículos', 'veiculo']
+            'construcao': ['construcao', 'construÃ§Ã£o'],
+            'veiculos': ['veiculos', 'veÃ­culos', 'veiculo']
         };
 
         async function loadShop() {
@@ -534,7 +534,7 @@
                     <div class="item-category">${getCategoryEmoji(item.category)} ${formatCategory(item.category)}</div>
                     <div class="item-name">${item.name}</div>
                     <div class="item-description">${item.description}</div>
-                    <div class="item-price">${item.price} 💰</div>
+                    <div class="item-price">${item.price} ðŸ’°</div>
                     <button class="buy-btn" onclick="addToCart('${item.code}', '${item.name}', ${item.price}, '${item.category}')">
                         Adicionar ao Carrinho
                     </button>
@@ -569,22 +569,22 @@
 
         function getCategoryEmoji(category) {
             const emojis = {
-                'armas': '🔫',
-                'municao': '💥',
-                'munição': '💥',
-                'carregadores': '📦',
-                'medico': '🏥',
-                'médico': '🏥',
-                'roupas': '👕',
-                'militares': '🎖️',
-                'militar': '🎖️',
-                'construcao': '🏗️',
-                'construção': '🏗️',
-                'veiculos': '🚗',
-                'veículos': '🚗',
-                'veiculo': '🚗'
+                'armas': 'ðŸ”«',
+                'municao': 'ðŸ’¥',
+                'muniÃ§Ã£o': 'ðŸ’¥',
+                'carregadores': 'ðŸ“¦',
+                'medico': 'ðŸ¥',
+                'mÃ©dico': 'ðŸ¥',
+                'roupas': 'ðŸ‘•',
+                'militares': 'ðŸŽ–ï¸',
+                'militar': 'ðŸŽ–ï¸',
+                'construcao': 'ðŸ—ï¸',
+                'construÃ§Ã£o': 'ðŸ—ï¸',
+                'veiculos': 'ðŸš—',
+                'veÃ­culos': 'ðŸš—',
+                'veiculo': 'ðŸš—'
             };
-            return emojis[category.toLowerCase()] || '📦';
+            return emojis[category.toLowerCase()] || 'ðŸ“¦';
         }
 
         function formatCategory(category) {

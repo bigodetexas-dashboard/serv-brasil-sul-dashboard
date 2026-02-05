@@ -1,5 +1,5 @@
 """
-Script de inicialização do banco de dados para o sistema de Heatmap.
+Script de inicializaÃ§Ã£o do banco de dados para o sistema de Heatmap.
 Valida schema, cria tabelas faltantes e popula com dados de exemplo.
 """
 # -*- coding: utf-8 -*-
@@ -56,7 +56,7 @@ def init_heatmap_database():
             cur.execute("ALTER TABLE pvp_kills ADD COLUMN event_type TEXT DEFAULT 'pvp'")
             print("[OK] Coluna adicionada!")
 
-    # Verificar se está vazia
+    # Verificar se estÃ¡ vazia
     cur.execute("SELECT COUNT(*) FROM pvp_kills")
     count = cur.fetchone()[0]
 
@@ -90,7 +90,7 @@ def populate_sample_data(conn):
     base_time = datetime.now() - timedelta(hours=24)
 
     for _ in range(100):
-        # Distribuir ~70% nos hotspots, ~30% aleatório
+        # Distribuir ~70% nos hotspots, ~30% aleatÃ³rio
         if random.random() < 0.7:
             base_x, base_z = random.choice(hotspots)
             x = base_x + random.randint(-500, 500)

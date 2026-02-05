@@ -1,6 +1,6 @@
 """
-Módulo de integração com a API da Nitrado para gerenciamento do servidor DayZ.
-Contém funções para restart, banimento e monitoramento de status.
+MÃ³dulo de integraÃ§Ã£o com a API da Nitrado para gerenciamento do servidor DayZ.
+ContÃ©m funÃ§Ãµes para restart, banimento e monitoramento de status.
 """
 
 import os
@@ -34,11 +34,11 @@ async def restart_server():
                         return False, f"Erro API: {data.get('message')}"
                 else:
                     text = await response.text()
-                    print(f"❌ ERRO API: {response.status} - {text}")
+                    print(f"âŒ ERRO API: {response.status} - {text}")
                     return False, f"Erro HTTP: {response.status}"
     except aiohttp.ClientError as e:
         print(f"[ERRO] Erro de rede Nitrado: {e}")
-        return False, f"Erro de conexão: {e}"
+        return False, f"Erro de conexÃ£o: {e}"
     except Exception as e:
         print(f"[ERRO] Erro inesperado ao reiniciar: {e}")
         return False, f"Erro inesperado: {e}"
@@ -75,13 +75,13 @@ async def ban_player(target_arg):
     identifier = target_arg
 
     if isinstance(target_arg, dict):
-        # Prefere ID se disponível
+        # Prefere ID se disponÃ­vel
         if target_arg.get("id"):
             identifier = target_arg["id"]
             print(f"[BAN] Usando ID Xbox para banir: {identifier}")
         else:
             identifier = target_arg.get("name")
-            print(f"[BAN] ID não encontrado, usando Gamertag: {identifier}")
+            print(f"[BAN] ID nÃ£o encontrado, usando Gamertag: {identifier}")
 
     url = f"https://api.nitrado.net/services/{SERVICE_ID}/gameservers/games/banlist"
     headers = {
@@ -147,7 +147,7 @@ async def kick_player(target_arg):
     return False
 
 
-# Cache para evitar conexões FTP excessivas e lidar com lag de logs
+# Cache para evitar conexÃµes FTP excessivas e lidar com lag de logs
 _ftp_players_cache = {"data": [], "timestamp": 0}
 _player_history_file = "player_history.json"
 _player_history_cache = {}  # Gamertag -> Timestamp
@@ -155,7 +155,7 @@ _history_loaded = False
 
 
 def _load_history():
-    """Carrega o histórico de jogadores do arquivo json."""
+    """Carrega o histÃ³rico de jogadores do arquivo json."""
     import json
 
     global _player_history_cache, _history_loaded
@@ -167,19 +167,19 @@ def _load_history():
             with open(_player_history_file, "r") as f:
                 _player_history_cache = json.load(f)
         except Exception as e:
-            print(f"[CACHE] Erro ao carregar histórico: {e}")
+            print(f"[CACHE] Erro ao carregar histÃ³rico: {e}")
     _history_loaded = True
 
 
 def _save_history():
-    """Salva o histórico de jogadores."""
+    """Salva o histÃ³rico de jogadores."""
     import json
 
     try:
         with open(_player_history_file, "w") as f:
             json.dump(_player_history_cache, f)
     except Exception as e:
-        print(f"[CACHE] Erro ao salvar histórico: {e}")
+        print(f"[CACHE] Erro ao salvar histÃ³rico: {e}")
 
 
 def _update_history(players):
@@ -200,7 +200,7 @@ def _update_history(players):
             name = p
 
         if name:
-            # Recupera dados anteriores para não sobrescrever ID com None se já tínhamos um
+            # Recupera dados anteriores para nÃ£o sobrescrever ID com None se jÃ¡ tÃ­nhamos um
             old_data = _player_history_cache.get(name)
 
             # Normaliza old_data para dict
@@ -220,10 +220,10 @@ def _update_history(players):
 
 
 async def get_online_players():
-    """Retorna lista de jogadores online no servidor Nitrado com persistência robusta."""
+    """Retorna lista de jogadores online no servidor Nitrado com persistÃªncia robusta."""
     import time
 
-    # Garantir que o histórico está carregado
+    # Garantir que o histÃ³rico estÃ¡ carregado
     _load_history()
 
     data = await get_server_status()
@@ -235,16 +235,16 @@ async def get_online_players():
         players = gs.get("query", {}).get("players", [])
         p_count = gs.get("query", {}).get("player_current", 0)
 
-        # Normalização da lista (garantir nomes únicos)
+        # NormalizaÃ§Ã£o da lista (garantir nomes Ãºnicos)
         if players:
             # Em alguns casos a API retorna dicts ou strings? Geralmente strings ou dicts com name.
-            # O código anterior assumia lista de strings? O log retorna strings.
+            # O cÃ³digo anterior assumia lista de strings? O log retorna strings.
             # Se a API retornar objetos, precisamos extrair nomes.
-            # Mas debug_players.py mostra players=[] então não sabemos o formato exato
+            # Mas debug_players.py mostra players=[] entÃ£o nÃ£o sabemos o formato exato
             # Assumindo strings por compatibilidade com logs.
             pass
 
-        # Atualiza histórico com o que veio da API (se veio algo)
+        # Atualiza histÃ³rico com o que veio da API (se veio algo)
         if players:
             _update_history(players)
 
@@ -253,11 +253,11 @@ async def get_online_players():
         if p_count > 0 and len(players) < p_count:
             now = time.time()
 
-            # Só consulta FTP se o cache expirou (60s)
+            # SÃ³ consulta FTP se o cache expirou (60s)
             log_players = []
             if now - _ftp_players_cache["timestamp"] > 60:
                 print(f"[NITRADO] Lista parcial ({len(players)}/{p_count}). Sincronizando logs...")
-                # Passa p_count como meta para o FTP buscar em múltiplos arquivos se precisar
+                # Passa p_count como meta para o FTP buscar em mÃºltiplos arquivos se precisar
                 log_players = await get_players_from_logs(min_target=p_count)
 
                 _ftp_players_cache["data"] = log_players
@@ -265,15 +265,15 @@ async def get_online_players():
             else:
                 log_players = _ftp_players_cache["data"]
 
-            # Atualiza histórico com o que veio do log
+            # Atualiza histÃ³rico com o que veio do log
             if log_players:
                 _update_history(log_players)
 
             # Build final list: API + Log
-            # Normalizar para dicts para deduplicação
+            # Normalizar para dicts para deduplicaÃ§Ã£o
             combined_map = {}
 
-            # Adiciona API (assumindo strings por padrão na query list antiga)
+            # Adiciona API (assumindo strings por padrÃ£o na query list antiga)
             for p in players:
                 if isinstance(p, str):
                     combined_map[p] = {"name": p, "id": None}
@@ -289,16 +289,16 @@ async def get_online_players():
                     if p not in combined_map:
                         combined_map[p] = {"name": p, "id": None}
 
-            # Se ainda faltar gente, completamos com o histórico recente
+            # Se ainda faltar gente, completamos com o histÃ³rico recente
             if len(combined_map) < p_count:
                 needed = p_count - len(combined_map)
 
-                # Helper para ordenar por tempo (compatível com float antigo ou dict novo)
+                # Helper para ordenar por tempo (compatÃ­vel com float antigo ou dict novo)
                 def get_time(item):
                     val = _player_history_cache[item]
                     if isinstance(val, dict):
                         return val.get("time", 0)
-                    return val  # é float
+                    return val  # Ã© float
 
                 candidates = [p for p in _player_history_cache.keys() if p not in combined_map]
                 candidates.sort(key=get_time, reverse=True)

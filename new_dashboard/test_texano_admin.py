@@ -1,19 +1,19 @@
 """
-Script de teste para verificar se a IA Texano está funcionando corretamente
+Script de teste para verificar se a IA Texano estÃ¡ funcionando corretamente
 """
 
 import sys
 import os
 
-# Adicionar o diretório pai ao path
+# Adicionar o diretÃ³rio pai ao path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 print("=" * 60)
 print("TESTE DA IA TEXANO - PAINEL ADMIN")
 print("=" * 60)
 
-# Teste 1: Importar módulos
-print("\n[1/4] Testando importações...")
+# Teste 1: Importar mÃ³dulos
+print("\n[1/4] Testando importaÃ§Ãµes...")
 try:
     from admin_routes import get_system_diagnostics, admin_bp
 
@@ -30,8 +30,8 @@ except Exception as e:
     print(f"    ERRO - ai_integration: {e}")
     sys.exit(1)
 
-# Teste 2: Verificar diagnóstico do sistema
-print("\n[2/4] Testando coleta de diagnóstico...")
+# Teste 2: Verificar diagnÃ³stico do sistema
+print("\n[2/4] Testando coleta de diagnÃ³stico...")
 try:
     diagnostics = get_system_diagnostics()
     print(f"    OK - Status: {diagnostics.get('status')}")
@@ -56,12 +56,12 @@ GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 if GROQ_KEY:
     print(f"    OK - GROQ_API_KEY: {GROQ_KEY[:20]}...")
 else:
-    print("    AVISO - GROQ_API_KEY não encontrada")
+    print("    AVISO - GROQ_API_KEY nÃ£o encontrada")
 
 if GEMINI_KEY:
     print(f"    OK - GEMINI_API_KEY: {GEMINI_KEY[:20]}...")
 else:
-    print("    AVISO - GEMINI_API_KEY não encontrada")
+    print("    AVISO - GEMINI_API_KEY nÃ£o encontrada")
 
 # Teste 4: Testar IA Texano
 print("\n[4/4] Testando resposta da IA Texano...")

@@ -203,7 +203,7 @@ class AIContextBuilder(BaseRepository):
         stats = self.get_user_stats(discord_id)
         if stats:
             context_parts.append(
-                f"Usuário: {stats.get('discord_username')} (Gamertag: {stats.get('nitrado_gamertag')})\n"
+                f"UsuÃ¡rio: {stats.get('discord_username')} (Gamertag: {stats.get('nitrado_gamertag')})\n"
                 f"Stats: {stats.get('kills')} kills, {stats.get('deaths')} deaths, "
                 f"K/D: {stats.get('kd_ratio', 0):.2f}, Saldo: {stats.get('balance')} DZCoins"
             )
@@ -223,7 +223,7 @@ class AIContextBuilder(BaseRepository):
                         for k in recent_kills
                     ]
                 )
-                context_parts.append(f"Últimas eliminações:\n{kills_text}")
+                context_parts.append(f"Ãšltimas eliminaÃ§Ãµes:\n{kills_text}")
 
             if recent_deaths:
                 deaths_text = "\n".join(
@@ -232,20 +232,20 @@ class AIContextBuilder(BaseRepository):
                         for d in recent_deaths
                     ]
                 )
-                context_parts.append(f"Últimas mortes:\n{deaths_text}")
+                context_parts.append(f"Ãšltimas mortes:\n{deaths_text}")
 
         # Check if question is about clan
-        if any(word in question.lower() for word in ["clan", "clã", "grupo"]):
+        if any(word in question.lower() for word in ["clan", "clÃ£", "grupo"]):
             clan = self.get_clan_info(discord_id)
             if clan and isinstance(clan, dict):  # Check if clan is a valid dict
                 context_parts.append(
-                    f"Clã: {clan.get('clan_name')} ({clan.get('member_count')} membros)\n"
-                    f"Cargo: {clan.get('user_role')}, Banco do Clã: {clan.get('clan_balance')} DZCoins"
+                    f"ClÃ£: {clan.get('clan_name')} ({clan.get('member_count')} membros)\n"
+                    f"Cargo: {clan.get('user_role')}, Banco do ClÃ£: {clan.get('clan_balance')} DZCoins"
                 )
 
         # Check if question is about leaderboard/ranking
         if any(
-            word in question.lower() for word in ["ranking", "top", "melhor", "líder"]
+            word in question.lower() for word in ["ranking", "top", "melhor", "lÃ­der"]
         ):
             top_players = self.get_top_players("kills", limit=5)
             if top_players:
@@ -268,7 +268,7 @@ class AIContextBuilder(BaseRepository):
                     f"Atividade do Servidor (24h):\n"
                     f"- {activity.get('total_kills', 0)} kills totais\n"
                     f"- {activity.get('unique_killers', 0)} jogadores ativos em combate\n"
-                    f"- Distância média de kill: {activity.get('avg_kill_distance', 0):.0f}m"
+                    f"- DistÃ¢ncia mÃ©dia de kill: {activity.get('avg_kill_distance', 0):.0f}m"
                 )
 
         # Check if question is about purchases
@@ -280,7 +280,7 @@ class AIContextBuilder(BaseRepository):
                 purchase_text = "\n".join(
                     [f"- {p['item_name']}: {p['status']}" for p in purchases]
                 )
-                context_parts.append(f"Últimas compras:\n{purchase_text}")
+                context_parts.append(f"Ãšltimas compras:\n{purchase_text}")
 
         if context_parts:
             return "CONTEXTO DO JOGO:\n" + "\n\n".join(context_parts)

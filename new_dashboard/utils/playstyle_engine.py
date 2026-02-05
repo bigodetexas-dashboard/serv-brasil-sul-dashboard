@@ -1,43 +1,43 @@
 class PlaystyleEngine:
     """
-    Motor de Heurística para determinar o Arquétipo do jogador
-    e gerar bios dinâmicas.
+    Motor de HeurÃ­stica para determinar o ArquÃ©tipo do jogador
+    e gerar bios dinÃ¢micas.
     """
 
     ARCHETYPES = {
         "shadow_legend": {
             "name": "Lenda das Sombras",
-            "emoji": "🥷",
+            "emoji": "ðŸ¥·",
             "description": "Um predador nato que domina os campos de batalha de Chernarus.",
             "banner": "/static/images/banners/pvp_pro.png",
         },
         "engineer": {
             "name": "Engenheiro de Chernarus",
-            "emoji": "🏗️",
-            "description": "Mestre construtor, transformando troncos em fortalezas impenetráveis.",
+            "emoji": "ðŸ—ï¸",
+            "description": "Mestre construtor, transformando troncos em fortalezas impenetrÃ¡veis.",
             "banner": "/static/images/banners/builder.png",
         },
         "nomad": {
-            "name": "Nômade Incansável",
-            "emoji": "🏃",
+            "name": "NÃ´made IncansÃ¡vel",
+            "emoji": "ðŸƒ",
             "description": "Suas botas conhecem cada trilha e cada segredo deste mapa vasto.",
             "banner": "/static/images/banners/explorer.png",
         },
         "fisherman": {
             "name": "Pescador de Elite",
-            "emoji": "🎣",
-            "description": "A paciência é sua maior arma, e o lago seu verdadeiro lar.",
+            "emoji": "ðŸŽ£",
+            "description": "A paciÃªncia Ã© sua maior arma, e o lago seu verdadeiro lar.",
             "banner": "/static/images/banners/fishing.png",
         },
         "pacifist": {
             "name": "Sobrevivente Pacifista",
-            "emoji": "🌿",
+            "emoji": "ðŸŒ¿",
             "description": "Sobrevivendo contra todas as probabilidades sem nunca derramar sangue inocente.",
             "banner": "/static/images/banners/survivor.png",
         },
         "default": {
             "name": "Recruta Bigode",
-            "emoji": "🤠",
+            "emoji": "ðŸ¤ ",
             "description": "Iniciando sua jornada nas terras indomadas do BigodeTexas.",
             "banner": "/static/images/banners/default.jpg",
         },
@@ -46,7 +46,7 @@ class PlaystyleEngine:
     @staticmethod
     def determine_archetype(stats):
         """
-        Determina o arquétipo com base nas métricas.
+        Determina o arquÃ©tipo com base nas mÃ©tricas.
         stats: dict com kills, zombie_kills, buildings_placed, fish_caught, meters_traveled
         """
         kills = stats.get("kills", 0)
@@ -55,7 +55,7 @@ class PlaystyleEngine:
         fish = stats.get("fish_caught", 0)
         distance = stats.get("meters_traveled", 0)
 
-        # Heurística de prioridade
+        # HeurÃ­stica de prioridade
         if kills >= 50:
             return "shadow_legend"
         if buildings >= 100:
@@ -71,7 +71,7 @@ class PlaystyleEngine:
 
     @classmethod
     def generate_bio(cls, archetype_key, stats):
-        """Gera a string final da bio automática."""
+        """Gera a string final da bio automÃ¡tica."""
         arc = cls.ARCHETYPES.get(archetype_key, cls.ARCHETYPES["default"])
 
         bio = f"{arc['emoji']} {arc['name']}\n\n"
@@ -79,8 +79,8 @@ class PlaystyleEngine:
 
         # Adicionar marcos interessantes
         if stats.get("kills", 0) > 0:
-            bio += f"💀 {stats['kills']} baixas confirmadas.\n"
+            bio += f"ðŸ’€ {stats['kills']} baixas confirmadas.\n"
         if stats.get("buildings_placed", 0) > 0:
-            bio += f"🔨 {stats['buildings_placed']} estruturas erguidas.\n"
+            bio += f"ðŸ”¨ {stats['buildings_placed']} estruturas erguidas.\n"
 
         return bio.strip()

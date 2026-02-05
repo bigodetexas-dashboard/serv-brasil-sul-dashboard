@@ -36,12 +36,12 @@ print("-" * 60)
 
 client = genai.Client(api_key=API_KEY)
 
-prompt = """Você é o Bigodudo, um sobrevivente veterano de DayZ.
-Responda de forma amigável e descontraída.
+prompt = """VocÃª Ã© o Bigodudo, um sobrevivente veterano de DayZ.
+Responda de forma amigÃ¡vel e descontraÃ­da.
 
-Pergunta: Olá Bigodudo, você está funcionando?
+Pergunta: OlÃ¡ Bigodudo, vocÃª estÃ¡ funcionando?
 
-Responda em português brasileiro, de forma curta."""
+Responda em portuguÃªs brasileiro, de forma curta."""
 
 response = client.models.generate_content(model=MODEL, contents=prompt)
 
@@ -53,5 +53,5 @@ else:
 
 print()
 print("=" * 60)
-print("TESTE CONCLUÍDO")
+print("TESTE CONCLUÃDO")
 print("=" * 60)

@@ -5,17 +5,17 @@ DB_FILE = "bigode_unified.db"
 
 
 def expand_db():
-    print(f"Iniciando expansão do banco: {DB_FILE}...")
+    print(f"Iniciando expansÃ£o do banco: {DB_FILE}...")
 
     if not os.path.exists(DB_FILE):
-        print("ERRO: Banco de dados não encontrado! Execute init_sqlite_db.py primeiro.")
+        print("ERRO: Banco de dados nÃ£o encontrado! Execute init_sqlite_db.py primeiro.")
         return
 
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
 
     try:
-        # 1. Tabela de Chat de Clã
+        # 1. Tabela de Chat de ClÃ£
         print("Criando tabela clan_messages...")
         cur.execute("""
         CREATE TABLE IF NOT EXISTS clan_messages (
@@ -29,7 +29,7 @@ def expand_db():
         )
         """)
 
-        # 2. Tabela de Empréstimos (Loans)
+        # 2. Tabela de EmprÃ©stimos (Loans)
         print("Criando tabela user_loans...")
         cur.execute("""
         CREATE TABLE IF NOT EXISTS user_loans (
@@ -45,7 +45,7 @@ def expand_db():
         )
         """)
 
-        # 3. Tabela de Inventário de Base
+        # 3. Tabela de InventÃ¡rio de Base
         print("Criando tabela base_inventory...")
         cur.execute("""
         CREATE TABLE IF NOT EXISTS base_inventory (
@@ -77,12 +77,12 @@ def expand_db():
         try:
             cur.execute("ALTER TABLE users ADD COLUMN last_interest_at TIMESTAMP")
         except sqlite3.OperationalError:
-            print("Campo last_interest_at já existe.")
+            print("Campo last_interest_at jÃ¡ existe.")
 
         try:
             cur.execute("ALTER TABLE users ADD COLUMN clan_rank TEXT DEFAULT 'member'")
         except sqlite3.OperationalError:
-            print("Campo clan_rank já existe.")
+            print("Campo clan_rank jÃ¡ existe.")
 
         conn.commit()
         print("SUCCESS: Expansao concluida com sucesso!")

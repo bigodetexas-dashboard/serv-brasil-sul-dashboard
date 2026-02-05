@@ -1,93 +1,55 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rankings - BIGODETEXAS - XBOX</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/leaderboard.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-</head>
+{% block title %}{{ _('Rankings') }} - BIGODETEXAS - XBOX{% endblock %}
 
-<body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">
-                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
-                    style="height: 40px; margin-right: 10px;">
-                <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
-            </a>
-            <ul class="navbar-menu">
-                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
-                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
-                <li><a href="/leaderboard" class="navbar-link active"><i class="ri-trophy-line"></i> Rankings</a></li>
-                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
-                <li><a href="/deaths" class="navbar-link"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
-                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
-                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> Clã</a></li>
-                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Texas</a></li>
-                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
-                <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
-                </li>
-            </ul>
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leaderboard.css') }}">
+{% endblock %}
 
-        </div>
-    </nav>
-
-    <div class="container leaderboard-container">
-        <div class="leaderboard-header">
-            <h1><i class="ri-trophy-fill text-accent"></i> Rankings Globais</h1>
-            <p>Os melhores sobreviventes do servidor em diversas categorias.</p>
-        </div>
-
-        <!-- Filtros de Categoria -->
-        <div class="leaderboard-controls">
-            <button class="control-btn active" data-category="kills"><i class="ri-sword-line"></i> Kills</button>
-            <button class="control-btn" data-category="deaths"><i class="ri-skull-line"></i> Mortes</button>
-            <button class="control-btn" data-category="kd"><i class="ri-percent-line"></i> K/D Ratio</button>
-            <button class="control-btn" data-category="balance"><i class="ri-money-dollar-circle-line"></i>
-                Riqueza</button>
-            <button class="control-btn" data-category="playtime"><i class="ri-time-line"></i> Tempo Jogado</button>
-            <button class="control-btn" data-category="longest_shot"><i class="ri-crosshair-2-line"></i> Longest
-                Shot</button>
-        </div>
-
-        <!-- Pódio (Top 3) -->
-        <div class="podium-section" id="podium-container">
-            <!-- Preenchido via JS -->
-        </div>
-
-        <!-- Tabela Completa -->
-        <div class="leaderboard-table-container">
-            <table class="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Jogador</th>
-                        <th id="stat-header">Kills</th>
-                        <th>Detalhes</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboard-body">
-                    <!-- Preenchido via JS -->
-                </tbody>
-            </table>
-        </div>
+{% block content %}
+<div class="container leaderboard-container">
+    <div class="leaderboard-header">
+        <h1><i class="ri-trophy-fill text-accent"></i> {{ _('Rankings Globais') }}</h1>
+        <p>{{ _('Os melhores sobreviventes do servidor em diversas categorias.') }}</p>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-            <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
-            <p style="margin: 0;">&copy; 2025 BIGODETEXAS - XBOX. Todos os direitos reservados.</p>
-        </div>
-    </footer>
+    <!-- Filtros de Categoria -->
+    <div class="leaderboard-controls">
+        <button class="control-btn active" data-category="kills"><i class="ri-sword-line"></i> {{ _('Kills') }}</button>
+        <button class="control-btn" data-category="deaths"><i class="ri-skull-line"></i> {{ _('Mortes') }}</button>
+        <button class="control-btn" data-category="kd"><i class="ri-percent-line"></i> {{ _('K/D Ratio') }}</button>
+        <button class="control-btn" data-category="balance"><i class="ri-money-dollar-circle-line"></i> {{ _('Riqueza')
+            }}</button>
+        <button class="control-btn" data-category="playtime"><i class="ri-time-line"></i> {{ _('Tempo Jogado')
+            }}</button>
+        <button class="control-btn" data-category="longest_shot"><i class="ri-crosshair-2-line"></i> {{ _('Longest
+            Shot') }}</button>
+    </div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
-</body>
+    <!-- Pódio (Top 3) -->
+    <div class="podium-section" id="podium-container">
+        <!-- Preenchido via JS -->
+    </div>
 
-</html>
+    <!-- Tabela Completa -->
+    <div class="leaderboard-table-container">
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{{ _('Jogador') }}</th>
+                    <th id="stat-header">{{ _('Kills') }}</th>
+                    <th>{{ _('Detalhes') }}</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <!-- Preenchido via JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
+{% endblock %}

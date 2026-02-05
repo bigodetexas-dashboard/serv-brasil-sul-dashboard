@@ -1,13 +1,13 @@
 """
-Módulo de geolocalização por IP usando IP-API.com (gratuita).
-Fornece informações de País, Estado, Cidade, ISP e coordenadas.
+MÃ³dulo de geolocalizaÃ§Ã£o por IP usando IP-API.com (gratuita).
+Fornece informaÃ§Ãµes de PaÃ­s, Estado, Cidade, ISP e coordenadas.
 """
 
 import aiohttp
 import asyncio
 import time
 
-# Cache em memória para evitar consultas repetidas
+# Cache em memÃ³ria para evitar consultas repetidas
 _geo_cache = {}
 _last_request_time = 0
 _MIN_REQUEST_INTERVAL = 1.5  # IP-API.com: max 45 req/min = ~1.3s/req
@@ -15,16 +15,16 @@ _MIN_REQUEST_INTERVAL = 1.5  # IP-API.com: max 45 req/min = ~1.3s/req
 
 async def get_location_by_ip(ip_address):
     """
-    Obtém informações de geolocalização para um endereço IP de forma assíncrona.
+    ObtÃ©m informaÃ§Ãµes de geolocalizaÃ§Ã£o para um endereÃ§o IP de forma assÃ­ncrona.
 
     Args:
-        ip_address (str): Endereço IP público
+        ip_address (str): EndereÃ§o IP pÃºblico
 
     Returns:
-        dict: Dados de localização ou None se falhar
+        dict: Dados de localizaÃ§Ã£o ou None se falhar
         {
             'country': 'Brazil',
-            'region': 'São Paulo',
+            'region': 'SÃ£o Paulo',
             'city': 'Campinas',
             'isp': 'Vivo',
             'lat': -22.9056,
@@ -33,7 +33,7 @@ async def get_location_by_ip(ip_address):
     """
     global _last_request_time
 
-    # Validação básica
+    # ValidaÃ§Ã£o bÃ¡sica
     if not ip_address or ip_address in ["127.0.0.1", "localhost", "0.0.0.0"]:
         return None
 
@@ -94,7 +94,7 @@ async def get_location_by_ip(ip_address):
 
 def format_location_short(location_data):
     """
-    Formata dados de localização em string curta para exibição.
+    Formata dados de localizaÃ§Ã£o em string curta para exibiÃ§Ã£o.
 
     Args:
         location_data (dict): Dados retornados por get_location_by_ip()
@@ -109,7 +109,7 @@ def format_location_short(location_data):
     region = location_data.get("region", "?")
     country = location_data.get("country", "?")
 
-    # Abrevia país
+    # Abrevia paÃ­s
     country_abbr = {
         "Brazil": "BR",
         "United States": "USA",
@@ -126,16 +126,16 @@ def format_location_short(location_data):
     # Abrevia estado brasileiro
     if country == "Brazil":
         region_abbr = {
-            "São Paulo": "SP",
+            "SÃ£o Paulo": "SP",
             "Rio de Janeiro": "RJ",
             "Minas Gerais": "MG",
             "Bahia": "BA",
-            "Paraná": "PR",
+            "ParanÃ¡": "PR",
             "Rio Grande do Sul": "RS",
             "Santa Catarina": "SC",
-            "Goiás": "GO",
+            "GoiÃ¡s": "GO",
             "Pernambuco": "PE",
-            "Ceará": "CE",
+            "CearÃ¡": "CE",
         }.get(region, region[:2].upper())
     else:
         region_abbr = region[:2].upper() if len(region) > 2 else region
@@ -145,7 +145,7 @@ def format_location_short(location_data):
 
 def format_location_full(location_data):
     """
-    Formata dados de localização em string completa com ISP.
+    Formata dados de localizaÃ§Ã£o em string completa com ISP.
 
     Args:
         location_data (dict): Dados retornados por get_location_by_ip()

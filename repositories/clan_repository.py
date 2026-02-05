@@ -395,3 +395,49 @@ class ClanRepository(BaseRepository):
 
         result = self.execute_query(update_query, (invite_id,))
         return result is not None
+
+    def create_chat_table(self):
+        """Ensure clan_chat table exists."""
+        query = """
+            CREATE TABLE IF NOT EXISTS clan_chat (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                clan_id INTEGER NOT NULL,
+                sender_discord_id TEXT NOT NULL,
+                sender_name TEXT NOT NULL,
+                content TEXT NOT NULL,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (clan_id) REFERENCES clans (id)
+            )
+        """
+        self.execute_query(query)
+
+    def get_messages(self, clan_id: int, limit: int = 50) -> list[dict]:
+        """Get recent chat messages for a clan."""
+        self.create_chat_table()
+        query = """
+            SELECT id, sender_discord_id, sender_name, content, timestamp
+            FROM clan_chat
+            WHERE clan_id = ?
+            ORDER BY timestamp DESC
+            LIMIT ?
+        """
+        rows = self.execute_query(query, (clan_id, limit))
+        return [dict(row) for row in rows][::-1] if rows else []
+
+    def send_message(self, clan_id: int, message_data: dict) -> bool:
+        """Send a message to clan chat."""
+        self.create_chat_table()
+        query = """
+            INSERT INTO clan_chat (clan_id, sender_discord_id, sender_name, content)
+            VALUES (?, ?, ?, ?)
+        """
+        result = self.execute_query(
+            query,
+            (
+                clan_id,
+                str(message_data.get("sender_id")),
+                message_data.get("sender_name"),
+                message_data.get("content"),
+            ),
+        )
+        return result is not None

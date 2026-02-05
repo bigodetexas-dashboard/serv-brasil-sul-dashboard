@@ -191,7 +191,7 @@ class PlayerRepository(BaseRepository):
                     del self._cache_balance[from_discord_id]
                 if to_discord_id in self._cache_balance:
                     del self._cache_balance[to_discord_id]
-                return True, "Transferência concluída com sucesso!"
+                return True, "TransferÃªncia concluÃ­da com sucesso!"
             except sqlite3.Error as e:
                 conn.rollback()
                 print(f"[ERROR] DB Transfer Funds: {e}")
@@ -349,7 +349,7 @@ class PlayerRepository(BaseRepository):
                 # Check if exists
                 cur.execute("SELECT id FROM bases WHERE owner_id = ?", (str(discord_id),))
                 if cur.fetchone():
-                    return False, "Você já possui uma base registrada."
+                    return False, "VocÃª jÃ¡ possui uma base registrada."
 
                 cur.execute(
                     "INSERT INTO bases (owner_id, x, y, z, name, radius) VALUES (?, ?, ?, ?, ?, ?)",

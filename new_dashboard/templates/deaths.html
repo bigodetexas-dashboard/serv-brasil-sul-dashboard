@@ -1,296 +1,259 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiro na Lata - BIGODETEXAS - XBOX</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <style>
-        body {
-            background-image: url("{{ url_for('static', filename='images/deaths_bg.jpg') }}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-        }
+{% block title %}{{ _('Tiro na Lata') }} - BIGODETEXAS - XBOX{% endblock %}
 
-        .deaths-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+{% block extra_head %}
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/deaths_bg.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
+    .deaths-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-        .stat-card {
-            background: rgba(20, 20, 30, 0.8);
-            border: 1px solid #8B0000;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+    }
 
-        .stat-value {
-            font-size: 2em;
-            color: #ff4444;
-            font-weight: bold;
-        }
+    .stat-card {
+        background: rgba(20, 20, 30, 0.8);
+        border: 1px solid #8B0000;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+    }
 
-        .stat-label {
-            color: #aaa;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
+    .stat-value {
+        font-size: 2em;
+        color: #ff4444;
+        font-weight: bold;
+    }
 
-        .death-card {
-            background: rgba(30, 30, 40, 0.9);
-            border-left: 4px solid #8B0000;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            transition: transform 0.2s;
-        }
+    .stat-label {
+        color: #aaa;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
 
-        .death-card:hover {
-            transform: translateX(5px);
-            border-left-color: #ff0000;
-        }
+    .death-card {
+        background: rgba(30, 30, 40, 0.9);
+        border-left: 4px solid #8B0000;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        transition: transform 0.2s;
+    }
 
-        .death-card.pvp {
-            border-left-color: #ff4444;
-        }
+    .death-card:hover {
+        transform: translateX(5px);
+        border-left-color: #ff0000;
+    }
 
-        .death-card.animal {
-            border-left-color: #ffa500;
-        }
+    .death-card.pvp {
+        border-left-color: #ff4444;
+    }
 
-        .death-header {
-            font-size: 1.1em;
-            margin-bottom: 8px;
-        }
+    .death-card.animal {
+        border-left-color: #ffa500;
+    }
 
-        .death-details {
-            color: #999;
-            font-size: 0.9em;
-        }
+    .death-header {
+        font-size: 1.1em;
+        margin-bottom: 8px;
+    }
 
-        .death-details span {
-            margin-right: 15px;
-        }
+    .death-details {
+        color: #999;
+        font-size: 0.9em;
+    }
 
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 0.8em;
-            margin-left: 5px;
-        }
+    .death-details span {
+        margin-right: 15px;
+    }
 
-        .badge.headshot {
-            background: #ff0000;
-            color: white;
-        }
+    .badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.8em;
+        margin-left: 5px;
+    }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
+    .badge.headshot {
+        background: #ff0000;
+        color: white;
+    }
 
-        .page-title {
-            text-align: center;
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #ff0000;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(255, 0, 0, 0.3);
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+    }
 
-        .page-title .subtitle {
-            font-size: 0.6em;
-            color: #fff;
-            font-weight: normal;
-            letter-spacing: 4px;
-        }
-    </style>
-</head>
+    .page-title {
+        text-align: center;
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #ff0000;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(255, 0, 0, 0.3);
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
 
-<body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">
-                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
-                    style="height: 40px; margin-right: 10px;">
-                <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
-            </a>
-            <ul class="navbar-menu">
-                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
-                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
-                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
-                <li><a href="/mural" class="navbar-link"><i class="ri-skull-2-line"></i> Mural</a></li>
-                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
-                <li><a href="/deaths" class="navbar-link active"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
-                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
-                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> Clã</a></li>
-                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Texas</a></li>
-                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
-                <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
-                </li>
-            </ul>
+    .page-title .subtitle {
+        font-size: 0.6em;
+        color: #fff;
+        font-weight: normal;
+        letter-spacing: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="deaths-container">
+    <h1 class="page-title">
+        {{ _('TIRO NA LATA') }}
+        <br>
+        <span class="subtitle">KillFeed</span>
+    </h1>
+
+    <!-- Estatísticas -->
+    <div class="stats-grid" id="stats">
+        <div class="stat-card">
+            <div class="stat-value" id="stat-total">-</div>
+            <div class="stat-label">{{ _('Total (24h)') }}</div>
         </div>
-    </nav>
-
-    <div class="deaths-container">
-        <h1 class="page-title">
-            TIRO NA LATA
-            <br>
-            <span class="subtitle">KillFeed</span>
-        </h1>
-
-        <!-- Estatísticas -->
-        <div class="stats-grid" id="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="stat-total">-</div>
-                <div class="stat-label">Total (24h)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-pvp">-</div>
-                <div class="stat-label">PvP</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-animal">-</div>
-                <div class="stat-label">Animais</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="stat-headshots">-</div>
-                <div class="stat-label">Headshots</div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-pvp">-</div>
+            <div class="stat-label">{{ _('PvP') }}</div>
         </div>
-
-        <!-- Feed de Mortes -->
-        <div id="deaths-feed">
-            <div class="loading">Carregando mortes...</div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-animal">-</div>
+            <div class="stat-label">{{ _('Animais') }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-headshots">-</div>
+            <div class="stat-label">{{ _('Headshots') }}</div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-            <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
-            <p style="margin: 0;">&copy; 2025 BIGODETEXAS - XBOX. Todos os direitos reservados.</p>
-        </div>
-    </footer>
+    <!-- Feed de Mortes -->
+    <div id="deaths-feed">
+        <div class="loading">{{ _('Carregando mortes...') }}</div>
+    </div>
+</div>
+{% endblock %}
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script>
-        // Formatar data/hora completa
-        function formatDateTime(timestamp) {
-            if (!timestamp) return 'Data desconhecida';
+{% block extra_scripts %}
+<script>
+    // Formatar data/hora completa
+    function formatDateTime(timestamp) {
+        if (!timestamp) return "{{ _('Data desconhecida') }}";
 
-            const date = new Date(timestamp);
+        const date = new Date(timestamp);
 
-            // Dias da semana em português
-            const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        // Dias da semana e meses (tradução simples via JS ou manter padrão se o backend não enviar traduzido)
+        const diasSemana = ["{{ _('Domingo') }}", "{{ _('Segunda') }}", "{{ _('Terça') }}", "{{ _('Quarta') }}", "{{ _('Quinta') }}", "{{ _('Sexta') }}", "{{ _('Sábado') }}"];
+        const meses = ["{{ _('Jan') }}", "{{ _('Fev') }}", "{{ _('Mar') }}", "{{ _('Abr') }}", "{{ _('Mai') }}", "{{ _('Jun') }}", "{{ _('Jul') }}", "{{ _('Ago') }}", "{{ _('Set') }}", "{{ _('Out') }}", "{{ _('Nov') }}", "{{ _('Dez') }}"];
 
-            const diaSemana = diasSemana[date.getDay()];
-            const dia = date.getDate().toString().padStart(2, '0');
-            const mes = meses[date.getMonth()];
-            const hora = date.getHours().toString().padStart(2, '0');
-            const minuto = date.getMinutes().toString().padStart(2, '0');
+        const diaSemana = diasSemana[date.getDay()];
+        const dia = date.getDate().toString().padStart(2, '0');
+        const mes = meses[date.getMonth()];
+        const hora = date.getHours().toString().padStart(2, '0');
+        const minuto = date.getMinutes().toString().padStart(2, '0');
 
-            // Formato: "Segunda, 03 Fev - 15:30"
-            return `${diaSemana}, ${dia} ${mes} - ${hora}:${minuto}`;
+        return `${diaSemana}, ${dia} ${mes} - ${hora}:${minuto}`;
+    }
+
+    // Carregar estatísticas
+    async function loadStats() {
+        try {
+            const res = await fetch('/api/deaths/stats');
+            const data = await res.json();
+
+            document.getElementById('stat-total').textContent = data.total_deaths || 0;
+            document.getElementById('stat-pvp').textContent = data.pvp || 0;
+            document.getElementById('stat-animal').textContent = data.animal || 0;
+            document.getElementById('stat-headshots').textContent = data.headshots || 0;
+        } catch (err) {
+            console.error('Erro ao carregar stats:', err);
         }
+    }
 
-        // Carregar estatísticas
-        async function loadStats() {
-            try {
-                const res = await fetch('/api/deaths/stats');
-                const data = await res.json();
+    // Carregar feed de mortes
+    async function loadDeaths() {
+        try {
+            const res = await fetch('/api/deaths/recent?per_page=50');
+            const data = await res.json();
 
-                document.getElementById('stat-total').textContent = data.total_deaths || 0;
-                document.getElementById('stat-pvp').textContent = data.pvp || 0;
-                document.getElementById('stat-animal').textContent = data.animal || 0;
-                document.getElementById('stat-headshots').textContent = data.headshots || 0;
-            } catch (err) {
-                console.error('Erro ao carregar stats:', err);
+            const feed = document.getElementById('deaths-feed');
+
+            if (!data.deaths || data.deaths.length === 0) {
+                feed.innerHTML = `<div class="loading">{{ _('Nenhuma morte registrada ainda.') }}</div>`;
+                return;
             }
-        }
 
-        // Carregar feed de mortes
-        async function loadDeaths() {
-            try {
-                const res = await fetch('/api/deaths/recent?per_page=50');
-                const data = await res.json();
+            feed.innerHTML = data.deaths.map(death => {
+                const formattedTime = formatDateTime(death.timestamp);
 
-                const feed = document.getElementById('deaths-feed');
-
-                if (!data.deaths || data.deaths.length === 0) {
-                    feed.innerHTML = '<div class="loading">Nenhuma morte registrada ainda.</div>';
-                    return;
+                if (death.death_type === 'pvp') {
+                    return `
+                        <div class="death-card pvp">
+                            <div class="death-header">
+                                🔫 <strong>${death.killer}</strong> {{ _('matou') }} <strong>${death.victim}</strong>
+                                ${death.is_headshot ? '<span class="badge headshot">HEADSHOT</span>' : ''}
+                            </div>
+                            <div class="death-details">
+                                <span>📍 ${death.location || "{{ _('Desconhecido') }}"}</span>
+                                <span>🎯 ${death.weapon || 'N/A'}</span>
+                                <span>📏 ${death.distance || 0}m</span>
+                                <span>⏰ ${formattedTime}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const cause = death.death_cause === 'wolf' ? "{{ _('Lobo') }}" : "{{ _('Urso') }}";
+                    const icon = death.death_cause === 'wolf' ? '🐺' : '🐻';
+                    return `
+                        <div class="death-card animal">
+                            <div class="death-header">
+                                ${icon} <strong>${death.victim}</strong> {{ _('foi morto por') }} ${cause}
+                            </div>
+                            <div class="death-details">
+                                <span>📍 ${death.location || "{{ _('Desconhecido') }}"}</span>
+                                <span>⏰ ${formattedTime}</span>
+                            </div>
+                        </div>
+                    `;
                 }
+            }).join('');
 
-                feed.innerHTML = data.deaths.map(death => {
-                    const formattedTime = formatDateTime(death.timestamp);
-
-                    if (death.death_type === 'pvp') {
-                        return `
-                            <div class="death-card pvp">
-                                <div class="death-header">
-                                    🔫 <strong>${death.killer}</strong> matou <strong>${death.victim}</strong>
-                                    ${death.is_headshot ? '<span class="badge headshot">HEADSHOT</span>' : ''}
-                                </div>
-                                <div class="death-details">
-                                    <span>📍 ${death.location || 'Desconhecido'}</span>
-                                    <span>🎯 ${death.weapon || 'N/A'}</span>
-                                    <span>📏 ${death.distance || 0}m</span>
-                                    <span>⏰ ${formattedTime}</span>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        return `
-                            <div class="death-card animal">
-                                <div class="death-header">
-                                    ${death.death_cause === 'wolf' ? '🐺' : '🐻'} <strong>${death.victim}</strong> foi morto por ${death.death_cause === 'wolf' ? 'Lobo' : 'Urso'}
-                                </div>
-                                <div class="death-details">
-                                    <span>📍 ${death.location || 'Desconhecido'}</span>
-                                    <span>⏰ ${formattedTime}</span>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }).join('');
-
-            } catch (err) {
-                console.error('Erro ao carregar mortes:', err);
-                document.getElementById('deaths-feed').innerHTML =
-                    '<div class="loading">Erro ao carregar mortes. Tente novamente.</div>';
-            }
+        } catch (err) {
+            console.error('Erro ao carregar mortes:', err);
+            document.getElementById('deaths-feed').innerHTML =
+                `<div class="loading">{{ _('Erro ao carregar mortes. Tente novamente.') }}</div>`;
         }
+    }
 
-        // Carregar dados iniciais
+    // Carregar dados iniciais
+    loadStats();
+    loadDeaths();
+
+    // Atualizar a cada 30 segundos
+    setInterval(() => {
         loadStats();
         loadDeaths();
-
-        // Atualizar a cada 30 segundos
-        setInterval(() => {
-            loadStats();
-            loadDeaths();
-        }, 30000);
-    </script>
-</body>
-
-</html>
+    }, 30000);
+</script>
+{% endblock %}

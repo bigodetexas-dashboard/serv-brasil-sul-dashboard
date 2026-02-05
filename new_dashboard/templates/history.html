@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Histórico - SERV. BRASIL SUL - XBOX{% endblock %}
+{% block title %}HistÃ³rico - SERV. BRASIL SUL - XBOX{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -388,8 +388,8 @@
 {% block content %}
 <div class="history-container">
     <div class="page-header">
-        <h1>📜 Histórico de Atividades</h1>
-        <p>Acompanhe todas as suas ações e eventos no servidor</p>
+        <h1>ðŸ“œ HistÃ³rico de Atividades</h1>
+        <p>Acompanhe todas as suas aÃ§Ãµes e eventos no servidor</p>
     </div>
 
     <div class="filters-section">
@@ -398,22 +398,22 @@
                 <label>Tipo de Evento</label>
                 <select id="eventTypeFilter">
                     <option value="all">Todos os Eventos</option>
-                    <option value="kill">Eliminações</option>
+                    <option value="kill">EliminaÃ§Ãµes</option>
                     <option value="death">Mortes</option>
-                    <option value="login">Conexões</option>
-                    <option value="logout">Desconexões</option>
+                    <option value="login">ConexÃµes</option>
+                    <option value="logout">DesconexÃµes</option>
                     <option value="achievement">Conquistas</option>
-                    <option value="trade">Negociações</option>
+                    <option value="trade">NegociaÃ§Ãµes</option>
                 </select>
             </div>
 
             <div class="filter-group">
-                <label>Período</label>
+                <label>PerÃ­odo</label>
                 <select id="periodFilter">
                     <option value="today">Hoje</option>
-                    <option value="week">Última Semana</option>
-                    <option value="month">Último Mês</option>
-                    <option value="all">Todo o Histórico</option>
+                    <option value="week">Ãšltima Semana</option>
+                    <option value="month">Ãšltimo MÃªs</option>
+                    <option value="all">Todo o HistÃ³rico</option>
                 </select>
             </div>
 
@@ -431,31 +431,31 @@
 
     <div class="stats-cards">
         <div class="stat-card">
-            <div class="icon">📊</div>
+            <div class="icon">ðŸ“Š</div>
             <div class="value" id="totalEvents">0</div>
             <div class="label">Total de Eventos</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">⚔️</div>
+            <div class="icon">âš”ï¸</div>
             <div class="value" id="totalKills">0</div>
-            <div class="label">Eliminações</div>
+            <div class="label">EliminaÃ§Ãµes</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">💀</div>
+            <div class="icon">ðŸ’€</div>
             <div class="value" id="totalDeaths">0</div>
             <div class="label">Mortes</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">⏱️</div>
+            <div class="icon">â±ï¸</div>
             <div class="value" id="avgSession">0h</div>
-            <div class="label">Sessão Média</div>
+            <div class="label">SessÃ£o MÃ©dia</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">🎯</div>
+            <div class="icon">ðŸŽ¯</div>
             <div class="value" id="kdRatio">0.0</div>
             <div class="label">K/D Ratio</div>
         </div>

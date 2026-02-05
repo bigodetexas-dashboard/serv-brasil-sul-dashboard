@@ -5,18 +5,18 @@ DB_FILE = "bigode_unified.db"
 
 
 def migrate():
-    print(f"Iniciando migração de Perfil Premium: {DB_FILE}...")
+    print(f"Iniciando migraÃ§Ã£o de Perfil Premium: {DB_FILE}...")
 
     if not os.path.exists(DB_FILE):
-        print("ERRO: Banco de dados não encontrado!")
+        print("ERRO: Banco de dados nÃ£o encontrado!")
         return
 
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
 
     try:
-        # 1. Campos de Personalização e Privacidade
-        print("Adicionando campos de personalização...")
+        # 1. Campos de PersonalizaÃ§Ã£o e Privacidade
+        print("Adicionando campos de personalizaÃ§Ã£o...")
         columns_to_add = [
             ("bio_type", "TEXT DEFAULT 'auto'"),
             ("bio_content", "TEXT"),
@@ -24,7 +24,7 @@ def migrate():
             ("avatar_url", "TEXT"),
             ("show_stats", "INTEGER DEFAULT 1"),
             ("pinned_achievements", "TEXT"),  # JSON list
-            # Métricas de Playstyle
+            # MÃ©tricas de Playstyle
             ("zombie_kills", "INTEGER DEFAULT 0"),
             ("buildings_placed", "INTEGER DEFAULT 0"),
             ("trees_cut", "INTEGER DEFAULT 0"),
@@ -37,9 +37,9 @@ def migrate():
                 cur.execute(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}")
                 print(f"  + Coluna {col_name} adicionada.")
             except sqlite3.OperationalError:
-                print(f"  - Coluna {col_name} já existe.")
+                print(f"  - Coluna {col_name} jÃ¡ existe.")
 
-        # 2. Tabela de Histórico de Clãs
+        # 2. Tabela de HistÃ³rico de ClÃ£s
         print("Criando tabela clan_history...")
         cur.execute("""
         CREATE TABLE IF NOT EXISTS clan_history (
@@ -53,10 +53,10 @@ def migrate():
         """)
 
         conn.commit()
-        print("MIGRAÇÃO CONCLUÍDA: Banco de dados atualizado para Perfil Premium.")
+        print("MIGRAÃ‡ÃƒO CONCLUÃDA: Banco de dados atualizado para Perfil Premium.")
 
     except Exception as e:
-        print(f"ERRO durante a migração: {e}")
+        print(f"ERRO durante a migraÃ§Ã£o: {e}")
         conn.rollback()
     finally:
         conn.close()

@@ -29,16 +29,16 @@ async def test_fallback():
     print("=" * 70)
 
     # 1. Teste com Groq (deve funcionar)
-    print("\n[FASE 1] Testando motor primário (Groq)...")
+    print("\n[FASE 1] Testando motor primÃ¡rio (Groq)...")
     try:
         resp1 = await ai_integration.ask_ai_hybrid(
             "Oi Bigodudo, teste do Groq.", "test_user"
         )
-        print(f"✅ Groq OK: {resp1[:50]}...")
+        print(f"âœ… Groq OK: {resp1[:50]}...")
     except Exception as e:
-        print(f"❌ Erro inesperado no Groq: {e}")
+        print(f"âŒ Erro inesperado no Groq: {e}")
 
-    # 2. Simular falha no Groq (limpando a chave na memória do módulo)
+    # 2. Simular falha no Groq (limpando a chave na memÃ³ria do mÃ³dulo)
     print("\n[FASE 2] Simulando falha no Groq...")
     original_key = ai_integration.GROQ_API_KEY
     ai_integration.GROQ_API_KEY = "chave_invalida_teste"
@@ -48,15 +48,15 @@ async def test_fallback():
         resp2 = await ai_integration.ask_ai_hybrid(
             "Oi Bigodudo, teste do Gemini.", "test_user"
         )
-        print(f"✅ Fallback OK (Gemini respondeu): {resp2[:50]}...")
+        print(f"âœ… Fallback OK (Gemini respondeu): {resp2[:50]}...")
     except Exception as e:
-        print(f"❌ Falha no Fallback: {e}")
+        print(f"âŒ Falha no Fallback: {e}")
     finally:
         # Restaurar a chave
         ai_integration.GROQ_API_KEY = original_key
 
     print("\n" + "=" * 70)
-    print("TESTE DE ROBUSTEZ CONCLUÍDO")
+    print("TESTE DE ROBUSTEZ CONCLUÃDO")
     print("=" * 70)
 
 

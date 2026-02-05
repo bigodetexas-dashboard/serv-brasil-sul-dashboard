@@ -2,7 +2,7 @@ import os
 import requests
 from concurrent.futures import ThreadPoolExecutor
 
-# Configurações
+# ConfiguraÃ§Ãµes
 # URL base do iZurvive (pode precisar de ajustes se mudar)
 BASE_URL = "https://maps.izurvive.com/maps/chernarusplus/{z}/{x}/{y}.png"
 OUTPUT_DIR = "static/tiles"
@@ -20,7 +20,7 @@ def download_tile(z, x, y):
     filepath = os.path.join(path, filename)
 
     if os.path.exists(filepath):
-        return  # Já existe
+        return  # JÃ¡ existe
 
     os.makedirs(path, exist_ok=True)
 
@@ -41,7 +41,7 @@ def main():
 
     tasks = []
     for z in ZOOM_LEVELS:
-        # Calcular limites para cada zoom (Chernarus é aprox quadrado)
+        # Calcular limites para cada zoom (Chernarus Ã© aprox quadrado)
         # Zoom 0: 1x1
         # Zoom 1: 2x2
         # Zoom 2: 4x4
@@ -60,10 +60,10 @@ def main():
     with ThreadPoolExecutor(max_workers=10) as executor:
         for z, x, y in tasks:
             executor.submit(download_tile, z, x, y)
-            # Pequeno delay para não sobrecarregar
+            # Pequeno delay para nÃ£o sobrecarregar
             # time.sleep(0.01)
 
-    print("Download concluído!")
+    print("Download concluÃ­do!")
 
 
 if __name__ == "__main__":

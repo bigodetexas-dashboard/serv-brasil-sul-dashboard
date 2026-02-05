@@ -12,7 +12,7 @@ from utils.deaths_helper import get_location_name
 
 @app.route("/api/deaths/recent", methods=["GET"])
 def api_deaths_recent():
-    """Retorna mortes recentes com paginação"""
+    """Retorna mortes recentes com paginaÃ§Ã£o"""
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page", 20))
     offset = (page - 1) * per_page
@@ -66,11 +66,11 @@ def api_deaths_recent():
 
 @app.route("/api/deaths/stats", methods=["GET"])
 def api_deaths_stats():
-    """Retorna estatísticas de mortes (últimas 24h)"""
+    """Retorna estatÃ­sticas de mortes (Ãºltimas 24h)"""
     conn = get_db_connection()
     cur = conn.cursor()
 
-    # Stats básicas
+    # Stats bÃ¡sicas
     cur.execute("""
         SELECT
             COUNT(*) as total,
@@ -122,7 +122,7 @@ def api_deaths_stats():
 
 
 def get_time_ago(timestamp):
-    """Converte timestamp para 'há X minutos/horas'"""
+    """Converte timestamp para 'hÃ¡ X minutos/horas'"""
     if not timestamp:
         return "Desconhecido"
 
@@ -131,13 +131,13 @@ def get_time_ago(timestamp):
     seconds = diff.total_seconds()
 
     if seconds < 60:
-        return "há poucos segundos"
+        return "hÃ¡ poucos segundos"
     elif seconds < 3600:
         minutes = int(seconds / 60)
-        return f"há {minutes} min"
+        return f"hÃ¡ {minutes} min"
     elif seconds < 86400:
         hours = int(seconds / 3600)
-        return f"há {hours}h"
+        return f"hÃ¡ {hours}h"
     else:
         days = int(seconds / 86400)
-        return f"há {days}d"
+        return f"hÃ¡ {days}d"

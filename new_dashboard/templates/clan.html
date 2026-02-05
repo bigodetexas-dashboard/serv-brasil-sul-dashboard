@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clã - BIGODETEXAS - XBOX</title>
+    <title>ClÃ£ - BIGODETEXAS - XBOX</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
@@ -18,13 +18,14 @@
                 <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
             </a>
             <ul class="navbar-menu">
-                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
+                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> InÃ­cio</a></li>
                 <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
                 <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
                 <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
-                <li><a href="/deaths" class="navbar-link"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
+                <li><a href="/deaths" class="navbar-link"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
+
                 <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
-                <li><a href="/clan" class="navbar-link active"><i class="ri-team-line"></i> Clã</a></li>
+                <li><a href="/clan" class="navbar-link active"><i class="ri-team-line"></i> ClÃ£</a></li>
                 <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Texas</a></li>
                 <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
                 <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
@@ -35,17 +36,17 @@
 
     <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 2rem;">
         <div style="text-align: center; margin-bottom: 3rem;">
-            <h1><i class="ri-team-fill" style="color: var(--accent);"></i> Gerenciamento de Clã</h1>
-            <p>Crie ou gerencie seu clã</p>
+            <h1><i class="ri-team-fill" style="color: var(--accent);"></i> Gerenciamento de ClÃ£</h1>
+            <p>Crie ou gerencie seu clÃ£</p>
         </div>
 
-        <!-- Criar Clã -->
+        <!-- Criar ClÃ£ -->
         <div id="create-clan-section"
             style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
-            <h2>Criar Novo Clã</h2>
+            <h2>Criar Novo ClÃ£</h2>
             <div style="max-width: 600px; margin: 0 auto;">
                 <div style="margin-bottom: 1rem;">
-                    <label>Nome do Clã</label>
+                    <label>Nome do ClÃ£</label>
                     <input type="text" id="clan-name" class="search-input" placeholder="Ex: Jardineiros" maxlength="50">
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
@@ -61,12 +62,12 @@
                     </div>
                 </div>
                 <button onclick="createClan()" class="btn btn-primary" style="width: 100%;">
-                    <i class="ri-add-line"></i> Criar Clã
+                    <i class="ri-add-line"></i> Criar ClÃ£
                 </button>
             </div>
         </div>
 
-        <!-- Informações do Clã -->
+        <!-- InformaÃ§Ãµes do ClÃ£ -->
         <div id="clan-info" style="display: none;">
             <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 1rem;">
                 <h2 id="clan-name-display"></h2>
@@ -93,7 +94,7 @@
                 const data = await response.json();
 
                 if (data.has_clan) {
-                    // Esconder criação e mostrar info
+                    // Esconder criaÃ§Ã£o e mostrar info
                     document.getElementById('create-clan-section').style.display = 'none';
                     document.getElementById('clan-info').style.display = 'block';
 
@@ -101,7 +102,7 @@
                     const info = data.info;
                     const members = data.members;
 
-                    // Cabeçalho do Clã com Cores
+                    // CabeÃ§alho do ClÃ£ com Cores
                     const header = document.getElementById('clan-name-display');
                     header.innerHTML = `
                         <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
@@ -117,7 +118,7 @@
                             </div>
                             ${info.role !== 'leader' ?
                             `<button onclick="leaveClan()" class="btn" style="background: #ef4444; color: white; font-size: 0.8rem; padding: 0.3rem 0.8rem;">
-                                    <i class="ri-door-open-line"></i> Sair do Clã
+                                    <i class="ri-door-open-line"></i> Sair do ClÃ£
                                 </button>` : ''
                         }
                         </div>
@@ -221,13 +222,13 @@
                     membersList.innerHTML = membersHTML;
 
                 } else {
-                    // Mostrar criação
+                    // Mostrar criaÃ§Ã£o
                     document.getElementById('create-clan-section').style.display = 'block';
                     document.getElementById('clan-info').style.display = 'none';
                 }
 
             } catch (error) {
-                console.error('Erro ao carregar clã:', error);
+                console.error('Erro ao carregar clÃ£:', error);
             }
         }
 
@@ -276,7 +277,7 @@
         }
 
         async function leaveClan() {
-            if (!confirm('Tem certeza que deseja sair do clã?')) return;
+            if (!confirm('Tem certeza que deseja sair do clÃ£?')) return;
 
             try {
                 const response = await fetch('/api/clan/leave', { method: 'POST' });
@@ -284,7 +285,7 @@
                     window.location.reload();
                 } else {
                     const data = await response.json();
-                    alert(data.error || 'Erro ao sair do clã');
+                    alert(data.error || 'Erro ao sair do clÃ£');
                 }
             } catch (error) {
                 console.error(error);
@@ -298,7 +299,7 @@
 
             // ... rest of createClan
             if (!name) {
-                alert('Digite um nome para o clã!');
+                alert('Digite um nome para o clÃ£!');
                 return;
             }
 
@@ -312,14 +313,14 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('Clã criado com sucesso!');
+                    alert('ClÃ£ criado com sucesso!');
                     loadClanInfo(); // Recarregar para mostrar o painel
                 } else {
-                    alert(data.error || 'Erro ao criar clã');
+                    alert(data.error || 'Erro ao criar clÃ£');
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao criar clã');
+                alert('Erro ao criar clÃ£');
             }
         }
     </script>

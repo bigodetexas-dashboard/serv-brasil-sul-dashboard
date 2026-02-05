@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIGODETEXAS - ARQUIVOS CONFIDENCIAIS</title>
+    <title>BIGODETEXAS - {{ _('ARQUIVOS CONFIDENCIAIS') }}</title>
     <!-- Fontes Estilo Datilografia -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -232,93 +232,98 @@
 
 <body>
 
-    <a href="/" class="back-btn"><i class="ri-arrow-left-line"></i> VOLTAR AO SISTEMA</a>
+    <a href="/" class="back-btn"><i class="ri-arrow-left-line"></i> {{ _('VOLTAR AO SISTEMA') }}</a>
 
-    <div class="classified-stamp">TOP SECRET</div>
+    <div class="classified-stamp">{{ _('TOP SECRET') }}</div>
 
     <div class="folder-container">
-        <div class="folder-tab">ARQUIVO: REGRAS_V2.doc</div>
+        <div class="folder-tab">{{ _('ARQUIVO: REGRAS_V2.doc') }}</div>
 
         <div class="case-file">
             <div class="paper-clip"></div>
-            <div class="top-secret-stamp">CONFIDENCIAL</div>
+            <div class="top-secret-stamp">{{ _('CONFIDENCIAL') }}</div>
 
-            <h1>DOSSIÊ BIGODETEXAS</h1>
-            <p style="text-align: center; font-style: italic; margin-bottom: 40px;">*** PARA OLHOS AUTORIZADOS APENAS
-                ***</p>
+            <h1>{{ _('DOSSIÊ BIGODETEXAS') }}</h1>
+            <p style="text-align: center; font-style: italic; margin-bottom: 40px;">*** {{ _('PARA OLHOS AUTORIZADOS
+                APENAS') }} ***</p>
 
             <div class="content-section">
-                <h2>1. VISÃO GERAL DA MISSÃO</h2>
-                <p>O servidor foi criado com um objetivo claro: <strong>LIBERDADE</strong>. Mas liberdade sem ordem é
-                    caos.</p>
-                <p>Sabemos que "fazer loot" exige estratégia e que construir uma base é uma das etapas fundamentais
-                    dessa operação. Porém, a Inteligência Central sabe: <br>
-                    <em>"Leva-se dias para erguer uma fortaleza, mas apenas minutos para derrubá-la."</em>
+                <h2>1. {{ _('VISÃO GERAL DA MISSÃO') }}</h2>
+                <p>{{ _('O servidor foi criado com um objetivo claro:') }} <strong>{{ _('LIBERDADE') }}</strong>. {{
+                    _('Mas liberdade sem ordem é caos.') }}</p>
+                <p>{{ _('Sabemos que "fazer loot" exige estratégia e que construir uma base é uma das etapas
+                    fundamentais dessa operação. Porém, a Inteligência Central sabe:') }} <br>
+                    <em>"{{ _('Leva-se dias para erguer uma fortaleza, mas apenas minutos para derrubá-la.') }}"</em>
                 </p>
-                <p>Por isso, o <strong>SISTEMA BIGODE TEXAS</strong> foi ativado. Nossa prioridade: Monitorar ameaças e
-                    PROTEGER o patrimônio dos sobreviventes cadastrados.</p>
+                <p>{{ _('Por isso, o') }} <strong>{{ _('SISTEMA BIGODE TEXAS') }}</strong> {{ _('foi ativado. Nossa
+                    prioridade: Monitorar ameaças e PROTEGER o patrimônio dos sobreviventes cadastrados.') }}</p>
             </div>
 
             <div class="content-section">
-                <h2>2. PROTOCOLO DE CONFLITO (RAID)</h2>
+                <h2>2. {{ _('PROTOCOLO DE CONFLITO (RAID)') }}</h2>
                 <div class="warning-box">
                     <p style="text-align: center; font-weight: bold; color: var(--red-stamp);">
-                        <i class="ri-alarm-warning-line"></i> HORÁRIO DE ENGAGEMENTO <i
+                        <i class="ri-alarm-warning-line"></i> {{ _('HORÁRIO DE ENGAJAMENTO') }} <i
                             class="ri-alarm-warning-line"></i>
                     </p>
-                    <p style="text-align: center; font-size: 1.3rem;">SÁBADOS // 20:00H - 22:00H</p>
+                    <p style="text-align: center; font-size: 1.3rem;">{{ _('SÁBADOS // 20:00H - 22:00H') }}</p>
                 </div>
-                <p>Fora dessa janela temporal, qualquer tentativa de violação estrutural será considerada um ato de
-                    guerra ilegal.</p>
+                <p>{{ _('Fora dessa janela temporal, qualquer tentativa de violação estrutural será considerada um ato
+                    de guerra ilegal.') }}</p>
                 <ul>
-                    <li><strong>RAID TÁTICO:</strong> Permitido e encorajado. Use a falha do inimigo contra ele.</li>
-                    <li><strong>ÁREAS MILITARES:</strong> Construção AUTORIZADA. O risco é seu.</li>
+                    <li><strong>{{ _('RAID TÁTICO:') }}</strong> {{ _('Permitido e encorajado. Use a falha do inimigo
+                        contra ele.') }}</li>
+                    <li><strong>{{ _('ÁREAS MILITARES:') }}</strong> {{ _('Construção AUTORIZADA. O risco é seu.') }}
+                    </li>
                 </ul>
             </div>
 
             <div class="content-section">
-                <h2>3. SISTEMA DE DEFESA AUTOMATIZADO</h2>
-                <p>Nossos satélites e drones (Log Robot) estão ativos 24/7.</p>
-                <p>Se um agente não autorizado tentar construir (Ex: Torre de Vigia) dentro do perímetro de uma
-                    <strong>BASE REGISTRADA</strong>:</p>
-                <p style="color: var(--red-stamp); font-weight: bold; font-size: 1.2rem;">>> BANIMENTO AUTOMÁTICO
-                    (PERMANENTE) <<< /p>
-                        <p>Não há julgamento. Não há apelação. O sistema elimina a ameaça (ID XBOX) instantaneamente.
+                <h2>3. {{ _('SISTEMA DE DEFESA AUTOMATIZADO') }}</h2>
+                <p>{{ _('Nossos satélites e drones (Log Robot) estão ativos 24/7.') }}</p>
+                <p>{{ _('Se um agente não autorizado tentar construir (Ex: Torre de Vigia) dentro do perímetro de uma')
+                    }}
+                    <strong>{{ _('BASE REGISTRADA') }}</strong>:
+                </p>
+                <p style="color: var(--red-stamp); font-weight: bold; font-size: 1.2rem;">>> {{ _('BANIMENTO AUTOMÁTICO
+                    (PERMANENTE)') }} <<< /p>
+                        <p>{{ _('Não há julgamento. Não há apelação. O sistema elimina a ameaça (ID XBOX)
+                            instantaneamente.') }}
                         </p>
             </div>
 
             <div class="content-section">
-                <h2>4. DEPARTAMENTO DE RELAÇÕES HUMANAS</h2>
-                <p>Problemas emocionais? Reclamações infundadas?</p>
-                <p>Dirija-se imediatamente à <strong>SALA DO MIMIMI</strong>.</p>
-                <p><strong>Operador Responsável:</strong> Agente Admin (Fluente em Japonês).</p>
-                <p><em>Nota: Ele só atende em japonês. Boa sorte.</em></p>
+                <h2>4. {{ _('DEPARTAMENTO DE RELAÇÕES HUMANAS') }}</h2>
+                <p>{{ _('Problemas emocionais? Reclamações infundadas?') }}</p>
+                <p>{{ _('Dirija-se imediatamente à') }} <strong>{{ _('SALA DO MIMIMI') }}</strong>.</p>
+                <p><strong>{{ _('Operador Responsável:') }}</strong> {{ _('Agente Admin (Fluente em Japonês).') }}</p>
+                <p><em>{{ _('Nota: Ele só atende em japonês. Boa sorte.') }}</em></p>
             </div>
 
             <div class="content-section">
-                <h2>5. ANOMALIAS E GLITCHES</h2>
-                <p>Qualquer tentativa de "forçar a física" da realidade (bugar, duplicar, atravessar texturas) será
-                    detectada.</p>
-                <p>A punição é sumária. Fez errado? Já sabe.</p>
+                <h2>5. {{ _('ANOMALIAS E GLITCHES') }}</h2>
+                <p>{{ _('Qualquer tentativa de "forçar a física" da realidade (bugar, duplicar, atravessar texturas)
+                    será detectada.') }}</p>
+                <p>{{ _('A punição é sumária. Fez errado? Já sabe.') }}</p>
             </div>
 
             <div class="content-section">
-                <h2>ANEXO: ATIVIDADE NO LITORAL</h2>
+                <h2>{{ _('ANEXO: ATIVIDADE NO LITORAL') }}</h2>
                 <div class="photo-evidence">
-                    <img src="https://i.imgur.com/K3f3wJg.jpeg" alt="Lago Negro">
-                    <p>Fig 1.1 - Lago Negro</p>
+                    <img src="https://i.imgur.com/K3f3wJg.jpeg" alt="{{ _('Lago Negro') }}">
+                    <p>{{ _('Fig 1.1 - Lago Negro') }}</p>
                 </div>
                 <div class="map-hint">
-                    > RELATÓRIO DE INTELIGÊNCIA #402<br>
-                    > LOCAL: LITORAL SUL<br>
-                    > REF: PRÓXIMO AO NAVIO TÓXICO<br>
-                    > ALVO: "O BUNKER"<br>
-                    > DICA: CONSULTE O MAPA E LOCALIZE O "LAGO NEGRO".
+                    > {{ _('RELATÓRIO DE INTELIGÊNCIA') }} #402<br>
+                    > {{ _('LOCAL') }}: {{ _('LITORAL SUL') }}<br>
+                    > {{ _('REF: PRÓXIMO AO NAVIO TÓXICO') }}<br>
+                    > {{ _('ALVO') }}: "{{ _('O BUNKER') }}"<br>
+                    > {{ _('DICA: CONSULTE O MAPA E LOCALIZE O "LAGO NEGRO".') }}
                 </div>
             </div>
 
             <p style="text-align: center; margin-top: 50px; font-size: 0.8rem; opacity: 0.6;">
-                BIGODETEXAS SURVIVAL SYSTEM // END OF FILE
+                {{ _('BIGODETEXAS SURVIVAL SYSTEM // END OF FILE') }}
             </p>
         </div>
     </div>

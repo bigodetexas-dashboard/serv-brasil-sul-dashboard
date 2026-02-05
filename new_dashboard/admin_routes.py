@@ -1,10 +1,10 @@
 """
 Admin Routes - BigodeTexas Dashboard
-Implementa a lógica do Painel Administrativo, incluindo:
-- Texano AI (Assistente Tático com Contexto de Sistema)
-- Gerenciamento de Usuários e Alts
+Implementa a lÃ³gica do Painel Administrativo, incluindo:
+- Texano AI (Assistente TÃ¡tico com Contexto de Sistema)
+- Gerenciamento de UsuÃ¡rios e Alts
 - Controles de Servidor (Raid/Build)
-- Logs e Diagnósticos de Segurança
+- Logs e DiagnÃ³sticos de SeguranÃ§a
 """
 
 from flask import Blueprint, request, jsonify, session, current_app, render_template
@@ -14,7 +14,7 @@ import os
 import json
 from datetime import datetime, timedelta
 
-# Import integrations - Importar do diretório atual
+# Import integrations - Importar do diretÃ³rio atual
 import sys
 import os
 
@@ -94,7 +94,7 @@ def admin_panel():
 def get_system_diagnostics():
     """
     Coleta sinais vitais do sistema para dar contexto ao Texano.
-    Ele 'lê' o sistema antes de responder.
+    Ele 'lÃª' o sistema antes de responder.
     """
     diagnostics = {
         "timestamp": datetime.now().isoformat(),
@@ -109,7 +109,7 @@ def get_system_diagnostics():
         diagnostics["db_status"] = "HEALTHY"
     except:
         diagnostics["db_status"] = "CRITICAL_FAILURE"
-        diagnostics["alerts"].append("Banco de dados inacessível!")
+        diagnostics["alerts"].append("Banco de dados inacessÃ­vel!")
 
     # 2. Check recent WAF/Security Logs (Last 1 hour)
     try:
@@ -120,12 +120,12 @@ def get_system_diagnostics():
         if waf_logs > 50:
             diagnostics["security_level"] = "HIGH"
             diagnostics["alerts"].append(
-                f"Ataque em andamento? {waf_logs} violações WAF na última hora."
+                f"Ataque em andamento? {waf_logs} violaÃ§Ãµes WAF na Ãºltima hora."
             )
         elif waf_logs > 10:
             diagnostics["security_level"] = "ELEVATED"
             diagnostics["alerts"].append(
-                f"Atividade suspeita detectada: {waf_logs} tentativas de invasão."
+                f"Atividade suspeita detectada: {waf_logs} tentativas de invasÃ£o."
             )
         else:
             diagnostics["security_level"] = "NORMAL"
@@ -185,7 +185,7 @@ def texano_vitals():
 @csrf_exempt
 @admin_required
 def texano_ask():
-    """Endpoint de chat com o Texano (com injeção de contexto)"""
+    """Endpoint de chat com o Texano (com injeÃ§Ã£o de contexto)"""
     data = request.get_json()
     prompt = data.get("prompt")
 
@@ -197,13 +197,13 @@ def texano_ask():
     context_str = f"""
     [SYSTEM TELEMETRY]
     - Status DB: {diagnostics.get("db_status")}
-    - Usuários Registrados: {diagnostics.get("db_users")}
-    - Nível de Segurança: {diagnostics.get("security_level")}
+    - UsuÃ¡rios Registrados: {diagnostics.get("db_users")}
+    - NÃ­vel de SeguranÃ§a: {diagnostics.get("security_level")}
     - Entregas Pendentes: {diagnostics.get("pending_deliveries", 0)}
     - Alertas Ativos: {", ".join(diagnostics.get("alerts", []))}
     """
 
-    # 2. Enviar para IA (Versão Admin dedicada)
+    # 2. Enviar para IA (VersÃ£o Admin dedicada)
     try:
         from ai_integration import ask_ai_admin_sync
 
@@ -221,7 +221,7 @@ def texano_ask():
 @csrf_exempt
 @admin_required
 def check_alts():
-    """Verifica contas secundárias (Mesmo IP ou Hardware ID)"""
+    """Verifica contas secundÃ¡rias (Mesmo IP ou Hardware ID)"""
     data = request.get_json()
     gamertag = data.get("gamertag")
 
@@ -239,14 +239,14 @@ def check_alts():
         return jsonify(
             {
                 "success": False,
-                "error": "Jogador não encontrado na base de identidades.",
+                "error": "Jogador nÃ£o encontrado na base de identidades.",
             }
         )
 
     target_ip = target["last_ip"]
     target_xbox_id = target["xbox_id"]
 
-    # Buscar coincidências
+    # Buscar coincidÃªncias
     # 1. Por IP
     ip_matches = []
     if target_ip:
@@ -287,7 +287,7 @@ def check_alts():
 @admin_bp.route("/api/admin/users", methods=["GET"])
 @admin_required
 def list_users():
-    """Lista usuários para gerenciamento"""
+    """Lista usuÃ¡rios para gerenciamento"""
     users = query_db(
         "SELECT discord_id, discord_username, gamertag, banned FROM users LIMIT 100"
     )  # Pagination TODO
@@ -301,7 +301,7 @@ def list_users():
 @csrf_exempt
 @admin_required
 def toggle_ban():
-    """Banir/Desbanir usuário"""
+    """Banir/Desbanir usuÃ¡rio"""
     data = request.get_json()
     discord_id = data.get("discord_id")
 
@@ -331,8 +331,8 @@ def toggle_ban():
 @admin_required
 def get_logs():
     """Retorna logs do sistema (Simulado/Real)"""
-    # Aqui deveríamos ler logs reais do Nitrado ou DB
-    # Por enquanto, vamos mockar algo para teste se não tiver DB de logs
+    # Aqui deverÃ­amos ler logs reais do Nitrado ou DB
+    # Por enquanto, vamos mockar algo para teste se nÃ£o tiver DB de logs
 
     # Tentar ler logs reais do DB se existirem
     logs = query_db("SELECT * FROM game_logs ORDER BY timestamp DESC LIMIT 50")
@@ -367,7 +367,7 @@ def get_logs():
 @csrf_exempt
 @admin_required
 def update_settings():
-    """Atualiza configurações de Raid/Build"""
+    """Atualiza configuraÃ§Ãµes de Raid/Build"""
     data = request.get_json()
 
     # Salvar em arquivo JSON ou DB
@@ -395,7 +395,7 @@ def update_settings():
 @admin_bp.route("/api/admin/dashboard_stats", methods=["GET"])
 @admin_required
 def dashboard_stats():
-    """Estatísticas gerais para o Admin Dashboard"""
+    """EstatÃ­sticas gerais para o Admin Dashboard"""
 
     # Ler config
     config_path = os.path.join(
@@ -436,14 +436,14 @@ def check_raid_zone():
     x = float(data.get("x", 0))
     z = float(data.get("z", 0))
 
-    # Lógica de verificação de raio de base (Mock para exemplo)
-    # Na real, faria query no DB de bases calculando distância
+    # LÃ³gica de verificaÃ§Ã£o de raio de base (Mock para exemplo)
+    # Na real, faria query no DB de bases calculando distÃ¢ncia
 
     bases = query_db("SELECT * FROM bases")
     triggered = []
 
     for b in bases or []:
-        # Distância Euclidiana simples (ignora Y)
+        # DistÃ¢ncia Euclidiana simples (ignora Y)
         dist = ((x - b["x"]) ** 2 + (z - b["z"]) ** 2) ** 0.5
         if dist < 100:  # 100m raio
             triggered.append(f"Base de {b['owner_gamertag']} ({int(dist)}m)")

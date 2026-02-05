@@ -31,7 +31,7 @@ async def monitor_logs_and_react():
     the latest RPT or Chat logs from Nitrado via FTP.
     """
     print("=" * 60)
-    print("🥸 BIGODUDO IN-GAME MONITOR STARTED")
+    print("ðŸ¥¸ BIGODUDO IN-GAME MONITOR STARTED")
     print(f"Check Interval: {LOG_CHECK_INTERVAL}s")
     print("=" * 60)
 

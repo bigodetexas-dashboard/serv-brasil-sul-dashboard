@@ -171,7 +171,7 @@
 <div class="base-container">
     <div class="base-header">
         <h1><i class="ri-shield-user-fill" style="color: var(--accent);"></i> Gerenciar Bases</h1>
-        <p>Controle suas bases e gerencie permissões de acesso.</p>
+        <p>Controle suas bases e gerencie permissÃµes de acesso.</p>
     </div>
 
     <div class="manage-tabs">
@@ -210,7 +210,7 @@
 <div id="perm-modal" class="modal">
     <div class="modal-content">
         <button class="close-modal" onclick="closeModal()">&times;</button>
-        <h2 id="modal-base-name">Permissões de Acesso</h2>
+        <h2 id="modal-base-name">PermissÃµes de Acesso</h2>
         <input type="hidden" id="current-base-id">
 
         <div class="perm-list" id="perm-list-container">
@@ -259,7 +259,7 @@
                 container.innerHTML = `
                     <div style="text-align:center; padding: 3rem; background: rgba(255,255,255,0.03); border-radius: 1rem;">
                         <h3>Nenhuma base encontrada</h3>
-                        <p style="color: var(--text-secondary);">Você ainda não registrou nenhuma base.</p>
+                        <p style="color: var(--text-secondary);">VocÃª ainda nÃ£o registrou nenhuma base.</p>
                         <button class="action-btn" style="margin-top:1rem;" onclick="switchTab('register-base')">Registrar Agora</button>
                     </div>`;
                 return;
@@ -269,12 +269,12 @@
                 <div class="base-card">
                     <div class="base-info">
                         <h3>${base.name}</h3>
-                        <p><i class="ri-map-pin-line"></i> ${base.location || 'Sem localização'}</p>
+                        <p><i class="ri-map-pin-line"></i> ${base.location || 'Sem localizaÃ§Ã£o'}</p>
                         <p style="font-size: 0.8rem; margin-top: 0.5rem;">Criada em: ${new Date(base.created_at).toLocaleDateString()}</p>
                     </div>
                     <div>
                         <button class="action-btn" onclick="openPermModal(${base.id}, '${base.name}')">
-                            <i class="ri-group-line"></i> Permissões
+                            <i class="ri-group-line"></i> PermissÃµes
                         </button>
                     </div>
                 </div>
@@ -316,14 +316,14 @@
                 alert("Erro: " + (data.error || "Desconhecido"));
             }
         } catch (e) {
-            alert("Erro de conexão");
+            alert("Erro de conexÃ£o");
         }
     }
 
     // --- PERMISSIONS MODAL ---
     async function openPermModal(baseId, baseName) {
         document.getElementById('perm-modal').style.display = 'flex';
-        document.getElementById('modal-base-name').textContent = `Permissões: ${baseName}`;
+        document.getElementById('modal-base-name').textContent = `PermissÃµes: ${baseName}`;
         document.getElementById('current-base-id').value = baseId;
         loadPermissions(baseId);
     }
@@ -341,7 +341,7 @@
             const perms = await res.json();
 
             if (perms.length === 0) {
-                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Nenhuma permissão concedida ainda.</p>';
+                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Nenhuma permissÃ£o concedida ainda.</p>';
                 return;
             }
 
@@ -359,7 +359,7 @@
             `).join('');
 
         } catch (e) {
-            list.innerHTML = 'Erro ao carregar permissões.';
+            list.innerHTML = 'Erro ao carregar permissÃµes.';
         }
     }
 
@@ -381,7 +381,7 @@
                 document.getElementById('new-perm-id').value = '';
                 loadPermissions(baseId);
             } else {
-                alert("Erro ao adicionar permissão");
+                alert("Erro ao adicionar permissÃ£o");
             }
         } catch (e) {
             console.error(e);
@@ -389,7 +389,7 @@
     }
 
     async function revokePermission(baseId, discordId) {
-        if (!confirm("Remover permissão deste usuário?")) return;
+        if (!confirm("Remover permissÃ£o deste usuÃ¡rio?")) return;
 
         try {
             const res = await fetch(`/api/base/${baseId}/permission`, {
@@ -401,7 +401,7 @@
             if (res.ok) {
                 loadPermissions(baseId);
             } else {
-                alert("Erro ao remover permissão");
+                alert("Erro ao remover permissÃ£o");
             }
         } catch (e) {
             console.error(e);

@@ -1,19 +1,17 @@
-# Russian translations for PROJECT.
+# Translations template for PROJECT.
 # Copyright (C) 2026 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-02-05 14:57-0600\n"
-"PO-Revision-Date: 2026-02-04 21:34-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: ru\n"
-"Language-Team: ru <LL@li.org>\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,7 +19,7 @@ msgstr ""
 
 #: templates/dashboard.html:3 templates/layout.html:137
 msgid "Meu Perfil"
-msgstr "Мой профиль"
+msgstr ""
 
 #: templates/dashboard.html:20
 msgid "Carregando..."
@@ -267,7 +265,7 @@ msgstr ""
 
 #: templates/dashboard.html:287 templates/layout.html:132
 msgid "Clã"
-msgstr "Клан"
+msgstr ""
 
 #: templates/dashboard.html:288
 msgid ""
@@ -277,7 +275,7 @@ msgstr ""
 
 #: templates/dashboard.html:292 templates/layout.html:130
 msgid "Base"
-msgstr "База"
+msgstr ""
 
 #: templates/dashboard.html:293
 msgid ""
@@ -315,9 +313,8 @@ msgid ""
 msgstr ""
 
 #: templates/dashboard.html:318
-#, fuzzy
 msgid "Ranking:"
-msgstr "Рейтинги"
+msgstr ""
 
 #: templates/dashboard.html:318
 msgid ""
@@ -335,7 +332,7 @@ msgstr ""
 
 #: templates/dashboard.html:350 templates/layout.html:134
 msgid "Banco Texas"
-msgstr "Банк Техаса"
+msgstr ""
 
 #: templates/dashboard.html:351
 msgid "Transferência de DZ Coins"
@@ -379,12 +376,11 @@ msgstr ""
 
 #: templates/deaths.html:3 templates/layout.html:128
 msgid "Tiro na Lata"
-msgstr "Лента убийств"
+msgstr ""
 
 #: templates/deaths.html:126
-#, fuzzy
 msgid "TIRO NA LATA"
-msgstr "Лента убийств"
+msgstr ""
 
 #: templates/deaths.html:135
 msgid "Total (24h)"
@@ -516,9 +512,8 @@ msgid "Erro ao carregar mortes. Tente novamente."
 msgstr ""
 
 #: templates/heatmap.html:3 templates/heatmap.html:18
-#, fuzzy
 msgid "Mapa de Calor PvP"
-msgstr "Тепловая карта"
+msgstr ""
 
 #: templates/heatmap.html:19
 msgid ""
@@ -661,7 +656,7 @@ msgstr ""
 #: templates/index.html:57 templates/layout.html:122
 #: templates/leaderboard.html:3
 msgid "Rankings"
-msgstr "Рейтинги"
+msgstr ""
 
 #: templates/index.html:58
 msgid "Compete nos rankings de kills, K/D, riqueza e muito mais!"
@@ -701,32 +696,31 @@ msgstr ""
 
 #: templates/layout.html:115
 msgid "Início"
-msgstr "Главная"
+msgstr ""
 
 #: templates/layout.html:117
 msgid "Regras"
-msgstr "Правила"
+msgstr ""
 
 #: templates/layout.html:119 templates/shop.html:3
 msgid "Loja"
-msgstr "Магазин"
+msgstr ""
 
 #: templates/layout.html:124
 msgid "Mural"
-msgstr "Стена"
+msgstr ""
 
 #: templates/layout.html:126
 msgid "Mapa de Calor"
-msgstr "Тепловая карта"
+msgstr ""
 
 #: templates/layout.html:140
 msgid "Agradecimentos"
-msgstr "Титра"
+msgstr ""
 
 #: templates/leaderboard.html:12
-#, fuzzy
 msgid "Rankings Globais"
-msgstr "Рейтинги"
+msgstr ""
 
 #: templates/leaderboard.html:13
 msgid "Os melhores sobreviventes do servidor em diversas categorias."
@@ -952,9 +946,8 @@ msgid "RELATÓRIO DE INTELIGÊNCIA"
 msgstr ""
 
 #: templates/regras.html:318
-#, fuzzy
 msgid "LOCAL"
-msgstr "Магазин"
+msgstr ""
 
 #: templates/regras.html:318
 msgid "LITORAL SUL"

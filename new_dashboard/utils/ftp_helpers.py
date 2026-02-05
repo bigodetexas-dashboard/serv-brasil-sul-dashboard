@@ -24,7 +24,7 @@ import time
 
 def connect_ftp(retries=3, delay=2):
     """
-    Estabelece conexão segura com o servidor FTP usando TLS.
+    Estabelece conexÃ£o segura com o servidor FTP usando TLS.
     Tenta conectar 'retries' vezes com 'delay' segundos de intervalo.
     """
     for attempt in range(retries):
@@ -77,7 +77,7 @@ def upload_spawn_request(item_name, coords):
 
         ftp = connect_ftp(retries=4, delay=2)
         if ftp:
-            # Tenta entrar no diretório de perfil (padrão Nitroserv/Nitrado)
+            # Tenta entrar no diretÃ³rio de perfil (padrÃ£o Nitroserv/Nitrado)
             for path in ["/dayzxb/config", "SC", "profile"]:
                 try:
                     ftp.cwd(path)
@@ -94,7 +94,7 @@ def upload_spawn_request(item_name, coords):
                 os.remove(filename)
             return True
         else:
-            print("[FTP] Falha crítica: Não foi possível conectar após várias tentativas.")
+            print("[FTP] Falha crÃ­tica: NÃ£o foi possÃ­vel conectar apÃ³s vÃ¡rias tentativas.")
             # Don't delete local file if failed? No, we should clean up or it accumulates.
             if os.path.exists(filename):
                 os.remove(filename)

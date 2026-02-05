@@ -24,10 +24,10 @@ GROQ_KEY = os.getenv("GROQ_API_KEY")
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 
 print("=" * 70)
-print("TESTE DO SISTEMA HÍBRIDO DE IA - TEXANO AI (BIGODUDO)")
+print("TESTE DO SISTEMA HÃBRIDO DE IA - TEXANO AI (BIGODUDO)")
 print("=" * 70)
-print(f"Groq API Key: {GROQ_KEY[:15] if GROQ_KEY else 'NÃO CONFIGURADA'}...")
-print(f"Gemini API Key: {GEMINI_KEY[:15] if GEMINI_KEY else 'NÃO CONFIGURADA'}...")
+print(f"Groq API Key: {GROQ_KEY[:15] if GROQ_KEY else 'NÃƒO CONFIGURADA'}...")
+print(f"Gemini API Key: {GEMINI_KEY[:15] if GEMINI_KEY else 'NÃƒO CONFIGURADA'}...")
 print()
 
 # Test 1: Simple question
@@ -35,10 +35,10 @@ print("Teste 1: Pergunta simples ao Bigodudo")
 print("-" * 70)
 
 try:
-    response = ask_ai_sync("Olá Bigodudo, você está funcionando?", "test_user_123")
-    print(f"✅ Resposta: {response}")
+    response = ask_ai_sync("OlÃ¡ Bigodudo, vocÃª estÃ¡ funcionando?", "test_user_123")
+    print(f"âœ… Resposta: {response}")
 except Exception as e:
-    print(f"❌ Erro: {e}")
+    print(f"âŒ Erro: {e}")
 
 print()
 
@@ -47,16 +47,16 @@ print("Teste 2: Pergunta sobre o jogo")
 print("-" * 70)
 
 try:
-    response = ask_ai_sync("Como ganho coins rápido?", "test_user_123")
-    print(f"✅ Resposta: {response}")
+    response = ask_ai_sync("Como ganho coins rÃ¡pido?", "test_user_123")
+    print(f"âœ… Resposta: {response}")
 except Exception as e:
-    print(f"❌ Erro: {e}")
+    print(f"âŒ Erro: {e}")
 
 print()
 
 # Statistics
 print("=" * 70)
-print("ESTATÍSTICAS DE USO")
+print("ESTATÃSTICAS DE USO")
 print("=" * 70)
 stats = get_ai_stats()
 print(f"Total de chamadas: {stats['total_calls']}")
@@ -70,5 +70,5 @@ print(f"Erros Groq: {stats['groq_errors']}")
 print(f"Erros Gemini: {stats['gemini_errors']}")
 print()
 print("=" * 70)
-print("TESTE CONCLUÍDO")
+print("TESTE CONCLUÃDO")
 print("=" * 70)

@@ -380,13 +380,13 @@
 {% block content %}
 <div class="achievements-container">
     <div class="page-header">
-        <h1>🏆 Conquistas</h1>
+        <h1>ðŸ† Conquistas</h1>
         <p>Desbloqueie conquistas e mostre suas habilidades em DayZ</p>
     </div>
 
     <div class="stats-overview">
         <div class="stat-card">
-            <div class="icon">🏆</div>
+            <div class="icon">ðŸ†</div>
             <div class="value" id="totalUnlocked">0</div>
             <div class="label">Desbloqueadas</div>
             <div class="progress-bar-container">
@@ -395,21 +395,21 @@
         </div>
 
         <div class="stat-card">
-            <div class="icon">⭐</div>
+            <div class="icon">â­</div>
             <div class="value" id="totalPoints">0</div>
             <div class="label">Pontos de Conquista</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">💎</div>
+            <div class="icon">ðŸ’Ž</div>
             <div class="value" id="rareCount">0</div>
             <div class="label">Conquistas Raras</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">🔥</div>
+            <div class="icon">ðŸ”¥</div>
             <div class="value" id="completionRate">0%</div>
-            <div class="label">Taxa de Conclusão</div>
+            <div class="label">Taxa de ConclusÃ£o</div>
         </div>
     </div>
 
@@ -418,8 +418,8 @@
         <div class="filter-tab" data-filter="unlocked">Desbloqueadas</div>
         <div class="filter-tab" data-filter="locked">Bloqueadas</div>
         <div class="filter-tab" data-filter="combat">Combate</div>
-        <div class="filter-tab" data-filter="survival">Sobrevivência</div>
-        <div class="filter-tab" data-filter="exploration">Exploração</div>
+        <div class="filter-tab" data-filter="survival">SobrevivÃªncia</div>
+        <div class="filter-tab" data-filter="exploration">ExploraÃ§Ã£o</div>
         <div class="filter-tab" data-filter="social">Social</div>
     </div>
 
@@ -448,7 +448,7 @@
                 loadMockData();
             }
         } catch (error) {
-            console.error('Erro na requisição:', error);
+            console.error('Erro na requisiÃ§Ã£o:', error);
             loadMockData();
         }
     }
@@ -477,7 +477,7 @@
                 id: 'first_kill',
                 title: "Primeiro Sangue",
                 description: "Elimine seu primeiro jogador em combate PvP",
-                icon: "⚔️",
+                icon: "âš”ï¸",
                 category: "combat",
                 rarity: "common",
                 tier: "bronze",
@@ -492,7 +492,7 @@
                 id: 'survivor_24h',
                 title: "Sobrevivente Experiente",
                 description: "Sobreviva por 24 horas consecutivas",
-                icon: "🎯",
+                icon: "ðŸŽ¯",
                 category: "survival",
                 rarity: "rare",
                 tier: "silver",
@@ -505,9 +505,9 @@
             },
             {
                 id: 'killer_100',
-                title: "Caçador Lendário",
+                title: "CaÃ§ador LendÃ¡rio",
                 description: "Elimine 100 jogadores em combate",
-                icon: "🔫",
+                icon: "ðŸ”«",
                 category: "combat",
                 rarity: "epic",
                 tier: "gold",
@@ -543,7 +543,7 @@
             card.innerHTML = `
             <div class="achievement-header">
                 <div class="achievement-icon">
-                    ${achievement.unlocked ? achievement.icon : '<div class="lock-overlay">🔒</div>'}
+                    ${achievement.unlocked ? achievement.icon : '<div class="lock-overlay">ðŸ”’</div>'}
                 </div>
                 <div class="achievement-info">
                     <div class="achievement-title">${achievement.title}</div>
@@ -566,13 +566,13 @@
 
             ${achievement.unlocked && achievement.unlockedDate ? `
                 <div class="achievement-date">
-                    <span>🗓️</span>
+                    <span>ðŸ—“ï¸</span>
                     <span>Desbloqueada em ${new Date(achievement.unlockedDate).toLocaleDateString('pt-BR')}</span>
                 </div>
             ` : ''}
 
             <div class="achievement-reward">
-                <span>🎁</span>
+                <span>ðŸŽ</span>
                 <span>${achievement.reward}</span>
             </div>
         `;
@@ -692,12 +692,12 @@
             if (response.ok) {
                 const currentUnlocked = data.filter(a => a.unlocked);
 
-                // Se há mais conquistas desbloqueadas que antes
+                // Se hÃ¡ mais conquistas desbloqueadas que antes
                 if (lastUnlockedCount > 0 && currentUnlocked.length > lastUnlockedCount) {
                     // Encontrar as novas conquistas
                     const newAchievements = currentUnlocked.slice(lastUnlockedCount);
 
-                    // Mostrar notificação para cada nova conquista
+                    // Mostrar notificaÃ§Ã£o para cada nova conquista
                     newAchievements.forEach(achievement => {
                         if (typeof showAchievementNotification === 'function') {
                             showAchievementNotification(achievement);

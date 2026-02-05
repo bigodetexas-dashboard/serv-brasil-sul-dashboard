@@ -5,11 +5,10 @@
 #
 msgid ""
 msgstr ""
-msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-04 21:20-0600\n"
-"PO-Revision-Date: 2026-02-04 21:20-0600\n"
+"POT-Creation-Date: 2026-02-05 14:57-0600\n"
+"PO-Revision-Date: 2026-02-04 21:34-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ko\n"
 "Language-Team: ko <LL@li.org>\n"
@@ -18,4 +17,1079 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+
+#: templates/dashboard.html:3 templates/layout.html:137
+msgid "Meu Perfil"
+msgstr "내 프로필"
+
+#: templates/dashboard.html:20
+msgid "Carregando..."
+msgstr ""
+
+#: templates/dashboard.html:24
+msgid "Veterano"
+msgstr ""
+
+#: templates/dashboard.html:27
+msgid "Xbox Verificado"
+msgstr ""
+
+#: templates/dashboard.html:32
+msgid "Saldo Atual"
+msgstr ""
+
+#: templates/dashboard.html:35
+msgid "Transferir Coins"
+msgstr ""
+
+#: templates/dashboard.html:38
+msgid "Daily"
+msgstr ""
+
+#: templates/dashboard.html:49
+msgid ""
+"Sua conta Xbox não está\n"
+"                    verificada!"
+msgstr ""
+
+#: templates/dashboard.html:52
+msgid ""
+"Você precisa verificar sua Gamertag para realizar compras na loja e "
+"acessar recursos\n"
+"                    exclusivos."
+msgstr ""
+
+#: templates/dashboard.html:60
+msgid "Abra o Discord"
+msgstr ""
+
+#: templates/dashboard.html:61
+msgid ""
+"Vá em <strong>Configurações de Usuário</strong> (engrenagem) e clique na "
+"aba\n"
+"                                <strong>Conexões</strong>."
+msgstr ""
+
+#: templates/dashboard.html:66
+msgid "Adicione o Xbox"
+msgstr ""
+
+#: templates/dashboard.html:67
+msgid ""
+"Clique no ícone do <strong>Xbox</strong> e faça login com sua conta "
+"Microsoft."
+msgstr ""
+
+#: templates/dashboard.html:72
+msgid "O Pulo do Gato"
+msgstr ""
+
+#: templates/dashboard.html:73
+msgid ""
+"Ative a chavinha <strong>\"Exibir no perfil\"</strong>. Sem isso, o bot "
+"não vê sua\n"
+"                                conta!"
+msgstr ""
+
+#: templates/dashboard.html:79
+msgid "Finalizar"
+msgstr ""
+
+#: templates/dashboard.html:80
+msgid "Tudo pronto? Clique no botão abaixo para verificar."
+msgstr ""
+
+#: templates/dashboard.html:87
+msgid "JÁ VINCULEI! ATUALIZAR AGORA"
+msgstr ""
+
+#: templates/dashboard.html:90
+msgid "(Você será deslogado para que o bot leia suas novas conexões)"
+msgstr ""
+
+#: templates/dashboard.html:101
+msgid "Estatísticas de Combate"
+msgstr ""
+
+#: templates/dashboard.html:107 templates/index.html:28
+#: templates/leaderboard.html:18 templates/leaderboard.html:41
+msgid "Kills"
+msgstr ""
+
+#: templates/dashboard.html:114 templates/leaderboard.html:19
+msgid "Mortes"
+msgstr ""
+
+#: templates/dashboard.html:121 templates/leaderboard.html:20
+msgid "K/D Ratio"
+msgstr ""
+
+#: templates/dashboard.html:128
+msgid "Zumbis Mortos"
+msgstr ""
+
+#: templates/dashboard.html:135
+msgid "Melhor Série"
+msgstr ""
+
+#: templates/dashboard.html:140
+msgid "Sobrevivência"
+msgstr ""
+
+#: templates/dashboard.html:146 templates/leaderboard.html:23
+msgid "Tempo Jogado"
+msgstr ""
+
+#: templates/dashboard.html:153
+msgid "Distância (Pé)"
+msgstr ""
+
+#: templates/dashboard.html:160
+msgid "Distância (Carro)"
+msgstr ""
+
+#: templates/dashboard.html:167
+msgid "Construções"
+msgstr ""
+
+#: templates/dashboard.html:173
+msgid "Clã e Comunicação"
+msgstr ""
+
+#: templates/dashboard.html:177
+msgid "Carregando informações do clã..."
+msgstr ""
+
+#: templates/dashboard.html:183
+msgid "Rádio de Clã (Chat Interno)"
+msgstr ""
+
+#: templates/dashboard.html:184
+msgid "AO VIVO"
+msgstr ""
+
+#: templates/dashboard.html:188
+msgid "Aguardando mensagens..."
+msgstr ""
+
+#: templates/dashboard.html:191
+msgid "Digite uma mensagem tática..."
+msgstr ""
+
+#: templates/dashboard.html:198
+msgid "Convites Pendentes"
+msgstr ""
+
+#: templates/dashboard.html:206
+msgid "Guerra de Clãs"
+msgstr ""
+
+#: templates/dashboard.html:214
+msgid "Bumbas Ativas (Bounties)"
+msgstr ""
+
+#: templates/dashboard.html:217
+msgid "Nenhuma recompensa ativa no momento."
+msgstr ""
+
+#: templates/dashboard.html:237
+msgid "Bem-vindo ao BigodeTexas"
+msgstr ""
+
+#: templates/dashboard.html:238
+msgid "Seu painel de controle completo para o apocalipse."
+msgstr ""
+
+#: templates/dashboard.html:240
+msgid ""
+"Aqui você gerencia sua sobrevivência, economia e reputação no servidor "
+"mais brabo do\n"
+"                        Xbox."
+msgstr ""
+
+#: templates/dashboard.html:243
+msgid "Proteção de Base"
+msgstr ""
+
+#: templates/dashboard.html:244
+msgid "Economia Real"
+msgstr ""
+
+#: templates/dashboard.html:245
+msgid "Killfeed & Ranking"
+msgstr ""
+
+#: templates/dashboard.html:249
+msgid "Começar Tour"
+msgstr ""
+
+#: templates/dashboard.html:259
+msgid "União de Contas"
+msgstr ""
+
+#: templates/dashboard.html:260
+msgid "O Fim das Contas Fantasmas."
+msgstr ""
+
+#: templates/dashboard.html:263
+msgid "Por que vincular?"
+msgstr ""
+
+#: templates/dashboard.html:264
+msgid ""
+"Ao vincular, o sistema UNE seu Discord e Xbox em <strong>UMA ÚNICA\n"
+"                                IDENTIDADE</strong>."
+msgstr ""
+
+#: templates/dashboard.html:266
+msgid ""
+"Isso evita duplicidade e garante que seu dinheiro e ranking\n"
+"                            sejam atribuídos corretamente."
+msgstr ""
+
+#: templates/dashboard.html:271 templates/dashboard.html:299
+#: templates/dashboard.html:324
+msgid "Voltar"
+msgstr ""
+
+#: templates/dashboard.html:272 templates/dashboard.html:300
+msgid "Próximo"
+msgstr ""
+
+#: templates/dashboard.html:282
+msgid "Proteção Total"
+msgstr ""
+
+#: templates/dashboard.html:283
+msgid "Dorme tranquilo. O BigodeBot vigia sua base."
+msgstr ""
+
+#: templates/dashboard.html:287 templates/layout.html:132
+msgid "Clã"
+msgstr "클랜"
+
+#: templates/dashboard.html:288
+msgid ""
+"Crie um clã para compartilhar permissões de portas e bancos com seus "
+"amigos."
+msgstr ""
+
+#: templates/dashboard.html:292 templates/layout.html:130
+msgid "Base"
+msgstr "기지"
+
+#: templates/dashboard.html:293
+msgid ""
+"Registre sua base (comando !alarme). O bot bane quem tentar \"glitchar\" "
+"ou invadir\n"
+"                                ilegalmente!"
+msgstr ""
+
+#: templates/dashboard.html:310
+msgid "Vantagens Exclusivas"
+msgstr ""
+
+#: templates/dashboard.html:311
+msgid "Jogue, lucre e domine o ranking."
+msgstr ""
+
+#: templates/dashboard.html:314
+msgid "Salário:"
+msgstr ""
+
+#: templates/dashboard.html:314
+msgid ""
+"Ganhe coins a cada 10min\n"
+"                            online."
+msgstr ""
+
+#: templates/dashboard.html:316
+msgid "Shop:"
+msgstr ""
+
+#: templates/dashboard.html:316
+msgid ""
+"Compre itens e receba no jogo (Spawn\n"
+"                            automático)."
+msgstr ""
+
+#: templates/dashboard.html:318
+#, fuzzy
+msgid "Ranking:"
+msgstr "순위"
+
+#: templates/dashboard.html:318
+msgid ""
+"Dispute o Top 1 Kill/Death do\n"
+"                            servidor."
+msgstr ""
+
+#: templates/dashboard.html:321
+msgid "Tudo pronto? Vamos nessa!"
+msgstr ""
+
+#: templates/dashboard.html:325
+msgid "ACESSAR PAINEL"
+msgstr ""
+
+#: templates/dashboard.html:350 templates/layout.html:134
+msgid "Banco Texas"
+msgstr "텍사스 은행"
+
+#: templates/dashboard.html:351
+msgid "Transferência de DZ Coins"
+msgstr ""
+
+#: templates/dashboard.html:356
+msgid "Gamertag do Destinatário"
+msgstr ""
+
+#: templates/dashboard.html:357
+msgid "Ex: Player123"
+msgstr ""
+
+#: templates/dashboard.html:362
+msgid "Valor (DZ Coins)"
+msgstr ""
+
+#: templates/dashboard.html:367
+msgid "Confirmar Transferência"
+msgstr ""
+
+#: templates/dashboard.html:384
+msgid "DECLARAR GUERRA"
+msgstr ""
+
+#: templates/dashboard.html:385
+msgid "Escolha um clã inimigo para iniciar o conflito."
+msgstr ""
+
+#: templates/dashboard.html:390
+msgid "Selecione o Inimigo"
+msgstr ""
+
+#: templates/dashboard.html:393
+msgid "Carregando clãs..."
+msgstr ""
+
+#: templates/dashboard.html:398
+msgid "INICIAR GUERRA"
+msgstr ""
+
+#: templates/deaths.html:3 templates/layout.html:128
+msgid "Tiro na Lata"
+msgstr "킬피드"
+
+#: templates/deaths.html:126
+#, fuzzy
+msgid "TIRO NA LATA"
+msgstr "킬피드"
+
+#: templates/deaths.html:135
+msgid "Total (24h)"
+msgstr ""
+
+#: templates/deaths.html:139 templates/heatmap.html:37
+#: templates/heatmap.html:116
+msgid "PvP"
+msgstr ""
+
+#: templates/deaths.html:143
+msgid "Animais"
+msgstr ""
+
+#: templates/deaths.html:147
+msgid "Headshots"
+msgstr ""
+
+#: templates/deaths.html:153
+msgid "Carregando mortes..."
+msgstr ""
+
+#: templates/deaths.html:162
+msgid "Data desconhecida"
+msgstr ""
+
+#: templates/deaths.html:167
+msgid "Domingo"
+msgstr ""
+
+#: templates/deaths.html:167
+msgid "Segunda"
+msgstr ""
+
+#: templates/deaths.html:167
+msgid "Terça"
+msgstr ""
+
+#: templates/deaths.html:167
+msgid "Quarta"
+msgstr ""
+
+#: templates/deaths.html:167
+msgid "Quinta"
+msgstr ""
+
+#: templates/deaths.html:167
+msgid "Sexta"
+msgstr ""
+
+#: templates/deaths.html:167
+msgid "Sábado"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Jan"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Fev"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Mar"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Abr"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Mai"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Jun"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Jul"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Ago"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Set"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Out"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Nov"
+msgstr ""
+
+#: templates/deaths.html:168
+msgid "Dez"
+msgstr ""
+
+#: templates/deaths.html:203
+msgid "Nenhuma morte registrada ainda."
+msgstr ""
+
+#: templates/deaths.html:214
+msgid "matou"
+msgstr ""
+
+#: templates/deaths.html:218 templates/deaths.html:234
+msgid "Desconhecido"
+msgstr ""
+
+#: templates/deaths.html:226
+msgid "Lobo"
+msgstr ""
+
+#: templates/deaths.html:226
+msgid "Urso"
+msgstr ""
+
+#: templates/deaths.html:231
+msgid "foi morto por"
+msgstr ""
+
+#: templates/deaths.html:245
+msgid "Erro ao carregar mortes. Tente novamente."
+msgstr ""
+
+#: templates/heatmap.html:3 templates/heatmap.html:18
+#, fuzzy
+msgid "Mapa de Calor PvP"
+msgstr "히트맵"
+
+#: templates/heatmap.html:19
+msgid ""
+"Veja onde a ação está acontecendo em tempo real. As áreas vermelhas\n"
+"                indicam zonas de alto conflito."
+msgstr ""
+
+#: templates/heatmap.html:26
+msgid "Período:"
+msgstr ""
+
+#: templates/heatmap.html:27
+msgid "Últimas 24h"
+msgstr ""
+
+#: templates/heatmap.html:28
+msgid "7 Dias"
+msgstr ""
+
+#: templates/heatmap.html:29
+msgid "30 Dias"
+msgstr ""
+
+#: templates/heatmap.html:30 templates/heatmap.html:36
+msgid "Tudo"
+msgstr ""
+
+#: templates/heatmap.html:35
+msgid "Tipo:"
+msgstr ""
+
+#: templates/heatmap.html:38 templates/heatmap.html:125
+msgid "PvE"
+msgstr ""
+
+#: templates/heatmap.html:43
+msgid "Arma:"
+msgstr ""
+
+#: templates/heatmap.html:45
+msgid "Todas as Armas"
+msgstr ""
+
+#: templates/heatmap.html:58
+msgid "Total de Kills"
+msgstr ""
+
+#: templates/heatmap.html:65
+msgid "Kills Hoje"
+msgstr ""
+
+#: templates/heatmap.html:72
+msgid "Arma Mais Letal"
+msgstr ""
+
+#: templates/heatmap.html:79
+msgid "Jogador Top"
+msgstr ""
+
+#: templates/heatmap.html:86
+msgid "Horário Pico"
+msgstr ""
+
+#: templates/heatmap.html:93
+msgid "Zona Mais Quente"
+msgstr ""
+
+#: templates/heatmap.html:107
+msgid "Total de Mortes"
+msgstr ""
+
+#: templates/heatmap.html:134
+msgid "Arma Mais Usada"
+msgstr ""
+
+#: templates/heatmap.html:145
+msgid "Baixa Atividade"
+msgstr ""
+
+#: templates/heatmap.html:148
+msgid "Média Atividade"
+msgstr ""
+
+#: templates/heatmap.html:151
+msgid "Alta Atividade (Zona Quente)"
+msgstr ""
+
+#: templates/heatmap.html:165
+msgid "Timeline de Mortes"
+msgstr ""
+
+#: templates/heatmap.html:171
+msgid "Atividade por Hora do Dia"
+msgstr ""
+
+#: templates/heatmap.html:177
+msgid "Zonas Mais Perigosas"
+msgstr ""
+
+#: templates/index.html:16
+msgid "Bem-vindo ao"
+msgstr ""
+
+#: templates/index.html:19
+msgid "O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!"
+msgstr ""
+
+#: templates/index.html:24
+msgid "Jogadores"
+msgstr ""
+
+#: templates/index.html:32
+msgid "DZCoins"
+msgstr ""
+
+#: templates/index.html:36
+msgid ""
+"Visitar\n"
+"                    Loja"
+msgstr ""
+
+#: templates/index.html:38
+msgid ""
+"Ver\n"
+"                    Rankings"
+msgstr ""
+
+#: templates/index.html:48
+msgid "Recursos do Servidor"
+msgstr ""
+
+#: templates/index.html:52
+msgid "Loja Completa"
+msgstr ""
+
+#: templates/index.html:53
+msgid "Compre armas, equipamentos e itens com DZCoins. Entrega no mapa!"
+msgstr ""
+
+#: templates/index.html:57 templates/layout.html:122
+#: templates/leaderboard.html:3
+msgid "Rankings"
+msgstr "순위"
+
+#: templates/index.html:58
+msgid "Compete nos rankings de kills, K/D, riqueza e muito mais!"
+msgstr ""
+
+#: templates/index.html:62
+msgid "Estatísticas"
+msgstr ""
+
+#: templates/index.html:63
+msgid "Acompanhe seu progresso, armas favoritas e tempo de jogo."
+msgstr ""
+
+#: templates/index.html:67
+msgid "Mapa Interativo"
+msgstr ""
+
+#: templates/index.html:68
+msgid "Escolha onde receber suas compras com mapa iZurvive integrado."
+msgstr ""
+
+#: templates/index.html:72
+msgid "Sistema de Moedas"
+msgstr ""
+
+#: templates/index.html:73
+msgid "Ganhe DZCoins jogando e use na loja do servidor."
+msgstr ""
+
+#: templates/index.html:77
+msgid "Discord Integrado"
+msgstr ""
+
+#: templates/index.html:78
+msgid "Login com Discord e notificações em tempo real."
+msgstr ""
+
+#: templates/layout.html:115
+msgid "Início"
+msgstr "홈"
+
+#: templates/layout.html:117
+msgid "Regras"
+msgstr "규칙"
+
+#: templates/layout.html:119 templates/shop.html:3
+msgid "Loja"
+msgstr "상점"
+
+#: templates/layout.html:124
+msgid "Mural"
+msgstr "벽"
+
+#: templates/layout.html:126
+msgid "Mapa de Calor"
+msgstr "히트맵"
+
+#: templates/layout.html:140
+msgid "Agradecimentos"
+msgstr "크레딧"
+
+#: templates/leaderboard.html:12
+#, fuzzy
+msgid "Rankings Globais"
+msgstr "순위"
+
+#: templates/leaderboard.html:13
+msgid "Os melhores sobreviventes do servidor em diversas categorias."
+msgstr ""
+
+#: templates/leaderboard.html:21
+msgid "Riqueza"
+msgstr ""
+
+#: templates/leaderboard.html:25
+msgid ""
+"Longest\n"
+"            Shot"
+msgstr ""
+
+#: templates/leaderboard.html:40
+msgid "Jogador"
+msgstr ""
+
+#: templates/leaderboard.html:42
+msgid "Detalhes"
+msgstr ""
+
+#: templates/regras.html:7
+msgid "ARQUIVOS CONFIDENCIAIS"
+msgstr ""
+
+#: templates/regras.html:235
+msgid "VOLTAR AO SISTEMA"
+msgstr ""
+
+#: templates/regras.html:237
+msgid "TOP SECRET"
+msgstr ""
+
+#: templates/regras.html:240
+msgid "ARQUIVO: REGRAS_V2.doc"
+msgstr ""
+
+#: templates/regras.html:244
+msgid "CONFIDENCIAL"
+msgstr ""
+
+#: templates/regras.html:246
+msgid "DOSSIÊ BIGODETEXAS"
+msgstr ""
+
+#: templates/regras.html:247
+msgid ""
+"PARA OLHOS AUTORIZADOS\n"
+"                APENAS"
+msgstr ""
+
+#: templates/regras.html:251
+msgid "VISÃO GERAL DA MISSÃO"
+msgstr ""
+
+#: templates/regras.html:252
+msgid "O servidor foi criado com um objetivo claro:"
+msgstr ""
+
+#: templates/regras.html:252
+msgid "LIBERDADE"
+msgstr ""
+
+#: templates/regras.html:253
+msgid "Mas liberdade sem ordem é caos."
+msgstr ""
+
+#: templates/regras.html:254
+msgid ""
+"Sabemos que \"fazer loot\" exige estratégia e que construir uma base é "
+"uma das etapas\n"
+"                    fundamentais dessa operação. Porém, a Inteligência "
+"Central sabe:"
+msgstr ""
+
+#: templates/regras.html:256
+msgid ""
+"Leva-se dias para erguer uma fortaleza, mas apenas minutos para "
+"derrubá-la."
+msgstr ""
+
+#: templates/regras.html:258
+msgid "Por isso, o"
+msgstr ""
+
+#: templates/regras.html:258
+msgid "SISTEMA BIGODE TEXAS"
+msgstr ""
+
+#: templates/regras.html:258
+msgid ""
+"foi ativado. Nossa\n"
+"                    prioridade: Monitorar ameaças e PROTEGER o patrimônio"
+" dos sobreviventes cadastrados."
+msgstr ""
+
+#: templates/regras.html:263
+msgid "PROTOCOLO DE CONFLITO (RAID)"
+msgstr ""
+
+#: templates/regras.html:266
+msgid "HORÁRIO DE ENGAJAMENTO"
+msgstr ""
+
+#: templates/regras.html:269
+msgid "SÁBADOS // 20:00H - 22:00H"
+msgstr ""
+
+#: templates/regras.html:271
+msgid ""
+"Fora dessa janela temporal, qualquer tentativa de violação estrutural "
+"será considerada um ato\n"
+"                    de guerra ilegal."
+msgstr ""
+
+#: templates/regras.html:274
+msgid "RAID TÁTICO:"
+msgstr ""
+
+#: templates/regras.html:274
+msgid ""
+"Permitido e encorajado. Use a falha do inimigo\n"
+"                        contra ele."
+msgstr ""
+
+#: templates/regras.html:276
+msgid "ÁREAS MILITARES:"
+msgstr ""
+
+#: templates/regras.html:276
+msgid "Construção AUTORIZADA. O risco é seu."
+msgstr ""
+
+#: templates/regras.html:282
+msgid "SISTEMA DE DEFESA AUTOMATIZADO"
+msgstr ""
+
+#: templates/regras.html:283
+msgid "Nossos satélites e drones (Log Robot) estão ativos 24/7."
+msgstr ""
+
+#: templates/regras.html:284
+msgid ""
+"Se um agente não autorizado tentar construir (Ex: Torre de Vigia) dentro "
+"do perímetro de uma"
+msgstr ""
+
+#: templates/regras.html:286
+msgid "BASE REGISTRADA"
+msgstr ""
+
+#: templates/regras.html:288
+msgid ""
+"BANIMENTO AUTOMÁTICO\n"
+"                    (PERMANENTE)"
+msgstr ""
+
+#: templates/regras.html:290
+msgid ""
+"Não há julgamento. Não há apelação. O sistema elimina a ameaça (ID XBOX)\n"
+"                            instantaneamente."
+msgstr ""
+
+#: templates/regras.html:296
+msgid "DEPARTAMENTO DE RELAÇÕES HUMANAS"
+msgstr ""
+
+#: templates/regras.html:297
+msgid "Problemas emocionais? Reclamações infundadas?"
+msgstr ""
+
+#: templates/regras.html:298
+msgid "Dirija-se imediatamente à"
+msgstr ""
+
+#: templates/regras.html:298
+msgid "SALA DO MIMIMI"
+msgstr ""
+
+#: templates/regras.html:299
+msgid "Operador Responsável:"
+msgstr ""
+
+#: templates/regras.html:299
+msgid "Agente Admin (Fluente em Japonês)."
+msgstr ""
+
+#: templates/regras.html:300
+msgid "Nota: Ele só atende em japonês. Boa sorte."
+msgstr ""
+
+#: templates/regras.html:304
+msgid "ANOMALIAS E GLITCHES"
+msgstr ""
+
+#: templates/regras.html:305
+msgid ""
+"Qualquer tentativa de \"forçar a física\" da realidade (bugar, duplicar, "
+"atravessar texturas)\n"
+"                    será detectada."
+msgstr ""
+
+#: templates/regras.html:307
+msgid "A punição é sumária. Fez errado? Já sabe."
+msgstr ""
+
+#: templates/regras.html:311
+msgid "ANEXO: ATIVIDADE NO LITORAL"
+msgstr ""
+
+#: templates/regras.html:313
+msgid "Lago Negro"
+msgstr ""
+
+#: templates/regras.html:314
+msgid "Fig 1.1 - Lago Negro"
+msgstr ""
+
+#: templates/regras.html:317
+msgid "RELATÓRIO DE INTELIGÊNCIA"
+msgstr ""
+
+#: templates/regras.html:318
+#, fuzzy
+msgid "LOCAL"
+msgstr "상점"
+
+#: templates/regras.html:318
+msgid "LITORAL SUL"
+msgstr ""
+
+#: templates/regras.html:319
+msgid "REF: PRÓXIMO AO NAVIO TÓXICO"
+msgstr ""
+
+#: templates/regras.html:320
+msgid "ALVO"
+msgstr ""
+
+#: templates/regras.html:320
+msgid "O BUNKER"
+msgstr ""
+
+#: templates/regras.html:321
+msgid "DICA: CONSULTE O MAPA E LOCALIZE O \"LAGO NEGRO\"."
+msgstr ""
+
+#: templates/regras.html:326
+msgid "BIGODETEXAS SURVIVAL SYSTEM // END OF FILE"
+msgstr ""
+
+#: templates/shop.html:13
+msgid "Loja BIGODETEXAS - XBOX"
+msgstr ""
+
+#: templates/shop.html:14
+msgid "Compre itens com DZCoins e receba no mapa!"
+msgstr ""
+
+#: templates/shop.html:21
+msgid "Buscar item..."
+msgstr ""
+
+#: templates/shop.html:24
+msgid "Ordenar por Nome"
+msgstr ""
+
+#: templates/shop.html:25
+msgid "Preço: Menor → Maior"
+msgstr ""
+
+#: templates/shop.html:26
+msgid "Preço: Maior → Menor"
+msgstr ""
+
+#: templates/shop.html:32
+msgid "Todos"
+msgstr ""
+
+#: templates/shop.html:33
+msgid "Armas"
+msgstr ""
+
+#: templates/shop.html:35
+msgid "Munição"
+msgstr ""
+
+#: templates/shop.html:37
+msgid "Carregadores"
+msgstr ""
+
+#: templates/shop.html:38
+msgid "Acessórios"
+msgstr ""
+
+#: templates/shop.html:40
+msgid "Armadilhas"
+msgstr ""
+
+#: templates/shop.html:42
+msgid "Médico"
+msgstr ""
+
+#: templates/shop.html:44
+msgid "Comida"
+msgstr ""
+
+#: templates/shop.html:46
+msgid "Roupas"
+msgstr ""
+
+#: templates/shop.html:47
+msgid "Mochilas"
+msgstr ""
+
+#: templates/shop.html:49
+msgid "Construção"
+msgstr ""
+
+#: templates/shop.html:51
+msgid "Ferramentas"
+msgstr ""
+
+#: templates/shop.html:53
+msgid "Veículos"
+msgstr ""
+
+#: templates/shop.html:55
+msgid "Caçador"
+msgstr ""
+
+#: templates/shop.html:68
+msgid "Carrinho"
+msgstr ""
+
+#: templates/shop.html:76
+msgid "Total:"
+msgstr ""
+
+#: templates/shop.html:79
+msgid ""
+"Limpar\n"
+"            Carrinho"
+msgstr ""
+
+#: templates/shop.html:81
+msgid "Finalizar Compra"
+msgstr ""
+
+#: templates/shop.html:92
+msgid "Alterar Imagem do Item"
+msgstr ""
+
+#: templates/shop.html:93
+msgid "Nome do Item"
+msgstr ""
+
+#: templates/shop.html:98
+msgid "Selecione uma imagem (PNG, JPG, GIF):"
+msgstr ""
+
+#: templates/shop.html:106
+msgid "Enviar Imagem"
+msgstr ""
 

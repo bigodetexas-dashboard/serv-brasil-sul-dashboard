@@ -6,7 +6,7 @@ db_path = r"d:\dayz xbox\BigodeBot\new_dashboard\bigode_unified.db"
 
 def update_delivery_queue():
     if not os.path.exists(db_path):
-        print(f"Banco não encontrado em {db_path}")
+        print(f"Banco nÃ£o encontrado em {db_path}")
         return
 
     conn = sqlite3.connect(db_path)
@@ -39,7 +39,7 @@ def update_delivery_queue():
                 )
             """)
         elif "gamertag" not in columns:
-            print("Adicionando coluna gamertag à delivery_queue...")
+            print("Adicionando coluna gamertag Ã  delivery_queue...")
             cur.execute("ALTER TABLE delivery_queue ADD COLUMN gamertag TEXT")
 
         conn.commit()

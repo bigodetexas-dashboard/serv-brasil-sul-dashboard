@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Configurações - SERV. BRASIL SUL - XBOX{% endblock %}
+{% block title %}ConfiguraÃ§Ãµes - SERV. BRASIL SUL - XBOX{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -439,58 +439,58 @@
 {% block content %}
 <div class="settings-container">
     <div class="page-header">
-        <h1>⚙️ Configurações</h1>
-        <p>Personalize sua experiência no servidor</p>
+        <h1>âš™ï¸ ConfiguraÃ§Ãµes</h1>
+        <p>Personalize sua experiÃªncia no servidor</p>
     </div>
 
     <div class="settings-layout">
         <div class="settings-sidebar">
             <div class="sidebar-item active" data-section="profile">
-                <span class="icon">👤</span>
+                <span class="icon">ðŸ‘¤</span>
                 <span>Perfil</span>
             </div>
             <div class="sidebar-item" data-section="appearance">
-                <span class="icon">🎨</span>
-                <span>Aparência</span>
+                <span class="icon">ðŸŽ¨</span>
+                <span>AparÃªncia</span>
             </div>
             <div class="sidebar-item" data-section="notifications">
-                <span class="icon">🔔</span>
-                <span>Notificações</span>
+                <span class="icon">ðŸ””</span>
+                <span>NotificaÃ§Ãµes</span>
             </div>
             <div class="sidebar-item" data-section="privacy">
-                <span class="icon">🔒</span>
+                <span class="icon">ðŸ”’</span>
                 <span>Privacidade</span>
             </div>
             <div class="sidebar-item" data-section="game">
-                <span class="icon">🎮</span>
+                <span class="icon">ðŸŽ®</span>
                 <span>Jogo</span>
             </div>
             <div class="sidebar-item" data-section="account">
-                <span class="icon">🛡️</span>
+                <span class="icon">ðŸ›¡ï¸</span>
                 <span>Conta</span>
             </div>
         </div>
 
         <div class="settings-content">
             <div id="successMessage" class="success-message">
-                ✓ Configurações salvas com sucesso!
+                âœ“ ConfiguraÃ§Ãµes salvas com sucesso!
             </div>
 
             <!-- Profile Section -->
             <div class="settings-section active" id="profile">
                 <h2 class="section-title">Perfil do Jogador</h2>
-                <p class="section-description">Gerencie suas informações pessoais e avatar</p>
+                <p class="section-description">Gerencie suas informaÃ§Ãµes pessoais e avatar</p>
 
                 <div class="settings-group">
                     <div class="avatar-upload">
-                        <div class="profile-avatar">👤</div>
+                        <div class="profile-avatar">ðŸ‘¤</div>
                         <button class="upload-btn">Alterar Avatar</button>
                     </div>
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <div class="setting-label">Nome de Exibição</div>
-                            <div class="setting-description">Como você aparece para outros jogadores</div>
+                            <div class="setting-label">Nome de ExibiÃ§Ã£o</div>
+                            <div class="setting-description">Como vocÃª aparece para outros jogadores</div>
                         </div>
                         <div class="setting-control">
                             <input type="text" class="text-input" value="Jogador123" placeholder="Seu nome">
@@ -500,11 +500,11 @@
                     <div class="setting-item">
                         <div class="setting-info">
                             <div class="setting-label">Tipo de Bio</div>
-                            <div class="setting-description">Escolha entre bio automática (arquétipo) ou manual</div>
+                            <div class="setting-description">Escolha entre bio automÃ¡tica (arquÃ©tipo) ou manual</div>
                         </div>
                         <div class="setting-control">
                             <select class="select-input" id="bio_type">
-                                <option value="auto">Automática (Baseada no Playstyle)</option>
+                                <option value="auto">AutomÃ¡tica (Baseada no Playstyle)</option>
                                 <option value="manual">Manual (Personalizada)</option>
                             </select>
                         </div>
@@ -513,7 +513,7 @@
                     <div class="setting-item">
                         <div class="setting-info">
                             <div class="setting-label">Bio Personalizada</div>
-                            <div class="setting-description">Escreva sua própria história</div>
+                            <div class="setting-description">Escreva sua prÃ³pria histÃ³ria</div>
                         </div>
                         <div class="setting-control">
                             <textarea class="text-input" id="bio_content" placeholder="Sua bio personalizada..."
@@ -524,8 +524,8 @@
                     <div class="setting-item">
                         <div class="setting-info">
                             <div class="setting-label">URL do Banner</div>
-                            <div class="setting-description">Link para uma imagem de banner (vazio para padrão do
-                                arquétipo)</div>
+                            <div class="setting-description">Link para uma imagem de banner (vazio para padrÃ£o do
+                                arquÃ©tipo)</div>
                         </div>
                         <div class="setting-control">
                             <input type="text" class="text-input" id="banner_url"
@@ -536,7 +536,7 @@
                     <div class="setting-item">
                         <div class="setting-info">
                             <div class="setting-label">Discord</div>
-                            <div class="setting-description">Seu nome de usuário no Discord</div>
+                            <div class="setting-description">Seu nome de usuÃ¡rio no Discord</div>
                         </div>
                         <div class="setting-control">
                             <input type="text" class="text-input" placeholder="usuario#1234">
@@ -545,23 +545,23 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="btn-primary" onclick="saveSettings()">Salvar Alterações</button>
+                    <button class="btn-primary" onclick="saveSettings()">Salvar AlteraÃ§Ãµes</button>
                     <button class="btn-secondary">Cancelar</button>
                 </div>
             </div>
 
             <!-- Appearance Section -->
             <div class="settings-section" id="appearance">
-                <h2 class="section-title">Aparência</h2>
+                <h2 class="section-title">AparÃªncia</h2>
                 <p class="section-description">Personalize a interface do dashboard</p>
 
                 <div class="settings-group">
-                    <h3 class="settings-group-title">🎨 Tema</h3>
+                    <h3 class="settings-group-title">ðŸŽ¨ Tema</h3>
 
                     <div class="setting-item">
                         <div class="setting-info">
                             <div class="setting-label">Modo Escuro</div>
-                            <div class="setting-description">Ativar tema escuro para melhor visualização</div>
+                            <div class="setting-description">Ativar tema escuro para melhor visualizaÃ§Ã£o</div>
                         </div>
                         <div class="setting-control">
                             <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
@@ -586,7 +586,7 @@
                         <div class="setting-control">
                             <select class="select-input">
                                 <option>Pequeno</option>
-                                <option selected>Médio</option>
+                                <option selected>MÃ©dio</option>
                                 <option>Grande</option>
                             </select>
                         </div>
@@ -594,8 +594,8 @@
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <div class="setting-label">Animações</div>
-                            <div class="setting-description">Ativar animações na interface</div>
+                            <div class="setting-label">AnimaÃ§Ãµes</div>
+                            <div class="setting-description">Ativar animaÃ§Ãµes na interface</div>
                         </div>
                         <div class="setting-control">
                             <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
@@ -604,23 +604,23 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="btn-primary" onclick="saveSettings()">Salvar Alterações</button>
-                    <button class="btn-secondary">Restaurar Padrão</button>
+                    <button class="btn-primary" onclick="saveSettings()">Salvar AlteraÃ§Ãµes</button>
+                    <button class="btn-secondary">Restaurar PadrÃ£o</button>
                 </div>
             </div>
 
             <!-- Notifications Section -->
             <div class="settings-section" id="notifications">
-                <h2 class="section-title">Notificações</h2>
-                <p class="section-description">Gerencie como você recebe notificações</p>
+                <h2 class="section-title">NotificaÃ§Ãµes</h2>
+                <p class="section-description">Gerencie como vocÃª recebe notificaÃ§Ãµes</p>
 
                 <div class="settings-group">
-                    <h3 class="settings-group-title">🔔 Notificações do Jogo</h3>
+                    <h3 class="settings-group-title">ðŸ”” NotificaÃ§Ãµes do Jogo</h3>
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <div class="setting-label">Eliminações</div>
-                            <div class="setting-description">Notificar quando você eliminar um jogador</div>
+                            <div class="setting-label">EliminaÃ§Ãµes</div>
+                            <div class="setting-description">Notificar quando vocÃª eliminar um jogador</div>
                         </div>
                         <div class="setting-control">
                             <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
@@ -659,12 +659,12 @@
                 </div>
 
                 <div class="settings-group">
-                    <h3 class="settings-group-title">📧 Notificações por Email</h3>
+                    <h3 class="settings-group-title">ðŸ“§ NotificaÃ§Ãµes por Email</h3>
 
                     <div class="setting-item">
                         <div class="setting-info">
                             <div class="setting-label">Resumo Semanal</div>
-                            <div class="setting-description">Receber resumo das suas estatísticas</div>
+                            <div class="setting-description">Receber resumo das suas estatÃ­sticas</div>
                         </div>
                         <div class="setting-control">
                             <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
@@ -673,8 +673,8 @@
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <div class="setting-label">Atualizações do Servidor</div>
-                            <div class="setting-description">Receber notícias e atualizações</div>
+                            <div class="setting-label">AtualizaÃ§Ãµes do Servidor</div>
+                            <div class="setting-description">Receber notÃ­cias e atualizaÃ§Ãµes</div>
                         </div>
                         <div class="setting-control">
                             <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
@@ -683,21 +683,21 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="btn-primary" onclick="saveSettings()">Salvar Alterações</button>
+                    <button class="btn-primary" onclick="saveSettings()">Salvar AlteraÃ§Ãµes</button>
                 </div>
             </div>
 
             <!-- Privacy Section -->
             <div class="settings-section" id="privacy">
                 <h2 class="section-title">Privacidade</h2>
-                <p class="section-description">Controle quem pode ver suas informações</p>
+                <p class="section-description">Controle quem pode ver suas informaÃ§Ãµes</p>
 
                 <div class="settings-group">
-                    <h3 class="settings-group-title">🔒 Visibilidade do Perfil</h3>
+                    <h3 class="settings-group-title">ðŸ”’ Visibilidade do Perfil</h3>
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <div class="setting-label">Perfil Público</div>
+                            <div class="setting-label">Perfil PÃºblico</div>
                             <div class="setting-description">Permitir que outros jogadores vejam seu perfil</div>
                         </div>
                         <div class="setting-control">
@@ -707,8 +707,8 @@
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <div class="setting-label">Mostrar Estatísticas</div>
-                            <div class="setting-description">Exibir suas estatísticas no perfil público</div>
+                            <div class="setting-label">Mostrar EstatÃ­sticas</div>
+                            <div class="setting-description">Exibir suas estatÃ­sticas no perfil pÃºblico</div>
                         </div>
                         <div class="setting-control">
                             <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
@@ -717,8 +717,8 @@
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <div class="setting-label">Mostrar Histórico</div>
-                            <div class="setting-description">Permitir visualização do seu histórico</div>
+                            <div class="setting-label">Mostrar HistÃ³rico</div>
+                            <div class="setting-description">Permitir visualizaÃ§Ã£o do seu histÃ³rico</div>
                         </div>
                         <div class="setting-control">
                             <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
@@ -728,7 +728,7 @@
                     <div class="setting-item">
                         <div class="setting-info">
                             <div class="setting-label">Status Online</div>
-                            <div class="setting-description">Mostrar quando você está online</div>
+                            <div class="setting-description">Mostrar quando vocÃª estÃ¡ online</div>
                         </div>
                         <div class="setting-control">
                             <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
@@ -737,22 +737,22 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="btn-primary" onclick="saveSettings()">Salvar Alterações</button>
+                    <button class="btn-primary" onclick="saveSettings()">Salvar AlteraÃ§Ãµes</button>
                 </div>
             </div>
 
             <!-- Game Section -->
             <div class="settings-section" id="game">
-                <h2 class="section-title">Configurações de Jogo</h2>
-                <p class="section-description">Ajuste suas preferências de gameplay</p>
+                <h2 class="section-title">ConfiguraÃ§Ãµes de Jogo</h2>
+                <p class="section-description">Ajuste suas preferÃªncias de gameplay</p>
 
                 <div class="settings-group">
-                    <h3 class="settings-group-title">🎮 Preferências</h3>
+                    <h3 class="settings-group-title">ðŸŽ® PreferÃªncias</h3>
 
                     <div class="setting-item">
                         <div class="setting-info">
                             <div class="setting-label">Servidor Favorito</div>
-                            <div class="setting-description">Servidor padrão para conexão rápida</div>
+                            <div class="setting-description">Servidor padrÃ£o para conexÃ£o rÃ¡pida</div>
                         </div>
                         <div class="setting-control">
                             <select class="select-input">
@@ -780,27 +780,27 @@
                         </div>
                         <div class="setting-control">
                             <select class="select-input">
-                                <option>Padrão</option>
+                                <option>PadrÃ£o</option>
                                 <option selected>Cruz</option>
                                 <option>Ponto</option>
-                                <option>Círculo</option>
+                                <option>CÃ­rculo</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button class="btn-primary" onclick="saveSettings()">Salvar Alterações</button>
+                    <button class="btn-primary" onclick="saveSettings()">Salvar AlteraÃ§Ãµes</button>
                 </div>
             </div>
 
             <!-- Account Section -->
             <div class="settings-section" id="account">
                 <h2 class="section-title">Conta</h2>
-                <p class="section-description">Gerencie sua conta e segurança</p>
+                <p class="section-description">Gerencie sua conta e seguranÃ§a</p>
 
                 <div class="settings-group">
-                    <h3 class="settings-group-title">🛡️ Segurança</h3>
+                    <h3 class="settings-group-title">ðŸ›¡ï¸ SeguranÃ§a</h3>
 
                     <div class="setting-item">
                         <div class="setting-info">
@@ -814,8 +814,8 @@
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <div class="setting-label">Autenticação em Duas Etapas</div>
-                            <div class="setting-description">Adicione uma camada extra de segurança</div>
+                            <div class="setting-label">AutenticaÃ§Ã£o em Duas Etapas</div>
+                            <div class="setting-description">Adicione uma camada extra de seguranÃ§a</div>
                         </div>
                         <div class="setting-control">
                             <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
@@ -824,17 +824,17 @@
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <div class="setting-label">Sessões Ativas</div>
+                            <div class="setting-label">SessÃµes Ativas</div>
                             <div class="setting-description">Gerencie dispositivos conectados</div>
                         </div>
                         <div class="setting-control">
-                            <button class="btn-secondary">Ver Sessões</button>
+                            <button class="btn-secondary">Ver SessÃµes</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="danger-zone">
-                    <h3 class="danger-zone-title">⚠️ Zona de Perigo</h3>
+                    <h3 class="danger-zone-title">âš ï¸ Zona de Perigo</h3>
 
                     <div class="setting-item">
                         <div class="setting-info">
@@ -853,6 +853,6 @@
 
 
 
-<!-- Script de configurações movido para arquivo externo -->
+<!-- Script de configuraÃ§Ãµes movido para arquivo externo -->
 <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
 {% endblock %}

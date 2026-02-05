@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}BIGODETEXAS - XBOX{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.0">
     {% block extra_head %}{% endblock %}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -148,7 +148,7 @@
                     </a></li>
                 {% endif %}
 
-                <!-- AÃ§Ãµes Mobile (Aparecem apenas no menu hamburguer) -->
+                <!-- Ações Mobile (Aparecem apenas no menu hamburguer) -->
                 {% if session.get('discord_user_id') %}
                 <li class="mobile-only-action">
                     <hr style="border: 0; border-top: 1px solid rgba(107, 140, 66, 0.2); margin: 10px 20px;">
@@ -168,7 +168,7 @@
 
             <div class="navbar-actions">
                 {% if session.get('discord_user_id') %}
-                <!-- UsuÃ¡rio logado -->
+                <!-- Usuário logado -->
                 <div class="user-menu">
                     <a href="/dashboard" class="user-info">
                         {% if session.get('discord_avatar') %}
@@ -190,32 +190,14 @@
                     </a>
                 </div>
                 {% else %}
-                <!-- UsuÃ¡rio nÃ£o logado -->
+                <!-- Usuário não logado -->
                 <a href="/login" class="btn-login">
                     Entrar com Discord
                 </a>
                 {% endif %}
-                {% endif %}
 
-                <!-- Language Selector -->
-                <div class="lang-selector">
-                    <button class="lang-btn">
-                        <i class="ri-translate-2"></i>
-                        <span>{{ session.get('lang', 'PT').upper() }}</span>
-                    </button>
-                    <div class="lang-dropdown">
-                        <a href="?lang=pt" class="lang-option"><span class="fi fi-br"></span> PortuguÃªs</a>
-                        <a href="?lang=en" class="lang-option"><span class="fi fi-us"></span> English</a>
-                        <a href="?lang=es" class="lang-option"><span class="fi fi-es"></span> EspaÃ±ol</a>
-                        <a href="?lang=fr" class="lang-option"><span class="fi fi-fr"></span> FranÃ§ais</a>
-                        <a href="?lang=it" class="lang-option"><span class="fi fi-it"></span> Italiano</a>
-                        <a href="?lang=de" class="lang-option"><span class="fi fi-de"></span> Deutsch</a>
-                        <a href="?lang=ru" class="lang-option"><span class="fi fi-ru"></span> Ð ÑƒÑÑÐºÐ¸Ð¹</a>
-                        <a href="?lang=zh_Hans" class="lang-option"><span class="fi fi-cn"></span> ç®€ä½“ä¸­æ–‡</a>
-                        <a href="?lang=ja" class="lang-option"><span class="fi fi-jp"></span> æ—¥æœ¬èªž</a>
-                        <a href="?lang=ko" class="lang-option"><span class="fi fi-kr"></span> í•œêµ­ì–´</a>
-                    </div>
-                </div>
+                <!-- Language Selector Removed (Floating Button Added) -->
+                <!-- <div class="lang-selector"> ... </div> -->
             </div>
         </div>
     </nav>
@@ -228,7 +210,7 @@
     </div>
     {% endif %}
 
-    <!-- ConteÃºdo da pÃ¡gina -->
+    <!-- Conteúdo da página -->
     <main>
         {% block content %}{% endblock %}
     </main>
@@ -245,11 +227,30 @@
     <script src="{{ url_for('static', filename='js/realtime.js') }}"></script>
     {% block extra_scripts %}{% endblock %}
 
+    <!-- FLOATING LANGUAGE SELECTOR -->
+    <div class="floating-lang-container">
+        <button class="floating-lang-btn">
+            <i class="ri-earth-line"></i>
+        </button>
+        <div class="floating-lang-grid">
+            <a href="?lang=pt" class="lang-flag-btn" title="Português"><span class="fi fi-br"></span></a>
+            <a href="?lang=en" class="lang-flag-btn" title="English"><span class="fi fi-us"></span></a>
+            <a href="?lang=es" class="lang-flag-btn" title="Español"><span class="fi fi-es"></span></a>
+            <a href="?lang=fr" class="lang-flag-btn" title="Français"><span class="fi fi-fr"></span></a>
+            <a href="?lang=it" class="lang-flag-btn" title="Italiano"><span class="fi fi-it"></span></a>
+            <a href="?lang=de" class="lang-flag-btn" title="Deutsch"><span class="fi fi-de"></span></a>
+            <a href="?lang=ru" class="lang-flag-btn" title="Русский"><span class="fi fi-ru"></span></a>
+            <a href="?lang=zh_Hans" class="lang-flag-btn" title="简体中文"><span class="fi fi-cn"></span></a>
+            <a href="?lang=ja" class="lang-flag-btn" title="日本語"><span class="fi fi-jp"></span></a>
+            <a href="?lang=ko" class="lang-flag-btn" title="한국어"><span class="fi fi-kr"></span></a>
+        </div>
+    </div>
+
     {% include 'bigodudo_widget.html' %}
 
     {% if session.get('discord_user_id') %}
     <script>
-        // Carregar saldo do usuÃ¡rio na navbar e elemento flutuante
+        // Carregar saldo do usuário na navbar e elemento flutuante
         async function loadUserBalance() {
             try {
                 const response = await fetch('/api/user/balance');
@@ -287,7 +288,7 @@
             }
         }
 
-        // Carregar saldo quando a pÃ¡gina carrega
+        // Carregar saldo quando a página carrega
         document.addEventListener('DOMContentLoaded', loadUserBalance);
     </script>
     {% endif %}

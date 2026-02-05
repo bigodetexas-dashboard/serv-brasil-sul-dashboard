@@ -214,9 +214,9 @@
 <body>
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="/" class="navbar-brand">🤠 BigodeTexas</a>
+            <a href="/" class="navbar-brand">ðŸ¤  BigodeTexas</a>
             <ul class="navbar-nav">
-                <li><a href="/" class="nav-link">Início</a></li>
+                <li><a href="/" class="nav-link">InÃ­cio</a></li>
                 <li><a href="/leaderboard" class="nav-link">Ranking</a></li>
                 <li><a href="/shop" class="nav-link">Loja</a></li>
                 <li><a href="/heatmap" class="nav-link">Mapa</a></li>
@@ -247,7 +247,7 @@
                 <div class="glass-card bio-section fade-in">
                     <h3 class="card-title" style="margin-bottom: 1rem;"><i class="ri-book-open-line"></i> Sobre o
                         Sobrevivente</h3>
-                    <p class="bio-text" id="player-bio">Carregando história do sobrevivente...</p>
+                    <p class="bio-text" id="player-bio">Carregando histÃ³ria do sobrevivente...</p>
 
                     <div class="badges-container" id="pinned-badges">
                         <!-- Badges will be injected here -->
@@ -258,7 +258,7 @@
                     <div class="stat-item-premium">
                         <i class="ri-skull-line stat-icon-premium"></i>
                         <span class="stat-value-premium" id="stat-kills">0</span>
-                        <span class="stat-label-premium">Vítimas</span>
+                        <span class="stat-label-premium">VÃ­timas</span>
                     </div>
                     <div class="stat-item-premium">
                         <i class="ri-heart-pulse-line stat-icon-premium"></i>
@@ -282,19 +282,19 @@
                         em Detalhes</h3>
                     <div class="grid grid-2">
                         <div class="metric-mini">
-                            <span class="text-muted">🔥 Maior Sequência</span>
+                            <span class="text-muted">ðŸ”¥ Maior SequÃªncia</span>
                             <strong id="stat-streak">0</strong>
                         </div>
                         <div class="metric-mini">
-                            <span class="text-muted">🕐 Tempo de Vida</span>
+                            <span class="text-muted">ðŸ• Tempo de Vida</span>
                             <strong id="stat-playtime">0h</strong>
                         </div>
                         <div class="metric-mini">
-                            <span class="text-muted">🦠 Zumbis Abatidos</span>
+                            <span class="text-muted">ðŸ¦  Zumbis Abatidos</span>
                             <strong id="stat-zombies">0</strong>
                         </div>
                         <div class="metric-mini">
-                            <span class="text-muted">🪵 Árvores Cortadas</span>
+                            <span class="text-muted">ðŸªµ Ãrvores Cortadas</span>
                             <strong id="stat-trees">0</strong>
                         </div>
                     </div>
@@ -304,15 +304,15 @@
             <!-- Sidebar -->
             <div class="metrics-sidebar fade-in">
                 <div class="glass-card">
-                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">🌳 Explorador</h3>
+                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">ðŸŒ³ Explorador</h3>
                     <div class="metric-mini">
-                        <span class="text-muted">Distância</span>
+                        <span class="text-muted">DistÃ¢ncia</span>
                         <strong id="stat-distance">0km</strong>
                     </div>
                 </div>
 
                 <div class="glass-card">
-                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">🏗️ Construtor</h3>
+                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">ðŸ—ï¸ Construtor</h3>
                     <div class="metric-mini">
                         <span class="text-muted">Estruturas</span>
                         <strong id="stat-buildings">0</strong>
@@ -320,7 +320,7 @@
                 </div>
 
                 <div class="glass-card">
-                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">🎣 Pescador</h3>
+                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">ðŸŽ£ Pescador</h3>
                     <div class="metric-mini">
                         <span class="text-muted">Peixes</span>
                         <strong id="stat-fish">0</strong>
@@ -330,10 +330,10 @@
                 <!-- ALARME DE BASE SECTION -->
                 <div class="glass-card"
                     style="border-left: 4px solid var(--primary); background: rgba(var(--primary-rgb), 0.05);">
-                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);">🚨
+                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);">ðŸš¨
                         Alarme de Base</h3>
                     <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                        Receba notificações de invasão no seu dispositivo!
+                        Receba notificaÃ§Ãµes de invasÃ£o no seu dispositivo!
                     </p>
                     <div class="metric-mini" style="margin-bottom: 1rem;">
                         <span class="text-muted">Seu Telegram ID</span>
@@ -353,7 +353,7 @@
                     </a>
                 </div>
 
-                <a href="/leaderboard" class="btn btn-secondary" style="width: 100%; text-align: center;">← Voltar ao
+                <a href="/leaderboard" class="btn btn-secondary" style="width: 100%; text-align: center;">â† Voltar ao
                     Ranking</a>
             </div>
         </div>
@@ -369,12 +369,12 @@
                 const data = await response.json();
 
                 if (!data) {
-                    document.getElementById('player-fullname').textContent = 'Sobrevivente não encontrado';
+                    document.getElementById('player-fullname').textContent = 'Sobrevivente nÃ£o encontrado';
                     return;
                 }
 
                 // Header & Identity
-                document.getElementById('player-fullname').innerHTML = `👤 ${data.name} ${data.verified ? '<i class="ri-checkbox-circle-fill" style="color:#10b981; font-size: 1.5rem;"></i>' : ''}`;
+                document.getElementById('player-fullname').innerHTML = `ðŸ‘¤ ${data.name} ${data.verified ? '<i class="ri-checkbox-circle-fill" style="color:#10b981; font-size: 1.5rem;"></i>' : ''}`;
                 document.getElementById('player-archetype').textContent = data.archetype.name;
                 document.getElementById('player-archetype').style.background = getArchetypeColor(data.arch_key);
 

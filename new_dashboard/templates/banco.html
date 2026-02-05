@@ -124,13 +124,14 @@
                 <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
             </a>
             <ul class="navbar-menu">
-                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> Início</a></li>
+                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> InÃ­cio</a></li>
                 <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
                 <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
                 <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
-                <li><a href="/deaths" class="navbar-link"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
+                <li><a href="/deaths" class="navbar-link"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
+
                 <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
-                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> Clã</a></li>
+                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> ClÃ£</a></li>
                 <li><a href="/banco" class="navbar-link active"><i class="ri-bank-line"></i> Banco Texas</a></li>
                 <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
                 <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
@@ -141,53 +142,53 @@
 
     <div class="banco-container">
         <div class="banco-header">
-            <div class="banco-title">█ BANCO TEXAS █</div>
+            <div class="banco-title">â–ˆ BANCO TEXAS â–ˆ</div>
             <div class="banco-subtitle">SISTEMA FINANCEIRO MILITAR</div>
         </div>
 
         <div class="terminal-grid">
             <!-- Saldo e Conta -->
             <div class="terminal-section">
-                <div class="terminal-header">► CONTA CORRENTE</div>
+                <div class="terminal-header">â–º CONTA CORRENTE</div>
                 <div style="color: #00ff00; margin-bottom: 1rem;">
                     <div>TITULAR: <span id="user-name">CARREGANDO...</span></div>
                     <div>CONTA: <span id="user-id">000000</span></div>
                 </div>
                 <div class="balance-display" id="balance-display">$0</div>
-                <div style="text-align: center; color: #00ff00; opacity: 0.7;">SALDO DISPONÍVEL</div>
+                <div style="text-align: center; color: #00ff00; opacity: 0.7;">SALDO DISPONÃVEL</div>
             </div>
 
             <!-- Extrato -->
             <div class="terminal-section">
-                <div class="terminal-header">► EXTRATO - ÚLTIMAS OPERAÇÕES</div>
+                <div class="terminal-header">â–º EXTRATO - ÃšLTIMAS OPERAÃ‡Ã•ES</div>
                 <div id="extrato-container" style="max-height: 300px; overflow-y: auto;">
-                    <div class="extrato-line">[CARREGANDO TRANSAÇÕES...]</div>
+                    <div class="extrato-line">[CARREGANDO TRANSAÃ‡Ã•ES...]</div>
                 </div>
             </div>
 
-            <!-- Transferência -->
+            <!-- TransferÃªncia -->
             <div class="terminal-section">
-                <div class="terminal-header">► TRANSFERÊNCIA</div>
-                <label style="color: #00ff00; font-size: 0.9rem;">DESTINATÁRIO (Discord ID):</label>
+                <div class="terminal-header">â–º TRANSFERÃŠNCIA</div>
+                <label style="color: #00ff00; font-size: 0.9rem;">DESTINATÃRIO (Discord ID):</label>
                 <input type="text" id="transfer-to" class="terminal-input" placeholder="Digite o Discord ID">
 
                 <label style="color: #00ff00; font-size: 0.9rem;">VALOR:</label>
                 <input type="number" id="transfer-amount" class="terminal-input" placeholder="0">
 
-                <label style="color: #00ff00; font-size: 0.9rem;">DESCRIÇÃO:</label>
+                <label style="color: #00ff00; font-size: 0.9rem;">DESCRIÃ‡ÃƒO:</label>
                 <input type="text" id="transfer-desc" class="terminal-input" placeholder="Opcional">
 
                 <button class="terminal-button" onclick="transferir()">
-                    ► EXECUTAR TRANSFERÊNCIA
+                    â–º EXECUTAR TRANSFERÃŠNCIA
                 </button>
             </div>
 
-            <!-- Banco do Clã -->
+            <!-- Banco do ClÃ£ -->
             <div class="terminal-section">
-                <div class="terminal-header">► BANCO DO CLÃ</div>
+                <div class="terminal-header">â–º BANCO DO CLÃƒ</div>
                 <div style="color: #00ff00; text-align: center; padding: 2rem;">
                     <div style="font-size: 2rem; margin-bottom: 1rem;">$0</div>
-                    <div style="opacity: 0.7;">SALDO DO CLÃ</div>
+                    <div style="opacity: 0.7;">SALDO DO CLÃƒ</div>
                 </div>
                 <div style="color: #00ff00; opacity: 0.5; font-size: 0.8rem; text-align: center;">
                     [FUNCIONALIDADE EM DESENVOLVIMENTO]
@@ -237,7 +238,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('Transferência realizada com sucesso!');
+                    alert('TransferÃªncia realizada com sucesso!');
                     loadBalance();
                     document.getElementById('transfer-to').value = '';
                     document.getElementById('transfer-amount').value = '';
@@ -259,7 +260,7 @@
                 const data = await response.json();
 
                 if (!data.transactions || data.transactions.length === 0) {
-                    container.innerHTML = '<div class="extrato-line">Nenhuma transação recente.</div>';
+                    container.innerHTML = '<div class="extrato-line">Nenhuma transaÃ§Ã£o recente.</div>';
                     return;
                 }
 

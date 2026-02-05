@@ -18,7 +18,7 @@ PG_DB_URL = (
 
 def get_sqlite_conn():
     if not os.path.exists(SQLITE_DB_PATH):
-        print(f"❌ SQLite database not found at {SQLITE_DB_PATH}")
+        print(f"âŒ SQLite database not found at {SQLITE_DB_PATH}")
         sys.exit(1)
     return sqlite3.connect(SQLITE_DB_PATH)
 
@@ -27,12 +27,12 @@ def get_pg_conn():
     try:
         return psycopg2.connect(PG_DB_URL)
     except Exception as e:
-        print(f"❌ Failed to connect to PostgreSQL: {e}")
+        print(f"âŒ Failed to connect to PostgreSQL: {e}")
         sys.exit(1)
 
 
 def migrate_table(sqlite_cursor, pg_cursor, table_name):
-    print(f"📦 Migrating table '{table_name}'...", end=" ")
+    print(f"ðŸ“¦ Migrating table '{table_name}'...", end=" ")
 
     # Get data from SQLite
     try:
@@ -52,7 +52,7 @@ def migrate_table(sqlite_cursor, pg_cursor, table_name):
         query = f"INSERT INTO {table_name} ({columns_str}) VALUES %s ON CONFLICT DO NOTHING"
         execute_values(pg_cursor, query, rows)
 
-        print(f"✅ Executed ({len(rows)} rows)")
+        print(f"âœ… Executed ({len(rows)} rows)")
 
         # Update sequence if ID column exists
         if "id" in columns:
@@ -61,11 +61,11 @@ def migrate_table(sqlite_cursor, pg_cursor, table_name):
             )
 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"âŒ Error: {e}")
 
 
 def main():
-    print("🚀 Starting Migration: SQLite -> PostgreSQL")
+    print("ðŸš€ Starting Migration: SQLite -> PostgreSQL")
 
     sqlite_conn = get_sqlite_conn()
     pg_conn = get_pg_conn()
@@ -74,7 +74,7 @@ def main():
     pg_cur = pg_conn.cursor()
 
     # 1. APPLY SCHEMAS
-    print("\n📜 Applying PostgreSQL Schemas...")
+    print("\nðŸ“œ Applying PostgreSQL Schemas...")
     try:
         # Core Schema
         with open("scripts/schema_core_postgres.sql", "r", encoding="utf-8") as f:
@@ -89,17 +89,17 @@ def main():
                 print("   - Applying Achievements/History Schema...")
                 pg_cur.execute(f.read())
         else:
-            print(f"⚠️ Warning: Achievements schema not found at {achievements_schema_path}")
+            print(f"âš ï¸ Warning: Achievements schema not found at {achievements_schema_path}")
 
         pg_conn.commit()
-        print("✅ Schemas Applied Successfully!")
+        print("âœ… Schemas Applied Successfully!")
     except Exception as e:
         pg_conn.rollback()
-        print(f"❌ Error applying schema: {e}")
+        print(f"âŒ Error applying schema: {e}")
         sys.exit(1)
 
     # 2. MIGRATE DATA
-    print("\n📦 Migrating Data...")
+    print("\nðŸ“¦ Migrating Data...")
 
     tables = [
         "users",
@@ -119,11 +119,11 @@ def main():
             migrate_table(sqlite_cur, pg_cur, table)
 
         pg_conn.commit()
-        print("\n✨ Migration Completed Successfully!")
+        print("\nâœ¨ Migration Completed Successfully!")
 
     except Exception as e:
         pg_conn.rollback()
-        print(f"\n🔥 Critical Error during migration: {e}")
+        print(f"\nðŸ”¥ Critical Error during migration: {e}")
     finally:
         sqlite_conn.close()
         pg_conn.close()

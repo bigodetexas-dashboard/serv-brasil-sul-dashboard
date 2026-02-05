@@ -6,7 +6,7 @@ Generates zoom-level tiles from a source satellite image for Leaflet map display
 import os
 from PIL import Image
 
-# Configurações
+# ConfiguraÃ§Ãµes
 # Imagem fonte fornecida pelo usuario
 SOURCE_IMAGE = r"C:\Users\Wellyton\Desktop\DayZ_1.25.0_chernarus_map_16x16_sat.jpg"
 OUTPUT_DIR = r"d:\dayz xbox\BigodeBot\new_dashboard\static\tiles"
@@ -20,7 +20,7 @@ def generate_real_tiles():
     Creates tiles in Leaflet-compatible format: {z}/{x}/{y}.png
     """
     if not os.path.exists(SOURCE_IMAGE):
-        print(f"Erro: Imagem fonte não encontrada em {SOURCE_IMAGE}")
+        print(f"Erro: Imagem fonte nÃ£o encontrada em {SOURCE_IMAGE}")
         return
 
     # Aumentar limite de pixels para evitar DoS attack warning
@@ -33,7 +33,7 @@ def generate_real_tiles():
         print(f"Erro ao abrir imagem: {e}")
         return
 
-    # Garantir que é quadrada
+    # Garantir que Ã© quadrada
     width, height = img_full.size
     print(f"Tamanho original: {width}x{height}")
 
@@ -53,7 +53,7 @@ def generate_real_tiles():
                 f"tiles ({target_total_size}px total)..."
             )
 
-            # Redimensionar a imagem original para o tamanho total deste nível de zoom
+            # Redimensionar a imagem original para o tamanho total deste nÃ­vel de zoom
             z_img = img_full.resize(
                 (target_total_size, target_total_size), Image.Resampling.LANCZOS
             )
@@ -86,4 +86,4 @@ def generate_real_tiles():
 if __name__ == "__main__":
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     generate_real_tiles()
-    print("\nProcesso concluído! Tiles gerados com sucesso.")
+    print("\nProcesso concluÃ­do! Tiles gerados com sucesso.")

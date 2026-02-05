@@ -9,7 +9,7 @@
     <link rel="icon" href="{{ url_for('static', filename='img/logo_texas.png') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
-        /* Estilos específicos do Mural injetados aqui para rapidez */
+        /* Estilos especÃ­ficos do Mural injetados aqui para rapidez */
         .mural-container {
             max-width: 1200px;
             margin: 100px auto 50px;
@@ -132,11 +132,11 @@
 <body>
     {% include 'layout.html' %}
 
-    <!-- Necessário para o navbar funcionar se layout não for extendido corretamente -->
+    <!-- NecessÃ¡rio para o navbar funcionar se layout nÃ£o for extendido corretamente -->
     <!-- Mas como estamos usando include, precisamos garantir o navbar -->
 
     <div class="mural-container" id="mural-grid">
-        <!-- Cards serão injetados aqui via JS -->
+        <!-- Cards serÃ£o injetados aqui via JS -->
         <div class="empty-mural">Carregando lista de foragidos...</div>
     </div>
 
@@ -148,7 +148,7 @@
                 const grid = document.getElementById('mural-grid');
 
                 if (bans.length === 0) {
-                    grid.innerHTML = '<div class="empty-mural">O servidor está limpo... por enquanto.</div>';
+                    grid.innerHTML = '<div class="empty-mural">O servidor estÃ¡ limpo... por enquanto.</div>';
                     return;
                 }
 
@@ -174,8 +174,8 @@
                             <div class="banned-stamp">BANIDO</div>
                         </div>
                         <div class="wanted-name">${ban.discord_username}</div>
-                        <div class="wanted-reason">CRIME: ${ban.ban_reason || 'Violação de Regras'}</div>
-                        <div class="wanted-date">SENTENÇA: ${date}</div>
+                        <div class="wanted-reason">CRIME: ${ban.ban_reason || 'ViolaÃ§Ã£o de Regras'}</div>
+                        <div class="wanted-date">SENTENÃ‡A: ${date}</div>
                     `;
                     grid.appendChild(card);
                 });

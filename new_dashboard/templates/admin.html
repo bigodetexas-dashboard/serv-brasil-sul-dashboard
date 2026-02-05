@@ -129,9 +129,9 @@
         <aside class="admin-sidebar">
             <ul class="sidebar-menu">
                 <li><button class="sidebar-btn active" onclick="showTab('dashboard')"><i class="ri-dashboard-line"></i>
-                        Visão Geral</button></li>
+                        VisÃ£o Geral</button></li>
                 <li><button class="sidebar-btn" onclick="showTab('users')"><i class="ri-user-settings-line"></i>
-                        Usuários</button></li>
+                        UsuÃ¡rios</button></li>
                 <li><button class="sidebar-btn" onclick="showTab('logs')"><i class="ri-file-list-3-line"></i> Logs
                         (ADM)</button></li>
                 <li><button class="sidebar-btn" onclick="showTab('nitrado')"><i class="ri-server-line"></i> Nitrado
@@ -146,7 +146,7 @@
         <main class="admin-content" id="content-area">
             <!-- Dashboard Tab -->
             <div id="tab-dashboard">
-                <h2>📊 Status do Sistema</h2>
+                <h2>ðŸ“Š Status do Sistema</h2>
 
                 <!-- Server Stats Grid -->
                 <div class="grid grid-3">
@@ -165,7 +165,7 @@
                 </div>
 
                 <!-- Server Controls Grid -->
-                <h3 style="margin-top: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">⚙️
+                <h3 style="margin-top: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">âš™ï¸
                     Controles do Servidor</h3>
                 <div class="grid grid-2" style="margin-top: 1rem;">
                     <!-- Raid Mode Toggle -->
@@ -184,7 +184,7 @@
                     <!-- Build Mode Toggle -->
                     <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <h4 style="margin: 0;">Modo Construção</h4>
+                            <h4 style="margin: 0;">Modo ConstruÃ§Ã£o</h4>
                             <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Restrito (Perto de
                                 bases) ou Livre</p>
                             <span id="build-status-text" class="badge">Restrito</span>
@@ -195,8 +195,8 @@
                 </div>
 
                 <!-- Raid Schedule Config -->
-                <h3 style="margin-top: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">🕒
-                    Agendamento Automático de Raid</h3>
+                <h3 style="margin-top: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">ðŸ•’
+                    Agendamento AutomÃ¡tico de Raid</h3>
                 <div class="card" style="margin-top: 1rem;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                         <div>
@@ -207,22 +207,22 @@
                                 <label class="checkbox-label"><input type="checkbox" value="2"> Qua</label>
                                 <label class="checkbox-label"><input type="checkbox" value="3"> Qui</label>
                                 <label class="checkbox-label"><input type="checkbox" value="4"> Sex</label>
-                                <label class="checkbox-label"><input type="checkbox" value="5"> Sáb</label>
+                                <label class="checkbox-label"><input type="checkbox" value="5"> SÃ¡b</label>
                                 <label class="checkbox-label"><input type="checkbox" value="6"> Dom</label>
                             </div>
                             <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">(Selecione os
-                                dias em que o raid estará ativo)</p>
+                                dias em que o raid estarÃ¡ ativo)</p>
                         </div>
                         <div>
-                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Horário de
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">HorÃ¡rio de
                                 Funcionamento</label>
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <div style="flex: 1;">
-                                    <span style="font-size: 0.8rem; color: var(--text-secondary);">Início (Hora)</span>
+                                    <span style="font-size: 0.8rem; color: var(--text-secondary);">InÃ­cio (Hora)</span>
                                     <input type="number" id="raid-start-hour" class="search-box"
                                         style="margin: 5px 0 0 0; padding: 8px;" min="0" max="23" value="20">
                                 </div>
-                                <span style="margin-top: 20px;">até</span>
+                                <span style="margin-top: 20px;">atÃ©</span>
                                 <div style="flex: 1;">
                                     <span style="font-size: 0.8rem; color: var(--text-secondary);">Fim (Hora)</span>
                                     <input type="number" id="raid-end-hour" class="search-box"
@@ -238,7 +238,7 @@
                 </div>
 
                 <!-- Online Players List -->
-                <h3 style="margin-top: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">🟢
+                <h3 style="margin-top: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">ðŸŸ¢
                     Jogadores Online</h3>
                 <div class="card" style="margin-top: 1rem; max-height: 400px; overflow-y: auto;">
                     <table style="width: 100%; border-collapse: collapse;">
@@ -246,7 +246,7 @@
                             <tr style="text-align: left; border-bottom: 1px solid var(--border-color);">
                                 <th style="padding: 10px;">Gamertag</th>
                                 <th style="padding: 10px;">Tempo</th>
-                                <th style="padding: 10px; text-align: right;">Ações</th>
+                                <th style="padding: 10px; text-align: right;">AÃ§Ãµes</th>
                             </tr>
                         </thead>
                         <tbody id="online-players-list">
@@ -261,7 +261,7 @@
 
             <!-- Users Tab -->
             <div id="tab-users" style="display: none;">
-                <h2>👥 Gerenciar Usuários</h2>
+                <h2>ðŸ‘¥ Gerenciar UsuÃ¡rios</h2>
                 <input type="text" class="search-box" placeholder="Buscar por Discord ID, Gamertag ou Nome..."
                     onkeyup="filterUsers(this.value)">
                 <div class="user-list" id="users-list-container">
@@ -271,7 +271,7 @@
 
             <!-- Logs Tab -->
             <div id="tab-logs" style="display: none;">
-                <h2>📜 Logs do Jogo (ADM/RPT)</h2>
+                <h2>ðŸ“œ Logs do Jogo (ADM/RPT)</h2>
                 <div class="log-viewer"
                     style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; max-height: 500px; overflow-y: auto;">
                     <table style="width: 100%; border-collapse: collapse; color: #ddd;">
@@ -294,9 +294,9 @@
 
             <!-- Nitrado Tab -->
             <div id="tab-nitrado" style="display: none;">
-                <h2>🎮 Controles Nitrado</h2>
+                <h2>ðŸŽ® Controles Nitrado</h2>
                 <div class="card" style="background: rgba(0,0,0,0.5);">
-                    <h3>🛑 Ações de Perigo</h3>
+                    <h3>ðŸ›‘ AÃ§Ãµes de Perigo</h3>
                     <div style="display: flex; gap: 10px; margin-top: 15px;">
                         <button class="btn" style="background: #e67e22;" onclick="restartServer()">
                             <i class="ri-refresh-line"></i> Reiniciar Servidor
@@ -321,7 +321,7 @@
                                 placeholder="Ex: 10000">
                         </div>
                         <button class="btn btn-small" onclick="testAntiRaid()" style="height: 42px;">Simular
-                            Violação</button>
+                            ViolaÃ§Ã£o</button>
                     </div>
                     <div id="raid-result"
                         style="margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; display: none;">
@@ -332,7 +332,7 @@
             <!-- Texano Tab -->
             <div id="tab-texano" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2><i class="ri-robot-line"></i> TEXANO: Assistente Tático</h2>
+                    <h2><i class="ri-robot-line"></i> TEXANO: Assistente TÃ¡tico</h2>
                     <span class="badge"
                         style="background: rgba(0, 242, 254, 0.2); color: #00f2fe; border: 1px solid #00f2fe;">LOG
                         ROBOT: ONLINE</span>
@@ -342,13 +342,13 @@
                     <div class="card" style="border-left: 4px solid #00f2fe;">
                         <h4><i class="ri-pulse-line"></i> Pulso do Sistema</h4>
                         <div id="texano-vitals" style="font-size: 0.9rem; margin-top: 10px;">
-                            <p>🔍 Analisando conexões recentes...</p>
+                            <p>ðŸ” Analisando conexÃµes recentes...</p>
                         </div>
                     </div>
                     <div class="card" style="border-left: 4px solid #f1c40f;">
                         <h4><i class="ri-alert-line"></i> Alerta de Alts</h4>
                         <div id="texano-alerts" style="font-size: 0.9rem; margin-top: 10px;">
-                            <p>✅ Nenhuma suspeita de hardware duplicado agora.</p>
+                            <p>âœ… Nenhuma suspeita de hardware duplicado agora.</p>
                         </div>
                     </div>
                 </div>
@@ -360,13 +360,13 @@
                         style="flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 1rem;">
                         <div
                             style="background: rgba(0, 242, 254, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #00f2fe; max-width: 80%;">
-                            <strong>Texano:</strong> Posição confirmada, Xerife. Estou monitorando os sinais vitais
-                            do sistema e a rede Nitrado. O que temos para hoje no perímetro?
+                            <strong>Texano:</strong> PosiÃ§Ã£o confirmada, Xerife. Estou monitorando os sinais vitais
+                            do sistema e a rede Nitrado. O que temos para hoje no perÃ­metro?
                         </div>
                     </div>
                     <div style="padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px;">
                         <input type="text" id="texano-input" class="search-box" style="margin: 0;"
-                            placeholder="Pergunte algo técnico (ex: 'Status das entregas' ou 'Verificar IPs')">
+                            placeholder="Pergunte algo tÃ©cnico (ex: 'Status das entregas' ou 'Verificar IPs')">
                         <button class="btn btn-primary" style="background: #00f2fe; color: #000;" onclick="askTexano()">
                             <i class="ri-send-plane-fill"></i>
                         </button>
@@ -411,15 +411,15 @@
             const res = await fetchAPI('texano/vitals', { baseUrl: '/admin/api/' });
             if (res && res.success) {
                 vitals.innerHTML = `
-                    <p><i class="ri-database-line"></i> <strong>Banco de Dados:</strong> ${res.db_status === 'HEALTHY' ? '<span style="color:#2ed573">ESTÁVEL</span>' : '<span style="color:#ff4757">INSTÁVEL</span>'}</p>
+                    <p><i class="ri-database-line"></i> <strong>Banco de Dados:</strong> ${res.db_status === 'HEALTHY' ? '<span style="color:#2ed573">ESTÃVEL</span>' : '<span style="color:#ff4757">INSTÃVEL</span>'}</p>
                     <p><i class="ri-truck-line"></i> <strong>Fila de Entregas:</strong> ${res.pending_deliveries} pacotes</p>
                     <p><i class="ri-user-search-line"></i> <strong>Identidades:</strong> ${res.total_identities} registradas</p>
                 `;
 
                 if (res.suspicious_alts.length > 0) {
-                    alerts.innerHTML = `<p style="color: #ff4757;"><i class="ri-error-warning-fill"></i> <strong>ALERTA:</strong> Detectei ${res.suspicious_alts.length} possíveis fura-olhos (mult-contas)!</p>`;
+                    alerts.innerHTML = `<p style="color: #ff4757;"><i class="ri-error-warning-fill"></i> <strong>ALERTA:</strong> Detectei ${res.suspicious_alts.length} possÃ­veis fura-olhos (mult-contas)!</p>`;
                 } else {
-                    alerts.innerHTML = `<p style="color: #2ed573;"><i class="ri-checkbox-circle-fill"></i> Perímetro limpo, Xerife. Nenhuma cópia detectada.</p>`;
+                    alerts.innerHTML = `<p style="color: #2ed573;"><i class="ri-checkbox-circle-fill"></i> PerÃ­metro limpo, Xerife. Nenhuma cÃ³pia detectada.</p>`;
                 }
             }
         }
@@ -434,7 +434,7 @@
             // Add user message
             chatBox.innerHTML += `
                 <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px; align-self: flex-end; max-width: 80%; border-right: 3px solid #fff;">
-                    <strong>Você:</strong> ${prompt}
+                    <strong>VocÃª:</strong> ${prompt}
                 </div>
             `;
 
@@ -445,7 +445,7 @@
             const thinkingId = 'thinking-' + Date.now();
             chatBox.innerHTML += `
                 <div id="${thinkingId}" style="background: rgba(0, 242, 254, 0.05); padding: 1rem; border-radius: 8px; border-left: 3px solid #00f2fe; max-width: 80%; opacity: 0.6;">
-                    <i class="ri-loader-4-line ri-spin"></i> Texano está processando dados técnicos...
+                    <i class="ri-loader-4-line ri-spin"></i> Texano estÃ¡ processando dados tÃ©cnicos...
                 </div>
             `;
 
@@ -466,10 +466,10 @@
                         </div>
                     `;
                 } else {
-                    chatBox.innerHTML += `<div style="color: #ff4757; font-size: 0.8rem;">Erro na comunicação com o assistente.</div>`;
+                    chatBox.innerHTML += `<div style="color: #ff4757; font-size: 0.8rem;">Erro na comunicaÃ§Ã£o com o assistente.</div>`;
                 }
             } catch (e) {
-                document.getElementById(thinkingId).innerText = "Erro ao conectar com o motor tático.";
+                document.getElementById(thinkingId).innerText = "Erro ao conectar com o motor tÃ¡tico.";
             }
 
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -591,7 +591,7 @@
                     currentBuildMode = res.config.build_mode;
                     updateBuildBadge(currentBuildMode);
                 }
-                showToast('Configuração atualizada!', 'success');
+                showToast('ConfiguraÃ§Ã£o atualizada!', 'success');
             } else {
                 showToast('Erro ao atualizar.', 'error');
                 // Revert toggle if failed
@@ -600,9 +600,9 @@
         }
 
         async function banPlayerDirect(gamertag) {
-            if (!confirm(`Banir ${gamertag}? Esta ação é enviada para a Nitrado imediatamente.`)) return;
+            if (!confirm(`Banir ${gamertag}? Esta aÃ§Ã£o Ã© enviada para a Nitrado imediatamente.`)) return;
             // Since our toggle_ban uses discord_id, we ideally need a direct gamertag ban route
-            alert('Funcionalidade de banir por Gamertag direto será implementada na próxima etapa. Use a aba "Usuários" para banir contas vinculadas.');
+            alert('Funcionalidade de banir por Gamertag direto serÃ¡ implementada na prÃ³xima etapa. Use a aba "UsuÃ¡rios" para banir contas vinculadas.');
         }
 
         async function loadUsers() {
@@ -611,12 +611,12 @@
                 const container = document.getElementById('users-list-container');
 
                 if (!res || !res.users) {
-                    container.innerHTML = '<p>Erro ao carregar usuários</p>';
+                    container.innerHTML = '<p>Erro ao carregar usuÃ¡rios</p>';
                     return;
                 }
 
                 if (res.users.length === 0) {
-                    container.innerHTML = '<p style="text-align: center;">Nenhum usuário encontrado.</p>';
+                    container.innerHTML = '<p style="text-align: center;">Nenhum usuÃ¡rio encontrado.</p>';
                     return;
                 }
 
@@ -671,7 +671,7 @@
         }
 
         async function checkAlts(gamertag) {
-            if (!gamertag || gamertag === 'N/A') return showToast('Gamertag inválida', 'error');
+            if (!gamertag || gamertag === 'N/A') return showToast('Gamertag invÃ¡lida', 'error');
 
             const res = await fetchAPI('admin/check_alts', {
                 method: 'POST',
@@ -680,14 +680,14 @@
             });
 
             if (res && res.success) {
-                let msg = `🔎 Análise de Alts: ${gamertag}\n\n`;
+                let msg = `ðŸ”Ž AnÃ¡lise de Alts: ${gamertag}\n\n`;
                 if (res.alts_count > 0) {
-                    msg += `🚨 ${res.alts_count} CONTA(S) VINCULADA(S) DETECTADA(S)! 🚨\n`;
+                    msg += `ðŸš¨ ${res.alts_count} CONTA(S) VINCULADA(S) DETECTADA(S)! ðŸš¨\n`;
                     msg += `\nAlvos: ${res.alts.join(', ')}`;
                     msg += `\n\nIP Recente: ${res.identity.last_ip || 'Oculto'}`;
                     alert(msg);
                 } else {
-                    msg += "✅ Nenhuma conta secundária detectada (Limpo).";
+                    msg += "âœ… Nenhuma conta secundÃ¡ria detectada (Limpo).";
                     msg += `\nIP Recente: ${res.identity.last_ip || 'Oculto'}`;
                     alert(msg);
                 }
@@ -716,22 +716,22 @@
                 if (res.is_violation) {
                     html = `<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                                 <i class="ri-alarm-warning-fill" style="color: #ff4757; font-size: 2rem;"></i>
-                                <div><strong style="color: #ff4757; font-size: 1.2rem;">⛔ VIOLAÇÃO DETECTADA!</strong><br>O bot baniria jogador construindo aqui.</div>
+                                <div><strong style="color: #ff4757; font-size: 1.2rem;">â›” VIOLAÃ‡ÃƒO DETECTADA!</strong><br>O bot baniria jogador construindo aqui.</div>
                             </div>`;
                 } else if (res.triggered.length > 0) {
                     html = `<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                                 <i class="ri-error-warning-fill" style="color: #ffa502; font-size: 2rem;"></i>
-                                <div><strong style="color: #ffa502; font-size: 1.2rem;">⚠️ ZONA DE ALERTA</strong><br>Perto de base, mas fora do raio de banimento (100m).</div>
+                                <div><strong style="color: #ffa502; font-size: 1.2rem;">âš ï¸ ZONA DE ALERTA</strong><br>Perto de base, mas fora do raio de banimento (100m).</div>
                             </div>`;
                 } else {
                     html = `<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
                                 <i class="ri-checkbox-circle-fill" style="color: #2ed573; font-size: 2rem;"></i>
-                                <div><strong style="color: #2ed573; font-size: 1.2rem;">✅ ZONA SEGURA</strong><br>Nenhum conflito encontrado.</div>
+                                <div><strong style="color: #2ed573; font-size: 1.2rem;">âœ… ZONA SEGURA</strong><br>Nenhum conflito encontrado.</div>
                             </div>`;
                 }
                 resultDiv.innerHTML = html;
             } else {
-                showToast(res.error || 'Erro na verificação', 'error');
+                showToast(res.error || 'Erro na verificaÃ§Ã£o', 'error');
             }
         }
 
@@ -771,10 +771,10 @@
         }
 
         async function restartServer() {
-            if (confirm('ATENÇÃO: Isso irá reiniciar o servidor REAL DayZ. Continuar?')) {
+            if (confirm('ATENÃ‡ÃƒO: Isso irÃ¡ reiniciar o servidor REAL DayZ. Continuar?')) {
                 const res = await fetchAPI('admin/nitrado/restart', { method: 'POST' });
                 if (res && res.success) {
-                    showToast('Comando de REINÍCIO enviado com sucesso!', 'success');
+                    showToast('Comando de REINÃCIO enviado com sucesso!', 'success');
                 } else {
                     showToast(res.error || 'Erro ao reiniciar', 'error');
                 }
@@ -782,7 +782,7 @@
         }
 
         async function stopServer() {
-            if (confirm('ATENÇÃO: Isso irá PARAR o servidor REAL DayZ. Tem certeza?')) {
+            if (confirm('ATENÃ‡ÃƒO: Isso irÃ¡ PARAR o servidor REAL DayZ. Tem certeza?')) {
                 const res = await fetchAPI('admin/nitrado/stop', { method: 'POST' });
                 if (res && res.success) {
                     showToast('Comando de PARADA enviado com sucesso!', 'success');

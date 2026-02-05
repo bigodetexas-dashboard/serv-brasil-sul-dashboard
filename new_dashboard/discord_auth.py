@@ -20,7 +20,7 @@ DISCORD_USER_URL = f"{DISCORD_API_BASE}/users/@me"
 
 
 def get_oauth_url():
-    """Gera URL de autenticação do Discord"""
+    """Gera URL de autenticaÃ§Ã£o do Discord"""
     params = {
         "client_id": DISCORD_CLIENT_ID,
         "redirect_uri": DISCORD_REDIRECT_URI,
@@ -31,7 +31,7 @@ def get_oauth_url():
 
 
 def exchange_code(code):
-    """Troca o código por um token de acesso"""
+    """Troca o cÃ³digo por um token de acesso"""
     data = {
         "client_id": DISCORD_CLIENT_ID,
         "client_secret": DISCORD_CLIENT_SECRET,
@@ -47,7 +47,7 @@ def exchange_code(code):
 
 
 def get_user_info(access_token):
-    """Busca informações do usuário"""
+    """Busca informaÃ§Ãµes do usuÃ¡rio"""
     headers = {"Authorization": f"Bearer {access_token}"}
 
     response = requests.get(DISCORD_USER_URL, headers=headers, timeout=10)
@@ -55,7 +55,7 @@ def get_user_info(access_token):
 
 
 def get_user_connections(access_token):
-    """Busca as conexões do usuário (Xbox, Steam, etc)"""
+    """Busca as conexÃµes do usuÃ¡rio (Xbox, Steam, etc)"""
     headers = {"Authorization": f"Bearer {access_token}"}
     response = requests.get(
         f"{DISCORD_USER_URL}/connections", headers=headers, timeout=10
@@ -64,7 +64,7 @@ def get_user_connections(access_token):
 
 
 def login_required(f):
-    """Decorator para rotas que requerem autenticação"""
+    """Decorator para rotas que requerem autenticaÃ§Ã£o"""
 
     @wraps(f)
     def decorated_function(*args, **kwargs):

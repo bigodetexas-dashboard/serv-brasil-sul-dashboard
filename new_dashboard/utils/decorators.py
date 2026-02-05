@@ -4,8 +4,8 @@ import discord
 from security import rate_limiter, security_logger
 
 # Para require_admin_password, precisamos acessar a whitelist e a senha
-# Como elas são carregadas do .env no bot_main, podemos importá-las ou passar par ao decorator.
-# Uma forma comum em Cogs é usar o bot.admin_password se anexarmos ao bot.
+# Como elas sÃ£o carregadas do .env no bot_main, podemos importÃ¡-las ou passar par ao decorator.
+# Uma forma comum em Cogs Ã© usar o bot.admin_password se anexarmos ao bot.
 
 
 def rate_limit():
@@ -15,7 +15,7 @@ def rate_limit():
         if not rate_limiter.is_allowed(ctx.author.id):
             security_logger.log_rate_limit(ctx.author.id)
             await ctx.send(
-                "⏰ **Calma lá, parceiro!** Você está enviando comandos muito rápido. Aguarde um momento."
+                "â° **Calma lÃ¡, parceiro!** VocÃª estÃ¡ enviando comandos muito rÃ¡pido. Aguarde um momento."
             )
             return False
         return True
@@ -27,14 +27,14 @@ def require_admin_password():
     """Decorator que solicita senha E verifica whitelist antes de executar comandos admin"""
 
     async def predicate(ctx):
-        # Acessa os dados através do objeto bot
+        # Acessa os dados atravÃ©s do objeto bot
         admin_whitelist = getattr(ctx.bot, "admin_whitelist", None)
         admin_password = getattr(ctx.bot, "admin_password", None)
 
         if not admin_whitelist or not admin_whitelist.is_admin(ctx.author.id):
             security_logger.log_failed_auth(ctx.author.id, ctx.command.name)
             await ctx.send(
-                "❌ **Acesso Negado!** Você não está autorizado a usar comandos administrativos."
+                "âŒ **Acesso Negado!** VocÃª nÃ£o estÃ¡ autorizado a usar comandos administrativos."
             )
             return False
 
@@ -42,14 +42,14 @@ def require_admin_password():
         try:
             dm_channel = await ctx.author.create_dm()
             await dm_channel.send(
-                f"🔐 **Autenticação Administrativa para: {ctx.command.name}**\nPor favor, digite a senha de acesso:"
+                f"ðŸ” **AutenticaÃ§Ã£o Administrativa para: {ctx.command.name}**\nPor favor, digite a senha de acesso:"
             )
             await ctx.send(
-                f"📩 {ctx.author.mention}, enviei uma solicitação de autenticação no seu **Privado (DM)**."
+                f"ðŸ“© {ctx.author.mention}, enviei uma solicitaÃ§Ã£o de autenticaÃ§Ã£o no seu **Privado (DM)**."
             )
         except discord.Forbidden:
             await ctx.send(
-                "❌ **Erro:** Não consegui te enviar DM. Verifique se suas mensagens privadas estão abertas para membros do servidor."
+                "âŒ **Erro:** NÃ£o consegui te enviar DM. Verifique se suas mensagens privadas estÃ£o abertas para membros do servidor."
             )
             return False
 
@@ -60,18 +60,18 @@ def require_admin_password():
             msg = await ctx.bot.wait_for("message", check=check, timeout=60.0)
 
             if msg.content == admin_password:
-                await dm_channel.send("✅ **Senha correta!** Executando comando...")
+                await dm_channel.send("âœ… **Senha correta!** Executando comando...")
                 security_logger.log_admin_action(ctx.author.id, ctx.command.name)
                 return True
             else:
-                await dm_channel.send("❌ **Senha incorreta!** Acesso negado.")
+                await dm_channel.send("âŒ **Senha incorreta!** Acesso negado.")
                 security_logger.log_failed_auth(
                     ctx.author.id, f"{ctx.command.name} - wrong password"
                 )
                 return False
 
         except asyncio.TimeoutError:
-            await dm_channel.send("⏰ **Tempo esgotado!** Autenticação cancelada.")
+            await dm_channel.send("â° **Tempo esgotado!** AutenticaÃ§Ã£o cancelada.")
             return False
 
     return commands.check(predicate)
