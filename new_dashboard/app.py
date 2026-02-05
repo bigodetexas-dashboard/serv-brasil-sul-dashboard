@@ -1,5 +1,5 @@
 """
-BigodeTexas Dashboard - Versão 2.1 (SQLite Edition)
+BigodeTexas Dashboard - VersÃ£o 2.1 (SQLite Edition)
 Sistema completo de dashboard para servidor DayZ (Unificado)
 """
 
@@ -15,6 +15,8 @@ from flask import (
     request,
     abort,
 )
+from flask_babel import gettext as _, ngettext
+from babel_config import init_babel
 from flask_socketio import SocketIO, emit, join_room
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
@@ -68,9 +70,9 @@ def get_cloudflare_ip():
 SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY or SECRET_KEY == "dev-secret-key-change-in-production":
     if os.getenv("FLASK_ENV") != "development":
-        raise RuntimeError("❌ SECRET_KEY must be set in production!")
+        raise RuntimeError("âŒ SECRET_KEY must be set in production!")
     else:
-        print("⚠️ [WARNING] Using insecure SECRET_KEY in development")
+        print("âš ï¸ [WARNING] Using insecure SECRET_KEY in development")
         SECRET_KEY = "dev-secret-key-change-in-production"
 
 app.secret_key = SECRET_KEY
@@ -88,6 +90,7 @@ app.config.update(
 
 # Initialize Security Extensions
 csrf = CSRFProtect(app)
+babel = init_babel(app)
 
 # Rate Limiter - Protects against DDoS and brute-force
 limiter = Limiter(
@@ -136,13 +139,13 @@ Talisman(
     },
 )
 
-# Configuração Dinâmica de CORS baseada no ambiente
+# ConfiguraÃ§Ã£o DinÃ¢mica de CORS baseada no ambiente
 ALLOWED_ORIGINS = os.getenv(
     "ALLOWED_ORIGINS",
     "http://127.0.0.1:5000,http://localhost:5000,http://127.0.0.1:5001,http://localhost:5001",
 )
 if os.getenv("FLASK_ENV") == "production":
-    # Em produção, deve ser a URL do Render/Domínio Próprio
+    # Em produÃ§Ã£o, deve ser a URL do Render/DomÃ­nio PrÃ³prio
     ALLOWED_ORIGINS = os.getenv(
         "PRODUCTION_URL",
         "https://serv-brasil-sul-dashboard.onrender.com,https://bigodetexas.com,https://www.bigodetexas.com",
@@ -167,29 +170,29 @@ app.register_blueprint(admin_bp)
 
 @app.route("/regras")
 def regras():
-    """Página de Regras (Estilo Arquivo Confidencial)"""
+    """PÃ¡gina de Regras (Estilo Arquivo Confidencial)"""
     return render_template("regras.html")
 
 
 # ==================== AUTO-START LOG ROBOT ====================
 def start_log_robot():
-    """Inicia o robô de logs em uma thread separada para autonomia total."""
+    """Inicia o robÃ´ de logs em uma thread separada para autonomia total."""
     import threading
     from scripts.monitor_logs import run_forever
 
-    # Verifica se já existe uma thread rodando (evita duplicatas no Gunicorn)
+    # Verifica se jÃ¡ existe uma thread rodando (evita duplicatas no Gunicorn)
     for thread in threading.enumerate():
         if thread.name == "LogRobotThread":
             return
 
-    print("[SYSTEM] Iniciando Robô de Logs Autônomo...")
+    print("[SYSTEM] Iniciando RobÃ´ de Logs AutÃ´nomo...")
     robot_thread = threading.Thread(
         target=run_forever, name="LogRobotThread", daemon=True
     )
     robot_thread.start()
 
 
-# Inicia o robô junto com o app
+# Inicia o robÃ´ junto com o app
 with app.app_context():
     start_log_robot()
 
@@ -274,7 +277,7 @@ def before_request():
         session["discord_email"] = "wellyton5@hotmail.com"  # For 2FA testing
 
 
-# Configuração do banco de dados (SQLite Unificado)
+# ConfiguraÃ§Ã£o do banco de dados (SQLite Unificado)
 DB_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "bigode_unified.db"
 )
@@ -332,7 +335,7 @@ class PGConnectionWrapper:
 
 
 def get_db():
-    """Conexão com banco de dados (Suporta SQLite e PostgreSQL)"""
+    """ConexÃ£o com banco de dados (Suporta SQLite e PostgreSQL)"""
     db_url = os.getenv("DATABASE_URL")
 
     # Only use psycopg2 if it's actually a postgres URL
@@ -359,8 +362,8 @@ def get_db():
 
 
 def get_current_user_id():
-    """Retorna ID do usuário da sessão ou do token Bearer"""
-    # 1. Tentar Sessão
+    """Retorna ID do usuÃ¡rio da sessÃ£o ou do token Bearer"""
+    # 1. Tentar SessÃ£o
     if "discord_user_id" in session:
         return session["discord_user_id"]
 
@@ -420,18 +423,18 @@ def callback():
         return redirect(url_for("index"))
 
     try:
-        # Trocar código por token
+        # Trocar cÃ³digo por token
         token_data = exchange_code(code)
         access_token = token_data.get("access_token")
 
         if not access_token:
             return redirect(url_for("index"))
 
-        # Buscar informações do usuário
+        # Buscar informaÃ§Ãµes do usuÃ¡rio
         user_info = get_user_info(access_token)
         discord_id = user_info["id"]
 
-        # Buscar conexões (Xbox)
+        # Buscar conexÃµes (Xbox)
         from discord_auth import get_user_connections
 
         connections = get_user_connections(access_token)
@@ -445,7 +448,7 @@ def callback():
                 xbox_uid = conn.get("id")
                 break
 
-        # Salvar na sessão
+        # Salvar na sessÃ£o
         session["discord_user_id"] = discord_id
         session["discord_username"] = user_info["username"]
         session["discord_avatar"] = user_info.get("avatar")
@@ -458,7 +461,7 @@ def callback():
             cur_temp = conn_temp.cursor()
             user_email = user_info.get("email")
             if user_email:
-                # Verificar se usuário existe
+                # Verificar se usuÃ¡rio existe
                 cur_temp.execute(
                     "SELECT id FROM users WHERE discord_id = ?", (str(discord_id),)
                 )
@@ -469,7 +472,7 @@ def callback():
                         (user_email, user_info["username"], str(discord_id)),
                     )
                 else:
-                    # Criar usuário
+                    # Criar usuÃ¡rio
                     cur_temp.execute(
                         "INSERT INTO users (discord_id, discord_username, email, balance) VALUES (?, ?, ?, 0)",
                         (str(discord_id), user_info["username"], user_email),
@@ -535,7 +538,7 @@ def callback():
         # Check Mobile Redirect
         if session.pop("mobile_login", False):
             # Redirecionar para o App Expo (Dev)
-            # Ajuste o IP conforme necessário se for para produção
+            # Ajuste o IP conforme necessÃ¡rio se for para produÃ§Ã£o
             return redirect(f"exp://192.168.1.15:8081/--/auth?code={code}")
 
         # Check if user has 2FA enabled
@@ -578,7 +581,7 @@ def callback():
 
                 if success:
                     print(
-                        f"[2FA LOGIN] Código OTP enviado para {user_email}: {otp_code}"
+                        f"[2FA LOGIN] CÃ³digo OTP enviado para {user_email}: {otp_code}"
                     )
                 else:
                     print(f"[2FA LOGIN] Erro ao enviar email: {msg}")
@@ -599,19 +602,19 @@ def callback():
 
 @app.route("/logout")
 def logout():
-    """Limpa a sessão e desloga o usuário"""
+    """Limpa a sessÃ£o e desloga o usuÃ¡rio"""
     session.clear()
     return redirect(url_for("index"))
 
 
-# ==================== VERIFICAÇÃO VIA DISCORD (AUTO-LINK) ====================
-# A verificação agora é automática durante o login via Discord,
-# lendo as 'connections' do usuário.
+# ==================== VERIFICAÃ‡ÃƒO VIA DISCORD (AUTO-LINK) ====================
+# A verificaÃ§Ã£o agora Ã© automÃ¡tica durante o login via Discord,
+# lendo as 'connections' do usuÃ¡rio.
 
 
 @app.route("/dashboard")
 def dashboard():
-    """Dashboard do usuário"""
+    """Dashboard do usuÃ¡rio"""
     if "discord_user_id" not in session:
         return redirect(url_for("login"))
     return render_template("dashboard.html")
@@ -633,7 +636,7 @@ def leaderboard():
 
 @app.route("/checkout")
 def checkout():
-    """Página de checkout com mapa"""
+    """PÃ¡gina de checkout com mapa"""
     if "discord_user_id" not in session:
         return redirect(url_for("login"))
     return render_template("checkout.html")
@@ -641,19 +644,19 @@ def checkout():
 
 @app.route("/order-confirmation")
 def order_confirmation():
-    """Confirmação de pedido"""
+    """ConfirmaÃ§Ã£o de pedido"""
     return render_template("order_confirmation.html")
 
 
 @app.route("/agradecimentos")
 def agradecimentos():
-    """Página de agradecimentos aos amigos"""
+    """PÃ¡gina de agradecimentos aos amigos"""
     return render_template("agradecimentos.html")
 
 
 @app.route("/debug/oauth")
 def debug_oauth():
-    """Página de debug para OAuth (Restrita a Desenvolvimento)"""
+    """PÃ¡gina de debug para OAuth (Restrita a Desenvolvimento)"""
     if os.getenv("FLASK_ENV") == "production":
         abort(403)
 
@@ -679,19 +682,19 @@ def health():
 
 @app.route("/base")
 def base():
-    """Página de registro de base"""
+    """PÃ¡gina de registro de base"""
     return render_template("base.html")
 
 
 @app.route("/clan")
 def clan():
-    """Página de gerenciamento de clã"""
+    """PÃ¡gina de gerenciamento de clÃ£"""
     return render_template("clan.html")
 
 
 @app.route("/banco")
 def banco():
-    """Página do Banco Sul"""
+    """PÃ¡gina do Banco Sul"""
     return render_template("banco.html")
 
 
@@ -703,14 +706,14 @@ def mural():
 
 @app.route("/player/<name>")
 def player_profile(name):
-    """Perfil Público de um jogador (Hall of Fame)"""
+    """Perfil PÃºblico de um jogador (Hall of Fame)"""
     return render_template("profile.html", player_name=name)
 
 
 @app.route("/api/player/<name>")
 @cache.cached(timeout=60)
 def api_player_stats(name):
-    """Estatísticas públicas de um jogador"""
+    """EstatÃ­sticas pÃºblicas de um jogador"""
     from repositories.player_repository import PlayerRepository
 
     repo = PlayerRepository()
@@ -718,14 +721,14 @@ def api_player_stats(name):
     stats = repo.get_player_stats(name)
 
     if not stats:
-        # Tentar buscar pelo nome de usuário se o repo suportar,
+        # Tentar buscar pelo nome de usuÃ¡rio se o repo suportar,
         # ou gamertag caso o name seja ID
         stats = repo.get_player_stats_by_discord_id(name)
 
     if not stats:
         return jsonify(None)
 
-    # Processar Arquétipo e Bio Automática
+    # Processar ArquÃ©tipo e Bio AutomÃ¡tica
     archetype_key = PlaystyleEngine.determine_archetype(stats)
     archetype = PlaystyleEngine.ARCHETYPES.get(archetype_key)
 
@@ -766,7 +769,7 @@ def api_player_stats(name):
 
 @app.route("/achievements")
 def achievements():
-    """Página de conquistas"""
+    """PÃ¡gina de conquistas"""
     if "discord_user_id" not in session:
         session["discord_user_id"] = "test_user_123"
         session["discord_username"] = "Jogador de Teste"
@@ -775,7 +778,7 @@ def achievements():
 
 @app.route("/history")
 def history():
-    """Página de histórico de atividades"""
+    """PÃ¡gina de histÃ³rico de atividades"""
     if "discord_user_id" not in session:
         session["discord_user_id"] = "test_user_123"
         session["discord_username"] = "Jogador de Teste"
@@ -784,7 +787,7 @@ def history():
 
 @app.route("/settings")
 def settings():
-    """Página de configurações"""
+    """PÃ¡gina de configuraÃ§Ãµes"""
     if "discord_user_id" not in session:
         session["discord_user_id"] = "test_user_123"
         session["discord_username"] = "Jogador de Teste"
@@ -1031,7 +1034,7 @@ def api_revoke_base_permission(base_id):
 @app.route("/api/stats")
 @cache.cached(timeout=300)  # 5 minutos para stats globais
 def api_stats():
-    """Estatísticas gerais do servidor"""
+    """EstatÃ­sticas gerais do servidor"""
     try:
         conn = get_db()
         if not conn:
@@ -1048,7 +1051,7 @@ def api_stats():
         # total_kills = cur.fetchone()["total"] or 0
         total_kills = 0  # Placeholder until we have kills in DB
 
-        # Total de moedas em circulação
+        # Total de moedas em circulaÃ§Ã£o
         cur.execute("SELECT SUM(balance) as total FROM users")
         row = cur.fetchone()
         total_coins = row["total"] if row and row["total"] else 0
@@ -1079,7 +1082,7 @@ def api_stats():
 
 @app.route("/api/user/profile")
 def api_user_profile():
-    """Perfil do usuário logado"""
+    """Perfil do usuÃ¡rio logado"""
     user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
@@ -1116,7 +1119,7 @@ def api_user_profile():
 
 @app.route("/api/user/balance")
 def api_user_balance():
-    """Saldo do usuário"""
+    """Saldo do usuÃ¡rio"""
     user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
@@ -1132,7 +1135,7 @@ def api_user_balance():
 
 @app.route("/api/settings/get")
 def api_settings_get():
-    """Retorna as configurações consolidadas do usuário (Perfil + Segurança)"""
+    """Retorna as configuraÃ§Ãµes consolidadas do usuÃ¡rio (Perfil + SeguranÃ§a)"""
     user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
@@ -1205,7 +1208,7 @@ def api_clan_chat_send():
 
     clan = repo.get_user_clan(user_id)
     if not clan:
-        return jsonify({"error": "Voce nao esta em um clã"}), 403
+        return jsonify({"error": "Voce nao esta em um clÃ£"}), 403
 
     # Use stored username or session
     sender_name = session.get("discord_username", "Sobrevivente")
@@ -1246,7 +1249,7 @@ def api_bank_transfer():
 
     repo = PlayerRepository()
 
-    # 1. Encontrar o alvo pela Gamertag (mais amigável para o usuário)
+    # 1. Encontrar o alvo pela Gamertag (mais amigÃ¡vel para o usuÃ¡rio)
     target_discord_id = repo.get_discord_id_by_gamertag(target_gamertag)
     if not target_discord_id:
         return jsonify(
@@ -1332,11 +1335,11 @@ def api_2fa_send_code():
         return jsonify(
             {
                 "success": False,
-                "error": "Erro ao enviar email de verificação. Tente novamente mais tarde.",
+                "error": "Erro ao enviar email de verificaÃ§Ã£o. Tente novamente mais tarde.",
             }
         ), 500
 
-    return jsonify({"success": True, "message": f"Código enviado para {user_email}"})
+    return jsonify({"success": True, "message": f"CÃ³digo enviado para {user_email}"})
 
 
 @app.route("/api/user/2fa/enable", methods=["POST"])
@@ -1368,7 +1371,7 @@ def api_2fa_enable():
         if not user or not user["twofa_otp_code"]:
             conn.close()
             return jsonify(
-                {"error": "Nenhum código solicitado. Clique em enviar código primeiro."}
+                {"error": "Nenhum cÃ³digo solicitado. Clique em enviar cÃ³digo primeiro."}
             ), 400
 
         from otp_manager import (
@@ -1381,13 +1384,13 @@ def api_2fa_enable():
         # Verify Expiration
         if is_expired(user["twofa_otp_expires"]):
             conn.close()
-            return jsonify({"error": "Código expirado. Solicite um novo."}), 400
+            return jsonify({"error": "CÃ³digo expirado. Solicite um novo."}), 400
 
         # Verify Code
         decrypted_code = decrypt_otp(user["twofa_otp_code"])
         if decrypted_code != token:
             conn.close()
-            return jsonify({"error": "Código inválido."}), 400
+            return jsonify({"error": "CÃ³digo invÃ¡lido."}), 400
 
         # Generate backup codes
         backup_codes = generate_backup_codes()
@@ -1619,7 +1622,7 @@ def api_2fa_verify():
             remaining = len(updated_codes)
             message = "Login successful"
             if remaining <= 2:
-                message += f". ⚠️ Only {remaining} backup codes remaining."
+                message += f". âš ï¸ Only {remaining} backup codes remaining."
 
             return jsonify(
                 {"success": True, "message": message, "remaining_codes": remaining}
@@ -1658,7 +1661,7 @@ def api_shop_items():
 
 @app.route("/api/user/identities")
 def api_user_identities():
-    """Lista todas as identidades (Gamertags) vinculadas ao Discord do usuário."""
+    """Lista todas as identidades (Gamertags) vinculadas ao Discord do usuÃ¡rio."""
     user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
@@ -1681,7 +1684,7 @@ def api_user_identities():
 
 @app.route("/api/user/stats")
 def api_user_stats():
-    """Estatísticas do usuário reais do SQLite"""
+    """EstatÃ­sticas do usuÃ¡rio reais do SQLite"""
     user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
@@ -1734,7 +1737,7 @@ def api_user_stats():
 
 @app.route("/api/clan/my")
 def api_clan_my():
-    """Informações do clã do usuário logado"""
+    """InformaÃ§Ãµes do clÃ£ do usuÃ¡rio logado"""
     user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
@@ -1800,7 +1803,7 @@ def api_clan_my():
 
 @app.route("/api/clan/create", methods=["POST"])
 def api_clan_create():
-    """Criar um novo clã"""
+    """Criar um novo clÃ£"""
     user_id = session.get("discord_user_id")
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
@@ -1809,7 +1812,7 @@ def api_clan_create():
     name = data.get("name")
 
     if not name:
-        return jsonify({"error": "Nome obrigatório"}), 400
+        return jsonify({"error": "Nome obrigatÃ³rio"}), 400
 
     conn = get_db()
     cur = conn.cursor()
@@ -1818,7 +1821,7 @@ def api_clan_create():
         # Check if user already in clan
         cur.execute("SELECT id FROM clan_members WHERE discord_id = ?", (str(user_id),))
         if cur.fetchone():
-            return jsonify({"error": "Você já pertence a um clã"}), 400
+            return jsonify({"error": "VocÃª jÃ¡ pertence a um clÃ£"}), 400
 
         color1 = data.get("color1", "#8B0000")
         color2 = data.get("color2", "#000000")
@@ -1839,9 +1842,9 @@ def api_clan_create():
         conn.commit()
         return jsonify({"success": True, "clan_id": clan_id})
     except sqlite3.IntegrityError:
-        return jsonify({"error": "Nome de clã já existe"}), 400
+        return jsonify({"error": "Nome de clÃ£ jÃ¡ existe"}), 400
     except Exception as e:
-        print(f"Erro ao criar clã: {e}")
+        print(f"Erro ao criar clÃ£: {e}")
         return jsonify({"error": "Erro interno"}), 500
     finally:
         conn.close()
@@ -1856,7 +1859,7 @@ def api_clan_add():
     data = request.get_json()
     identifier = data.get("identifier")
     if not identifier:
-        return jsonify({"error": "ID ou Gamertag obrigatório"}), 400
+        return jsonify({"error": "ID ou Gamertag obrigatÃ³rio"}), 400
 
     from repositories.clan_repository import ClanRepository
     from repositories.player_repository import PlayerRepository
@@ -1866,29 +1869,29 @@ def api_clan_add():
 
     clan = clan_repo.get_user_clan(user_id)
     if not clan:
-        return jsonify({"error": "Você não tem clã"}), 400
+        return jsonify({"error": "VocÃª nÃ£o tem clÃ£"}), 400
     if clan["role"] not in ["leader", "moderator"]:
-        return jsonify({"error": "Permissão negada"}), 403
+        return jsonify({"error": "PermissÃ£o negada"}), 403
 
     # Resolve identifier
     target_id = identifier
     if not identifier.isdigit():
         target_id = player_repo.get_discord_id_by_gamertag(identifier)
         if not target_id:
-            return jsonify({"error": "Gamertag não encontrado"}), 404
+            return jsonify({"error": "Gamertag nÃ£o encontrado"}), 404
 
     # Check if already in a clan
     existing_clan = clan_repo.get_user_clan(target_id)
     if existing_clan:
         return jsonify(
-            {"error": f"Jogador já está no clã {existing_clan['name']}"}
+            {"error": f"Jogador jÃ¡ estÃ¡ no clÃ£ {existing_clan['name']}"}
         ), 400
 
     # Create INVITE instead of direct add
     if clan_repo.create_invite(clan["id"], target_id):
         return jsonify({"success": True, "message": "Convite enviado com sucesso!"})
     else:
-        return jsonify({"error": "Erro ao enviar convite (possível duplicata)"}), 400
+        return jsonify({"error": "Erro ao enviar convite (possÃ­vel duplicata)"}), 400
 
 
 @app.route("/api/user/invites")
@@ -1931,7 +1934,7 @@ def api_clan_invite_respond():
             "IDOR Attempt (Clan Invite)",
             f"User {user_id} tried to respond to invite {invite_id}",
         )
-        return jsonify({"error": "Convite inválido ou acesso negado"}), 403
+        return jsonify({"error": "Convite invÃ¡lido ou acesso negado"}), 403
 
     if repo.respond_invite(invite_id, accept):
         return jsonify({"success": True})
@@ -1954,14 +1957,14 @@ def api_clan_remove():
 
     clan = repo.get_user_clan(user_id)
     if not clan:
-        return jsonify({"error": "Clã não encontrado"}), 404
+        return jsonify({"error": "ClÃ£ nÃ£o encontrado"}), 404
 
     # Check permissions (Only Leader can remove?)
     if clan["role"] != "leader":
-        return jsonify({"error": "Apenas líder pode remover membros"}), 403
+        return jsonify({"error": "Apenas lÃ­der pode remover membros"}), 403
 
     if target_id == user_id:
-        return jsonify({"error": "Você não pode se remover aqui"}), 400
+        return jsonify({"error": "VocÃª nÃ£o pode se remover aqui"}), 400
 
     if repo.remove_member(clan["id"], target_id):
         return jsonify({"success": True})
@@ -1980,11 +1983,11 @@ def api_clan_leave():
 
     clan = repo.get_user_clan(user_id)
     if not clan:
-        return jsonify({"error": "Clã não encontrado"}), 404
+        return jsonify({"error": "ClÃ£ nÃ£o encontrado"}), 404
 
     if clan["role"] == "leader":
         return jsonify(
-            {"error": "Líder não pode sair. Transfira a liderança ou delete o clã."}
+            {"error": "LÃ­der nÃ£o pode sair. Transfira a lideranÃ§a ou delete o clÃ£."}
         ), 400
 
     if repo.remove_member(clan["id"], user_id):
@@ -1994,7 +1997,7 @@ def api_clan_leave():
 
 @app.route("/api/user/purchases")
 def api_user_purchases():
-    """Histórico de compras"""
+    """HistÃ³rico de compras"""
     user_id = session.get("discord_user_id")
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
@@ -2040,7 +2043,7 @@ def api_user_purchases():
 
 @app.route("/api/user/achievements")
 def api_user_achievements():
-    """Conquistas do usuário (IDs desbloqueados)"""
+    """Conquistas do usuÃ¡rio (IDs desbloqueados)"""
     user_id = session.get("discord_user_id")
     if not user_id:
         return jsonify({})
@@ -2067,7 +2070,7 @@ def api_user_achievements():
 
 @app.route("/api/achievements/all")
 def api_achievements_all():
-    """Lista completa de conquistas com progresso e status para o usuário logado"""
+    """Lista completa de conquistas com progresso e status para o usuÃ¡rio logado"""
     user_id = session.get("discord_user_id")
     if not user_id:
         # Fallback to all locked if not logged in
@@ -2139,7 +2142,7 @@ def api_achievements_all():
                 "id": ach_id,
                 "title": ach["title"],
                 "description": ach["description"],
-                "icon": ach["icon"] if is_unlocked else "🔒",
+                "icon": ach["icon"] if is_unlocked else "ðŸ”’",
                 "category": ach["category"],
                 "rarity": ach["rarity"],
                 "tier": ach["tier"],
@@ -2157,7 +2160,7 @@ def api_achievements_all():
 
 @app.route("/api/achievements/stats")
 def api_achievements_stats():
-    """Estatísticas globais de conquistas do usuário"""
+    """EstatÃ­sticas globais de conquistas do usuÃ¡rio"""
     user_id = session.get("discord_user_id")
     if not user_id:
         return jsonify(
@@ -2212,7 +2215,7 @@ def api_achievements_stats():
 
 @app.route("/api/user/update-gamertag", methods=["POST"])
 def api_user_update_gamertag():
-    """Atualizar gamertag do usuário"""
+    """Atualizar gamertag do usuÃ¡rio"""
     user_id = session.get("discord_user_id")
     if not user_id:
         return jsonify({"error": "Not authenticated"}), 401
@@ -2221,7 +2224,7 @@ def api_user_update_gamertag():
     gamertag = data.get("gamertag", "").strip()
 
     if not gamertag:
-        return jsonify({"error": "Gamertag inválido"}), 400
+        return jsonify({"error": "Gamertag invÃ¡lido"}), 400
 
     conn = get_db()
     cur = conn.cursor()
@@ -2272,7 +2275,7 @@ def api_leaderboard():
         )
         kills = [dict(row) for row in cur.fetchall()]
 
-        # Melhor K/D (mínimo 5 kills)
+        # Melhor K/D (mÃ­nimo 5 kills)
         cur.execute("""
             SELECT nitrado_gamertag as name,
             CASE WHEN deaths = 0 THEN kills ELSE CAST(kills AS FLOAT) / deaths END as value,
@@ -2311,7 +2314,7 @@ def api_shop_purchase():
     target_gamertag = data.get("gamertag")  # NOME DA CONTA DE DESTINO
 
     if not total_cost or not items:
-        return jsonify({"error": "Dados inválidos"}), 400
+        return jsonify({"error": "Dados invÃ¡lidos"}), 400
 
     conn = get_db()
     cur = conn.cursor()
@@ -2321,12 +2324,12 @@ def api_shop_purchase():
     repo = PlayerRepository()
 
     try:
-        # Verificar o status de verificação via PlayerRepository
+        # Verificar o status de verificaÃ§Ã£o via PlayerRepository
         if not repo.is_verified(user_id):
             return (
                 jsonify(
                     {
-                        "error": "Acesso negado: Sua conta Xbox não está verificada.",
+                        "error": "Acesso negado: Sua conta Xbox nÃ£o estÃ¡ verificada.",
                         "need_verification": True,
                     }
                 ),
@@ -2343,7 +2346,7 @@ def api_shop_purchase():
             item_key = item.get("code") or item.get("name")
             db_item = item_repo.get_item_by_key(item_key)
             if not db_item:
-                return jsonify({"error": f"Item inválido: {item_key}"}), 400
+                return jsonify({"error": f"Item invÃ¡lido: {item_key}"}), 400
 
             # Ensure quantity is positive
             qty = max(1, int(item.get("quantity", 1)))
@@ -2363,23 +2366,23 @@ def api_shop_purchase():
             total_cost = calculated_total
 
         if total_cost <= 0:
-            return jsonify({"error": "Valor da compra inválido"}), 400
+            return jsonify({"error": "Valor da compra invÃ¡lido"}), 400
 
         # Verificar saldo
         balance = repo.get_balance(user_id)
         if balance < total_cost:
             return jsonify({"error": "Saldo insuficiente"}), 400
 
-        # Deduzir saldo e registrar transação
+        # Deduzir saldo e registrar transaÃ§Ã£o
         items_desc = ", ".join([f"{i.get('quantity')}x {i.get('name')}" for i in items])
         new_balance = repo.update_balance(
             user_id, -total_cost, reason=f"Shop Purchase: {items_desc} at {coordinates}"
         )
 
-        # Adicionar ao inventário
+        # Adicionar ao inventÃ¡rio
         first_item_name = ""
         for item in items:
-            item_key = item.get("code") or item.get("name")  # Usar code se disponível
+            item_key = item.get("code") or item.get("name")  # Usar code se disponÃ­vel
             item_name = item.get("name")
             if not first_item_name:
                 first_item_name = item_name
@@ -2387,7 +2390,7 @@ def api_shop_purchase():
             if item_key:
                 repo.add_to_inventory(user_id, item_key, item_name, quantity=qty)
 
-        # 🏆 Check Achievements & Log History
+        # ðŸ† Check Achievements & Log History
         repo.check_and_unlock_achievements(str(user_id))
 
         try:
@@ -2405,7 +2408,7 @@ def api_shop_purchase():
             AchievementsEngine.log_activity(
                 str(user_id),
                 "purchase",
-                "🛒",
+                "ðŸ›’",
                 "Compra Realizada",
                 f"Compra de {len(items)} itens",
                 {"total_cost": total_cost, "items": [i.get("name") for i in items]},
@@ -2413,7 +2416,7 @@ def api_shop_purchase():
         except Exception as e:
             print(f"[ERROR] Shop Logging: {e}")
 
-        # 🚁 NOVO: Adicionar à fila de entrega (ao invés de FTP direto)
+        # ðŸš NOVO: Adicionar Ã  fila de entrega (ao invÃ©s de FTP direto)
         from repositories.delivery_repository import DeliveryQueueRepository
 
         delivery_repo = DeliveryQueueRepository()
@@ -2444,12 +2447,12 @@ def api_shop_purchase():
             {
                 "success": True,
                 "message": "Compra realizada com sucesso!",
-                "deliveryTime": "Seus itens serão entregues em até 30 segundos.",
+                "deliveryTime": "Seus itens serÃ£o entregues em atÃ© 30 segundos.",
                 "coordinates": coordinates,
                 "total": total_cost,
                 "new_balance": new_balance,
                 "queued_items": queued_items,
-                "info": "Os itens estão na fila de entrega. Mesmo se houver problemas temporários, você receberá tudo.",
+                "info": "Os itens estÃ£o na fila de entrega. Mesmo se houver problemas temporÃ¡rios, vocÃª receberÃ¡ tudo.",
             }
         )
 
@@ -2528,10 +2531,10 @@ def api_bounties():
 def api_heatmap():
     """API de Heatmap - Dados reais da tabela pvp_kills com filtros"""
     time_range = request.args.get("range", "24h")
-    weapon_filter = request.args.get("weapon", "all")  # ✅ NOVO: Filtro de arma
+    weapon_filter = request.args.get("weapon", "all")  # âœ… NOVO: Filtro de arma
     grid_size = int(
         request.args.get("grid", 100)
-    )  # ✅ NOVO: Clustering por grid (metros)
+    )  # âœ… NOVO: Clustering por grid (metros)
 
     conn = get_db()
     if not conn:
@@ -2540,7 +2543,7 @@ def api_heatmap():
     try:
         cur = conn.cursor()
 
-        # ✅ OTIMIZADO: Query com clustering e filtro de arma
+        # âœ… OTIMIZADO: Query com clustering e filtro de arma
         query = f"""
             SELECT
                 CAST(game_x/{grid_size} AS INTEGER)*{grid_size} + {grid_size}/2 as x,
@@ -2559,12 +2562,12 @@ def api_heatmap():
         elif time_range == "30d":
             query += " AND timestamp >= datetime('now', '-30 days')"
 
-        # ✅ NOVO: Weapon Filter
+        # âœ… NOVO: Weapon Filter
         if weapon_filter != "all":
             query += " AND weapon = ?"
             params.append(weapon_filter)
 
-        # ✅ NOVO: Group by grid
+        # âœ… NOVO: Group by grid
         query += f" GROUP BY CAST(game_x/{grid_size} AS INTEGER), CAST(game_z/{grid_size} AS INTEGER)"
 
         cur.execute(query, params)
@@ -2618,7 +2621,7 @@ def api_heatmap_top():
             "Cherno": (6500, 2500),
             "Elektro": (10500, 2300),
             "Tisy": (1700, 14000),
-            # Cidades Médias
+            # Cidades MÃ©dias
             "Vybor": (3800, 8900),
             "Stary Sobor": (6000, 7700),
             "Zeleno": (2700, 5300),
@@ -2659,7 +2662,7 @@ def api_heatmap_top():
                     min_dist = dist
                     name = city
 
-            if min_dist > 1000:  # ✅ MELHORADO: Reduzido de 1500 para 1000m
+            if min_dist > 1000:  # âœ… MELHORADO: Reduzido de 1500 para 1000m
                 name = f"Setor {int(cx / 1000)}x{int(cz / 1000)}"
 
             locations.append(
@@ -2741,7 +2744,7 @@ def api_base_register():
     name = data.get("name", "Base Sem Nome")
 
     if x is None or game_z is None:
-        return jsonify({"error": "Coordenadas inválidas"}), 400
+        return jsonify({"error": "Coordenadas invÃ¡lidas"}), 400
 
     from repositories.player_repository import PlayerRepository
 
@@ -2806,7 +2809,7 @@ def api_heatmap_weapons():
 
 @app.route("/api/heatmap/hero_stats")
 def api_heatmap_hero_stats():
-    """Estatísticas gerais para o Hero Stats Banner"""
+    """EstatÃ­sticas gerais para o Hero Stats Banner"""
     time_range = request.args.get("range", "24h")
     conn = get_db()
     if not conn:
@@ -2875,7 +2878,7 @@ def api_heatmap_hero_stats():
         top_player_row = cur.fetchone()
         top_player = top_player_row["killer_name"] if top_player_row else "-"
 
-        # 5. Peak Hour (horário com mais atividade)
+        # 5. Peak Hour (horÃ¡rio com mais atividade)
         query = (
             """
             SELECT CAST(strftime('%H', timestamp) as INTEGER) as hour, COUNT(*) as count
@@ -2896,7 +2899,7 @@ def api_heatmap_hero_stats():
         else:
             peak_hour = "-"
 
-        # 6. Hottest Zone (usar lógica de top_locations)
+        # 6. Hottest Zone (usar lÃ³gica de top_locations)
         query = (
             """
             SELECT
@@ -2917,7 +2920,7 @@ def api_heatmap_hero_stats():
         hottest_zone = "-"
         if hottest_row:
             cx, cz = hottest_row["center_x"], hottest_row["center_z"]
-            # Usar mesmo dicionário de cidades
+            # Usar mesmo dicionÃ¡rio de cidades
             CHERNARUS_CITIES = {
                 "NWAF": (4600, 10000),
                 "Berezino": (12000, 9000),
@@ -3299,7 +3302,7 @@ async def api_admin_check_alts():
     identity = cur.fetchone()
 
     if not identity:
-        return jsonify({"success": False, "error": "Identidade não encontrada"})
+        return jsonify({"success": False, "error": "Identidade nÃ£o encontrada"})
 
     discord_id = identity["discord_id"]
     nitrado_id = identity["nitrado_id"]
@@ -3321,7 +3324,7 @@ async def api_admin_check_alts():
         for row in cur.fetchall():
             tag = row["gamertag"]
             if row["discord_id"] != discord_id:
-                tag += " (OUTRO DISCORD 🚨)"
+                tag += " (OUTRO DISCORD ðŸš¨)"
             alts_by_hardware.append(tag)
 
     # Unificar lista
@@ -3343,7 +3346,7 @@ async def api_admin_check_alts():
 
 @app.route("/api/mural/stats")
 def api_mural_stats():
-    """Retorna estatísticas do Mural da Vergonha"""
+    """Retorna estatÃ­sticas do Mural da Vergonha"""
     try:
         from repositories.mural_repository import MuralRepository
 
@@ -3390,11 +3393,11 @@ def handle_subscribe_killfeed():
 
 @socketio.on("subscribe_missions")
 def handle_subscribe_missions():
-    """Inscrever cliente no canal de missões"""
+    """Inscrever cliente no canal de missÃµes"""
     user_id = session.get("discord_user_id")
     if user_id:
         join_room(f"user_{user_id}")
-        print(f"[WebSocket] Cliente {request.sid} inscrito em missões (user_{user_id})")
+        print(f"[WebSocket] Cliente {request.sid} inscrito em missÃµes (user_{user_id})")
         emit("subscribed", {"channel": "missions", "status": "success"})
 
 
@@ -3408,17 +3411,17 @@ def handle_subscribe_market():
 
 @socketio.on("ping")
 def handle_ping():
-    """Responder ping para manter conexão viva"""
+    """Responder ping para manter conexÃ£o viva"""
     emit("pong", {"timestamp": datetime.now().isoformat()})
 
 
-# ==================== FUNÇÕES AUXILIARES WEBSOCKET ====================
+# ==================== FUNÃ‡Ã•ES AUXILIARES WEBSOCKET ====================
 
 
 def broadcast_kill(kill_data):
     """
     Envia kill para todos os clientes conectados ao killfeed
-    Chamar esta função de cogs/killfeed.py quando processar um kill
+    Chamar esta funÃ§Ã£o de cogs/killfeed.py quando processar um kill
     """
     socketio.emit("new_kill", kill_data, room="killfeed")
     print(
@@ -3428,15 +3431,15 @@ def broadcast_kill(kill_data):
 
 def notify_mission_complete(user_id, mission_data):
     """
-    Notifica usuário específico sobre missão completa
+    Notifica usuÃ¡rio especÃ­fico sobre missÃ£o completa
     """
     socketio.emit("mission_completed", mission_data, room=f"user_{user_id}")
-    print(f"[WebSocket] Missão completa notificada para user_{user_id}")
+    print(f"[WebSocket] MissÃ£o completa notificada para user_{user_id}")
 
 
 def broadcast_market_update(item_data):
     """
-    Envia atualização de preço do mercado
+    Envia atualizaÃ§Ã£o de preÃ§o do mercado
     """
     socketio.emit("market_update", item_data, room="market")
     print(f"[WebSocket] Mercado atualizado: {item_data.get('item_name')}")
@@ -3462,7 +3465,7 @@ def verify_mobile_token(token):
 
 
 def send_push_notification(discord_id, title, body, data=None):
-    """Envia notificação Push via Expo"""
+    """Envia notificaÃ§Ã£o Push via Expo"""
     try:
         conn = get_db()
         cur = conn.cursor()
@@ -3502,7 +3505,7 @@ def send_push_notification(discord_id, title, body, data=None):
 
 @app.route("/api/mobile/auth", methods=["POST"])
 def api_mobile_auth():
-    """Autenticação Mobile: Code -> Token JWT"""
+    """AutenticaÃ§Ã£o Mobile: Code -> Token JWT"""
     data = request.get_json()
     code = data.get("code")
 
@@ -3580,13 +3583,13 @@ def api_mobile_push_register():
 
 @socketio.on("join_clan")
 def on_join_clan(data):
-    """Entrar na sala do chat do clã"""
+    """Entrar na sala do chat do clÃ£"""
     token = data.get("token")
     user_data = verify_mobile_token(token)
 
     if not user_data:
         print(f"[SOCKET] Join failed: Invalid token")
-        emit("error", {"message": "Autenticação falhou."})
+        emit("error", {"message": "AutenticaÃ§Ã£o falhou."})
         return
 
     discord_id = user_data["id"]
@@ -3602,7 +3605,7 @@ def on_join_clan(data):
         print(f"[SOCKET] User {username} joined room {room}")
         emit("joined", {"room": room, "clan_name": clan["name"]})
 
-        # Histórico (Simples)
+        # HistÃ³rico (Simples)
         try:
             conn = get_db()
             cur = conn.cursor()
@@ -3622,7 +3625,7 @@ def on_join_clan(data):
             print(f"[SOCKET ERROR] Fetching history: {e}")
     else:
         print(f"[SOCKET] User {username} tried to join clan chat but has no clan.")
-        emit("error", {"message": "Você não pertence a um clã."})
+        emit("error", {"message": "VocÃª nÃ£o pertence a um clÃ£."})
 
 
 @socketio.on("send_clan_message")
@@ -3678,7 +3681,7 @@ def on_send_clan_message(data):
         print(f"[SOCKET] Message sent to {room}: {message}")
     else:
         print(f"[SOCKET] Send failed: User {username} has no clan.")
-        emit("error", {"message": "Você não está em um clã."})
+        emit("error", {"message": "VocÃª nÃ£o estÃ¡ em um clÃ£."})
 
 
 @app.errorhandler(429)
@@ -3743,14 +3746,14 @@ def api_emit_event():
 
 @app.route("/deaths")
 def deaths_page():
-    """Página do feed de mortes"""
+    """PÃ¡gina do feed de mortes"""
     return render_template("deaths.html")
 
 
 @app.route("/api/deaths/recent", methods=["GET"])
 @cache.cached(timeout=30, query_string=True)
 def api_deaths_recent():
-    """Retorna mortes recentes com paginação"""
+    """Retorna mortes recentes com paginaÃ§Ã£o"""
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page", 20))
     offset = (page - 1) * per_page
@@ -3813,7 +3816,7 @@ def api_deaths_recent():
 @app.route("/api/deaths/stats", methods=["GET"])
 @cache.cached(timeout=60)
 def api_deaths_stats():
-    """Retorna estatísticas de mortes (últimas 24h)"""
+    """Retorna estatÃ­sticas de mortes (Ãºltimas 24h)"""
     conn = get_db()
     if not conn:
         return jsonify({"error": "Database connection failed"}), 500
@@ -3821,7 +3824,7 @@ def api_deaths_stats():
     cur = conn.cursor()
 
     try:
-        # Stats básicas
+        # Stats bÃ¡sicas
         cur.execute("""
             SELECT
                 COUNT(*) as total,
@@ -3876,7 +3879,7 @@ def api_deaths_stats():
 
 
 def get_time_ago_deaths(timestamp_str):
-    """Converte timestamp para 'há X minutos/horas'"""
+    """Converte timestamp para 'hÃ¡ X minutos/horas'"""
     if not timestamp_str:
         return "Desconhecido"
 
@@ -3894,16 +3897,16 @@ def get_time_ago_deaths(timestamp_str):
         seconds = diff.total_seconds()
 
         if seconds < 60:
-            return "há poucos segundos"
+            return "hÃ¡ poucos segundos"
         elif seconds < 3600:
             minutes = int(seconds / 60)
-            return f"há {minutes} min"
+            return f"hÃ¡ {minutes} min"
         elif seconds < 86400:
             hours = int(seconds / 3600)
-            return f"há {hours}h"
+            return f"hÃ¡ {hours}h"
         else:
             days = int(seconds / 86400)
-            return f"há {days}d"
+            return f"hÃ¡ {days}d"
     except Exception as e:
         print(f"[TIME AGO] Erro: {e}")
         return "Desconhecido"
@@ -3923,5 +3926,5 @@ if __name__ == "__main__":
     print(f"Debug: {'ON' if debug else 'OFF'}")
     print("=" * 60)
 
-    # Usar socketio.run() ao invés de app.run() para suportar WebSocket
+    # Usar socketio.run() ao invÃ©s de app.run() para suportar WebSocket
     socketio.run(app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True)

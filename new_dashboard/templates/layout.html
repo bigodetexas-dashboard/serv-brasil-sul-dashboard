@@ -9,6 +9,7 @@
     {% block extra_head %}{% endblock %}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
         integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
@@ -24,6 +25,69 @@
             .mobile-only-action {
                 display: list-item !important;
             }
+        }
+
+        /* Language Switcher Styles */
+        .lang-selector {
+            position: relative;
+            display: inline-block;
+            margin-left: 15px;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 5px 10px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            min-width: 160px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .lang-selector:hover .lang-dropdown {
+            display: block;
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            color: #ccc;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .lang-option:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .flag-icon {
+            width: 20px;
+            height: 15px;
+            object-fit: cover;
+            border-radius: 2px;
         }
     </style>
 
@@ -48,32 +112,32 @@
 
             <ul class="navbar-menu" id="navbar-menu">
                 <li><a href="/" class="navbar-link{% if request.endpoint == 'index' %} active{% endif %}"><i
-                            class="ri-home-line"></i> Início</a></li>
+                            class="ri-home-line"></i> {{ _('Início') }}</a></li>
                 <li><a href="/regras" class="navbar-link{% if request.endpoint == 'regras' %} active{% endif %}"
-                        style="color: #ff9f43;"><i class="ri-file-shield-2-line"></i> Regras</a></li>
+                        style="color: #ff9f43;"><i class="ri-file-shield-2-line"></i> {{ _('Regras') }}</a></li>
                 <li><a href="/shop" class="navbar-link{% if request.endpoint == 'shop' %} active{% endif %}"><i
-                            class="ri-store-2-line"></i> Loja</a></li>
+                            class="ri-store-2-line"></i> {{ _('Loja') }}</a></li>
                 <li><a href="/leaderboard"
                         class="navbar-link{% if request.endpoint == 'leaderboard' %} active{% endif %}"><i
-                            class="ri-trophy-line"></i> Rankings</a></li>
+                            class="ri-trophy-line"></i> {{ _('Rankings') }}</a></li>
                 <li><a href="/mural" class="navbar-link{% if request.endpoint == 'mural' %} active{% endif %}"><i
-                            class="ri-skull-2-line"></i> Mural</a></li>
+                            class="ri-skull-2-line"></i> {{ _('Mural') }}</a></li>
                 <li><a href="/heatmap" class="navbar-link{% if request.endpoint == 'heatmap' %} active{% endif %}"><i
-                            class="ri-fire-line"></i> Mapa de Calor</a></li>
+                            class="ri-fire-line"></i> {{ _('Mapa de Calor') }}</a></li>
                 <li><a href="/deaths" class="navbar-link{% if request.endpoint == 'deaths' %} active{% endif %}"><i
-                            class="ri-crosshair-line"></i> Tiro na Lata</a></li>
+                            class="ri-crosshair-line"></i> {{ _('Tiro na Lata') }}</a></li>
                 <li><a href="/base" class="navbar-link{% if request.endpoint == 'base' %} active{% endif %}"><i
-                            class="ri-map-pin-line"></i> Base</a></li>
+                            class="ri-map-pin-line"></i> {{ _('Base') }}</a></li>
                 <li><a href="/clan" class="navbar-link{% if request.endpoint == 'clan' %} active{% endif %}"><i
-                            class="ri-team-line"></i> Clã</a></li>
+                            class="ri-team-line"></i> {{ _('Clã') }}</a></li>
                 <li><a href="/banco" class="navbar-link{% if request.endpoint == 'banco' %} active{% endif %}"><i
-                            class="ri-bank-line"></i> Banco Texas</a></li>
+                            class="ri-bank-line"></i> {{ _('Banco Texas') }}</a></li>
                 <li><a href="/dashboard"
                         class="navbar-link{% if request.endpoint == 'dashboard' %} active{% endif %}"><i
-                            class="ri-user-line"></i> Meu Perfil</a></li>
+                            class="ri-user-line"></i> {{ _('Meu Perfil') }}</a></li>
                 <li><a href="/agradecimentos"
                         class="navbar-link{% if request.endpoint == 'agradecimentos' %} active{% endif %}"><i
-                            class="ri-hand-heart-line"></i> Agradecimentos</a></li>
+                            class="ri-hand-heart-line"></i> {{ _('Agradecimentos') }}</a></li>
 
                 <!-- Admin Tab (Visible only to authorized email) -->
                 {% if session.get('discord_email') == '5.wellyton@gmail.com' or session.get('discord_user_id') in
@@ -84,7 +148,7 @@
                     </a></li>
                 {% endif %}
 
-                <!-- Ações Mobile (Aparecem apenas no menu hamburguer) -->
+                <!-- AÃ§Ãµes Mobile (Aparecem apenas no menu hamburguer) -->
                 {% if session.get('discord_user_id') %}
                 <li class="mobile-only-action">
                     <hr style="border: 0; border-top: 1px solid rgba(107, 140, 66, 0.2); margin: 10px 20px;">
@@ -104,7 +168,7 @@
 
             <div class="navbar-actions">
                 {% if session.get('discord_user_id') %}
-                <!-- Usuário logado -->
+                <!-- UsuÃ¡rio logado -->
                 <div class="user-menu">
                     <a href="/dashboard" class="user-info">
                         {% if session.get('discord_avatar') %}
@@ -126,11 +190,32 @@
                     </a>
                 </div>
                 {% else %}
-                <!-- Usuário não logado -->
+                <!-- UsuÃ¡rio nÃ£o logado -->
                 <a href="/login" class="btn-login">
                     Entrar com Discord
                 </a>
                 {% endif %}
+                {% endif %}
+
+                <!-- Language Selector -->
+                <div class="lang-selector">
+                    <button class="lang-btn">
+                        <i class="ri-translate-2"></i>
+                        <span>{{ session.get('lang', 'PT').upper() }}</span>
+                    </button>
+                    <div class="lang-dropdown">
+                        <a href="?lang=pt" class="lang-option"><span class="fi fi-br"></span> PortuguÃªs</a>
+                        <a href="?lang=en" class="lang-option"><span class="fi fi-us"></span> English</a>
+                        <a href="?lang=es" class="lang-option"><span class="fi fi-es"></span> EspaÃ±ol</a>
+                        <a href="?lang=fr" class="lang-option"><span class="fi fi-fr"></span> FranÃ§ais</a>
+                        <a href="?lang=it" class="lang-option"><span class="fi fi-it"></span> Italiano</a>
+                        <a href="?lang=de" class="lang-option"><span class="fi fi-de"></span> Deutsch</a>
+                        <a href="?lang=ru" class="lang-option"><span class="fi fi-ru"></span> Ð ÑƒÑÑÐºÐ¸Ð¹</a>
+                        <a href="?lang=zh_Hans" class="lang-option"><span class="fi fi-cn"></span> ç®€ä½“ä¸­æ–‡</a>
+                        <a href="?lang=ja" class="lang-option"><span class="fi fi-jp"></span> æ—¥æœ¬èªž</a>
+                        <a href="?lang=ko" class="lang-option"><span class="fi fi-kr"></span> í•œêµ­ì–´</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -143,7 +228,7 @@
     </div>
     {% endif %}
 
-    <!-- Conteúdo da página -->
+    <!-- ConteÃºdo da pÃ¡gina -->
     <main>
         {% block content %}{% endblock %}
     </main>
@@ -164,7 +249,7 @@
 
     {% if session.get('discord_user_id') %}
     <script>
-        // Carregar saldo do usuário na navbar e elemento flutuante
+        // Carregar saldo do usuÃ¡rio na navbar e elemento flutuante
         async function loadUserBalance() {
             try {
                 const response = await fetch('/api/user/balance');
@@ -202,7 +287,7 @@
             }
         }
 
-        // Carregar saldo quando a página carrega
+        // Carregar saldo quando a pÃ¡gina carrega
         document.addEventListener('DOMContentLoaded', loadUserBalance);
     </script>
     {% endif %}
