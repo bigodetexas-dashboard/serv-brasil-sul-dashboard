@@ -1,4 +1,5 @@
 flask
+flask-babel
 flask-socketio
 flask-wtf
 flask-talisman
