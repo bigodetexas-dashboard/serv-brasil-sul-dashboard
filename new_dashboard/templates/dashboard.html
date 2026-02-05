@@ -59,7 +59,8 @@
                             <div class="step-icon"><i class="ri-discord-fill"></i></div>
                             <h4>1. {{ _('Abra o Discord') }}</h4>
                             <p>{{ _('Vá em <strong>Configurações de Usuário</strong> (engrenagem) e clique na aba
-                                <strong>Conexões</strong>.') }}</p>
+                                <strong>Conexões</strong>.') }}
+                            </p>
                         </div>
                         <div class="verify-step">
                             <div class="step-icon" style="color: #107c10;"><i class="ri-xbox-line"></i></div>
@@ -403,5 +404,40 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<!-- Tour Translations -->
+<script>
+    window.tourTranslations = {
+        welcomeTitle: "{{ _('BEM-VINDO AO BIGODETEXAS') }}",
+        welcomeContent1: "{{ _('Seu painel de controle completo para o apocalipse.') }}",
+        welcomeContent2: "{{ _('Aqui você gerencia sua sobrevivência, economia e reputação no servidor mais brabo do Xbox.') }}",
+        baseProtection: "{{ _('Proteção de Base') }}",
+        realEconomy: "{{ _('Economia Real') }}",
+        killfeedRanking: "{{ _('Killfeed & Ranking') }}",
+
+        unionTitle: "{{ _('UNIÃO DE CONTAS') }}",
+        unionSubtitle: "{{ _('O Fim das Contas Fantasmas.') }}",
+        whyLinkTitle: "{{ _('POR QUE VINCULAR?') }}",
+        whyLinkText1: "{{ _('Ao vincular, o sistema UNE seu Discord e Xbox em <strong>UMA ÚNICA IDENTIDADE</strong>.') }}",
+        whyLinkText2: "{{ _('Isso evita que você tenha duas contas (uma no site, outra no jogo) e garante que seu dinheiro caia na conta certa.') }}",
+        dontLoseProgress: "{{ _('Não perca seu progresso. Vincule agora.') }}",
+
+        shopTitle: "{{ _('LOJA & ECONOMIA') }}",
+        shopContent: "{{ _('Use seus <strong>DZCoins</strong> para comprar equipamentos e receber no mapa.') }}",
+        earnPlaying: "{{ _('Ganhe jogando') }}",
+        buySite: "{{ _('Compre no Site') }}",
+        receiveGame: "{{ _('Receba no Jogo') }}",
+
+        readyTitle: "{{ _('ESTÁ PRONTO?') }}",
+        readyContent1: "{{ _('Explore o painel, confira o Ranking e domine o servidor!') }}",
+        readyContent2: "{{ _('Boa sorte, sobrevivente.') }}",
+
+        startTour: "{{ _('COMEÇAR TOUR') }} ➔",
+        verifyAccount: "{{ _('VERIFICAR CONTA') }} 🔒",
+        next: "{{ _('PRÓXIMO') }} ➔",
+        skip: "{{ _('Pular') }}",
+        close: "{{ _('Fechar') }}"
+    };
+</script>
+<script src="{{ url_for('static', filename='js/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}

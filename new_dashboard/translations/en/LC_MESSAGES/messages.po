@@ -233,22 +233,27 @@ msgstr "The End of Ghost Accounts."
 
 #: templates/dashboard.html:263
 msgid "Por que vincular?"
-msgstr "Why link?"
+msgstr "Why Link?"
 
 #: templates/dashboard.html:264
 msgid ""
 "Ao vincular, o sistema UNE seu Discord e Xbox em <strong>UMA ÚNICA\n"
 "                                IDENTIDADE</strong>."
-msgstr "By linking, the system UNITES your Discord and Xbox into <strong>A SINGLE IDENTITY</strong>."
+msgstr "By linking, the system UNITES your Discord and Xbox in <strong>A SINGLE IDENTITY</strong>."
 
 #: templates/dashboard.html:266
 msgid ""
 "Isso evita duplicidade e garante que seu dinheiro e ranking\n"
 "                            sejam atribuídos corretamente."
-msgstr "This avoids duplication and ensures that your money and ranking are correctly attributed."
+msgstr "This avoids duplication and ensures your money and ranking are attributed correctly."
 
-#: templates/dashboard.html:271 templates/dashboard.html:299
-#: templates/dashboard.html:324
+#: templates/dashboard.html:460
+msgid "Isso evita que você tenha duas contas (uma no site, outra no jogo) e garante que seu dinheiro caia na conta certa."
+msgstr "This resolves ghost accounts (one on site, one ingame) and ensures your money goes to the right place."
+
+#: templates/dashboard.html:462
+msgid "Não perca seu progresso. Vincule agora."
+msgstr "Don't lose your progress. Link now."
 msgid "Voltar"
 msgstr "Go Back"
 
@@ -618,12 +623,76 @@ msgid "Zonas Mais Perigosas"
 msgstr ""
 
 #: templates/index.html:16
-msgid "Welcome to the Server"
+msgid "WELCOME_HERO"
 msgstr "Welcome to"
 
 #: templates/index.html:19
 msgid "O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!"
 msgstr "The best DayZ server in Brazil. Survive, conquer and dominate!"
+
+#: templates/dashboard.html:450
+msgid "BEM-VINDO AO BIGODETEXAS"
+msgstr "WELCOME TO BIGODETEXAS"
+
+#: templates/dashboard.html:452
+msgid "Seu painel de controle completo para o apocalipse."
+msgstr "Your complete control panel for the apocalypse."
+
+#: templates/dashboard.html:453
+msgid "Aqui você gerencia sua sobrevivência, economia e reputação no servidor mais brabo do Xbox."
+msgstr "Here you manage your survival, economy and reputation on the toughest server on Xbox."
+
+#: templates/dashboard.html:455
+msgid "UNIÃO DE CONTAS"
+msgstr "ACCOUNT LINKING"
+
+#: templates/dashboard.html:457
+msgid "O Fim das Contas Fantasmas."
+msgstr "The End of Ghost Accounts."
+
+#: templates/dashboard.html:458
+msgid "POR QUE VINCULAR?"
+msgstr "WHY LINK?"
+
+#: templates/dashboard.html:463
+msgid "LOJA & ECONOMIA"
+msgstr "SHOP & ECONOMY"
+
+#: templates/dashboard.html:465
+msgid "Use seus <strong>DZCoins</strong> para comprar equipamentos e receber no mapa."
+msgstr "Use your <strong>DZCoins</strong> to buy equipment and receive it on the map."
+
+#: templates/dashboard.html:467
+msgid "Ganhe jogando"
+msgstr "Earn playing"
+
+#: templates/dashboard.html:468
+msgid "Compre no Site"
+msgstr "Buy on Site"
+
+#: templates/dashboard.html:469
+msgid "Receba no Jogo"
+msgstr "Receive in Game"
+
+#: templates/dashboard.html:471
+msgid "ESTÁ PRONTO?"
+msgstr "ARE YOU READY?"
+
+#: templates/dashboard.html:473
+msgid "Explore o painel, confira o Ranking e domine o servidor!"
+msgstr "Explore the dashboard, check the Ranking and dominate the server!"
+
+#: templates/dashboard.html:474
+msgid "Boa sorte, sobrevivente."
+msgstr "Good luck, survivor."
+
+#: templates/dashboard.html:476
+msgid "COMEÇAR TOUR"
+msgstr "START TOUR"
+
+#: templates/dashboard.html:477
+msgid "VERIFICAR CONTA"
+msgstr "VERIFY ACCOUNT"
 
 #: templates/index.html:24
 msgid "Jogadores"
