@@ -1702,7 +1702,7 @@ msgstr ""
 
 #: templates/index.html:16
 msgid "WELCOME_HERO"
-msgstr "Welcome to"
+msgstr "WELCOME, HERO!"
 
 #: templates/index.html:19
 msgid "O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!"
