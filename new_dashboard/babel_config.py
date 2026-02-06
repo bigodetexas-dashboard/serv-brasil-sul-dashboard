@@ -13,7 +13,12 @@ def get_locale():
     if "lang" in session:
         return session["lang"]
 
-    # 3. Automatically detected from browser
+    # 3. Saved in Cookie
+    lang_cookie = request.cookies.get("language")
+    if lang_cookie:
+        return lang_cookie
+
+    # 4. Automatically detected from browser
     return request.accept_languages.best_match(
         ["pt", "en", "es", "fr", "it", "de", "ru", "zh_Hans", "ja", "ko"]
     )

@@ -1,103 +1,97 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EstatÃ­sticas - BigodeTexas</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-</head>
+{% block title %}{{ _('Estatísticas - BigodeTexas') }}{% endblock %}
 
-<body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">ðŸ¤  BigodeTexas</a>
-            <ul class="navbar-nav">
-                <li><a href="/" class="nav-link">InÃ­cio</a></li>
-                <li><a href="/stats" class="nav-link">EstatÃ­sticas</a></li>
-                <li><a href="/leaderboard" class="nav-link">Ranking</a></li>
-                <li><a href="/shop" class="nav-link">Loja</a></li>
-                <li><a href="/heatmap" class="nav-link">Mapa de Calor</a></li>
-            </ul>
+{% block content %}
+<div class="container">
+    <h1 class="fade-in" style="margin-bottom: 2rem;">📊 {{ _('Estatísticas do Servidor') }}</h1>
+
+    <div id="stats-container" class="grid grid-4">
+        <div class="stat-card fade-in">
+            <div class="stat-value" id="total-kills">-</div>
+            <div class="stat-label">💀 {{ _('Total de Kills') }}</div>
         </div>
-    </nav>
-
-    <div class="container">
-        <h1 class="fade-in" style="margin-bottom: 2rem;">ðŸ“Š EstatÃ­sticas do Servidor</h1>
-
-        <div id="stats-container" class="grid grid-4">
-            <div class="stat-card fade-in">
-                <div class="stat-value" id="total-kills">-</div>
-                <div class="stat-label">ðŸ’€ Total de Kills</div>
-            </div>
-            <div class="stat-card fade-in">
-                <div class="stat-value" id="total-deaths">-</div>
-                <div class="stat-label">âš°ï¸ Total de Mortes</div>
-            </div>
-            <div class="stat-card fade-in">
-                <div class="stat-value" id="total-players">-</div>
-                <div class="stat-label">ðŸ‘¥ Jogadores Registrados</div>
-            </div>
-            <div class="stat-card fade-in">
-                <div class="stat-value" id="total-coins">-</div>
-                <div class="stat-label">ðŸ’° DZ Coins em CirculaÃ§Ã£o</div>
-            </div>
+        <div class="stat-card fade-in">
+            <div class="stat-value" id="total-deaths">-</div>
+            <div class="stat-label">⚰️ {{ _('Total de Mortes') }}</div>
         </div>
-
-        <!-- Charts Section -->
-        <div class="grid grid-2" style="margin-top: 3rem;">
-            <div class="card fade-in">
-                <div class="card-header">
-                    <h3 class="card-title">ðŸ“Š Kills ao Longo do Tempo</h3>
-                </div>
-                <div style="height: 300px; padding: 1rem;">
-                    <canvas id="killsChart"></canvas>
-                </div>
-            </div>
-            <div class="card fade-in">
-                <div class="card-header">
-                    <h3 class="card-title">ðŸ”« Armas Mais Usadas</h3>
-                </div>
-                <div style="height: 300px; padding: 1rem;">
-                    <canvas id="weaponsChart"></canvas>
-                </div>
-            </div>
+        <div class="stat-card fade-in">
+            <div class="stat-value" id="total-players">-</div>
+            <div class="stat-label">👥 {{ _('Jogadores Registrados') }}</div>
         </div>
-
-        <div class="card fade-in" style="margin-top: 2rem;">
-            <div class="card-header">
-                <h3 class="card-title">ðŸ“ˆ DistribuiÃ§Ã£o de K/D</h3>
-            </div>
-            <div style="height: 300px; padding: 1rem;">
-                <canvas id="kdChart"></canvas>
-            </div>
-        </div>
-
-        <div class="card fade-in" style="margin-top: 3rem;">
-            <div class="card-header">
-                <h3 class="card-title">â„¹ï¸ Sobre o Servidor</h3>
-            </div>
-            <p class="text-secondary">
-                BigodeTexas Ã© um servidor DayZ focado em PvP intenso e economia balanceada.
-                Ganhe DZ Coins matando inimigos, sobrevivendo e completando desafios.
-                Use suas moedas para comprar equipamentos premium na loja.
-            </p>
+        <div class="stat-card fade-in">
+            <div class="stat-value" id="total-coins">-</div>
+            <div class="stat-label">💰 {{ _('DZ Coins em Circulação') }}</div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/static/js/main.js"></script>
-    <script src="/static/js/charts.js"></script>
-    <script>
-        startAutoRefresh(loadStats, 30000);
-        // Load charts after stats are loaded
-        setTimeout(() => {
-            createKillsChart();
-            createWeaponsChart();
-            createKDChart();
-        }, 1000);
-    </script>
-</body>
+    <!-- Charts Section -->
+    <div class="grid grid-2" style="margin-top: 3rem;">
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">📈 {{ _('Kills ao Longo do Tempo') }}</h3>
+            </div>
+            <div style="height: 300px; padding: 1rem;">
+                <canvas id="killsChart"></canvas>
+            </div>
+        </div>
+        <div class="card fade-in">
+            <div class="card-header">
+                <h3 class="card-title">🔫 {{ _('Armas Mais Usadas') }}</h3>
+            </div>
+            <div style="height: 300px; padding: 1rem;">
+                <canvas id="weaponsChart"></canvas>
+            </div>
+        </div>
+    </div>
 
-</html>
+    <div class="card fade-in" style="margin-top: 2rem;">
+        <div class="card-header">
+            <h3 class="card-title">📉 {{ _('Distribuição de K/D') }}</h3>
+        </div>
+        <div style="height: 300px; padding: 1rem;">
+            <canvas id="kdChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card fade-in" style="margin-top: 3rem;">
+        <div class="card-header">
+            <h3 class="card-title">ℹ️ {{ _('Sobre o Servidor') }}</h3>
+        </div>
+        <p class="text-secondary">
+            {{ _('BigodeTexas é um servidor DayZ focado em PvP intenso e economia balanceada. Ganhe DZ Coins matando
+            inimigos, sobrevivendo e completando desafios. Use suas moedas para comprar equipamentos premium na loja.')
+            }}
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/static/js/main.js"></script>
+<script src="/static/js/charts.js"></script>
+<script>
+    startAutoRefresh(loadStats, 30000);
+    // Load charts after stats are loaded
+    setTimeout(() => {
+        if (typeof createKillsChart === 'function') createKillsChart();
+        if (typeof createWeaponsChart === 'function') createWeaponsChart();
+        if (typeof createKDChart === 'function') createKDChart();
+    }, 1000);
+
+    async function loadStats() {
+        try {
+            const response = await fetch('/api/stats');
+            const data = await response.json();
+            document.getElementById('total-kills').textContent = data.total_kills.toLocaleString();
+            document.getElementById('total-deaths').textContent = data.total_deaths.toLocaleString();
+            document.getElementById('total-players').textContent = data.total_players.toLocaleString();
+            document.getElementById('total-coins').textContent = data.total_coins.toLocaleString();
+        } catch (error) {
+            console.error('Erro ao carregar stats:', error);
+        }
+    }
+    loadStats();
+</script>
+{% endblock %}

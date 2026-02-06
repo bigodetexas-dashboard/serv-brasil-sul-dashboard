@@ -190,5 +190,20 @@
 <!-- Heatmap.js + Leaflet Heatmap Plugin -->
 <script src="https://unpkg.com/heatmap.js@2.0.5/build/heatmap.min.js"></script>
 <script src="https://unpkg.com/leaflet-heatmap/leaflet-heatmap.js"></script>
+<script>
+    window.heatmapTranslations = {
+        mortesPvP: "{{ _('Mortes PvP') }}",
+        mortesPvE: "{{ _('Mortes PvE') }}",
+        atividadeHora: "{{ _('Atividade por Hora') }}",
+        extremo: "{{ _('Extremo') }}",
+        alto: "{{ _('Alto') }}",
+        medio: "{{ _('Médio') }}",
+        mortes: "{{ _('Mortes') }}",
+        zona: "{{ _('Zona') }}",
+        baixaAtividade: "{{ _('Baixa Atividade') }}",
+        mediaAtividade: "{{ _('Média Atividade') }}",
+        altaAtividade: "{{ _('Alta Atividade (Zona Quente)') }}"
+    };
+</script>
 <script src="{{ url_for('static', filename='js/heatmap.js') }}"></script>
 {% endblock %}

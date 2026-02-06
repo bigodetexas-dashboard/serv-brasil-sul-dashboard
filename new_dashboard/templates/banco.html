@@ -1,293 +1,266 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banco Texas - BIGODETEXAS - XBOX</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <style>
-        .banco-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
+{% block title %}{{ _('Banco Texas') }} - BIGODETEXAS - XBOX{% endblock %}
 
-        .banco-header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-            border: 2px solid #00ff00;
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-        }
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+    .banco-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+    }
 
-        .banco-title {
-            font-family: 'Share Tech Mono', monospace;
-            color: #00ff00;
-            text-align: center;
-            font-size: 2.5rem;
-            text-shadow: 0 0 10px #00ff00;
-            margin-bottom: 0.5rem;
-        }
+    .banco-header {
+        background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+        border: 2px solid #00ff00;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    }
 
-        .banco-subtitle {
-            font-family: 'Share Tech Mono', monospace;
-            color: #00ff00;
-            text-align: center;
-            opacity: 0.7;
-        }
+    .banco-title {
+        font-family: 'Share Tech Mono', monospace;
+        color: #00ff00;
+        text-align: center;
+        font-size: 2.5rem;
+        text-shadow: 0 0 10px #00ff00;
+        margin-bottom: 0.5rem;
+    }
 
+    .banco-subtitle {
+        font-family: 'Share Tech Mono', monospace;
+        color: #00ff00;
+        text-align: center;
+        opacity: 0.7;
+    }
+
+    .terminal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .terminal-section {
+        background: #0a0a0a;
+        border: 2px solid #00ff00;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        font-family: 'Share Tech Mono', monospace;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+    }
+
+    .terminal-header {
+        color: #00ff00;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #00ff00;
+    }
+
+    .balance-display {
+        font-size: 3rem;
+        color: #00ff00;
+        text-align: center;
+        margin: 2rem 0;
+        text-shadow: 0 0 20px #00ff00;
+    }
+
+    .extrato-line {
+        color: #00ff00;
+        padding: 0.5rem;
+        border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+        font-size: 0.9rem;
+    }
+
+    .terminal-input {
+        background: #000;
+        border: 1px solid #00ff00;
+        color: #00ff00;
+        padding: 0.75rem;
+        border-radius: 0.25rem;
+        font-family: 'Share Tech Mono', monospace;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .terminal-button {
+        background: #00ff00;
+        color: #000;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.25rem;
+        font-family: 'Share Tech Mono', monospace;
+        font-weight: 700;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .terminal-button:hover {
+        box-shadow: 0 0 15px #00ff00;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 1024px) {
         .terminal-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            grid-template-columns: 1fr;
         }
+    }
+</style>
+{% endblock %}
 
-        .terminal-section {
-            background: #0a0a0a;
-            border: 2px solid #00ff00;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            font-family: 'Share Tech Mono', monospace;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-        }
+{% block content %}
+<div class="banco-container">
+    <div class="banco-header">
+        <div class="banco-title">█ {{ _('BANCO TEXAS') }} █</div>
+        <div class="banco-subtitle">{{ _('SISTEMA FINANCEIRO MILITAR') }}</div>
+    </div>
 
-        .terminal-header {
-            color: #00ff00;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #00ff00;
-        }
-
-        .balance-display {
-            font-size: 3rem;
-            color: #00ff00;
-            text-align: center;
-            margin: 2rem 0;
-            text-shadow: 0 0 20px #00ff00;
-        }
-
-        .extrato-line {
-            color: #00ff00;
-            padding: 0.5rem;
-            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
-            font-size: 0.9rem;
-        }
-
-        .terminal-input {
-            background: #000;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            padding: 0.75rem;
-            border-radius: 0.25rem;
-            font-family: 'Share Tech Mono', monospace;
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-
-        .terminal-button {
-            background: #00ff00;
-            color: #000;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.25rem;
-            font-family: 'Share Tech Mono', monospace;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        .terminal-button:hover {
-            box-shadow: 0 0 15px #00ff00;
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 1024px) {
-            .terminal-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">
-                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
-                    style="height: 40px; margin-right: 10px;">
-                <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
-            </a>
-            <ul class="navbar-menu">
-                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> InÃ­cio</a></li>
-                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
-                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
-                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
-                <li><a href="/deaths" class="navbar-link"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
-
-                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
-                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> ClÃ£</a></li>
-                <li><a href="/banco" class="navbar-link active"><i class="ri-bank-line"></i> Banco Texas</a></li>
-                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
-                <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="banco-container">
-        <div class="banco-header">
-            <div class="banco-title">â–ˆ BANCO TEXAS â–ˆ</div>
-            <div class="banco-subtitle">SISTEMA FINANCEIRO MILITAR</div>
+    <div class="terminal-grid">
+        <!-- Saldo e Conta -->
+        <div class="terminal-section">
+            <div class="terminal-header">► {{ _('CONTA CORRENTE') }}</div>
+            <div style="color: #00ff00; margin-bottom: 1rem;">
+                <div>{{ _('TITULAR:') }} <span id="user-name">{{ _('CARREGANDO...') }}</span></div>
+                <div>{{ _('CONTA:') }} <span id="user-id">000000</span></div>
+            </div>
+            <div class="balance-display" id="balance-display">$0</div>
+            <div style="text-align: center; color: #00ff00; opacity: 0.7;">{{ _('SALDO DISPONÍVEL') }}</div>
         </div>
 
-        <div class="terminal-grid">
-            <!-- Saldo e Conta -->
-            <div class="terminal-section">
-                <div class="terminal-header">â–º CONTA CORRENTE</div>
-                <div style="color: #00ff00; margin-bottom: 1rem;">
-                    <div>TITULAR: <span id="user-name">CARREGANDO...</span></div>
-                    <div>CONTA: <span id="user-id">000000</span></div>
-                </div>
-                <div class="balance-display" id="balance-display">$0</div>
-                <div style="text-align: center; color: #00ff00; opacity: 0.7;">SALDO DISPONÃVEL</div>
+        <!-- Extrato -->
+        <div class="terminal-section">
+            <div class="terminal-header">► {{ _('EXTRATO - ÚLTIMAS OPERAÇÕES') }}</div>
+            <div id="extrato-container" style="max-height: 300px; overflow-y: auto;">
+                <div class="extrato-line">[{{ _('CARREGANDO TRANSAÇÕES...') }}]</div>
             </div>
+        </div>
 
-            <!-- Extrato -->
-            <div class="terminal-section">
-                <div class="terminal-header">â–º EXTRATO - ÃšLTIMAS OPERAÃ‡Ã•ES</div>
-                <div id="extrato-container" style="max-height: 300px; overflow-y: auto;">
-                    <div class="extrato-line">[CARREGANDO TRANSAÃ‡Ã•ES...]</div>
-                </div>
+        <!-- Transferência -->
+        <div class="terminal-section">
+            <div class="terminal-header">► {{ _('TRANSFERÊNCIA') }}</div>
+            <label style="color: #00ff00; font-size: 0.9rem;">{{ _('DESTINATÁRIO (Discord ID):') }}</label>
+            <input type="text" id="transfer-to" class="terminal-input" placeholder="{{ _('Digite o Discord ID') }}">
+
+            <label style="color: #00ff00; font-size: 0.9rem;">{{ _('VALOR:') }}</label>
+            <input type="number" id="transfer-amount" class="terminal-input" placeholder="0">
+
+            <label style="color: #00ff00; font-size: 0.9rem;">{{ _('DESCRIÇÃO:') }}</label>
+            <input type="text" id="transfer-desc" class="terminal-input" placeholder="{{ _('Opcional') }}">
+
+            <button class="terminal-button" onclick="transferir()">
+                ► {{ _('EXECUTAR TRANSFERÊNCIA') }}
+            </button>
+        </div>
+
+        <!-- Banco do Clã -->
+        <div class="terminal-section">
+            <div class="terminal-header">► {{ _('BANCO DO CLÃ') }}</div>
+            <div style="color: #00ff00; text-align: center; padding: 2rem;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">$0</div>
+                <div style="opacity: 0.7;">{{ _('SALDO DO CLÃ') }}</div>
             </div>
-
-            <!-- TransferÃªncia -->
-            <div class="terminal-section">
-                <div class="terminal-header">â–º TRANSFERÃŠNCIA</div>
-                <label style="color: #00ff00; font-size: 0.9rem;">DESTINATÃRIO (Discord ID):</label>
-                <input type="text" id="transfer-to" class="terminal-input" placeholder="Digite o Discord ID">
-
-                <label style="color: #00ff00; font-size: 0.9rem;">VALOR:</label>
-                <input type="number" id="transfer-amount" class="terminal-input" placeholder="0">
-
-                <label style="color: #00ff00; font-size: 0.9rem;">DESCRIÃ‡ÃƒO:</label>
-                <input type="text" id="transfer-desc" class="terminal-input" placeholder="Opcional">
-
-                <button class="terminal-button" onclick="transferir()">
-                    â–º EXECUTAR TRANSFERÃŠNCIA
-                </button>
-            </div>
-
-            <!-- Banco do ClÃ£ -->
-            <div class="terminal-section">
-                <div class="terminal-header">â–º BANCO DO CLÃƒ</div>
-                <div style="color: #00ff00; text-align: center; padding: 2rem;">
-                    <div style="font-size: 2rem; margin-bottom: 1rem;">$0</div>
-                    <div style="opacity: 0.7;">SALDO DO CLÃƒ</div>
-                </div>
-                <div style="color: #00ff00; opacity: 0.5; font-size: 0.8rem; text-align: center;">
-                    [FUNCIONALIDADE EM DESENVOLVIMENTO]
-                </div>
+            <div style="color: #00ff00; opacity: 0.5; font-size: 0.8rem; text-align: center;">
+                [{{ _('FUNCIONALIDADE EM DESENVOLVIMENTO') }}]
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <footer class="footer">
-        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-            <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
-            <p style="margin: 0;">&copy; 2025 BIGODETEXAS - XBOX. Todos os direitos reservados.</p>
-        </div>
-    </footer>
+{% block extra_scripts %}
+<script>
+    window.bancoTranslations = {
+        preenchaCampos: "{{ _('Preencha todos os campos!') }}",
+        sucesso: "{{ _('Transferência realizada com sucesso!') }}",
+        erro: "{{ _('Erro ao transferir') }}",
+        nenhumaTransacao: "{{ _('Nenhuma transação recente.') }}",
+        erroCarregar: "{{ _('Erro ao carregar dados.') }}",
+        bigodudo: "{{ _('BIGODUDO') }}"
+    };
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script>
-        // Carregar saldo
-        async function loadBalance() {
-            try {
-                const response = await fetch('/api/user/balance');
-                const data = await response.json();
-                document.getElementById('balance-display').textContent = `$${data.balance.toLocaleString()}`;
-            } catch (error) {
-                console.error('Erro ao carregar saldo:', error);
-            }
+    async function loadBalance() {
+        try {
+            const response = await fetch('/api/user/balance');
+            const data = await response.json();
+            document.getElementById('balance-display').textContent = `$${data.balance.toLocaleString()}`;
+            document.getElementById('user-name').textContent = data.name || window.bancoTranslations.bigodudo;
+            document.getElementById('user-id').textContent = data.id || '000000';
+        } catch (error) {
+            console.error('Erro ao carregar saldo:', error);
+        }
+    }
+
+    async function transferir() {
+        const to = document.getElementById('transfer-to').value;
+        const amount = parseInt(document.getElementById('transfer-amount').value);
+        const desc = document.getElementById('transfer-desc').value;
+
+        if (!to || !amount) {
+            alert(window.bancoTranslations.preenchaCampos);
+            return;
         }
 
-        // Transferir
-        async function transferir() {
-            const to = document.getElementById('transfer-to').value;
-            const amount = parseInt(document.getElementById('transfer-amount').value);
-            const desc = document.getElementById('transfer-desc').value;
+        try {
+            const response = await fetch('/api/banco/transfer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ to_user_id: to, amount, description: desc })
+            });
 
-            if (!to || !amount) {
-                alert('Preencha todos os campos!');
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(window.bancoTranslations.sucesso);
+                loadBalance();
+                loadExtrato();
+                document.getElementById('transfer-to').value = '';
+                document.getElementById('transfer-amount').value = '';
+                document.getElementById('transfer-desc').value = '';
+            } else {
+                alert(data.error || window.bancoTranslations.erro);
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert(window.bancoTranslations.erro);
+        }
+    }
+
+    async function loadExtrato() {
+        try {
+            const container = document.getElementById('extrato-container');
+            const response = await fetch('/api/banco/transactions');
+            const data = await response.json();
+
+            if (!data.transactions || data.transactions.length === 0) {
+                container.innerHTML = `<div class="extrato-line">${window.bancoTranslations.nenhumaTransacao}</div>`;
                 return;
             }
 
-            try {
-                const response = await fetch('/api/banco/transfer', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ to_user_id: to, amount, description: desc })
-                });
+            let html = '';
+            data.transactions.forEach(t => {
+                const dateRaw = new Date(t.timestamp || t.date);
+                const date = dateRaw.toLocaleDateString();
+                const color = t.direction === 'in' || t.amount > 0 ? '#00ff00' : '#ff4444';
+                const symbol = t.direction === 'in' || t.amount > 0 ? '+' : '-';
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert('TransferÃªncia realizada com sucesso!');
-                    loadBalance();
-                    document.getElementById('transfer-to').value = '';
-                    document.getElementById('transfer-amount').value = '';
-                    document.getElementById('transfer-desc').value = '';
-                } else {
-                    alert(data.error || 'Erro ao transferir');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao transferir');
-            }
+                html += `
+                    <div class="extrato-line" style="display: flex; justify-content: space-between;">
+                        <span>${date} - ${t.description || t.type}</span>
+                        <span style="color: ${color}">${symbol}$${Math.abs(t.amount).toLocaleString()}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } catch (error) {
+            console.error('Erro ao carregar extrato:', error);
+            container.innerHTML = `<div class="extrato-line" style="color: #ff4444;">${window.bancoTranslations.erroCarregar}</div>`;
         }
+    }
 
-        // Carregar extrato
-        async function loadExtrato() {
-            try {
-                const container = document.getElementById('extrato-container');
-                const response = await fetch('/api/banco/transactions');
-                const data = await response.json();
-
-                if (!data.transactions || data.transactions.length === 0) {
-                    container.innerHTML = '<div class="extrato-line">Nenhuma transaÃ§Ã£o recente.</div>';
-                    return;
-                }
-
-                let html = '';
-                data.transactions.forEach(t => {
-                    const date = new Date(t.timestamp || t.date).toLocaleDateString('pt-BR');
-                    const color = t.direction === 'in' || t.amount > 0 ? '#00ff00' : '#ff0000'; // Se amount positivo assume entrada
-                    const symbol = t.direction === 'in' || t.amount > 0 ? '+' : '-';
-
-                    html += `
-                        <div class="extrato-line" style="display: flex; justify-content: space-between;">
-                            <span>${date} - ${t.description || t.type}</span>
-                            <span style="color: ${color}">${symbol}$${Math.abs(t.amount)}</span>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch (error) {
-                console.error('Erro ao carregar extrato:', error);
-                document.getElementById('extrato-container').innerHTML = '<div class="extrato-line" style="color: red;">Erro ao carregar dados.</div>';
-            }
-        }
-
-        // Inicializar
-        loadBalance();
-        loadExtrato();
-    </script>
-</body>
-
-</html>
+    loadBalance();
+    loadExtrato();
+</script>
+{% endblock %}

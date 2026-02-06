@@ -51,15 +51,15 @@ async function loadClanStatus() {
                 <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent); display: flex; align-items: center; justify-content: space-between;">
                     <div>
                         <h3 style="margin: 0; font-size: 1.2rem;">${clan.name}</h3>
-                        <p style="margin: 5px 0 0; color: #aaa; font-size: 0.9rem;">Função: ${clan.role.toUpperCase()}</p>
+                        <p style="margin: 5px 0 0; color: #aaa; font-size: 0.9rem;">${window.dashboardTranslations.funcao} ${clan.role.toUpperCase()}</p>
                     </div>
                     <div style="display: flex; gap: 10px;">
-                        <a href="/clan" class="btn btn-sm btn-primary">Gerenciar</a>
+                        <a href="/clan" class="btn btn-sm btn-primary">${window.dashboardTranslations.gerenciar}</a>
                         ${clan.role === 'leader' ?
-                    `<button onclick="openWarModal()" class="btn btn-sm" style="background: #ff4d4d; color: white;"><i class="ri-sword-line"></i> GUERRA</button>` : ''
+                    `<button onclick="openWarModal()" class="btn btn-sm" style="background: #ff4d4d; color: white;"><i class="ri-sword-line"></i> ${window.dashboardTranslations.guerra}</button>` : ''
                 }
                         ${clan.role !== 'leader' ?
-                    `<button onclick="leaveClanDashboard()" class="btn btn-sm" style="background: #ef4444; color: white;">Sair</button>` : ''
+                    `<button onclick="leaveClanDashboard()" class="btn btn-sm" style="background: #ef4444; color: white;">${window.dashboardTranslations.sair}</button>` : ''
                 }
                     </div>
                 </div>
@@ -67,8 +67,8 @@ async function loadClanStatus() {
         } else {
             container.innerHTML = `
                 <div style="text-align: center; color: #888; padding: 20px; border: 1px dashed #444; border-radius: 8px;">
-                    Você não pertence a nenhum clã.
-                    <a href="/clan" style="color: var(--accent); text-decoration: none; margin-left: 5px;">Criar ou Buscar Clã</a>
+                    ${window.dashboardTranslations.semCla}
+                    <a href="/clan" style="color: var(--accent); text-decoration: none; margin-left: 5px;">${window.dashboardTranslations.buscarCla}</a>
                 </div>
             `;
         }
@@ -94,11 +94,11 @@ async function loadInvites() {
                     <div style="background: rgba(0, 0, 0, 0.3); padding: 10px 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--accent);">
                         <div>
                             <strong style="color: white;">${invite.clan_name}</strong>
-                            <div style="font-size: 0.8rem; color: #bbb;">Convite pendente</div>
+                            <div style="font-size: 0.8rem; color: #bbb;">${window.dashboardTranslations.convitePendente}</div>
                         </div>
                         <div style="display: flex; gap: 5px;">
-                            <button onclick="respondInvite(${invite.id}, true)" class="btn btn-sm" style="background: #22c55e; color: white;">Aceitar</button>
-                            <button onclick="respondInvite(${invite.id}, false)" class="btn btn-sm" style="background: #ef4444; color: white;">Recusar</button>
+                            <button onclick="respondInvite(${invite.id}, true)" class="btn btn-sm" style="background: #22c55e; color: white;">${window.dashboardTranslations.aceitar}</button>
+                            <button onclick="respondInvite(${invite.id}, false)" class="btn btn-sm" style="background: #ef4444; color: white;">${window.dashboardTranslations.recusar}</button>
                         </div>
                     </div>
                 `;
@@ -113,7 +113,7 @@ async function loadInvites() {
 }
 
 async function respondInvite(inviteId, accept) {
-    if (!confirm(accept ? "Aceitar convite?" : "Recusar convite?")) return;
+    if (!confirm(accept ? window.dashboardTranslations.confirmarAceitar : window.dashboardTranslations.confirmarRecusar)) return;
 
     try {
         const response = await fetch('/api/clan/invite/respond', {
@@ -123,11 +123,11 @@ async function respondInvite(inviteId, accept) {
         });
 
         if (response.ok) {
-            alert(accept ? "Convite aceito!" : "Convite recusado.");
+            alert(accept ? window.dashboardTranslations.conviteAceito : window.dashboardTranslations.conviteRecusado);
             loadInvites();
             loadClanStatus(); // Refresh status if accepted
         } else {
-            alert("Erro ao processar convite.");
+            alert(window.dashboardTranslations.erroConvite);
         }
     } catch (e) {
         console.error(e);
@@ -135,15 +135,15 @@ async function respondInvite(inviteId, accept) {
 }
 
 async function leaveClanDashboard() {
-    if (!confirm('Tem certeza que deseja sair do clã?')) return;
+    if (!confirm(window.dashboardTranslations.confirmarSair)) return;
     try {
         const response = await fetch('/api/clan/leave', { method: 'POST' });
         if (response.ok) {
             loadClanStatus();
-            alert("Você saiu do clã.");
+            alert(window.dashboardTranslations.saiuCla);
         } else {
             const data = await response.json();
-            alert(data.error || 'Erro ao sair.');
+            alert(data.error || window.dashboardTranslations.erroSair);
         }
     } catch (e) {
         console.error(e);
@@ -173,18 +173,18 @@ async function loadClanWar() {
                         <div class="war-team">
                             <div class="war-team-name">${info.name}</div>
                             <div class="war-points">${myPoints}</div>
-                            <div style="font-size: 0.8rem; color: #888;">SEU CLÃ</div>
+                            <div style="font-size: 0.8rem; color: #888;">${window.dashboardTranslations.seuCla}</div>
                         </div>
                         <div class="war-vs">VS</div>
                         <div class="war-team">
                             <div class="war-team-name">${war.enemy_name}</div>
                             <div class="war-points enemy">${enemyPoints}</div>
-                            <div style="font-size: 0.8rem; color: #888;">INIMIGO</div>
+                            <div style="font-size: 0.8rem; color: #888;">${window.dashboardTranslations.inimigo}</div>
                         </div>
                     </div>
                     <div class="war-expiry">
                         <i class="ri-time-line"></i>
-                        Expira em: ${new Date(war.expires_at).toLocaleString('pt-BR')}
+                        ${window.dashboardTranslations.expiraEm} ${new Date(war.expires_at).toLocaleString('pt-BR')}
                     </div>
                 </div>
             `;
@@ -205,7 +205,7 @@ async function loadBounties() {
         if (!container) return;
 
         if (!data || data.length === 0) {
-            container.innerHTML = '<p class="text-muted">Nenhuma recompensa ativa no momento.</p>';
+            container.innerHTML = `<p class="text-muted">${window.dashboardTranslations.nenhumaRecompensa}</p>`;
             return;
         }
 
@@ -214,8 +214,8 @@ async function loadBounties() {
             html += `
                 <div class="bounty-card">
                     <div>
-                        <div style="font-weight: bold; color: #ff4d4d; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">ALVO: ${bounty.victim_gamertag}</div>
-                        <div style="font-size: 0.8rem; color: #888;">Postado em: ${new Date(bounty.created_at).toLocaleDateString('pt-BR')}</div>
+                        <div style="font-weight: bold; color: #ff4d4d; font-family: 'Oswald', sans-serif; letter-spacing: 1px;">${window.dashboardTranslations.alvo} ${bounty.victim_gamertag}</div>
+                        <div style="font-size: 0.8rem; color: #888;">${window.dashboardTranslations.postadoEm} ${new Date(bounty.created_at).toLocaleDateString('pt-BR')}</div>
                     </div>
                     <div style="font-size: 1.5rem; font-weight: 800; color: #ffd700; font-family: 'Bebas Neue', sans-serif;">
                         ${formatNumber(bounty.amount)} 💰
@@ -240,7 +240,7 @@ async function loadUserProfile() {
         const userAvatar = document.getElementById('user-avatar');
 
         if (userName) userName.textContent = data.username || 'Usuário';
-        if (userGamertag) userGamertag.textContent = data.gamertag ? `Xbox: ${data.gamertag}` : 'Xbox: Não vinculado';
+        if (userGamertag) userGamertag.textContent = data.gamertag ? `${window.dashboardTranslations.xbox} ${data.gamertag}` : `${window.dashboardTranslations.xbox} ${window.dashboardTranslations.naoVinculado}`;
         if (userBalance) userBalance.textContent = formatNumber(data.balance || 0);
 
         // Avatar
@@ -315,15 +315,15 @@ async function loadUserIdentities() {
                     </div>
                     <div class="stat-data">
                         <span class="stat-value" style="font-size: 1.2rem;">${id.gamertag}</span>
-                        <span class="stat-label" style="font-size: 0.7rem;">${id.nitrado_id ? 'Vinc. via Robô' : 'Vinc. via Discord'}</span>
-                        ${id.last_seen ? `<span style="font-size: 0.6rem; color: #888;">Última vez: ${new Date(id.last_seen).toLocaleDateString()}</span>` : ''}
+                        <span class="stat-label" style="font-size: 0.7rem;">${id.nitrado_id ? window.dashboardTranslations.vincRobo : window.dashboardTranslations.vincDiscord}</span>
+                        ${id.last_seen ? `<span style="font-size: 0.6rem; color: #888;">${window.dashboardTranslations.ultimaVez} ${new Date(id.last_seen).toLocaleDateString()}</span>` : ''}
                     </div>
                 </div>
             `).join('');
         } else {
             container.innerHTML = `
                 <div class="stat-box" style="grid-column: 1 / -1; justify-content: center; opacity: 0.6;">
-                    <span class="stat-label">Nenhuma conta secundária detectada ainda.</span>
+                    <span class="stat-label">${window.dashboardTranslations.nenhumaSecundaria}</span>
                 </div>
             `;
         }
@@ -409,14 +409,14 @@ async function openWarModal() {
             try {
                 const response = await fetch('/api/clans/list');
                 const clans = await response.json();
-                let html = '<option value="">Selecione o Inimigo</option>';
+                let html = `<option value="">${window.dashboardTranslations.selecioneInimigo}</option>`;
                 clans.forEach(c => {
                     html += `<option value="${c.id}">${c.name}</option>`;
                 });
                 select.innerHTML = html;
             } catch (e) {
                 console.error("Erro ao carregar clãs:", e);
-                select.innerHTML = '<option>Erro ao carregar</option>';
+                select.innerHTML = `<option>${window.dashboardTranslations.erroCarregar}</option>`;
             }
         }
     }
@@ -425,11 +425,11 @@ async function openWarModal() {
 async function submitWarDeclaration() {
     const select = document.getElementById('war-target-clan');
     if (!select || !select.value) {
-        alert("Selecione um clã inimigo!");
+        alert(window.dashboardTranslations.selecioneInimigoAlerta);
         return;
     }
 
-    if (!confirm("TEM CERTEZA? Isso iniciará uma guerra de 48 horas!")) return;
+    if (!confirm(window.dashboardTranslations.confirmarGuerra)) return;
 
     try {
         const response = await fetch('/api/clan/war/declare', {
@@ -441,15 +441,15 @@ async function submitWarDeclaration() {
         const data = await response.json();
 
         if (response.ok) {
-            alert("GUERRA DECLARADA! ⚔️");
+            alert(window.dashboardTranslations.guerraDeclarada);
             document.getElementById('modal-declare-war').style.display = 'none';
             loadClanWar(); // Reload war status
         } else {
-            alert("Erro: " + (data.error || "Falha desconhecida"));
+            alert(window.dashboardTranslations.erro + " " + (data.error || window.dashboardTranslations.falhaDesconhecida));
         }
     } catch (e) {
         console.error("Erro ao declarar guerra:", e);
-        alert("Erro de conexão.");
+        alert(window.dashboardTranslations.erroConexao);
     }
 }
 // Economy Logic
@@ -462,7 +462,7 @@ async function claimDaily() {
         const data = await response.json();
 
         if (data.success) {
-            alert(`🎁 PARABÉNS! Você ganhou ${data.reward} DZ Coins!`);
+            alert(window.dashboardTranslations.parabensGanhou.replace('{reward}', data.reward));
             // Update Balance UI
             const balEl = document.getElementById('user-balance');
             if (balEl) balEl.textContent = formatNumber(data.new_balance);
@@ -470,12 +470,12 @@ async function claimDaily() {
             if (data.cooldown) {
                 alert(`⏳ ${data.error}`);
             } else {
-                alert(data.error || "Erro ao resgatar daily.");
+                alert(data.error || window.dashboardTranslations.erroCarregar);
             }
         }
     } catch (e) {
         console.error(e);
-        alert("Erro de conexão.");
+        alert(window.dashboardTranslations.erroConexao);
     } finally {
         if (btn) btn.disabled = false;
     }
@@ -490,8 +490,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const target = document.getElementById('transfer-target').value;
             const amount = document.getElementById('transfer-amount').value;
 
-            if (!target || !amount) return alert("Preencha todos os campos.");
-            if (!confirm(`Transferir ${amount} coins para ${target}?`)) return;
+            if (!target || !amount) return alert(window.dashboardTranslations.preenchaCampos);
+            if (!confirm(window.dashboardTranslations.confirmarTransferencia.replace('{amount}', amount).replace('{target}', target))) return;
 
             try {
                 const response = await fetch('/api/economy/transfer', {
@@ -503,17 +503,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await response.json();
 
                 if (data.success) {
-                    alert("✅ Transferência realizada com sucesso!");
+                    alert(window.dashboardTranslations.sucessoTransferencia);
                     document.getElementById('modal-transfer').style.display = 'none';
                     // Update Balance UI
                     const balEl = document.getElementById('user-balance');
                     if (balEl && data.new_balance !== undefined) balEl.textContent = formatNumber(data.new_balance);
                 } else {
-                    alert("Erro: " + (data.error || "Falha desconhecida"));
+                    alert(window.dashboardTranslations.erro + " " + (data.error || window.dashboardTranslations.falhaDesconhecida));
                 }
             } catch (e) {
                 console.error(e);
-                alert("Erro de conexão.");
+                alert(window.dashboardTranslations.erroConexao);
             }
         });
     }

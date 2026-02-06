@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-05 14:57-0600\n"
+"POT-Creation-Date: 2026-02-06 12:58-0600\n"
 "PO-Revision-Date: 2026-02-04 21:34-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -57,7 +57,9 @@ msgid ""
 "Você precisa verificar sua Gamertag para realizar compras na loja e "
 "acessar recursos\n"
 "                    exclusivos."
-msgstr "You need to verify your Gamertag to make purchases in the shop and access exclusive features."
+msgstr ""
+"You need to verify your Gamertag to make purchases in the shop and access"
+" exclusive features."
 
 #: templates/dashboard.html:60
 msgid "Abra o Discord"
@@ -68,317 +70,422 @@ msgid ""
 "Vá em <strong>Configurações de Usuário</strong> (engrenagem) e clique na "
 "aba\n"
 "                                <strong>Conexões</strong>."
-msgstr "Go to <strong>User Settings</strong> (gear icon) and click on the <strong>Connections</strong> tab."
+msgstr ""
+"Go to <strong>User Settings</strong> (gear icon) and click on the "
+"<strong>Connections</strong> tab."
 
-#: templates/dashboard.html:66
+#: templates/dashboard.html:67
 msgid "Adicione o Xbox"
 msgstr "Add Xbox"
 
-#: templates/dashboard.html:67
+#: templates/dashboard.html:68
 msgid ""
 "Clique no ícone do <strong>Xbox</strong> e faça login com sua conta "
- "Microsoft."
-msgstr "Click on the <strong>Xbox</strong> icon and log in with your Microsoft account."
+"Microsoft."
+msgstr ""
+"Click on the <strong>Xbox</strong> icon and log in with your Microsoft "
+"account."
 
-#: templates/dashboard.html:72
+#: templates/dashboard.html:73
 msgid "O Pulo do Gato"
 msgstr "The Secret Step"
 
-#: templates/dashboard.html:73
+#: templates/dashboard.html:74
 msgid ""
 "Ative a chavinha <strong>\"Exibir no perfil\"</strong>. Sem isso, o bot "
 "não vê sua\n"
 "                                conta!"
-msgstr "Enable the <strong>\"Display on profile\"</strong> toggle. Without this, the bot cannot see your account!"
+msgstr ""
+"Enable the <strong>\"Display on profile\"</strong> toggle. Without this, "
+"the bot cannot see your account!"
 
-#: templates/dashboard.html:79
+#: templates/dashboard.html:80
 msgid "Finalizar"
 msgstr "Finish"
 
-#: templates/dashboard.html:80
+#: templates/dashboard.html:81
 msgid "Tudo pronto? Clique no botão abaixo para verificar."
 msgstr "All set? Click the button below to verify."
 
-#: templates/dashboard.html:87
+#: templates/dashboard.html:88
 msgid "JÁ VINCULEI! ATUALIZAR AGORA"
 msgstr "ALREADY LINKED! UPDATE NOW"
 
-#: templates/dashboard.html:90
+#: templates/dashboard.html:91
 msgid "(Você será deslogado para que o bot leia suas novas conexões)"
 msgstr "(You will be logged out so the bot can read your new connections)"
 
-#: templates/dashboard.html:101
+#: templates/dashboard.html:102
 msgid "Estatísticas de Combate"
 msgstr "Combat Statistics"
 
-#: templates/dashboard.html:107 templates/index.html:28
+#: templates/dashboard.html:108 templates/index.html:28
 #: templates/leaderboard.html:18 templates/leaderboard.html:41
 msgid "Kills"
 msgstr "Kills"
 
-#: templates/dashboard.html:114 templates/leaderboard.html:19
+#: templates/dashboard.html:115 templates/leaderboard.html:19
 msgid "Mortes"
 msgstr "Deaths"
 
-#: templates/dashboard.html:121 templates/leaderboard.html:20
+#: templates/dashboard.html:122 templates/leaderboard.html:20
 msgid "K/D Ratio"
 msgstr "K/D Ratio"
 
-#: templates/dashboard.html:128
+#: templates/dashboard.html:129
 msgid "Zumbis Mortos"
 msgstr "Zombies Killed"
 
-#: templates/dashboard.html:135
+#: templates/dashboard.html:136
 msgid "Melhor Série"
 msgstr "Best Streak"
 
-#: templates/dashboard.html:140
+#: templates/dashboard.html:141
 msgid "Sobrevivência"
 msgstr "Survival"
 
-#: templates/dashboard.html:146 templates/leaderboard.html:23
+#: templates/dashboard.html:147 templates/leaderboard.html:23
 msgid "Tempo Jogado"
 msgstr "Playtime"
 
-#: templates/dashboard.html:153
+#: templates/dashboard.html:154
 msgid "Distância (Pé)"
 msgstr "Distance (Foot)"
 
-#: templates/dashboard.html:160
+#: templates/dashboard.html:161
 msgid "Distância (Carro)"
 msgstr "Distance (Car)"
 
-#: templates/dashboard.html:167
+#: templates/dashboard.html:168
 msgid "Construções"
 msgstr "Buildings"
 
-#: templates/dashboard.html:173
+#: templates/dashboard.html:174
 msgid "Clã e Comunicação"
 msgstr "Clan & Communication"
 
-#: templates/dashboard.html:177
+#: templates/dashboard.html:178
 msgid "Carregando informações do clã..."
 msgstr "Loading clan information..."
 
-#: templates/dashboard.html:183
+#: templates/dashboard.html:184
 msgid "Rádio de Clã (Chat Interno)"
 msgstr "Clan Radio (Internal Chat)"
 
-#: templates/dashboard.html:184
+#: templates/dashboard.html:185
 msgid "AO VIVO"
 msgstr "LIVE"
 
-#: templates/dashboard.html:188
+#: templates/dashboard.html:189
 msgid "Aguardando mensagens..."
 msgstr "Waiting for messages..."
 
-#: templates/dashboard.html:191
+#: templates/dashboard.html:192
 msgid "Digite uma mensagem tática..."
 msgstr "Type a tactical message..."
 
-#: templates/dashboard.html:198
+#: templates/dashboard.html:199
 msgid "Convites Pendentes"
 msgstr "Pending Invites"
 
-#: templates/dashboard.html:206
+#: templates/dashboard.html:207
 msgid "Guerra de Clãs"
 msgstr "Clan Wars"
 
-#: templates/dashboard.html:214
+#: templates/dashboard.html:215
 msgid "Bumbas Ativas (Bounties)"
 msgstr "Active Bounties"
 
-#: templates/dashboard.html:217
+#: templates/dashboard.html:218
 msgid "Nenhuma recompensa ativa no momento."
 msgstr "No active rewards at the moment."
 
-#: templates/dashboard.html:237
+#: templates/dashboard.html:238
 msgid "Bem-vindo ao BigodeTexas"
 msgstr "Welcome to BigodeTexas"
 
-#: templates/dashboard.html:238
+#: templates/dashboard.html:239 templates/dashboard.html:411
 msgid "Seu painel de controle completo para o apocalipse."
 msgstr "Your complete control panel for the apocalypse."
 
-#: templates/dashboard.html:240
+#: templates/dashboard.html:241
 msgid ""
 "Aqui você gerencia sua sobrevivência, economia e reputação no servidor "
 "mais brabo do\n"
 "                        Xbox."
-msgstr "Here you manage your survival, economy and reputation in the toughest Xbox server."
+msgstr ""
+"Here you manage your survival, economy and reputation in the toughest "
+"Xbox server."
 
-#: templates/dashboard.html:243
+#: templates/dashboard.html:244 templates/dashboard.html:413
 msgid "Proteção de Base"
 msgstr "Base Protection"
 
-#: templates/dashboard.html:244
+#: templates/dashboard.html:245 templates/dashboard.html:414
 msgid "Economia Real"
 msgstr "Real Economy"
 
-#: templates/dashboard.html:245
+#: templates/dashboard.html:246 templates/dashboard.html:415
 msgid "Killfeed & Ranking"
 msgstr "Killfeed & Ranking"
 
-#: templates/dashboard.html:249
+#: templates/dashboard.html:250
 msgid "Começar Tour"
 msgstr "Start Tour"
 
-#: templates/dashboard.html:259
+#: templates/dashboard.html:260
 msgid "União de Contas"
 msgstr "Account Linking"
 
-#: templates/dashboard.html:260
+#: templates/dashboard.html:261 templates/dashboard.html:418
 msgid "O Fim das Contas Fantasmas."
 msgstr "The End of Ghost Accounts."
 
-#: templates/dashboard.html:263
+#: templates/dashboard.html:264
 msgid "Por que vincular?"
 msgstr "Why Link?"
 
-#: templates/dashboard.html:264
+#: templates/dashboard.html:265
 msgid ""
 "Ao vincular, o sistema UNE seu Discord e Xbox em <strong>UMA ÚNICA\n"
 "                                IDENTIDADE</strong>."
-msgstr "By linking, the system UNITES your Discord and Xbox in <strong>A SINGLE IDENTITY</strong>."
+msgstr ""
+"By linking, the system UNITES your Discord and Xbox in <strong>A SINGLE "
+"IDENTITY</strong>."
 
-#: templates/dashboard.html:266
+#: templates/dashboard.html:267
 msgid ""
 "Isso evita duplicidade e garante que seu dinheiro e ranking\n"
 "                            sejam atribuídos corretamente."
-msgstr "This avoids duplication and ensures your money and ranking are attributed correctly."
+msgstr ""
+"This avoids duplication and ensures your money and ranking are attributed"
+" correctly."
 
-#: templates/dashboard.html:460
-msgid "Isso evita que você tenha duas contas (uma no site, outra no jogo) e garante que seu dinheiro caia na conta certa."
-msgstr "This resolves ghost accounts (one on site, one ingame) and ensures your money goes to the right place."
-
-#: templates/dashboard.html:462
-msgid "Não perca seu progresso. Vincule agora."
-msgstr "Don't lose your progress. Link now."
+#: templates/dashboard.html:272 templates/dashboard.html:300
+#: templates/dashboard.html:325
 msgid "Voltar"
 msgstr "Go Back"
 
-#: templates/dashboard.html:272 templates/dashboard.html:300
+#: templates/dashboard.html:273 templates/dashboard.html:301
 msgid "Próximo"
 msgstr "Next"
 
-#: templates/dashboard.html:282
+#: templates/dashboard.html:283
 msgid "Proteção Total"
 msgstr ""
 
-#: templates/dashboard.html:283
+#: templates/dashboard.html:284
 msgid "Dorme tranquilo. O BigodeBot vigia sua base."
 msgstr ""
 
-#: templates/dashboard.html:287 templates/layout.html:132
+#: templates/dashboard.html:288 templates/layout.html:132
 msgid "Clã"
 msgstr "Clan"
 
-#: templates/dashboard.html:288
+#: templates/dashboard.html:289
 msgid ""
 "Crie um clã para compartilhar permissões de portas e bancos com seus "
 "amigos."
 msgstr ""
 
-#: templates/dashboard.html:292 templates/layout.html:130
+#: templates/dashboard.html:293 templates/layout.html:130
 msgid "Base"
 msgstr "Base"
 
-#: templates/dashboard.html:293
+#: templates/dashboard.html:294
 msgid ""
 "Registre sua base (comando !alarme). O bot bane quem tentar \"glitchar\" "
 "ou invadir\n"
 "                                ilegalmente!"
 msgstr ""
 
-#: templates/dashboard.html:310
+#: templates/dashboard.html:311
 msgid "Vantagens Exclusivas"
 msgstr ""
 
-#: templates/dashboard.html:311
+#: templates/dashboard.html:312
 msgid "Jogue, lucre e domine o ranking."
 msgstr ""
 
-#: templates/dashboard.html:314
+#: templates/dashboard.html:315
 msgid "Salário:"
 msgstr ""
 
-#: templates/dashboard.html:314
+#: templates/dashboard.html:315
 msgid ""
 "Ganhe coins a cada 10min\n"
 "                            online."
 msgstr ""
 
-#: templates/dashboard.html:316
+#: templates/dashboard.html:317
 msgid "Shop:"
 msgstr ""
 
-#: templates/dashboard.html:316
+#: templates/dashboard.html:317
 msgid ""
 "Compre itens e receba no jogo (Spawn\n"
 "                            automático)."
 msgstr ""
 
-#: templates/dashboard.html:318
+#: templates/dashboard.html:319
 #, fuzzy
 msgid "Ranking:"
 msgstr "Rankings"
 
-#: templates/dashboard.html:318
+#: templates/dashboard.html:319
 msgid ""
 "Dispute o Top 1 Kill/Death do\n"
 "                            servidor."
 msgstr ""
 
-#: templates/dashboard.html:321
+#: templates/dashboard.html:322
 msgid "Tudo pronto? Vamos nessa!"
 msgstr ""
 
-#: templates/dashboard.html:325
+#: templates/dashboard.html:326
 msgid "ACESSAR PAINEL"
 msgstr ""
 
-#: templates/dashboard.html:350 templates/layout.html:134
+#: templates/dashboard.html:351 templates/layout.html:134
 msgid "Banco Texas"
 msgstr "Texas Bank"
 
-#: templates/dashboard.html:351
+#: templates/dashboard.html:352
 msgid "Transferência de DZ Coins"
 msgstr ""
 
-#: templates/dashboard.html:356
+#: templates/dashboard.html:357
 msgid "Gamertag do Destinatário"
 msgstr ""
 
-#: templates/dashboard.html:357
+#: templates/dashboard.html:358
 msgid "Ex: Player123"
 msgstr ""
 
-#: templates/dashboard.html:362
+#: templates/dashboard.html:363
 msgid "Valor (DZ Coins)"
 msgstr ""
 
-#: templates/dashboard.html:367
+#: templates/dashboard.html:368
 msgid "Confirmar Transferência"
 msgstr ""
 
-#: templates/dashboard.html:384
+#: templates/dashboard.html:385
 msgid "DECLARAR GUERRA"
 msgstr ""
 
-#: templates/dashboard.html:385
+#: templates/dashboard.html:386
 msgid "Escolha um clã inimigo para iniciar o conflito."
 msgstr ""
 
-#: templates/dashboard.html:390
+#: templates/dashboard.html:391
 msgid "Selecione o Inimigo"
 msgstr ""
 
-#: templates/dashboard.html:393
+#: templates/dashboard.html:394
 msgid "Carregando clãs..."
 msgstr ""
 
-#: templates/dashboard.html:398
+#: templates/dashboard.html:399
 msgid "INICIAR GUERRA"
+msgstr ""
+
+#: templates/dashboard.html:410
+msgid "BEM-VINDO AO BIGODETEXAS"
+msgstr "WELCOME TO BIGODETEXAS"
+
+#: templates/dashboard.html:412
+msgid ""
+"Aqui você gerencia sua sobrevivência, economia e reputação no servidor "
+"mais brabo do Xbox."
+msgstr ""
+"Here you manage your survival, economy and reputation on the toughest "
+"server on Xbox."
+
+#: templates/dashboard.html:417
+msgid "UNIÃO DE CONTAS"
+msgstr "ACCOUNT LINKING"
+
+#: templates/dashboard.html:419
+msgid "POR QUE VINCULAR?"
+msgstr "WHY LINK?"
+
+#: templates/dashboard.html:420
+#, fuzzy
+msgid ""
+"Ao vincular, o sistema UNE seu Discord e Xbox em <strong>UMA ÚNICA "
+"IDENTIDADE</strong>."
+msgstr ""
+"By linking, the system UNITES your Discord and Xbox in <strong>A SINGLE "
+"IDENTITY</strong>."
+
+#: templates/dashboard.html:421
+msgid ""
+"Isso evita que você tenha duas contas (uma no site, outra no jogo) e "
+"garante que seu dinheiro caia na conta certa."
+msgstr ""
+"This resolves ghost accounts (one on site, one ingame) and ensures your "
+"money goes to the right place."
+
+#: templates/dashboard.html:422
+msgid "Não perca seu progresso. Vincule agora."
+msgstr "Don't lose your progress. Link now."
+
+#: templates/dashboard.html:424
+msgid "LOJA & ECONOMIA"
+msgstr "SHOP & ECONOMY"
+
+#: templates/dashboard.html:425
+msgid ""
+"Use seus <strong>DZCoins</strong> para comprar equipamentos e receber no "
+"mapa."
+msgstr ""
+"Use your <strong>DZCoins</strong> to buy equipment and receive it on the "
+"map."
+
+#: templates/dashboard.html:426
+msgid "Ganhe jogando"
+msgstr "Earn playing"
+
+#: templates/dashboard.html:427
+msgid "Compre no Site"
+msgstr "Buy on Site"
+
+#: templates/dashboard.html:428
+msgid "Receba no Jogo"
+msgstr "Receive in Game"
+
+#: templates/dashboard.html:430
+msgid "ESTÁ PRONTO?"
+msgstr "ARE YOU READY?"
+
+#: templates/dashboard.html:431
+msgid "Explore o painel, confira o Ranking e domine o servidor!"
+msgstr "Explore the dashboard, check the Ranking and dominate the server!"
+
+#: templates/dashboard.html:432
+msgid "Boa sorte, sobrevivente."
+msgstr "Good luck, survivor."
+
+#: templates/dashboard.html:434
+msgid "COMEÇAR TOUR"
+msgstr "START TOUR"
+
+#: templates/dashboard.html:435
+msgid "VERIFICAR CONTA"
+msgstr "VERIFY ACCOUNT"
+
+#: templates/dashboard.html:436
+#, fuzzy
+msgid "PRÓXIMO"
+msgstr "Next"
+
+#: templates/dashboard.html:437
+msgid "Pular"
+msgstr ""
+
+#: templates/dashboard.html:438
+msgid "Fechar"
 msgstr ""
 
 #: templates/deaths.html:3 templates/layout.html:128
@@ -629,70 +736,6 @@ msgstr "Welcome to"
 #: templates/index.html:19
 msgid "O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!"
 msgstr "The best DayZ server in Brazil. Survive, conquer and dominate!"
-
-#: templates/dashboard.html:450
-msgid "BEM-VINDO AO BIGODETEXAS"
-msgstr "WELCOME TO BIGODETEXAS"
-
-#: templates/dashboard.html:452
-msgid "Seu painel de controle completo para o apocalipse."
-msgstr "Your complete control panel for the apocalypse."
-
-#: templates/dashboard.html:453
-msgid "Aqui você gerencia sua sobrevivência, economia e reputação no servidor mais brabo do Xbox."
-msgstr "Here you manage your survival, economy and reputation on the toughest server on Xbox."
-
-#: templates/dashboard.html:455
-msgid "UNIÃO DE CONTAS"
-msgstr "ACCOUNT LINKING"
-
-#: templates/dashboard.html:457
-msgid "O Fim das Contas Fantasmas."
-msgstr "The End of Ghost Accounts."
-
-#: templates/dashboard.html:458
-msgid "POR QUE VINCULAR?"
-msgstr "WHY LINK?"
-
-#: templates/dashboard.html:463
-msgid "LOJA & ECONOMIA"
-msgstr "SHOP & ECONOMY"
-
-#: templates/dashboard.html:465
-msgid "Use seus <strong>DZCoins</strong> para comprar equipamentos e receber no mapa."
-msgstr "Use your <strong>DZCoins</strong> to buy equipment and receive it on the map."
-
-#: templates/dashboard.html:467
-msgid "Ganhe jogando"
-msgstr "Earn playing"
-
-#: templates/dashboard.html:468
-msgid "Compre no Site"
-msgstr "Buy on Site"
-
-#: templates/dashboard.html:469
-msgid "Receba no Jogo"
-msgstr "Receive in Game"
-
-#: templates/dashboard.html:471
-msgid "ESTÁ PRONTO?"
-msgstr "ARE YOU READY?"
-
-#: templates/dashboard.html:473
-msgid "Explore o painel, confira o Ranking e domine o servidor!"
-msgstr "Explore the dashboard, check the Ranking and dominate the server!"
-
-#: templates/dashboard.html:474
-msgid "Boa sorte, sobrevivente."
-msgstr "Good luck, survivor."
-
-#: templates/dashboard.html:476
-msgid "COMEÇAR TOUR"
-msgstr "START TOUR"
-
-#: templates/dashboard.html:477
-msgid "VERIFICAR CONTA"
-msgstr "VERIFY ACCOUNT"
 
 #: templates/index.html:24
 msgid "Jogadores"

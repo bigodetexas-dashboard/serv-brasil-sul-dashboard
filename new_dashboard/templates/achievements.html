@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Conquistas - SERV. BRASIL SUL - XBOX{% endblock %}
+{% block title %}{{ _('Conquistas - SERV. BRASIL SUL - XBOX') }}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -380,55 +380,65 @@
 {% block content %}
 <div class="achievements-container">
     <div class="page-header">
-        <h1>ðŸ† Conquistas</h1>
-        <p>Desbloqueie conquistas e mostre suas habilidades em DayZ</p>
+        <h1>🏆 {{ _('Conquistas') }}</h1>
+        <p>{{ _('Desbloqueie conquistas e mostre suas habilidades em DayZ') }}</p>
     </div>
 
     <div class="stats-overview">
         <div class="stat-card">
-            <div class="icon">ðŸ†</div>
+            <div class="icon">🏆</div>
             <div class="value" id="totalUnlocked">0</div>
-            <div class="label">Desbloqueadas</div>
+            <div class="label">{{ _('Desbloqueadas') }}</div>
             <div class="progress-bar-container">
                 <div class="progress-bar" id="overallProgress" style="width: 0%"></div>
             </div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">â­</div>
+            <div class="icon">⭐</div>
             <div class="value" id="totalPoints">0</div>
-            <div class="label">Pontos de Conquista</div>
+            <div class="label">{{ _('Pontos de Conquista') }}</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">ðŸ’Ž</div>
+            <div class="icon">💎</div>
             <div class="value" id="rareCount">0</div>
-            <div class="label">Conquistas Raras</div>
+            <div class="label">{{ _('Conquistas Raras') }}</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">ðŸ”¥</div>
+            <div class="icon">🔥</div>
             <div class="value" id="completionRate">0%</div>
-            <div class="label">Taxa de ConclusÃ£o</div>
+            <div class="label">{{ _('Taxa de Conclusão') }}</div>
         </div>
     </div>
 
     <div class="filter-tabs">
-        <div class="filter-tab active" data-filter="all">Todas</div>
-        <div class="filter-tab" data-filter="unlocked">Desbloqueadas</div>
-        <div class="filter-tab" data-filter="locked">Bloqueadas</div>
-        <div class="filter-tab" data-filter="combat">Combate</div>
-        <div class="filter-tab" data-filter="survival">SobrevivÃªncia</div>
-        <div class="filter-tab" data-filter="exploration">ExploraÃ§Ã£o</div>
-        <div class="filter-tab" data-filter="social">Social</div>
+        <div class="filter-tab active" data-filter="all">{{ _('Todas') }}</div>
+        <div class="filter-tab" data-filter="unlocked">{{ _('Desbloqueadas') }}</div>
+        <div class="filter-tab" data-filter="locked">{{ _('Bloqueadas') }}</div>
+        <div class="filter-tab" data-filter="combat">{{ _('Combate') }}</div>
+        <div class="filter-tab" data-filter="survival">{{ _('Sobrevivência') }}</div>
+        <div class="filter-tab" data-filter="exploration">{{ _('Exploração') }}</div>
+        <div class="filter-tab" data-filter="social">{{ _('Social') }}</div>
     </div>
 
     <div class="achievements-grid" id="achievementsGrid">
         <!-- Achievements will be loaded here -->
     </div>
 </div>
+{% endblock %}
 
+{% block extra_scripts %}
 <script>
+    window.achievementTranslations = {
+        erroCarregar: "{{ _('Erro ao carregar conquistas:') }}",
+        erroRequisicao: "{{ _('Erro na requisição:') }}",
+        progresso: "{{ _('Progresso') }}",
+        desbloqueadaEm: "{{ _('Desbloqueada em') }}",
+        conquistaDesbloqueada: "{{ _('Conquista Desbloqueada!') }}"
+    };
+
     // Carregar conquistas da API
     let achievements = [];
     let currentFilter = 'all';
@@ -443,12 +453,12 @@
                 renderAchievements(currentFilter);
                 await loadStats();
             } else {
-                console.error('Erro ao carregar conquistas:', data.error);
+                console.error(window.achievementTranslations.erroCarregar, data.error);
                 // Fallback para dados mockados se API falhar
                 loadMockData();
             }
         } catch (error) {
-            console.error('Erro na requisiÃ§Ã£o:', error);
+            console.error(window.achievementTranslations.erroRequisicao, error);
             loadMockData();
         }
     }
@@ -477,7 +487,7 @@
                 id: 'first_kill',
                 title: "Primeiro Sangue",
                 description: "Elimine seu primeiro jogador em combate PvP",
-                icon: "âš”ï¸",
+                icon: "⚔️",
                 category: "combat",
                 rarity: "common",
                 tier: "bronze",
@@ -492,7 +502,7 @@
                 id: 'survivor_24h',
                 title: "Sobrevivente Experiente",
                 description: "Sobreviva por 24 horas consecutivas",
-                icon: "ðŸŽ¯",
+                icon: "🎯",
                 category: "survival",
                 rarity: "rare",
                 tier: "silver",
@@ -505,9 +515,9 @@
             },
             {
                 id: 'killer_100',
-                title: "CaÃ§ador LendÃ¡rio",
+                title: "Caçador Lendário",
                 description: "Elimine 100 jogadores em combate",
-                icon: "ðŸ”«",
+                icon: "🔫",
                 category: "combat",
                 rarity: "epic",
                 tier: "gold",
@@ -543,7 +553,7 @@
             card.innerHTML = `
             <div class="achievement-header">
                 <div class="achievement-icon">
-                    ${achievement.unlocked ? achievement.icon : '<div class="lock-overlay">ðŸ”’</div>'}
+                    ${achievement.unlocked ? achievement.icon : '<div class="lock-overlay">🔒</div>'}
                 </div>
                 <div class="achievement-info">
                     <div class="achievement-title">${achievement.title}</div>
@@ -555,7 +565,7 @@
             ${!achievement.unlocked ? `
                 <div class="achievement-progress">
                     <div class="progress-text">
-                        <span>Progresso</span>
+                        <span>${window.achievementTranslations.progresso}</span>
                         <span>${achievement.progress}/${achievement.maxProgress}</span>
                     </div>
                     <div class="progress-bar-container">
@@ -566,13 +576,13 @@
 
             ${achievement.unlocked && achievement.unlockedDate ? `
                 <div class="achievement-date">
-                    <span>ðŸ—“ï¸</span>
-                    <span>Desbloqueada em ${new Date(achievement.unlockedDate).toLocaleDateString('pt-BR')}</span>
+                    <span>📅</span>
+                    <span>${window.achievementTranslations.desbloqueadaEm} ${new Date(achievement.unlockedDate).toLocaleDateString('pt-BR')}</span>
                 </div>
             ` : ''}
 
             <div class="achievement-reward">
-                <span>ðŸŽ</span>
+                <span>🎁</span>
                 <span>${achievement.reward}</span>
             </div>
         `;
@@ -616,7 +626,7 @@
         notification.innerHTML = `
             <div class="notification-icon">${achievement.icon}</div>
             <div class="notification-content">
-                <div class="notification-title">Conquista Desbloqueada!</div>
+                <div class="notification-title">${window.achievementTranslations.conquistaDesbloqueada}</div>
                 <div class="notification-name">${achievement.title}</div>
                 <div class="notification-reward">${achievement.reward}</div>
             </div>
@@ -692,12 +702,12 @@
             if (response.ok) {
                 const currentUnlocked = data.filter(a => a.unlocked);
 
-                // Se hÃ¡ mais conquistas desbloqueadas que antes
+                // Se há mais conquistas desbloqueadas que antes
                 if (lastUnlockedCount > 0 && currentUnlocked.length > lastUnlockedCount) {
                     // Encontrar as novas conquistas
                     const newAchievements = currentUnlocked.slice(lastUnlockedCount);
 
-                    // Mostrar notificaÃ§Ã£o para cada nova conquista
+                    // Mostrar notificação para cada nova conquista
                     newAchievements.forEach(achievement => {
                         if (typeof showAchievementNotification === 'function') {
                             showAchievementNotification(achievement);

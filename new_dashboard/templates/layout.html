@@ -153,14 +153,14 @@
                 <li class="mobile-only-action">
                     <hr style="border: 0; border-top: 1px solid rgba(107, 140, 66, 0.2); margin: 10px 20px;">
                     <a href="/logout" class="navbar-link" style="color: var(--danger);">
-                        <i class="ri-logout-box-line"></i> Sair da Conta
+                        <i class="ri-logout-box-line"></i> {{ _('Sair da Conta') }}
                     </a>
                 </li>
                 {% else %}
                 <li class="mobile-only-action">
                     <hr style="border: 0; border-top: 1px solid rgba(107, 140, 66, 0.2); margin: 10px 20px;">
                     <a href="/login" class="navbar-link" style="color: #5865f2;">
-                        <i class="ri-discord-fill"></i> Entrar com Discord
+                        <i class="ri-discord-fill"></i> {{ _('Entrar com Discord') }}
                     </a>
                 </li>
                 {% endif %}
@@ -181,18 +181,18 @@
                         </div>
                         {% endif %}
                         <div class="user-details">
-                            <span class="user-name">{{ session.get('discord_username', 'Jogador') }}</span>
-                            <span class="user-balance" id="nav-balance">Carregando...</span>
+                            <span class="user-name">{{ session.get('discord_username', _('Jogador')) }}</span>
+                            <span class="user-balance" id="nav-balance">{{ _('Carregando...') }}</span>
                         </div>
                     </a>
                     <a href="/logout" class="btn btn-secondary" style="margin-left: 10px; font-size: 0.9rem;">
-                        <i class="ri-logout-box-line"></i> Sair
+                        <i class="ri-logout-box-line"></i> {{ _('Sair') }}
                     </a>
                 </div>
                 {% else %}
                 <!-- Usuário não logado -->
                 <a href="/login" class="btn-login">
-                    Entrar com Discord
+                    {{ _('Entrar com Discord') }}
                 </a>
                 {% endif %}
 
@@ -206,7 +206,7 @@
     {% if session.get('discord_user_id') %}
     <div class="balance-float" id="floating-balance">
         <i class="ri-money-dollar-circle-line"></i>
-        <span id="floating-balance-amount">Carregando...</span>
+        <span id="floating-balance-amount">{{ _('Carregando...') }}</span>
     </div>
     {% endif %}
 
@@ -233,16 +233,26 @@
             <i class="ri-earth-line"></i>
         </button>
         <div class="floating-lang-grid">
-            <a href="?lang=pt" class="lang-flag-btn" title="Português"><span class="fi fi-br"></span></a>
-            <a href="?lang=en" class="lang-flag-btn" title="English"><span class="fi fi-us"></span></a>
-            <a href="?lang=es" class="lang-flag-btn" title="Español"><span class="fi fi-es"></span></a>
-            <a href="?lang=fr" class="lang-flag-btn" title="Français"><span class="fi fi-fr"></span></a>
-            <a href="?lang=it" class="lang-flag-btn" title="Italiano"><span class="fi fi-it"></span></a>
-            <a href="?lang=de" class="lang-flag-btn" title="Deutsch"><span class="fi fi-de"></span></a>
-            <a href="?lang=ru" class="lang-flag-btn" title="Русский"><span class="fi fi-ru"></span></a>
-            <a href="?lang=zh_Hans" class="lang-flag-btn" title="简体中文"><span class="fi fi-cn"></span></a>
-            <a href="?lang=ja" class="lang-flag-btn" title="日本語"><span class="fi fi-jp"></span></a>
-            <a href="?lang=ko" class="lang-flag-btn" title="한국어"><span class="fi fi-kr"></span></a>
+            <a href="{{ url_for('set_language', lang='pt') }}" class="lang-flag-btn" title="Português"><span
+                    class="fi fi-br"></span></a>
+            <a href="{{ url_for('set_language', lang='en') }}" class="lang-flag-btn" title="English"><span
+                    class="fi fi-us"></span></a>
+            <a href="{{ url_for('set_language', lang='es') }}" class="lang-flag-btn" title="Español"><span
+                    class="fi fi-es"></span></a>
+            <a href="{{ url_for('set_language', lang='fr') }}" class="lang-flag-btn" title="Français"><span
+                    class="fi fi-fr"></span></a>
+            <a href="{{ url_for('set_language', lang='it') }}" class="lang-flag-btn" title="Italiano"><span
+                    class="fi fi-it"></span></a>
+            <a href="{{ url_for('set_language', lang='de') }}" class="lang-flag-btn" title="Deutsch"><span
+                    class="fi fi-de"></span></a>
+            <a href="{{ url_for('set_language', lang='ru') }}" class="lang-flag-btn" title="Русский"><span
+                    class="fi fi-ru"></span></a>
+            <a href="{{ url_for('set_language', lang='zh_Hans') }}" class="lang-flag-btn" title="简体中文"><span
+                    class="fi fi-cn"></span></a>
+            <a href="{{ url_for('set_language', lang='ja') }}" class="lang-flag-btn" title="日本語"><span
+                    class="fi fi-jp"></span></a>
+            <a href="{{ url_for('set_language', lang='ko') }}" class="lang-flag-btn" title="한국어"><span
+                    class="fi fi-kr"></span></a>
         </div>
     </div>
 
@@ -272,7 +282,7 @@
                 }
             } catch (error) {
                 console.error('Erro ao carregar saldo:', error);
-                const errorText = 'Erro';
+                const errorText = "{{ _('Erro') }}";
 
                 // Atualizar navbar
                 const navBalance = document.getElementById('nav-balance');

@@ -1,602 +1,581 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja - BigodeTexas</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            display: flex;
-            min-height: 100vh;
+{% block title %}{{ _('Loja - BigodeTexas') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .main-content {
+        flex: 1;
+        margin-right: 350px;
+    }
+
+    .cart-sidebar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 350px;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        border-left: 2px solid var(--accent-primary);
+        padding: 2rem;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    .cart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .cart-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--accent-primary);
+    }
+
+    .cart-badge {
+        background: var(--accent-primary);
+        color: #000;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-weight: 700;
+    }
+
+    .cart-item {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .cart-item-name {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .cart-item-controls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        margin-top: 0.5rem;
+    }
+
+    .qty-btn {
+        background: var(--accent-primary);
+        color: #000;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    .qty-display {
+        min-width: 30px;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    .remove-btn {
+        background: #ef4444;
+        border: none;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        margin-left: auto;
+    }
+
+    .cart-summary {
+        border-top: 2px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    .cart-total {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #22c55e;
+        margin: 1rem 0;
+    }
+
+    .user-balance {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .checkout-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--accent-primary);
+        color: #000;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 800;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .checkout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5);
+    }
+
+    .checkout-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .checkout-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: #1a1a1a;
+        border-radius: 1rem;
+        padding: 2rem;
+        max-width: 900px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .map-container {
+        margin: 2rem 0;
+    }
+
+    .map-image-container {
+        position: relative;
+        width: 100%;
+        border: 2px solid var(--accent-primary);
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    #chernarus-map {
+        width: 100%;
+        height: auto;
+        cursor: crosshair;
+    }
+
+    .map-marker {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #ef4444;
+        border: 3px solid #fff;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        .main-content {
-            flex: 1;
-            margin-right: 350px;
+        50% {
+            transform: translate(-50%, -50%) scale(1.2);
         }
+    }
 
-        .cart-sidebar {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 350px;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.95);
-            border-left: 2px solid var(--accent-primary);
-            padding: 2rem;
-            overflow-y: auto;
-            z-index: 1000;
-        }
+    .coordinates-display {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--accent-primary);
+    }
 
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
+    .modal-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
 
-        .cart-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--accent-primary);
-        }
+    .btn-cancel {
+        flex: 1;
+        padding: 1rem;
+        background: #6b7280;
+        color: #fff;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
 
-        .cart-badge {
-            background: var(--accent-primary);
-            color: #000;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-weight: 700;
-        }
+    .btn-confirm {
+        flex: 2;
+        padding: 1rem;
+        background: var(--accent-primary);
+        color: #000;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 800;
+        cursor: pointer;
+    }
 
-        .cart-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-        }
+    .notification {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        padding: 1rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        z-index: 3000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+    }
 
-        .cart-item-name {
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
+    .notification.show {
+        transform: translateX(0);
+    }
 
-        .cart-item-controls {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            margin-top: 0.5rem;
-        }
+    .notification-success {
+        background: #22c55e;
+        color: #000;
+    }
 
-        .qty-btn {
-            background: var(--accent-primary);
-            color: #000;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            font-weight: 700;
-        }
+    .notification-error {
+        background: #ef4444;
+        color: #fff;
+    }
 
-        .qty-display {
-            min-width: 30px;
-            text-align: center;
-            font-weight: 700;
-        }
+    .notification-info {
+        background: #3b82f6;
+        color: #fff;
+    }
 
-        .remove-btn {
-            background: #ef4444;
-            border: none;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            margin-left: auto;
-        }
+    .category-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin: 2rem 0;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
-        .cart-summary {
-            border-top: 2px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1rem;
-            margin-top: 1rem;
-        }
+    .category-tab {
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--text-secondary);
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
 
-        .cart-total {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #22c55e;
-            margin: 1rem 0;
-        }
+    .category-tab:hover {
+        background: rgba(245, 158, 11, 0.1);
+        border-color: var(--accent-primary);
+        transform: translateY(-2px);
+    }
 
-        .user-balance {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
+    .category-tab.active {
+        background: var(--accent-primary);
+        color: #000;
+        border-color: var(--accent-primary);
+    }
 
-        .checkout-btn {
-            width: 100%;
-            padding: 1rem;
-            background: var(--accent-primary);
-            color: #000;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 800;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    .shop-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
 
-        .checkout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5);
-        }
+    .shop-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        transition: transform 0.3s ease;
+    }
 
-        .checkout-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+    .shop-item:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-primary);
+    }
 
-        .checkout-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
+    .item-category {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: rgba(245, 158, 11, 0.2);
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--accent-primary);
+        margin-bottom: 0.5rem;
+    }
 
-        .modal-content {
-            background: #1a1a1a;
-            border-radius: 1rem;
-            padding: 2rem;
-            max-width: 900px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+    .item-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
 
-        .map-container {
-            margin: 2rem 0;
-        }
+    .item-price {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #22c55e;
+        margin: 1rem 0;
+    }
 
-        .map-image-container {
-            position: relative;
-            width: 100%;
-            border: 2px solid var(--accent-primary);
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
+    .item-description {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
 
-        #chernarus-map {
-            width: 100%;
-            height: auto;
-            cursor: crosshair;
-        }
+    .buy-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--accent-primary);
+        color: #000;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
 
-        .map-marker {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #ef4444;
-            border: 3px solid #fff;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-            animation: pulse 1.5s infinite;
-        }
+    .buy-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
 
-        @keyframes pulse {
+    .loading {
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        padding: 3rem;
+    }
 
-            0%,
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-            }
+    .item-count {
+        text-align: center;
+        color: var(--text-secondary);
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
 
-            50% {
-                transform: translate(-50%, -50%) scale(1.2);
-            }
-        }
+{% block content %}
+<div class="main-content">
+    <div class="container">
+        <h1 class="fade-in">🛒 {{ _('Loja BigodeTexas') }}</h1>
+        <p class="text-secondary fade-in">{{ _('Adicione itens ao carrinho e finalize sua compra') }}</p>
 
-        .coordinates-display {
-            text-align: center;
-            margin-top: 1rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent-primary);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .btn-cancel {
-            flex: 1;
-            padding: 1rem;
-            background: #6b7280;
-            color: #fff;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .btn-confirm {
-            flex: 2;
-            padding: 1rem;
-            background: var(--accent-primary);
-            color: #000;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .notification {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 700;
-            z-index: 3000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .notification-success {
-            background: #22c55e;
-            color: #000;
-        }
-
-        .notification-error {
-            background: #ef4444;
-            color: #fff;
-        }
-
-        .notification-info {
-            background: #3b82f6;
-            color: #fff;
-        }
-
-        .category-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .category-tab {
-            padding: 0.75rem 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .category-tab:hover {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
-        }
-
-        .category-tab.active {
-            background: var(--accent-primary);
-            color: #000;
-            border-color: var(--accent-primary);
-        }
-
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .shop-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .shop-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-primary);
-        }
-
-        .item-category {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: rgba(245, 158, 11, 0.2);
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--accent-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .item-name {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 0.5rem;
-        }
-
-        .item-price {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #22c55e;
-            margin: 1rem 0;
-        }
-
-        .item-description {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .buy-btn {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--accent-primary);
-            color: #000;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .buy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-        }
-
-        .loading {
-            text-align: center;
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            padding: 3rem;
-        }
-
-        .item-count {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="main-content">
-        <nav class="navbar">
-            <div class="navbar-container">
-                <a href="/" class="navbar-brand">ðŸ¤  BigodeTexas</a>
-                <ul class="navbar-nav">
-                    <li><a href="/" class="nav-link">InÃ­cio</a></li>
-                    <li><a href="/stats" class="nav-link">EstatÃ­sticas</a></li>
-                    <li><a href="/leaderboard" class="nav-link">Ranking</a></li>
-                    <li><a href="/shop" class="nav-link">Loja</a></li>
-                    <li><a href="/heatmap" class="nav-link">Mapa de Calor</a></li>
-                </ul>
-            </div>
-        </nav>
-
-        <div class="container">
-            <h1 class="fade-in">ðŸ›’ Loja BigodeTexas</h1>
-            <p class="text-secondary fade-in">Adicione itens ao carrinho e finalize sua compra</p>
-
-            <div class="category-tabs">
-                <button class="category-tab active" onclick="filterCategory('todos')" data-category="todos">ðŸŒŸ
-                    Todos</button>
-                <button class="category-tab" onclick="filterCategory('armas')" data-category="armas">ðŸ”« Armas</button>
-                <button class="category-tab" onclick="filterCategory('municao')" data-category="municao">ðŸ’¥
-                    MuniÃ§Ã£o</button>
-                <button class="category-tab" onclick="filterCategory('medico')" data-category="medico">ðŸ¥
-                    MÃ©dico</button>
-                <button class="category-tab" onclick="filterCategory('roupas')" data-category="roupas">ðŸ‘• Roupas
-                    Comuns</button>
-                <button class="category-tab" onclick="filterCategory('militares')" data-category="militares">ðŸŽ–ï¸ Roupas
-                    Militares</button>
-                <button class="category-tab" onclick="filterCategory('construcao')" data-category="construcao">ðŸ—ï¸
-                    ConstruÃ§Ã£o</button>
-                <button class="category-tab" onclick="filterCategory('veiculos')" data-category="veiculos">ðŸš— PeÃ§as de
-                    VeÃ­culo</button>
-            </div>
-
-            <div id="shop-container" class="shop-grid">
-                <div class="loading">Carregando itens...</div>
-            </div>
-            <div id="item-count" class="item-count"></div>
+        <div class="category-tabs">
+            <button class="category-tab active" onclick="filterCategory('todos')" data-category="todos">🌟 {{ _('Todos')
+                }}</button>
+            <button class="category-tab" onclick="filterCategory('armas')" data-category="armas">🔫 {{ _('Armas')
+                }}</button>
+            <button class="category-tab" onclick="filterCategory('municao')" data-category="municao">💥 {{ _('Munição')
+                }}</button>
+            <button class="category-tab" onclick="filterCategory('medico')" data-category="medico">🏥 {{ _('Médico')
+                }}</button>
+            <button class="category-tab" onclick="filterCategory('roupas')" data-category="roupas">👕 {{ _('Roupas
+                Comuns') }}</button>
+            <button class="category-tab" onclick="filterCategory('militares')" data-category="militares">🎖️ {{
+                _('Roupas Militares') }}</button>
+            <button class="category-tab" onclick="filterCategory('construcao')" data-category="construcao">🏗️ {{
+                _('Construção') }}</button>
+            <button class="category-tab" onclick="filterCategory('veiculos')" data-category="veiculos">🚗 {{ _('Peças de
+                Veículo') }}</button>
         </div>
+
+        <div id="shop-container" class="shop-grid">
+            <div class="loading">{{ _('Carregando itens...') }}</div>
+        </div>
+        <div id="item-count" class="item-count"></div>
+    </div>
+</div>
+
+<!-- Carrinho Lateral -->
+<div class="cart-sidebar">
+    <div class="cart-header">
+        <div class="cart-title">🛒 {{ _('Carrinho') }}</div>
+        <div class="cart-badge" id="cart-badge">0</div>
     </div>
 
-    <!-- Carrinho Lateral -->
-    <div class="cart-sidebar">
-        <div class="cart-header">
-            <div class="cart-title">ðŸ›’ Carrinho</div>
-            <div class="cart-badge" id="cart-badge">0</div>
-        </div>
-
-        <div id="cart-items">
-            <p class="text-muted">Carrinho vazio</p>
-        </div>
-
-        <div class="cart-summary">
-            <div class="user-balance" id="user-balance">Saldo: 0 ðŸ’°</div>
-            <div class="cart-total" id="cart-total">Total: 0 ðŸ’°</div>
-            <button class="checkout-btn" onclick="openCheckout()" id="checkout-btn">
-                Finalizar Compra
-            </button>
-        </div>
+    <div id="cart-items">
+        <p class="text-muted">{{ _('Carrinho vazio') }}</p>
     </div>
 
-    <!-- Modal de Checkout -->
-    <div class="checkout-modal" id="checkout-modal">
-        <div class="modal-content">
-            <h2>ðŸ“ Selecione o Local de Entrega</h2>
-            <p>Clique no mapa para escolher onde seus itens serÃ£o entregues</p>
+    <div class="cart-summary">
+        <div class="user-balance" id="user-balance">{{ _('Saldo: 0') }} 💰</div>
+        <div class="cart-total" id="cart-total">{{ _('Total: 0') }} 💰</div>
+        <button class="checkout-btn" onclick="openCheckout()" id="checkout-btn">
+            {{ _('Finalizar Compra') }}
+        </button>
+    </div>
+</div>
 
-            <div class="map-container" id="map-container">
-                <div class="map-image-container">
-                    <img src="https://dayz.fandom.com/wiki/File:Chernarus_Plus_Topographic_Map.jpg"
-                        alt="Mapa de Chernarus" id="chernarus-map">
-                    <div id="map-marker" class="map-marker"></div>
+<!-- Modal de Checkout -->
+<div class="checkout-modal" id="checkout-modal">
+    <div class="modal-content">
+        <h2>📍 {{ _('Selecione o Local de Entrega') }}</h2>
+        <p>{{ _('Clique no mapa para escolher onde seus itens serão entregues') }}</p>
+
+        <div class="map-container" id="map-container">
+            <div class="map-image-container">
+                <img src="https://dayz.fandom.com/wiki/File:Chernarus_Plus_Topographic_Map.jpg"
+                    alt="{{ _('Mapa de Chernarus') }}" id="chernarus-map">
+                <div id="map-marker" class="map-marker"></div>
+            </div>
+            <div class="coordinates-display">
+                <span id="selected-coords">{{ _('Nenhuma coordenada selecionada') }}</span>
+            </div>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="closeCheckout()">{{ _('Cancelar') }}</button>
+            <button class="btn-confirm" onclick="finalizePurchase()">{{ _('Confirmar Compra') }}</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    window.shopTranslations = {
+        todos: "{{ _('Todos') }}",
+        nenhumItem: "{{ _('Nenhum item encontrado nesta categoria.') }}",
+        mostrando: "{{ _('Mostrando') }}",
+        item: "{{ _('item') }}",
+        itens: "{{ _('itens') }}",
+        adicionarCarrinho: "{{ _('Adicionar ao Carrinho') }}",
+        erroCarregar: "{{ _('Erro ao carregar itens. Tente novamente mais tarde.') }}",
+        saldo: "{{ _('Saldo:') }}",
+        total: "{{ _('Total:') }}",
+        nenhumaCoordenada: "{{ _('Nenhuma coordenada selecionada') }}"
+    };
+</script>
+<script src="/static/js/shop_cart.js"></script>
+<script>
+    // Integration logic for shop_new.html
+    let allItems = [];
+    let currentCategory = 'todos';
+
+    const categoryMap = {
+        'armas': ['armas'],
+        'municao': ['municao', 'munição', 'carregadores'],
+        'medico': ['medico', 'médico'],
+        'roupas': ['roupas'],
+        'militares': ['militares', 'militar'],
+        'construcao': ['construcao', 'construção'],
+        'veiculos': ['veiculos', 'veículos', 'veiculo']
+    };
+
+    async function loadShop() {
+        try {
+            const response = await fetch('/api/shop');
+            if (!response.ok) throw new Error('Erro ao carregar itens');
+            allItems = await response.json();
+            renderItems(allItems);
+        } catch (error) {
+            console.error('[SHOP] Erro:', error);
+            document.getElementById('shop-container').innerHTML = `
+                <div class="loading" style="color: #ef4444;">
+                    ${window.shopTranslations.erroCarregar}
                 </div>
-                <div class="coordinates-display">
-                    <span id="selected-coords">Nenhuma coordenada selecionada</span>
-                </div>
-            </div>
+            `;
+        }
+    }
 
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeCheckout()">Cancelar</button>
-                <button class="btn-confirm" onclick="finalizePurchase()">Confirmar Compra</button>
-            </div>
-        </div>
-    </div>
+    function renderItems(items) {
+        const container = document.getElementById('shop-container');
+        container.innerHTML = '';
 
-    <script src="/static/js/shop_cart.js"></script>
-    <script>
-        console.log('[SHOP] PÃ¡gina carregada');
-
-        let allItems = [];
-        let currentCategory = 'todos';
-
-        const categoryMap = {
-            'armas': ['armas'],
-            'municao': ['municao', 'muniÃ§Ã£o', 'carregadores'],
-            'medico': ['medico', 'mÃ©dico'],
-            'roupas': ['roupas'],
-            'militares': ['militares', 'militar'],
-            'construcao': ['construcao', 'construÃ§Ã£o'],
-            'veiculos': ['veiculos', 'veÃ­culos', 'veiculo']
-        };
-
-        async function loadShop() {
-            console.log('[SHOP] Carregando itens da API...');
-            try {
-                const response = await fetch('/api/shop');
-                console.log('[SHOP] Response status:', response.status);
-
-                if (!response.ok) {
-                    throw new Error('Erro ao carregar itens');
-                }
-
-                allItems = await response.json();
-                console.log('[SHOP] Itens carregados:', allItems.length);
-
-                renderItems(allItems);
-
-            } catch (error) {
-                console.error('[SHOP] Erro:', error);
-                document.getElementById('shop-container').innerHTML = `
-                    <div class="loading" style="color: #ef4444;">
-                        Erro ao carregar itens. Tente novamente mais tarde.
-                    </div>
-                `;
-            }
+        if (items.length === 0) {
+            container.innerHTML = `<div class="loading">${window.shopTranslations.nenhumItem}</div>`;
+            document.getElementById('item-count').textContent = '';
+            return;
         }
 
-        function renderItems(items) {
-            const container = document.getElementById('shop-container');
-            container.innerHTML = '';
+        items.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'shop-item';
+            itemDiv.innerHTML = `
+                <div class="item-category">${getCategoryEmoji(item.category)} ${formatCategory(item.category)}</div>
+                <div class="item-name">${item.name}</div>
+                <div class="item-description">${item.description}</div>
+                <div class="item-price">${item.price} 💰</div>
+                <button class="buy-btn" onclick="addToCart('${item.code}', '${item.name}', ${item.price}, '${item.category}')">
+                    ${window.shopTranslations.adicionarCarrinho}
+                </button>
+            `;
+            container.appendChild(itemDiv);
+        });
 
-            if (items.length === 0) {
-                container.innerHTML = '<div class="loading">Nenhum item encontrado nesta categoria.</div>';
-                document.getElementById('item-count').textContent = '';
-                return;
-            }
+        document.getElementById('item-count').textContent = `${window.shopTranslations.mostrando} ${items.length} ${items.length === 1 ? window.shopTranslations.item : window.shopTranslations.itens}`;
+    }
 
-            items.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'shop-item';
-                itemDiv.innerHTML = `
-                    <div class="item-category">${getCategoryEmoji(item.category)} ${formatCategory(item.category)}</div>
-                    <div class="item-name">${item.name}</div>
-                    <div class="item-description">${item.description}</div>
-                    <div class="item-price">${item.price} ðŸ’°</div>
-                    <button class="buy-btn" onclick="addToCart('${item.code}', '${item.name}', ${item.price}, '${item.category}')">
-                        Adicionar ao Carrinho
-                    </button>
-                `;
-                container.appendChild(itemDiv);
-            });
+    function filterCategory(category) {
+        currentCategory = category;
+        document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
+        const activeTab = document.querySelector(`[data-category="${category}"]`);
+        if (activeTab) activeTab.classList.add('active');
 
-            document.getElementById('item-count').textContent = `Mostrando ${items.length} ${items.length === 1 ? 'item' : 'itens'}`;
-            console.log('[SHOP] Itens renderizados:', items.length);
-        }
-
-        function filterCategory(category) {
-            currentCategory = category;
-
-            document.querySelectorAll('.category-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelector(`[data-category="${category}"]`).classList.add('active');
-
-            if (category === 'todos') {
-                renderItems(allItems);
-            } else {
-                const categories = categoryMap[category] || [category];
-                const filtered = allItems.filter(item =>
-                    categories.some(cat =>
-                        item.category.toLowerCase().includes(cat.toLowerCase())
-                    )
-                );
-                renderItems(filtered);
-            }
-        }
-
-        function getCategoryEmoji(category) {
-            const emojis = {
-                'armas': 'ðŸ”«',
-                'municao': 'ðŸ’¥',
-                'muniÃ§Ã£o': 'ðŸ’¥',
-                'carregadores': 'ðŸ“¦',
-                'medico': 'ðŸ¥',
-                'mÃ©dico': 'ðŸ¥',
-                'roupas': 'ðŸ‘•',
-                'militares': 'ðŸŽ–ï¸',
-                'militar': 'ðŸŽ–ï¸',
-                'construcao': 'ðŸ—ï¸',
-                'construÃ§Ã£o': 'ðŸ—ï¸',
-                'veiculos': 'ðŸš—',
-                'veÃ­culos': 'ðŸš—',
-                'veiculo': 'ðŸš—'
-            };
-            return emojis[category.toLowerCase()] || 'ðŸ“¦';
-        }
-
-        function formatCategory(category) {
-            return category.charAt(0).toUpperCase() + category.slice(1);
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadShop);
+        if (category === 'todos') {
+            renderItems(allItems);
         } else {
-            loadShop();
+            const categories = categoryMap[category] || [category];
+            const filtered = allItems.filter(item =>
+                categories.some(cat => item.category.toLowerCase().includes(cat.toLowerCase()))
+            );
+            renderItems(filtered);
         }
-    </script>
-</body>
+    }
 
-</html>
+    function getCategoryEmoji(category) {
+        const emojis = {
+            'armas': '🔫',
+            'municao': '💥',
+            'munição': '💥',
+            'carregadores': '📦',
+            'medico': '🏥',
+            'médico': '🏥',
+            'roupas': '👕',
+            'militares': '🎖️',
+            'militar': '🎖️',
+            'construcao': '🏗️',
+            'construção': '🏗️',
+            'veiculos': '🚗',
+            'veículos': '🚗',
+            'veiculo': '🚗'
+        };
+        return emojis[category.toLowerCase()] || '📦';
+    }
+
+    function formatCategory(category) {
+        return category.charAt(0).toUpperCase() + category.slice(1);
+    }
+
+    loadShop();
+</script>
+{% endblock %}

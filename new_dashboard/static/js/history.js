@@ -19,11 +19,11 @@ async function loadHistory() {
             renderTimeline();
             await loadHistoryStats();
         } else {
-            console.error('Erro ao carregar histórico:', data.error);
+            console.error(window.historyTranslations.erro_carregar, data.error);
             loadMockHistory();
         }
     } catch (error) {
-        console.error('Erro na requisição:', error);
+        console.error(window.historyTranslations.erro_requisicao, error);
         loadMockHistory();
     }
 }
@@ -99,9 +99,9 @@ function formatTimeAgo(dateString) {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 60) return `${minutes} minutos atrás`;
-    if (hours < 24) return `${hours} horas atrás`;
-    return `${days} dias atrás`;
+    if (minutes < 60) return `${minutes} ${window.historyTranslations.minutosAttr}`;
+    if (hours < 24) return `${hours} ${window.historyTranslations.horasAttr}`;
+    return `${days} ${window.historyTranslations.diasAttr}`;
 }
 
 function renderTimeline() {
@@ -112,7 +112,7 @@ function renderTimeline() {
         timeline.innerHTML = `
             <div class="empty-state">
                 <div class="icon">📭</div>
-                <p>Nenhum evento encontrado para os filtros selecionados</p>
+                <p>${window.historyTranslations.nenhumEvento}</p>
             </div>
         `;
         return;

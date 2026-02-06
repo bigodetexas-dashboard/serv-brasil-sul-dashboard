@@ -5,12 +5,12 @@ let currentCategory = 'kills';
 let rankingsData = {};
 
 const categoryConfig = {
-    kills: { label: 'Kills', icon: 'ri-sword-line', field: 'kills' },
-    deaths: { label: 'Mortes', icon: 'ri-skull-line', field: 'deaths' },
-    kd: { label: 'K/D Ratio', icon: 'ri-percent-line', field: 'kd' },
-    balance: { label: 'DZCoins', icon: 'ri-money-dollar-circle-line', field: 'balance' },
-    playtime: { label: 'Tempo Jogado', icon: 'ri-time-line', field: 'playtime' },
-    longest_shot: { label: 'Longest Shot', icon: 'ri-crosshair-2-line', field: 'longest_shot' }
+    kills: { label: window.leaderboardTranslations.categorias.kills, icon: 'ri-sword-line', field: 'kills' },
+    deaths: { label: window.leaderboardTranslations.categorias.deaths, icon: 'ri-skull-line', field: 'deaths' },
+    kd: { label: window.leaderboardTranslations.categorias.kd, icon: 'ri-percent-line', field: 'kd' },
+    balance: { label: window.leaderboardTranslations.categorias.balance, icon: 'ri-money-dollar-circle-line', field: 'balance' },
+    playtime: { label: window.leaderboardTranslations.categorias.playtime, icon: 'ri-time-line', field: 'playtime' },
+    longest_shot: { label: window.leaderboardTranslations.categorias.longest_shot, icon: 'ri-crosshair-2-line', field: 'longest_shot' }
 };
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -58,7 +58,7 @@ function renderPodium(top3) {
     const podiumContainer = document.getElementById('podium-container');
 
     if (top3.length === 0) {
-        podiumContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">Nenhum dado disponível</p>';
+        podiumContainer.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">${window.leaderboardTranslations.nenhumDado}</p>`;
         return;
     }
 
@@ -86,7 +86,7 @@ function renderPodium(top3) {
                                 <a href="/player/${player.name || player.gamertag}" style="color: var(--text-primary); text-decoration: none;">
                                     ${player.name || player.gamertag}
                                 </a>
-                                ${player.verified ? '<i class="ri-xbox-line" style="color: #107c10; font-size: 1.1rem;" title="Xbox Verificado"></i>' : ''}
+                                ${player.verified ? `<i class="ri-xbox-line" style="color: #107c10; font-size: 1.1rem;" title="${window.leaderboardTranslations.xboxVerificado}"></i>` : ''}
                              </div>
                              <div style="font-size: 1.5rem; color: var(--accent);">${formatValue(player.value, currentCategory)}</div>
                         </div>
@@ -102,7 +102,7 @@ function renderTable(data) {
     const tbody = document.getElementById('leaderboard-body');
 
     if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Nenhum dado disponível</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">${window.leaderboardTranslations.nenhumDado}</td></tr>`;
         return;
     }
 
@@ -111,9 +111,9 @@ function renderTable(data) {
             <td><strong>#${index + 1}</strong></td>
              <td>
                 <a href="/player/${player.name || player.gamertag}" style="color: var(--accent); text-decoration: none; font-weight: 600;">
-                    ${player.name || player.gamertag || 'Desconhecido'}
+                    ${player.name || player.gamertag || window.leaderboardTranslations.desconhecido}
                 </a>
-                ${player.verified ? '<i class="ri-xbox-line" style="color: #107c10; margin-left: 5px;" title="Xbox Verificado"></i>' : ''}
+                ${player.verified ? `<i class="ri-xbox-line" style="color: #107c10; margin-left: 5px;" title="${window.leaderboardTranslations.xboxVerificado}"></i>` : ''}
              </td>
             <td><strong>${formatValue(player.value, currentCategory)}</strong></td>
             <td style="color: var(--text-secondary); font-size: 0.9rem;">
@@ -126,13 +126,13 @@ function renderTable(data) {
 function getPlayerDetails(player) {
     // Retorna detalhes adicionais baseado na categoria
     if (currentCategory === 'kd') {
-        return `${player.kills || 0} kills / ${player.deaths || 0} mortes`;
+        return `${player.kills || 0} ${window.leaderboardTranslations.kills} / ${player.deaths || 0} ${window.leaderboardTranslations.mortes}`;
     } else if (currentCategory === 'kills') {
-        return `${player.deaths || 0} mortes`;
+        return `${player.deaths || 0} ${window.leaderboardTranslations.mortes}`;
     } else if (currentCategory === 'deaths') {
-        return `${player.kills || 0} kills`;
+        return `${player.kills || 0} ${window.leaderboardTranslations.kills}`;
     }
-    return 'Jogador ativo';
+    return window.leaderboardTranslations.jogadorAtivo;
 }
 
 function formatValue(value, category) {
@@ -143,7 +143,7 @@ function formatValue(value, category) {
     } else if (category === 'balance') {
         return `${formatNumber(Math.floor(value))} 💰`;
     } else if (category === 'playtime') {
-        return `${Math.floor(value)} horas`;
+        return `${Math.floor(value)} ${window.leaderboardTranslations.horas}`;
     } else if (category === 'longest_shot') {
         return `${Math.floor(value)}m`;
     } else {
@@ -159,7 +159,7 @@ function renderEmptyRanking() {
     document.getElementById('leaderboard-body').innerHTML = `
         <tr>
             <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-                Carregando rankings...
+                ${window.leaderboardTranslations.carregando}
             </td>
         </tr>
     `;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-05 14:57-0600\n"
+"POT-Creation-Date: 2026-02-06 12:58-0600\n"
 "PO-Revision-Date: 2026-02-04 21:34-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ja\n"
@@ -70,310 +70,398 @@ msgid ""
 "                                <strong>Conexões</strong>."
 msgstr ""
 
-#: templates/dashboard.html:66
+#: templates/dashboard.html:67
 msgid "Adicione o Xbox"
 msgstr ""
 
-#: templates/dashboard.html:67
+#: templates/dashboard.html:68
 msgid ""
 "Clique no ícone do <strong>Xbox</strong> e faça login com sua conta "
 "Microsoft."
 msgstr ""
 
-#: templates/dashboard.html:72
+#: templates/dashboard.html:73
 msgid "O Pulo do Gato"
 msgstr ""
 
-#: templates/dashboard.html:73
+#: templates/dashboard.html:74
 msgid ""
 "Ative a chavinha <strong>\"Exibir no perfil\"</strong>. Sem isso, o bot "
 "não vê sua\n"
 "                                conta!"
 msgstr ""
 
-#: templates/dashboard.html:79
+#: templates/dashboard.html:80
 msgid "Finalizar"
 msgstr ""
 
-#: templates/dashboard.html:80
+#: templates/dashboard.html:81
 msgid "Tudo pronto? Clique no botão abaixo para verificar."
 msgstr ""
 
-#: templates/dashboard.html:87
+#: templates/dashboard.html:88
 msgid "JÁ VINCULEI! ATUALIZAR AGORA"
 msgstr ""
 
-#: templates/dashboard.html:90
+#: templates/dashboard.html:91
 msgid "(Você será deslogado para que o bot leia suas novas conexões)"
 msgstr ""
 
-#: templates/dashboard.html:101
+#: templates/dashboard.html:102
 msgid "Estatísticas de Combate"
 msgstr ""
 
-#: templates/dashboard.html:107 templates/index.html:28
+#: templates/dashboard.html:108 templates/index.html:28
 #: templates/leaderboard.html:18 templates/leaderboard.html:41
 msgid "Kills"
 msgstr ""
 
-#: templates/dashboard.html:114 templates/leaderboard.html:19
+#: templates/dashboard.html:115 templates/leaderboard.html:19
 msgid "Mortes"
 msgstr ""
 
-#: templates/dashboard.html:121 templates/leaderboard.html:20
+#: templates/dashboard.html:122 templates/leaderboard.html:20
 msgid "K/D Ratio"
 msgstr ""
 
-#: templates/dashboard.html:128
+#: templates/dashboard.html:129
 msgid "Zumbis Mortos"
 msgstr ""
 
-#: templates/dashboard.html:135
+#: templates/dashboard.html:136
 msgid "Melhor Série"
 msgstr ""
 
-#: templates/dashboard.html:140
+#: templates/dashboard.html:141
 msgid "Sobrevivência"
 msgstr ""
 
-#: templates/dashboard.html:146 templates/leaderboard.html:23
+#: templates/dashboard.html:147 templates/leaderboard.html:23
 msgid "Tempo Jogado"
 msgstr ""
 
-#: templates/dashboard.html:153
+#: templates/dashboard.html:154
 msgid "Distância (Pé)"
 msgstr ""
 
-#: templates/dashboard.html:160
+#: templates/dashboard.html:161
 msgid "Distância (Carro)"
 msgstr ""
 
-#: templates/dashboard.html:167
+#: templates/dashboard.html:168
 msgid "Construções"
 msgstr ""
 
-#: templates/dashboard.html:173
+#: templates/dashboard.html:174
 msgid "Clã e Comunicação"
 msgstr ""
 
-#: templates/dashboard.html:177
+#: templates/dashboard.html:178
 msgid "Carregando informações do clã..."
 msgstr ""
 
-#: templates/dashboard.html:183
+#: templates/dashboard.html:184
 msgid "Rádio de Clã (Chat Interno)"
 msgstr ""
 
-#: templates/dashboard.html:184
+#: templates/dashboard.html:185
 msgid "AO VIVO"
 msgstr ""
 
-#: templates/dashboard.html:188
+#: templates/dashboard.html:189
 msgid "Aguardando mensagens..."
 msgstr ""
 
-#: templates/dashboard.html:191
+#: templates/dashboard.html:192
 msgid "Digite uma mensagem tática..."
 msgstr ""
 
-#: templates/dashboard.html:198
+#: templates/dashboard.html:199
 msgid "Convites Pendentes"
 msgstr ""
 
-#: templates/dashboard.html:206
+#: templates/dashboard.html:207
 msgid "Guerra de Clãs"
 msgstr ""
 
-#: templates/dashboard.html:214
+#: templates/dashboard.html:215
 msgid "Bumbas Ativas (Bounties)"
 msgstr ""
 
-#: templates/dashboard.html:217
+#: templates/dashboard.html:218
 msgid "Nenhuma recompensa ativa no momento."
 msgstr ""
 
-#: templates/dashboard.html:237
+#: templates/dashboard.html:238
 msgid "Bem-vindo ao BigodeTexas"
 msgstr ""
 
-#: templates/dashboard.html:238
+#: templates/dashboard.html:239 templates/dashboard.html:411
 msgid "Seu painel de controle completo para o apocalipse."
 msgstr ""
 
-#: templates/dashboard.html:240
+#: templates/dashboard.html:241
 msgid ""
 "Aqui você gerencia sua sobrevivência, economia e reputação no servidor "
 "mais brabo do\n"
 "                        Xbox."
 msgstr ""
 
-#: templates/dashboard.html:243
+#: templates/dashboard.html:244 templates/dashboard.html:413
 msgid "Proteção de Base"
 msgstr ""
 
-#: templates/dashboard.html:244
+#: templates/dashboard.html:245 templates/dashboard.html:414
 msgid "Economia Real"
 msgstr ""
 
-#: templates/dashboard.html:245
+#: templates/dashboard.html:246 templates/dashboard.html:415
 msgid "Killfeed & Ranking"
 msgstr ""
 
-#: templates/dashboard.html:249
+#: templates/dashboard.html:250
 msgid "Começar Tour"
 msgstr ""
 
-#: templates/dashboard.html:259
+#: templates/dashboard.html:260
 msgid "União de Contas"
 msgstr ""
 
-#: templates/dashboard.html:260
+#: templates/dashboard.html:261 templates/dashboard.html:418
 msgid "O Fim das Contas Fantasmas."
 msgstr ""
 
-#: templates/dashboard.html:263
+#: templates/dashboard.html:264
 msgid "Por que vincular?"
 msgstr ""
 
-#: templates/dashboard.html:264
+#: templates/dashboard.html:265
 msgid ""
 "Ao vincular, o sistema UNE seu Discord e Xbox em <strong>UMA ÚNICA\n"
 "                                IDENTIDADE</strong>."
 msgstr ""
 
-#: templates/dashboard.html:266
+#: templates/dashboard.html:267
 msgid ""
 "Isso evita duplicidade e garante que seu dinheiro e ranking\n"
 "                            sejam atribuídos corretamente."
 msgstr ""
 
-#: templates/dashboard.html:271 templates/dashboard.html:299
-#: templates/dashboard.html:324
+#: templates/dashboard.html:272 templates/dashboard.html:300
+#: templates/dashboard.html:325
 msgid "Voltar"
 msgstr ""
 
-#: templates/dashboard.html:272 templates/dashboard.html:300
+#: templates/dashboard.html:273 templates/dashboard.html:301
 msgid "Próximo"
 msgstr ""
 
-#: templates/dashboard.html:282
+#: templates/dashboard.html:283
 msgid "Proteção Total"
 msgstr ""
 
-#: templates/dashboard.html:283
+#: templates/dashboard.html:284
 msgid "Dorme tranquilo. O BigodeBot vigia sua base."
 msgstr ""
 
-#: templates/dashboard.html:287 templates/layout.html:132
+#: templates/dashboard.html:288 templates/layout.html:132
 msgid "Clã"
 msgstr "クラン"
 
-#: templates/dashboard.html:288
+#: templates/dashboard.html:289
 msgid ""
 "Crie um clã para compartilhar permissões de portas e bancos com seus "
 "amigos."
 msgstr ""
 
-#: templates/dashboard.html:292 templates/layout.html:130
+#: templates/dashboard.html:293 templates/layout.html:130
 msgid "Base"
 msgstr "基地"
 
-#: templates/dashboard.html:293
+#: templates/dashboard.html:294
 msgid ""
 "Registre sua base (comando !alarme). O bot bane quem tentar \"glitchar\" "
 "ou invadir\n"
 "                                ilegalmente!"
 msgstr ""
 
-#: templates/dashboard.html:310
+#: templates/dashboard.html:311
 msgid "Vantagens Exclusivas"
 msgstr ""
 
-#: templates/dashboard.html:311
+#: templates/dashboard.html:312
 msgid "Jogue, lucre e domine o ranking."
 msgstr ""
 
-#: templates/dashboard.html:314
+#: templates/dashboard.html:315
 msgid "Salário:"
 msgstr ""
 
-#: templates/dashboard.html:314
+#: templates/dashboard.html:315
 msgid ""
 "Ganhe coins a cada 10min\n"
 "                            online."
 msgstr ""
 
-#: templates/dashboard.html:316
+#: templates/dashboard.html:317
 msgid "Shop:"
 msgstr ""
 
-#: templates/dashboard.html:316
+#: templates/dashboard.html:317
 msgid ""
 "Compre itens e receba no jogo (Spawn\n"
 "                            automático)."
 msgstr ""
 
-#: templates/dashboard.html:318
+#: templates/dashboard.html:319
 #, fuzzy
 msgid "Ranking:"
 msgstr "ランキング"
 
-#: templates/dashboard.html:318
+#: templates/dashboard.html:319
 msgid ""
 "Dispute o Top 1 Kill/Death do\n"
 "                            servidor."
 msgstr ""
 
-#: templates/dashboard.html:321
+#: templates/dashboard.html:322
 msgid "Tudo pronto? Vamos nessa!"
 msgstr ""
 
-#: templates/dashboard.html:325
+#: templates/dashboard.html:326
 msgid "ACESSAR PAINEL"
 msgstr ""
 
-#: templates/dashboard.html:350 templates/layout.html:134
+#: templates/dashboard.html:351 templates/layout.html:134
 msgid "Banco Texas"
 msgstr "テキサス銀行"
 
-#: templates/dashboard.html:351
+#: templates/dashboard.html:352
 msgid "Transferência de DZ Coins"
 msgstr ""
 
-#: templates/dashboard.html:356
+#: templates/dashboard.html:357
 msgid "Gamertag do Destinatário"
 msgstr ""
 
-#: templates/dashboard.html:357
+#: templates/dashboard.html:358
 msgid "Ex: Player123"
 msgstr ""
 
-#: templates/dashboard.html:362
+#: templates/dashboard.html:363
 msgid "Valor (DZ Coins)"
 msgstr ""
 
-#: templates/dashboard.html:367
+#: templates/dashboard.html:368
 msgid "Confirmar Transferência"
 msgstr ""
 
-#: templates/dashboard.html:384
+#: templates/dashboard.html:385
 msgid "DECLARAR GUERRA"
 msgstr ""
 
-#: templates/dashboard.html:385
+#: templates/dashboard.html:386
 msgid "Escolha um clã inimigo para iniciar o conflito."
 msgstr ""
 
-#: templates/dashboard.html:390
+#: templates/dashboard.html:391
 msgid "Selecione o Inimigo"
 msgstr ""
 
-#: templates/dashboard.html:393
+#: templates/dashboard.html:394
 msgid "Carregando clãs..."
 msgstr ""
 
-#: templates/dashboard.html:398
+#: templates/dashboard.html:399
 msgid "INICIAR GUERRA"
+msgstr ""
+
+#: templates/dashboard.html:410
+msgid "BEM-VINDO AO BIGODETEXAS"
+msgstr ""
+
+#: templates/dashboard.html:412
+msgid ""
+"Aqui você gerencia sua sobrevivência, economia e reputação no servidor "
+"mais brabo do Xbox."
+msgstr ""
+
+#: templates/dashboard.html:417
+msgid "UNIÃO DE CONTAS"
+msgstr ""
+
+#: templates/dashboard.html:419
+msgid "POR QUE VINCULAR?"
+msgstr ""
+
+#: templates/dashboard.html:420
+msgid ""
+"Ao vincular, o sistema UNE seu Discord e Xbox em <strong>UMA ÚNICA "
+"IDENTIDADE</strong>."
+msgstr ""
+
+#: templates/dashboard.html:421
+msgid ""
+"Isso evita que você tenha duas contas (uma no site, outra no jogo) e "
+"garante que seu dinheiro caia na conta certa."
+msgstr ""
+
+#: templates/dashboard.html:422
+msgid "Não perca seu progresso. Vincule agora."
+msgstr ""
+
+#: templates/dashboard.html:424
+msgid "LOJA & ECONOMIA"
+msgstr ""
+
+#: templates/dashboard.html:425
+msgid ""
+"Use seus <strong>DZCoins</strong> para comprar equipamentos e receber no "
+"mapa."
+msgstr ""
+
+#: templates/dashboard.html:426
+msgid "Ganhe jogando"
+msgstr ""
+
+#: templates/dashboard.html:427
+msgid "Compre no Site"
+msgstr ""
+
+#: templates/dashboard.html:428
+msgid "Receba no Jogo"
+msgstr ""
+
+#: templates/dashboard.html:430
+msgid "ESTÁ PRONTO?"
+msgstr ""
+
+#: templates/dashboard.html:431
+msgid "Explore o painel, confira o Ranking e domine o servidor!"
+msgstr ""
+
+#: templates/dashboard.html:432
+msgid "Boa sorte, sobrevivente."
+msgstr ""
+
+#: templates/dashboard.html:434
+msgid "COMEÇAR TOUR"
+msgstr ""
+
+#: templates/dashboard.html:435
+msgid "VERIFICAR CONTA"
+msgstr ""
+
+#: templates/dashboard.html:436
+msgid "PRÓXIMO"
+msgstr ""
+
+#: templates/dashboard.html:437
+msgid "Pular"
+msgstr ""
+
+#: templates/dashboard.html:438
+msgid "Fechar"
 msgstr ""
 
 #: templates/deaths.html:3 templates/layout.html:128
@@ -618,7 +706,7 @@ msgid "Zonas Mais Perigosas"
 msgstr ""
 
 #: templates/index.html:16
-msgid "Bem-vindo ao"
+msgid "WELCOME_HERO"
 msgstr ""
 
 #: templates/index.html:19
@@ -1092,4 +1180,7 @@ msgstr ""
 #: templates/shop.html:106
 msgid "Enviar Imagem"
 msgstr ""
+
+#~ msgid "Bem-vindo ao"
+#~ msgstr ""
 

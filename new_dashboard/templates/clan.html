@@ -1,329 +1,300 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClÃ£ - BIGODETEXAS - XBOX</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-</head>
+{% block title %}{{ _('Clã - BIGODETEXAS - XBOX') }}{% endblock %}
 
-<body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">
-                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
-                    style="height: 40px; margin-right: 10px;">
-                <span style="font-size: 1.5rem;">BIGODETEXAS - XBOX</span>
-            </a>
-            <ul class="navbar-menu">
-                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> InÃ­cio</a></li>
-                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
-                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
-                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
-                <li><a href="/deaths" class="navbar-link"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 2rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1><i class="ri-team-fill" style="color: var(--accent);"></i> {{ _('Gerenciamento de Clã') }}</h1>
+        <p>{{ _('Crie ou gerencie seu clã') }}</p>
+    </div>
 
-                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
-                <li><a href="/clan" class="navbar-link active"><i class="ri-team-line"></i> ClÃ£</a></li>
-                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Texas</a></li>
-                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
-                <li><a href="/agradecimentos" class="navbar-link"><i class="ri-hand-heart-line"></i> Agradecimentos</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 2rem;">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <h1><i class="ri-team-fill" style="color: var(--accent);"></i> Gerenciamento de ClÃ£</h1>
-            <p>Crie ou gerencie seu clÃ£</p>
-        </div>
-
-        <!-- Criar ClÃ£ -->
-        <div id="create-clan-section"
-            style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
-            <h2>Criar Novo ClÃ£</h2>
-            <div style="max-width: 600px; margin: 0 auto;">
-                <div style="margin-bottom: 1rem;">
-                    <label>Nome do ClÃ£</label>
-                    <input type="text" id="clan-name" class="search-input" placeholder="Ex: Jardineiros" maxlength="50">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                    <div>
-                        <label>Cor 1</label>
-                        <input type="color" id="clan-color1" value="#FF0000"
-                            style="width: 100%; height: 50px; border-radius: 0.5rem;">
-                    </div>
-                    <div>
-                        <label>Cor 2</label>
-                        <input type="color" id="clan-color2" value="#00FF00"
-                            style="width: 100%; height: 50px; border-radius: 0.5rem;">
-                    </div>
-                </div>
-                <button onclick="createClan()" class="btn btn-primary" style="width: 100%;">
-                    <i class="ri-add-line"></i> Criar ClÃ£
-                </button>
+    <!-- Criar Clã -->
+    <div id="create-clan-section"
+        style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+        <h2>{{ _('Criar Novo Clã') }}</h2>
+        <div style="max-width: 600px; margin: 0 auto;">
+            <div style="margin-bottom: 1rem;">
+                <label>{{ _('Nome do Clã') }}</label>
+                <input type="text" id="clan-name" class="search-input" placeholder="{{ _('Ex: Jardineiros') }}"
+                    maxlength="50">
             </div>
-        </div>
-
-        <!-- InformaÃ§Ãµes do ClÃ£ -->
-        <div id="clan-info" style="display: none;">
-            <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 1rem;">
-                <h2 id="clan-name-display"></h2>
-                <div id="clan-members-list"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label>{{ _('Cor 1') }}</label>
+                    <input type="color" id="clan-color1" value="#FF0000"
+                        style="width: 100%; height: 50px; border-radius: 0.5rem;">
+                </div>
+                <div>
+                    <label>{{ _('Cor 2') }}</label>
+                    <input type="color" id="clan-color2" value="#00FF00"
+                        style="width: 100%; height: 50px; border-radius: 0.5rem;">
+                </div>
             </div>
+            <button onclick="createClan()" class="btn btn-primary" style="width: 100%;">
+                <i class="ri-add-line"></i> {{ _('Criar Clã') }}
+            </button>
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-            <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo" style="height: 50px;">
-            <p style="margin: 0;">&copy; 2025 BIGODETEXAS - XBOX. Todos os direitos reservados.</p>
+    <!-- Informações do Clã -->
+    <div id="clan-info" style="display: none;">
+        <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 1rem;">
+            <h2 id="clan-name-display"></h2>
+            <div id="clan-members-list"></div>
         </div>
-    </footer>
+    </div>
+</div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script>
-        // Carregar dados ao iniciar
-        document.addEventListener('DOMContentLoaded', loadClanInfo);
+<script>
+    window.clanTranslations = {
+        sairCla: "{{ _('Sair do Clã') }}",
+        membros: "{{ _('Membros') }}",
+        discordIdPlaceholder: "{{ _('Discord ID ou Gamertag Nitrado') }}",
+        adicionar: "{{ _('Adicionar') }}",
+        desde: "{{ _('Desde:') }}",
+        guerraAtiva: "{{ _('GUERRA ATIVA!') }}",
+        expiraEm: "{{ _('Expira em:') }}",
+        formatoData: "{{ _('pt-BR') }}",
+        erroCarregar: "{{ _('Erro ao carregar clã') }}",
+        digiteId: "{{ _('Digite um ID ou Gamertag!') }}",
+        membroAdicionado: "{{ _('Membro adicionado com sucesso!') }}",
+        erroAdicionar: "{{ _('Erro ao adicionar membro') }}",
+        confirmarRemover: "{{ _('Tem certeza que deseja remover este membro?') }}",
+        erroRemover: "{{ _('Erro ao remover membro') }}",
+        confirmarSair: "{{ _('Tem certeza que deseja sair do clã?') }}",
+        erroSair: "{{ _('Erro ao sair do clã') }}",
+        digiteNome: "{{ _('Digite um nome para o clã!') }}",
+        claCriado: "{{ _('Clã criado com sucesso!') }}",
+        erroCriar: "{{ _('Erro ao criar clã') }}"
+    };
 
-        async function loadClanInfo() {
-            try {
-                const response = await fetch('/api/clan/my');
-                const data = await response.json();
+    document.addEventListener('DOMContentLoaded', loadClanInfo);
 
-                if (data.has_clan) {
-                    // Esconder criaÃ§Ã£o e mostrar info
-                    document.getElementById('create-clan-section').style.display = 'none';
-                    document.getElementById('clan-info').style.display = 'block';
+    async function loadClanInfo() {
+        try {
+            const response = await fetch('/api/clan/my');
+            const data = await response.json();
 
-                    // Preencher dados
-                    const info = data.info;
-                    const members = data.members;
+            if (data.has_clan) {
+                document.getElementById('create-clan-section').style.display = 'none';
+                document.getElementById('clan-info').style.display = 'block';
 
-                    // CabeÃ§alho do ClÃ£ com Cores
-                    const header = document.getElementById('clan-name-display');
-                    header.innerHTML = `
-                        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-                                <div style="
-                                    width: 50px;
-                                    height: 50px;
-                                    background: linear-gradient(135deg, ${info.symbol_color1}, ${info.symbol_color2});
-                                    border-radius: 50%;
-                                    box-shadow: 0 0 15px ${info.symbol_color1}80;
-                                "></div>
-                                <span>${info.name}</span>
-                            </div>
-                            ${info.role !== 'leader' ?
-                            `<button onclick="leaveClan()" class="btn" style="background: #ef4444; color: white; font-size: 0.8rem; padding: 0.3rem 0.8rem;">
-                                    <i class="ri-door-open-line"></i> Sair do ClÃ£
+                const info = data.info;
+                const members = data.members;
+
+                const header = document.getElementById('clan-name-display');
+                header.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                            <div style="
+                                width: 50px;
+                                height: 50px;
+                                background: linear-gradient(135deg, ${info.symbol_color1}, ${info.symbol_color2});
+                                border-radius: 50%;
+                                box-shadow: 0 0 15px ${info.symbol_color1}80;
+                            "></div>
+                            <span>${info.name}</span>
+                        </div>
+                        ${info.role !== 'leader' ?
+                        `<button onclick="leaveClan()" class="btn" style="background: #ef4444; color: white; font-size: 0.8rem; padding: 0.3rem 0.8rem;">
+                                    <i class="ri-door-open-line"></i> ${window.clanTranslations.sairCla}
                                 </button>` : ''
-                        }
+                    }
+                    </div>
+                `;
+
+                const membersList = document.getElementById('clan-members-list');
+                let membersHTML = `
+                    <h3 style="margin-top: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                        ${window.clanTranslations.membros} (${members.length})
+                    </h3>
+                `;
+
+                if (['leader', 'moderator'].includes(info.role)) {
+                    membersHTML += `
+                        <div style="margin: 1rem 0; display: flex; gap: 10px;">
+                            <input type="text" id="new-member-id" class="search-input" placeholder="${window.clanTranslations.discordIdPlaceholder}">
+                            <button onclick="addMember()" class="btn btn-primary" style="white-space: nowrap;">
+                                <i class="ri-user-add-line"></i> ${window.clanTranslations.adicionar}
+                            </button>
                         </div>
                     `;
+                }
 
-                    // Lista de Membros
-                    const membersList = document.getElementById('clan-members-list');
-                    let membersHTML = `
-                        <h3 style="margin-top: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
-                            Membros (${members.length})
-                        </h3>
+                membersHTML += `<div style="display: grid; gap: 1rem; margin-top: 1rem;">`;
+
+                members.forEach(member => {
+                    const joinedDate = new Date(member.joined_at).toLocaleDateString(window.clanTranslations.formatoData);
+                    const isLeader = member.role === 'leader';
+                    const canKick = info.role === 'leader' && !isLeader && member.discord_id !== info.leader_discord_id;
+
+                    membersHTML += `
+                        <div style="
+                            background: rgba(255,255,255,0.03);
+                            padding: 1rem;
+                            border-radius: 0.5rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            border-left: 3px solid ${isLeader ? 'gold' : 'transparent'};
+                        ">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="ri-user-${isLeader ? 'star' : 'line'}"></i>
+                                <div>
+                                    <strong>${member.discord_id}</strong>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">${member.role.toUpperCase()}</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    ${window.clanTranslations.desde} ${joinedDate}
+                                </div>
+                                ${canKick ?
+                            `<button onclick="kickMember('${member.discord_id}')" style="background: none; border: none; color: #ef4444; cursor: pointer;">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>` : ''
+                        }
+                            </div>
+                        </div>
                     `;
+                });
 
-                    // Add Member Form (Only Leader/Mod)
-                    if (['leader', 'moderator'].includes(info.role)) {
-                        membersHTML += `
-                            <div style="margin: 1rem 0; display: flex; gap: 10px;">
-                                <input type="text" id="new-member-id" class="search-input" placeholder="Discord ID ou Gamertag Nitrado">
-                                <button onclick="addMember()" class="btn btn-primary" style="white-space: nowrap;">
-                                    <i class="ri-user-add-line"></i> Adicionar
-                                </button>
-                            </div>
-                        `;
-                    }
+                membersHTML += '</div>';
 
-                    membersHTML += `<div style="display: grid; gap: 1rem; margin-top: 1rem;">`;
+                if (data.war) {
+                    const war = data.war;
+                    const isClan1 = war.clan1_id === info.id;
+                    const myPoints = isClan1 ? war.clan1_points : war.clan2_points;
+                    const enemyPoints = isClan1 ? war.clan2_points : war.clan1_points;
 
-                    members.forEach(member => {
-                        const joinedDate = new Date(member.joined_at).toLocaleDateString('pt-BR');
-                        const isLeader = member.role === 'leader';
-                        const canKick = info.role === 'leader' && !isLeader && member.discord_id !== info.leader_discord_id;
-
-                        membersHTML += `
-                            <div style="
-                                background: rgba(255,255,255,0.03);
-                                padding: 1rem;
-                                border-radius: 0.5rem;
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-                                border-left: 3px solid ${isLeader ? 'gold' : 'transparent'};
-                            ">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <i class="ri-user-${isLeader ? 'star' : 'line'}"></i>
-                                    <div>
-                                        <strong>${member.discord_id}</strong>
-                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">${member.role.toUpperCase()}</div>
-                                    </div>
+                    membersHTML += `
+                        <div style="
+                            margin-top: 2rem;
+                            background: rgba(139, 0, 0, 0.2);
+                            border: 1px solid rgba(255, 0, 0, 0.3);
+                            padding: 1.5rem;
+                            border-radius: 1rem;
+                            text-align: center;
+                        ">
+                            <h2 style="color: #ff4d4d; margin-bottom: 1rem;"><i class="ri-sword-line"></i> ${window.clanTranslations.guerraAtiva}</h2>
+                            <div style="display: flex; justify-content: space-around; align-items: center;">
+                                <div>
+                                    <div style="font-size: 1.2rem; font-weight: bold;">${info.name}</div>
+                                    <div style="font-size: 2rem; color: var(--accent);">${myPoints}</div>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
-                                        Desde: ${joinedDate}
-                                    </div>
-                                    ${canKick ?
-                                `<button onclick="kickMember('${member.discord_id}')" style="background: none; border: none; color: #ef4444; cursor: pointer;">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </button>` : ''
-                            }
+                                <div style="font-size: 1.5rem;">VS</div>
+                                <div>
+                                    <div style="font-size: 1.2rem; font-weight: bold;">${war.enemy_name}</div>
+                                    <div style="font-size: 2rem; color: #ff4d4d;">${enemyPoints}</div>
                                 </div>
                             </div>
-                        `;
-                    });
-
-                    membersHTML += '</div>';
-
-                    // War Section
-                    if (data.war) {
-                        const war = data.war;
-                        const isClan1 = war.clan1_id === info.id;
-                        const myPoints = isClan1 ? war.clan1_points : war.clan2_points;
-                        const enemyPoints = isClan1 ? war.clan2_points : war.clan1_points;
-
-                        membersHTML += `
-                            <div style="
-                                margin-top: 2rem;
-                                background: rgba(139, 0, 0, 0.2);
-                                border: 1px solid rgba(255, 0, 0, 0.3);
-                                padding: 1.5rem;
-                                border-radius: 1rem;
-                                text-align: center;
-                            ">
-                                <h2 style="color: #ff4d4d; margin-bottom: 1rem;"><i class="ri-sword-line"></i> GUERRA ATIVA!</h2>
-                                <div style="display: flex; justify-content: space-around; align-items: center;">
-                                    <div>
-                                        <div style="font-size: 1.2rem; font-weight: bold;">${info.name}</div>
-                                        <div style="font-size: 2rem; color: var(--accent);">${myPoints}</div>
-                                    </div>
-                                    <div style="font-size: 1.5rem;">VS</div>
-                                    <div>
-                                        <div style="font-size: 1.2rem; font-weight: bold;">${war.enemy_name}</div>
-                                        <div style="font-size: 2rem; color: #ff4d4d;">${enemyPoints}</div>
-                                    </div>
-                                </div>
-                                <div style="margin-top: 1rem; font-size: 0.9rem; color: #aaa;">
-                                    Expira em: ${new Date(war.expires_at).toLocaleString('pt-BR')}
-                                </div>
+                            <div style="margin-top: 1rem; font-size: 0.9rem; color: #aaa;">
+                                ${window.clanTranslations.expiraEm} ${new Date(war.expires_at).toLocaleString(window.clanTranslations.formatoData)}
                             </div>
-                        `;
-                    }
-
-                    membersList.innerHTML = membersHTML;
-
-                } else {
-                    // Mostrar criaÃ§Ã£o
-                    document.getElementById('create-clan-section').style.display = 'block';
-                    document.getElementById('clan-info').style.display = 'none';
+                        </div>
+                    `;
                 }
 
-            } catch (error) {
-                console.error('Erro ao carregar clÃ£:', error);
+                membersList.innerHTML = membersHTML;
+            } else {
+                document.getElementById('create-clan-section').style.display = 'block';
+                document.getElementById('clan-info').style.display = 'none';
             }
+        } catch (error) {
+            console.error('Erro ao carregar clã:', error);
         }
+    }
 
-        async function addMember() {
-            const identifier = document.getElementById('new-member-id').value;
-            if (!identifier) return alert('Digite um ID ou Gamertag!');
+    async function addMember() {
+        const identifier = document.getElementById('new-member-id').value;
+        if (!identifier) return alert(window.clanTranslations.digiteId);
 
-            try {
-                const response = await fetch('/api/clan/add_member', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identifier })
-                });
+        try {
+            const response = await fetch('/api/clan/add_member', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identifier })
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(window.clanTranslations.membroAdicionado);
+                loadClanInfo();
+            } else {
+                alert(data.error || window.clanTranslations.erroAdicionar);
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert(window.clanTranslations.erroAdicionar);
+        }
+    }
+
+    async function kickMember(discordId) {
+        if (!confirm(window.clanTranslations.confirmarRemover)) return;
+
+        try {
+            const response = await fetch('/api/clan/remove_member', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ discord_id: discordId })
+            });
+            if (response.ok) {
+                loadClanInfo();
+            } else {
                 const data = await response.json();
-
-                if (response.ok) {
-                    alert('Membro acionado com sucesso!');
-                    loadClanInfo();
-                } else {
-                    alert(data.error || 'Erro ao adicionar membro');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao adicionar membro');
+                alert(data.error || window.clanTranslations.erroRemover);
             }
+        } catch (error) {
+            console.error(error);
         }
+    }
 
-        async function kickMember(discordId) {
-            if (!confirm('Tem certeza que deseja remover este membro?')) return;
+    async function leaveClan() {
+        if (!confirm(window.clanTranslations.confirmarSair)) return;
 
-            try {
-                const response = await fetch('/api/clan/remove_member', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ discord_id: discordId })
-                });
-                if (response.ok) {
-                    loadClanInfo();
-                } else {
-                    const data = await response.json();
-                    alert(data.error || 'Erro ao remover membro');
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        async function leaveClan() {
-            if (!confirm('Tem certeza que deseja sair do clÃ£?')) return;
-
-            try {
-                const response = await fetch('/api/clan/leave', { method: 'POST' });
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    const data = await response.json();
-                    alert(data.error || 'Erro ao sair do clÃ£');
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        async function createClan() {
-            const name = document.getElementById('clan-name').value;
-            const color1 = document.getElementById('clan-color1').value;
-            const color2 = document.getElementById('clan-color2').value;
-
-            // ... rest of createClan
-            if (!name) {
-                alert('Digite um nome para o clÃ£!');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/clan/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, color1, color2 })
-                });
-
+        try {
+            const response = await fetch('/api/clan/leave', { method: 'POST' });
+            if (response.ok) {
+                window.location.reload();
+            } else {
                 const data = await response.json();
-
-                if (response.ok) {
-                    alert('ClÃ£ criado com sucesso!');
-                    loadClanInfo(); // Recarregar para mostrar o painel
-                } else {
-                    alert(data.error || 'Erro ao criar clÃ£');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao criar clÃ£');
+                alert(data.error || window.clanTranslations.erroSair);
             }
+        } catch (error) {
+            console.error(error);
         }
-    </script>
-</body>
+    }
 
-</html>
+    async function createClan() {
+        const name = document.getElementById('clan-name').value;
+        const color1 = document.getElementById('clan-color1').value;
+        const color2 = document.getElementById('clan-color2').value;
+
+        if (!name) {
+            alert(window.clanTranslations.digiteNome);
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/clan/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, color1, color2 })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(window.clanTranslations.claCriado);
+                loadClanInfo();
+            } else {
+                alert(data.error || window.clanTranslations.erroCriar);
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert(window.clanTranslations.erroCriar);
+        }
+    }
+</script>
+{% endblock %}

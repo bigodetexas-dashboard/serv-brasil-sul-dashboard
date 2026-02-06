@@ -180,14 +180,14 @@ function setupCharts() {
         data: {
             labels: [],
             datasets: [{
-                label: 'Mortes PvP',
+                label: window.heatmapTranslations.mortesPvP,
                 borderColor: '#ff4757',
                 backgroundColor: 'rgba(255, 71, 87, 0.2)',
                 data: [],
                 fill: true,
                 tension: 0.4
             }, {
-                label: 'Mortes PvE',
+                label: window.heatmapTranslations.mortesPvE,
                 borderColor: '#2ed573',
                 backgroundColor: 'rgba(46, 213, 115, 0.2)',
                 data: [],
@@ -214,7 +214,7 @@ function setupCharts() {
         data: {
             labels: Array.from({ length: 24 }, (_, i) => `${i}h`),
             datasets: [{
-                label: 'Atividade por Hora',
+                label: window.heatmapTranslations.atividadeHora,
                 backgroundColor: '#ffa502',
                 data: []
             }]
@@ -423,15 +423,15 @@ function updateTopLocationsUI(locations) {
     grid.innerHTML = '';
     locations.forEach((loc, index) => {
         const dangerLevel = loc.deaths > 50 ? 'high' : loc.deaths > 20 ? 'medium' : 'low';
-        const dangerText = loc.deaths > 50 ? 'Extremo' : loc.deaths > 20 ? 'Alto' : 'Médio';
+        const dangerText = loc.deaths > 50 ? window.heatmapTranslations.extremo : loc.deaths > 20 ? window.heatmapTranslations.alto : window.heatmapTranslations.medio;
 
         const card = document.createElement('div');
         card.className = 'location-card';
         card.innerHTML = `
             <span class="rank">#${index + 1}</span>
             <div class="loc-info">
-                <h3>${loc.location_name || `Zona ${index + 1}`}</h3>
-                <p>${loc.deaths} Mortes</p>
+                <h3>${loc.location_name || `${window.heatmapTranslations.zona} ${index + 1}`}</h3>
+                <p>${loc.deaths} ${window.heatmapTranslations.mortes}</p>
             </div>
             <div class="danger-level ${dangerLevel}">${dangerText}</div>
         `;

@@ -154,8 +154,8 @@ function renderItems(searchTerm = '') {
             <div class="item-description">${item.description}</div>
             <div class="item-footer">
                 <div class="item-price">${formatNumber(item.price)} 💰</div>
-                <button class="add-to-cart-btn" onclick="addToCart('${item.item_key}')">
-                    Adicionar
+                <button class="add-to-cart-btn" onclick="addToCart('${item.code}')">
+                    ${window.shopTranslations.adicionarCarrinho}
                 </button>
             </div>
         </div>
@@ -178,7 +178,7 @@ function addToCart(itemCode) {
     }
 
     saveCart();
-    showNotification(`${item.name} adicionado ao carrinho!`);
+    showNotification(window.shopTranslations.itemAdicionado || `Item ${item.name} adicionado ao carrinho!`);
 }
 
 // Abrir carrinho
@@ -200,7 +200,7 @@ function renderCart() {
         container.innerHTML = `
             <div class="empty-cart">
                 <div class="empty-cart-icon">🛒</div>
-                <p>Seu carrinho está vazio</p>
+                <p>${window.shopTranslations.carrinhoVazio}</p>
             </div>
         `;
         document.getElementById('cart-total').textContent = '0';
@@ -211,7 +211,7 @@ function renderCart() {
         <div class="cart-item">
             <div class="cart-item-info">
                 <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-price">${formatNumber(item.price)} 💰 cada</div>
+                <div class="cart-item-price">${formatNumber(item.price)} 💰 ${window.shopTranslations.item || 'item'}</div>
             </div>
             <div class="cart-item-quantity">
                 <button class="qty-btn" onclick="updateQuantity('${item.code}', -1)">-</button>
@@ -249,7 +249,7 @@ function removeFromCart(itemCode) {
 
 // Limpar carrinho
 function clearCart() {
-    if (confirm('Deseja limpar todo o carrinho?')) {
+    if (confirm(window.shopTranslations.confirmarLimpar || 'Deseja limpar todo o carrinho?')) {
         cart = [];
         saveCart();
         renderCart();
@@ -270,12 +270,12 @@ function checkout() {
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     if (cart.length === 0) {
-        alert('Seu carrinho está vazio!');
+        alert(window.shopTranslations.carrinhoVazioAlerta);
         return;
     }
 
     if (total > userBalance) {
-        alert(`Saldo insuficiente! Você tem ${formatNumber(userBalance)} DZCoins mas precisa de ${formatNumber(total)} DZCoins.`);
+        alert(window.shopTranslations.saldoInsuficiente || 'Saldo insuficiente!');
         return;
     }
 

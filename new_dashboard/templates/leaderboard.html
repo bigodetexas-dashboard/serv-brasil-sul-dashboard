@@ -51,5 +51,25 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<script>
+    window.leaderboardTranslations = {
+        nenhumDado: "{{ _('Nenhum dado disponível') }}",
+        xboxVerificado: "{{ _('Xbox Verificado') }}",
+        desconhecido: "{{ _('Desconhecido') }}",
+        jogadorAtivo: "{{ _('Jogador ativo') }}",
+        kills: "{{ _('kills') }}",
+        mortes: "{{ _('mortes') }}",
+        horas: "{{ _('horas') }}",
+        carregando: "{{ _('Carregando rankings...') }}",
+        categorias: {
+            kills: "{{ _('Kills') }}",
+            deaths: "{{ _('Mortes') }}",
+            kd: "{{ _('K/D Ratio') }}",
+            balance: "{{ _('DZCoins') }}",
+            playtime: "{{ _('Tempo Jogado') }}",
+            longest_shot: "{{ _('Longest Shot') }}"
+        }
+    };
+</script>
 <script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
 {% endblock %}

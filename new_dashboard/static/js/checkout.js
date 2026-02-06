@@ -35,15 +35,15 @@ async function loadIdentities() {
 
         if (data && data.length > 0) {
             select.innerHTML = data.map(id =>
-                `<option value="${id.gamertag}">${id.gamertag} ${id.nitrado_id ? '(Verificada)' : '(Aguardando Robô)'}</option>`
+                `<option value="${id.gamertag}">${id.gamertag} ${id.nitrado_id ? window.checkoutTranslations.verificada : window.checkoutTranslations.aguardandoRobo}</option>`
             ).join('');
         } else {
-            select.innerHTML = '<option value="">Nenhuma conta vinculada!</option>';
+            select.innerHTML = `<option value="">${window.checkoutTranslations.nenhumaConta}</option>`;
         }
     } catch (error) {
         console.error('Erro ao carregar identidades:', error);
         if (document.getElementById('target-gamertag')) {
-            document.getElementById('target-gamertag').innerHTML = '<option value="">Erro ao carregar</option>';
+            document.getElementById('target-gamertag').innerHTML = `<option value="">${window.checkoutTranslations.erroCarregar}</option>`;
         }
     }
 }
@@ -51,7 +51,7 @@ async function loadIdentities() {
 function loadCheckoutCart() {
     const saved = localStorage.getItem('checkout-cart');
     if (!saved) {
-        alert('Carrinho vazio! Redirecionando para a loja...');
+        alert(window.checkoutTranslations.carrinhoVazio);
         window.location.href = '/shop';
         return;
     }
@@ -68,7 +68,7 @@ function renderOrderSummary() {
         <div style="display: flex; justify-content: space-between; padding: 1rem; background: rgba(30, 26, 24, 0.6); border: 1px solid rgba(90, 26, 26, 0.2); margin-bottom: 0.5rem; border-radius: 4px;">
             <div>
                 <div style="font-weight: bold; color: var(--text-primary); margin-bottom: 0.25rem;">${item.name}</div>
-                <div style="color: var(--text-secondary); font-size: 0.9rem;">Quantidade: ${item.quantity}</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">${window.checkoutTranslations.quantidade} ${item.quantity}</div>
             </div>
             <div style="color: var(--accent); font-weight: bold; font-size: 1.1rem;">${formatNumber(item.price * item.quantity)} 💰</div>
         </div>
@@ -122,19 +122,19 @@ async function confirmOrder() {
     const targetGamertag = document.getElementById('target-gamertag').value;
 
     if (!targetGamertag) {
-        alert('Por favor, selecione uma conta de destino!');
+        alert(window.checkoutTranslations.selecioneConta);
         return;
     }
 
     if (!x || !z || x < 0 || x > 15360 || z < 0 || z > 15360) {
-        alert('Por favor, insira coordenadas válidas (0-15360)!');
+        alert(window.checkoutTranslations.coordenadasInvalidas);
         return;
     }
 
     const orderTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     if (orderTotal > userBalance) {
-        alert(`Saldo insuficiente! Você tem ${formatNumber(userBalance)} DZCoins mas precisa de ${formatNumber(orderTotal)} DZCoins.`);
+        alert(window.checkoutTranslations.saldoInsuficiente.replace('{balance}', formatNumber(userBalance)).replace('{total}', formatNumber(orderTotal)));
         return;
     }
 
@@ -180,11 +180,11 @@ async function confirmOrder() {
                 window.location.href = '/order-confirmation';
             }, 1000);
         } else {
-            alert('Erro ao processar pedido: ' + (data.error || 'Erro desconhecido'));
+            alert(window.checkoutTranslations.erroProcessar + ' ' + (data.error || window.checkoutTranslations.erroDesconhecido));
         }
     } catch (error) {
         console.error('Erro ao confirmar pedido:', error);
-        alert('Erro ao processar pedido. Tente novamente.');
+        alert(window.checkoutTranslations.erroTenteNovamente);
     }
 }
 

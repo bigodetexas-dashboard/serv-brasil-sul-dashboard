@@ -1,0 +1,47 @@
+# Floating Language Selector & Full i18n
+
+This plan replaces the navbar language selector with a floating action button (FAB) as requested, and proceeds with updating translations for all supported languages.
+
+## User Review Required
+>
+> [!IMPORTANT]
+> **UI Change**: The language selector will be removed from the top navigation bar and moved to a floating button in the bottom-right corner (or bottom-left if right is occupied).
+> **Design**: The FAB will show a universal "Earth/Globe" icon. Clicking/Hovering will reveal a grid of flag icons **without** country names.
+
+## Proposed Changes
+
+### UI Redesign (Frontend)
+
+#### [MODIFY] [layout.html](file:///d:/dayz%20xbox/BigodeBot/new_dashboard/templates/layout.html)
+
+- **Remove**: The existing `.lang-selector` div from the navbar.
+- **Add**: A new fixed-position div `.floating-lang-container` at the bottom of the `<body>`.
+  - Inner button with `ri-global-line` (or similar).
+  - Hidden popup/tooltip containing the grid of flags.
+
+#### [MODIFY] [style.css](file:///d:/dayz%20xbox/BigodeBot/new_dashboard/static/css/style.css)
+
+- **Add**: Styles for `.floating-lang-container`, `.floating-lang-btn`, and `.floating-lang-grid`.
+- **Positioning**: likely `bottom: 20px; right: 20px;` (Check for conflicts with `balance-float` which might be `top` or `bottom`).
+- **Animation**: Smooth fade-in/up for the flag grid.
+
+### Internationalization (Backend/Data)
+
+#### [MODIFY] [All .po files](file:///d:/dayz%20xbox/BigodeBot/new_dashboard/translations/)
+
+- **Activity**:
+  - Run `pybabel extract` to find new strings from `dashboard.html`.
+  - Run `pybabel update` to merge into all locales (pt, en, es, fr, it, de, ru, zh, jp, ko).
+  - **Note**: I will not manually translate 100% of the text for *every* language in this step (as that would take huge context), but I will ensure the *structure* is there and important strings are compiled.
+
+## Verification Plan
+
+### Automated Tests
+
+- None for UI visual changes.
+
+### Manual Verification
+
+1. **Visual**: Open the dashboard via standard browsing (or `read_url_content` if simulating).
+2. **Interaction**: Verify the floating button appears. Hover/Click to see flags.
+3. **Functionality**: Click a flag (e.g., Russian) -> Page reload -> URL has `?lang=ru` -> Text changes (if translated).

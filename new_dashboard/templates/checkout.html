@@ -1,133 +1,123 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - SERV. BRASIL SUL - XBOX</title>
+{% block title %}Checkout - SERV. BRASIL SUL - XBOX{% endblock %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-</head>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
+{% endblock %}
 
-<body>
-    <!-- Navbar PadrÃ£o (igual Ã s outras pÃ¡ginas) -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">
-                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
-                    style="height: 40px; margin-right: 10px;">
-                <span style="font-size: 1.5rem;">SERV. BRASIL SUL - XBOX</span>
-            </a>
-            <ul class="navbar-menu">
-                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> InÃ­cio</a></li>
-                <li><a href="/shop" class="navbar-link active"><i class="ri-store-2-line"></i> Loja</a></li>
-                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
-                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
-                <li><a href="/deaths" class="navbar-link"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
+{% block content %}
 
-                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
-            </ul>
-            <div class="navbar-actions" style="display: flex; align-items: center; gap: 1rem;">
-                <div class="balance-display" style="color: var(--accent); font-family: 'Share Tech Mono', monospace;">
-                    <span class="balance-icon"><i class="ri-money-dollar-circle-line"></i></span>
-                    <span id="user-balance">0</span> DZCoins
+<div class="checkout-container">
+    <!-- Main Content -->
+    <main class="checkout-main">
+        <div class="container">
+            <div class="checkout-grid">
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h2><i class="ri-shopping-bag-line"></i> {{ _('Resumo do Pedido') }}</h2>
+                    <div class="order-items" id="order-items">
+                        <!-- Items will be loaded here -->
+                    </div>
+                    <div class="order-total">
+                        <div class="total-row">
+                            <span>{{ _('Subtotal:') }}</span>
+                            <span id="subtotal">0 DZCoins</span>
+                        </div>
+                        <div class="total-row total-final">
+                            <span>{{ _('Total:') }}</span>
+                            <span id="total">0 DZCoins</span>
+                        </div>
+                    </div>
+                    <div class="balance-info">
+                        <div class="balance-row">
+                            <span>{{ _('Saldo Atual:') }}</span>
+                            <span id="current-balance">0 DZCoins</span>
+                        </div>
+                        <div class="balance-row">
+                            <span>{{ _('Saldo Após Compra:') }}</span>
+                            <span id="balance-after" class="balance-after">0 DZCoins</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Selection -->
+                <div class="map-section">
+                    <h2><i class="ri-map-pin-line"></i> {{ _('Selecione o Local de Entrega') }}</h2>
+                    <p class="map-description">
+                        <i class="ri-information-line"></i>
+                        {{ _('Use o mapa iZurvive abaixo para encontrar o local. Digite as coordenadas X e Z
+                        manualmente. A entrega será feita em 5 minutos.') }}
+                    </p>
+
+                    <!-- iZurvive Map Iframe -->
+                    <iframe src="https://www.izurvive.com/chernarusplussatmap/"
+                        style="width: 100%; height: 500px; border: 2px solid var(--secondary); border-radius: 8px; margin-bottom: 1.5rem;"
+                        allowfullscreen>
+                    </iframe>
+
+                    <!-- Coordinates Display -->
+                    <div class="coordinates-display">
+                        <div class="coord-item">
+                            <label><i class="ri-arrow-left-right-line"></i> {{ _('Coordenada X:') }}</label>
+                            <input type="number" id="coord-x" min="0" max="15360"
+                                placeholder="{{ _('Digite X (0-15360)') }}">
+                        </div>
+                        <div class="coord-item">
+                            <label><i class="ri-arrow-up-down-line"></i> {{ _('Coordenada Z:') }}</label>
+                            <input type="number" id="coord-z" min="0" max="15360"
+                                placeholder="{{ _('Digite Z (0-15360)') }}">
+                        </div>
+                    </div>
+
+                    <!-- Account Selection -->
+                    <div class="account-selection"
+                        style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h2 style="margin-bottom: 1rem;"><i class="ri-user-shared-line"></i> {{ _('Entregar Para:') }}
+                        </h2>
+                        <p style="font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.8;">{{ _('Escolha qual das suas
+                            contas vinculadas deve receber os itens.') }}</p>
+                        <select id="target-gamertag"
+                            style="width: 100%; padding: 1rem; background: #000; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; font-family: 'Share Tech Mono', monospace; font-size: 1.1rem;">
+                            <option value="">{{ _('CARREGANDO CONTAS...') }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="checkout-actions">
+                        <button class="btn-confirm-order" id="btn-confirm-order">
+                            <i class="ri-check-circle-line"></i>
+                            {{ _('Confirmar Pedido') }}
+                        </button>
+                        <button class="btn-back" onclick="window.location.href='/shop'">
+                            <i class="ri-arrow-left-line"></i>
+                            {{ _('Voltar para a Loja') }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </nav>
+    </main>
+</div>
 
-    <div class="checkout-container">
-        <!-- Main Content -->
-        <main class="checkout-main">
-            <div class="container">
-                <div class="checkout-grid">
-                    <!-- Order Summary -->
-                    <div class="order-summary">
-                        <h2><i class="ri-shopping-bag-line"></i> Resumo do Pedido</h2>
-                        <div class="order-items" id="order-items">
-                            <!-- Items will be loaded here -->
-                        </div>
-                        <div class="order-total">
-                            <div class="total-row">
-                                <span>Subtotal:</span>
-                                <span id="subtotal">0 DZCoins</span>
-                            </div>
-                            <div class="total-row total-final">
-                                <span>Total:</span>
-                                <span id="total">0 DZCoins</span>
-                            </div>
-                        </div>
-                        <div class="balance-info">
-                            <div class="balance-row">
-                                <span>Saldo Atual:</span>
-                                <span id="current-balance">0 DZCoins</span>
-                            </div>
-                            <div class="balance-row">
-                                <span>Saldo ApÃ³s Compra:</span>
-                                <span id="balance-after" class="balance-after">0 DZCoins</span>
-                            </div>
-                        </div>
-                    </div>
+{% endblock %}
 
-                    <!-- Map Selection -->
-                    <div class="map-section">
-                        <h2><i class="ri-map-pin-line"></i> Selecione o Local de Entrega</h2>
-                        <p class="map-description">
-                            <i class="ri-information-line"></i>
-                            Use o mapa iZurvive abaixo para encontrar o local. Digite as coordenadas X e Z manualmente.
-                            A entrega serÃ¡ feita em <strong>5 minutos</strong>.
-                        </p>
-
-                        <!-- iZurvive Map Iframe -->
-                        <iframe src="https://www.izurvive.com/chernarusplussatmap/"
-                            style="width: 100%; height: 500px; border: 2px solid var(--secondary); border-radius: 8px; margin-bottom: 1.5rem;"
-                            allowfullscreen>
-                        </iframe>
-
-                        <!-- Coordinates Display -->
-                        <div class="coordinates-display">
-                            <div class="coord-item">
-                                <label><i class="ri-arrow-left-right-line"></i> Coordenada X:</label>
-                                <input type="number" id="coord-x" min="0" max="15360" placeholder="Digite X (0-15360)">
-                            </div>
-                            <div class="coord-item">
-                                <label><i class="ri-arrow-up-down-line"></i> Coordenada Z:</label>
-                                <input type="number" id="coord-z" min="0" max="15360" placeholder="Digite Z (0-15360)">
-                            </div>
-                        </div>
-
-                        <!-- Account Selection -->
-                        <div class="account-selection"
-                            style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h2 style="margin-bottom: 1rem;"><i class="ri-user-shared-line"></i> Entregar Para:</h2>
-                            <p style="font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.8;">Escolha qual das suas
-                                contas vinculadas deve receber os itens.</p>
-                            <select id="target-gamertag"
-                                style="width: 100%; padding: 1rem; background: #000; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; font-family: 'Share Tech Mono', monospace; font-size: 1.1rem;">
-                                <option value="">CARREGANDO CONTAS...</option>
-                            </select>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="checkout-actions">
-                            <button class="btn-confirm-order" id="btn-confirm-order">
-                                <i class="ri-check-circle-line"></i>
-                                Confirmar Pedido
-                            </button>
-                            <button class="btn-back" onclick="window.location.href='/shop'">
-                                <i class="ri-arrow-left-line"></i>
-                                Voltar para a Loja
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script src="{{ url_for('static', filename='js/checkout.js') }}"></script>
-</body>
-
-</html>
+{% block extra_scripts %}
+<script>
+    window.checkoutTranslations = {
+        verificada: "{{ _('(Verificada)') }}",
+        aguardandoRobo: "{{ _('(Aguardando Robô)') }}",
+        nenhumaConta: "{{ _('Nenhuma conta vinculada!') }}",
+        erroCarregar: "{{ _('Erro ao carregar') }}",
+        carrinhoVazio: "{{ _('Carrinho vazio! Redirecionando para a loja...') }}",
+        quantidade: "{{ _('Quantidade:') }}",
+        selecioneConta: "{{ _('Por favor, selecione uma conta de destino!') }}",
+        coordenadasInvalidas: "{{ _('Por favor, insira coordenadas válidas (0-15360)!') }}",
+        saldoInsuficiente: "{{ _('Saldo insuficiente! Você tem {balance} DZCoins mas precisa de {total} DZCoins.') }}",
+        erroProcessar: "{{ _('Erro ao processar pedido:') }}",
+        erroDesconhecido: "{{ _('Erro desconhecido') }}",
+        erroTenteNovamente: "{{ _('Erro ao processar pedido. Tente novamente.') }}"
+    };
+</script>
+<script src="{{ url_for('static', filename='js/checkout.js') }}"></script>
+{% endblock %}

@@ -58,7 +58,7 @@ function startCountdown() {
 
         if (deliveryTime <= 0) {
             clearInterval(interval);
-            timerElement.textContent = 'Entregue!';
+            timerElement.textContent = window.confirmationTranslations.entregue;
             timerElement.style.color = '#00ff00';
         }
     }, 1000);

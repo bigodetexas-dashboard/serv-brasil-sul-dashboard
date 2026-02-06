@@ -607,6 +607,20 @@ def logout():
     return redirect(url_for("index"))
 
 
+@app.route("/set_language/<lang>")
+def set_language(lang):
+    """Define o idioma do usuÃ¡rio via Cookie e SessÃ£o"""
+    supported_langs = ["pt", "en", "es", "fr", "it", "de", "ru", "zh_Hans", "ja", "ko"]
+    if lang not in supported_langs:
+        lang = "pt"
+
+    session["lang"] = lang
+    response = redirect(request.referrer or url_for("index"))
+    # Save for 30 days
+    response.set_cookie("language", lang, max_age=30 * 24 * 60 * 60)
+    return response
+
+
 # ==================== VERIFICAÃ‡ÃƒO VIA DISCORD (AUTO-LINK) ====================
 # A verificaÃ§Ã£o agora Ã© automÃ¡tica durante o login via Discord,
 # lendo as 'connections' do usuÃ¡rio.
@@ -1371,7 +1385,9 @@ def api_2fa_enable():
         if not user or not user["twofa_otp_code"]:
             conn.close()
             return jsonify(
-                {"error": "Nenhum cÃ³digo solicitado. Clique em enviar cÃ³digo primeiro."}
+                {
+                    "error": "Nenhum cÃ³digo solicitado. Clique em enviar cÃ³digo primeiro."
+                }
             ), 400
 
         from otp_manager import (
@@ -3397,7 +3413,9 @@ def handle_subscribe_missions():
     user_id = session.get("discord_user_id")
     if user_id:
         join_room(f"user_{user_id}")
-        print(f"[WebSocket] Cliente {request.sid} inscrito em missÃµes (user_{user_id})")
+        print(
+            f"[WebSocket] Cliente {request.sid} inscrito em missÃµes (user_{user_id})"
+        )
         emit("subscribed", {"channel": "missions", "status": "success"})
 
 

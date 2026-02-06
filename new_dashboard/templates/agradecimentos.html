@@ -1,186 +1,133 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agradecimentos - SERV. BRASIL SUL - XBOX</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/agradecimentos.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='img/logo_texas.png') }}" type="image/png">
-    <!-- Adicionando RemixIcon para Ã­cones consistentes -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-</head>
+{% block title %}{{ _('Agradecimentos - BIGODETEXAS - XBOX') }}{% endblock %}
 
-<body>
-    <!-- NavegaÃ§Ã£o -->
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">
-                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
-                    style="height: 40px; margin-right: 10px;">
-                <span style="font-size: 1.5rem;">SERV. BRASIL SUL - XBOX</span>
-            </a>
-            <ul class="navbar-menu">
-                <li><a href="/" class="navbar-link"><i class="ri-home-line"></i> InÃ­cio</a></li>
-                <li><a href="/shop" class="navbar-link"><i class="ri-store-2-line"></i> Loja</a></li>
-                <li><a href="/leaderboard" class="navbar-link"><i class="ri-trophy-line"></i> Rankings</a></li>
-                <li><a href="/heatmap" class="navbar-link"><i class="ri-fire-line"></i> Mapa de Calor</a></li>
-                <li><a href="/deaths" class="navbar-link"><i class="ri-crosshair-line"></i> Tiro na Lata</a></li>
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/agradecimentos.css') }}">
+<style>
+    /* Estilos baseados no original mas adaptados para o layout base */
+    .hero-section {
+        position: relative;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
 
-                <li><a href="/base" class="navbar-link"><i class="ri-map-pin-line"></i> Base</a></li>
-                <li><a href="/clan" class="navbar-link"><i class="ri-team-line"></i> ClÃ£</a></li>
-                <li><a href="/banco" class="navbar-link"><i class="ri-bank-line"></i> Banco Sul</a></li>
-                <li><a href="/dashboard" class="navbar-link"><i class="ri-user-line"></i> Meu Perfil</a></li>
-                <li><a href="/agradecimentos" class="navbar-link active"><i class="ri-hand-heart-line"></i>
-                        Agradecimentos</a>
-                </li>
-            </ul>
+    .hero-section .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+        z-index: 1;
+    }
 
+    .content-wrapper {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 1200px;
+        padding: 4rem 2rem;
+    }
+
+    .main-title {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .main-title h1 {
+        font-size: 4rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .quote-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        padding: 3rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 2rem 0;
+    }
+
+    .quote-text {
+        font-size: 1.5rem;
+        font-style: italic;
+        line-height: 1.6;
+        color: #ddd;
+    }
+
+    .quote-author {
+        text-align: right;
+        margin-top: 1rem;
+        font-weight: 700;
+        color: var(--accent-primary);
+    }
+
+    .story-card {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 4rem;
+        border-radius: 30px;
+        margin-top: 4rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="overlay"></div>
+    <div class="content-wrapper">
+        <div class="main-title">
+            <div class="handshake-icon" style="text-align: center; margin-bottom: 2rem;">
+                <i class="ri-hand-heart-line" style="font-size: 5rem; color: var(--accent-primary);"></i>
+            </div>
+            <h1>{{ _('Agradecimentos') }}</h1>
+            <p class="subtitle" style="font-size: 1.5rem; opacity: 0.8;">{{ _('8 Anos de Sobrevivência e Amizade') }}
+            </p>
         </div>
-    </nav>
 
-    <!-- ConteÃºdo Principal -->
-    <div class="hero-section">
-        <div class="overlay"></div>
-        <div class="content-wrapper">
-
-            <!-- TÃ­tulo Principal -->
-            <div class="main-title">
-                <!-- Ãcone de Rifles Cruzados (SVG Inline Branco) -->
-                <div class="handshake-icon">
-                    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4.5 19.5L19.5 4.5M19.5 4.5H15M19.5 4.5V9" stroke="white" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M19.5 19.5L4.5 4.5M4.5 4.5H9M4.5 4.5V9" stroke="white" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                        <!-- Adicionando detalhes para parecer mais com armas -->
-                        <path d="M7 17L5 19" stroke="white" stroke-width="2" />
-                        <path d="M17 7L19 5" stroke="white" stroke-width="2" />
-                    </svg>
-                </div>
-                <h1>Agradecimentos</h1>
-                <p class="subtitle">8 Anos de SobrevivÃªncia e Amizade</p>
+        <div class="quotes-section">
+            <div class="quote-card">
+                <p class="quote-text">
+                    {{ _('Um verdadeiro sobrevivente não anda só — ele traz o novato e mostra onde cavar, onde mirar e
+                    onde confiar.') }}
+                </p>
+                <p class="quote-author">— NICK</p>
             </div>
+        </div>
 
-            <!-- CitaÃ§Ãµes -->
-            <div class="quotes-section">
-                <div class="quote-card">
-                    <div class="quote-icon">"</div>
-                    <p class="quote-text">
-                        Um verdadeiro sobrevivente nÃ£o anda sÃ³ â€” ele traz o novato e mostra onde cavar,
-                        onde mirar e onde confiar.
-                    </p>
-                    <p class="quote-author">â€” NICK</p>
-                </div>
+        <div class="story-section">
+            <div class="story-card">
+                <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">{{ _('Uma Jornada de 8 Anos') }}</h2>
+                <p style="font-size: 1.2rem; line-height: 1.8; opacity: 0.9; margin-bottom: 3rem;">
+                    {{ _('Tudo começou com um simples gesto de gentileza. Lavar as mãos na bica d\'água. Um gesto
+                    simples que alguém me ensinou. Naquele momento, eu não sabia que estava começando uma jornada que
+                    mudaria tudo. Mergulhei nas entrelinhas... Configurar, entender, criar. Descobrir os segredos,
+                    dominar os sistemas, construir algo próprio. Tudo isso porque alguém se importou. Porque vocês
+                    estavam lá, não apenas como companheiros de jogo, mas como verdadeiros amigos.') }}
+                </p>
 
-                <div class="quote-card">
-                    <div class="quote-icon">"</div>
-                    <p class="quote-text">
-                        Brother: 'confia em mim, sÃ³ dÃ¡ uma espiada acima do muro'.
-                        Resultado? SÃ³ ouvi a bala zunindo de raspÃ£o na minha testa.
-                    </p>
-                    <p class="quote-author">â€” Macoy trollando Texas</p>
-                </div>
-            </div>
-
-            <!-- HistÃ³ria -->
-            <div class="story-section">
-                <div class="story-card">
-                    <h2>Uma Jornada de 8 Anos</h2>
-                    <p class="story-intro">Tudo comeÃ§ou com um simples gesto de gentileza...</p>
-
-                    <!-- Memory Carousel -->
-                    <div class="memory-carousel">
-                        <div class="carousel-container">
-
-                            <!-- Slide 1 -->
-                            <div class="carousel-slide active">
-                                <div class="memory-content">
-                                    <div class="memory-icon">I</div>
-                                    <h3>O Primeiro Passo</h3>
-                                    <p>Lavar as mÃ£os na bica d'Ã¡gua. Um gesto simples que alguÃ©m me ensinou. Naquele
-                                        momento, eu nÃ£o sabia que estava comeÃ§ando uma jornada que mudaria tudo.</p>
-                                </div>
-                            </div>
-
-                            <!-- Slide 2 -->
-                            <div class="carousel-slide">
-                                <div class="memory-content">
-                                    <div class="memory-icon">II</div>
-                                    <h3>A Primeira Conquista</h3>
-                                    <p>A emoÃ§Ã£o de conseguir a primeira roupa militar. Aquele momento de orgulho, de
-                                        sentir que estava evoluindo, que estava aprendendo.</p>
-                                </div>
-                            </div>
-
-                            <!-- Slide 3 -->
-                            <div class="carousel-slide">
-                                <div class="memory-content">
-                                    <div class="memory-icon">III</div>
-                                    <h3>Mergulhando Fundo</h3>
-                                    <p>Mas eu quis mais. Mergulhei nas entrelinhas... Configurar, entender, criar.
-                                        Descobrir os segredos, dominar os sistemas, construir algo prÃ³prio.</p>
-                                </div>
-                            </div>
-
-                            <!-- Slide 4 -->
-                            <div class="carousel-slide">
-                                <div class="memory-content">
-                                    <div class="memory-icon">IV</div>
-                                    <h3>O Que Realmente Importa</h3>
-                                    <p>Tudo isso porque alguÃ©m se importou. Porque vocÃªs estavam lÃ¡, nÃ£o apenas como
-                                        companheiros de jogo, mas como verdadeiros amigos.</p>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <!-- Carousel Controls -->
-                        <div class="carousel-controls">
-                            <button class="carousel-btn prev-btn"><i class="ri-arrow-left-s-line"></i></button>
-                            <div class="carousel-indicators">
-                                <span class="indicator active" data-slide="0"></span>
-                                <span class="indicator" data-slide="1"></span>
-                                <span class="indicator" data-slide="2"></span>
-                                <span class="indicator" data-slide="3"></span>
-                            </div>
-                            <button class="carousel-btn next-btn"><i class="ri-arrow-right-s-line"></i></button>
-                        </div>
+                <div class="gratitude-message"
+                    style="text-align: center; padding-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <h2 style="font-size: 3rem; color: var(--accent-primary); margin-bottom: 1rem;">{{ _('Obrigado') }}
+                    </h2>
+                    <p style="font-size: 1.2rem; opacity: 0.7; margin-bottom: 2rem;">{{ _('Aos meus grandiosos amigos de
+                        alma...') }}</p>
+                    <div class="friends-names" style="font-size: 2rem; font-weight: 800; letter-spacing: 5px;">
+                        <span>NICK</span> <span style="color: var(--accent-primary);">•</span> <span>MACOY</span>
                     </div>
-
-                    <div class="gratitude-message">
-                        <h2>Obrigado</h2>
-                        <p class="gratitude-text">Aos meus grandiosos amigos de alma...</p>
-                        <div class="friends-names">
-                            <span class="friend-name">NICK</span>
-                            <span class="separator">â€¢</span>
-                            <span class="friend-name">MACOY</span>
-                        </div>
-                        <p class="final-message">
-                            Por 8 anos de risadas, sustos, vitÃ³rias e derrotas.
-                            Por me ensinarem que em Chernarus, assim como na vida,
-                            ninguÃ©m sobrevive sozinho.
-                        </p>
-                    </div>
+                    <p style="margin-top: 3rem; font-size: 1.1rem; opacity: 0.6;">
+                        {{ _('Por 8 anos de risadas, sustos, vitórias e derrotas. Por me ensinarem que em Chernarus,
+                        assim como na vida, ninguém sobrevive sozinho.') }}
+                    </p>
                 </div>
             </div>
-
-            <!-- RodapÃ© da PÃ¡gina -->
-            <div class="page-footer" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                <img src="{{ url_for('static', filename='img/logo_texas.png') }}" alt="Logo"
-                    style="height: 60px; margin-bottom: 10px;">
-                <p>Servidor configurado com</p>
-                <p style="font-size: 1.2rem; font-weight: bold; color: #ffd700; margin: 5px 0;">BigodeTexas</p>
-                <p class="years">Brasil Sul â€¢ Xbox â€¢ Dayz</p>
-                <p style="margin-top: 15px; opacity: 0.7; font-size: 0.9rem;">&copy; 2025 SERV. BRASIL SUL - XBOX. Todos
-                    os direitos reservados.</p>
-            </div>
-
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-</body>
-
-</html>
+</div>
+{% endblock %}

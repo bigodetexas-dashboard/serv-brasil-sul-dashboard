@@ -1,9 +1,9 @@
 <!-- Bigodudo Chat Widget -->
 <div id="bigodudo-widget" class="bigodudo-widget">
-    <button id="bigodudo-toggle" class="bigodudo-toggle-v2" title="Falar com o Bigodudo">
+    <button id="bigodudo-toggle" class="bigodudo-toggle-v2" title="{{ _('Falar com o Bigodudo') }}">
         <img src="{{ url_for('static', filename='img/destintivo.png') }}?v=4" alt="Badge" id="bigodudo-icon-img"
             onerror="this.src='{{ url_for('static', filename='img/logo_texas.png') }}'; this.onerror=null;">
-        <span class="bigodudo-fallback" style="display: none;">ðŸ¥¸</span>
+        <span class="bigodudo-fallback" style="display: none;">🤠</span>
     </button>
 
     <div id="bigodudo-chat" class="bigodudo-chat hidden">
@@ -13,26 +13,28 @@
                     style="width: 70px; height: 70px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); object-fit: contain;">
                 <div>
                     <h3 style="margin: 0; font-size: 20px;">Bigodudo</h3>
-                    <p style="margin: 2px 0 0 0; font-size: 13px; opacity: 0.9;">O sobrevivente raiz de Chernarus</p>
+                    <p style="margin: 2px 0 0 0; font-size: 13px; opacity: 0.9;">{{ _('O sobrevivente raiz de
+                        Chernarus') }}</p>
                 </div>
             </div>
-            <button id="bigodudo-close" class="bigodudo-close">Ã—</button>
+            <button id="bigodudo-close" class="bigodudo-close">×</button>
         </div>
 
         <div id="bigodudo-messages" class="bigodudo-messages">
             <div class="bigodudo-message bigodudo-bot">
-                <strong>Bigodudo:</strong> E aÃ­, parceiro! Me faz uma pergunta aÃ­!
+                <strong>Bigodudo:</strong> {{ _('E aí, parceiro! Me faz uma pergunta aí!') }}
             </div>
         </div>
 
         <div class="bigodudo-suggestions">
-            <p>SugestÃµes:</p>
+            <p>{{ _('Sugestões:') }}</p>
             <div id="bigodudo-suggestions-list"></div>
         </div>
 
         <div class="bigodudo-input-container">
-            <input type="text" id="bigodudo-input" placeholder="Pergunte algo ao Bigodudo..." maxlength="500" />
-            <button id="bigodudo-send">Enviar</button>
+            <input type="text" id="bigodudo-input" placeholder="{{ _('Pergunte algo ao Bigodudo...') }}"
+                maxlength="500" />
+            <button id="bigodudo-send">{{ _('Enviar') }}</button>
         </div>
     </div>
 </div>
@@ -222,6 +224,13 @@
 </style>
 
 <script>
+    window.bigodudoTranslations = {
+        digitando: "{{ _('Digitando...') }}",
+        erroConexao: "{{ _('Rapaz, deu ruim na conexão... Tenta de novo!') }}",
+        erroProcessar: "{{ _('Erro ao processar mensagem') }}",
+        voce: "{{ _('Você') }}"
+    };
+
     // Bigodudo Chat Widget
     const bigodudoToggle = document.getElementById('bigodudo-toggle');
     const bigodudoChat = document.getElementById('bigodudo-chat');
@@ -231,11 +240,8 @@
     const bigodudoMessages = document.getElementById('bigodudo-messages');
     const suggestionsList = document.getElementById('bigodudo-suggestions-list');
 
-    console.log('Bigodudo Widget inicializado');
-
     // Toggle chat
     bigodudoToggle.addEventListener('click', () => {
-        console.log('Bigodudo Toggle clicado');
         bigodudoChat.classList.toggle('hidden');
         if (!bigodudoChat.classList.contains('hidden')) {
             bigodudoInput.focus();
@@ -258,7 +264,7 @@
                 .map(s => `<button class="suggestion-btn" onclick="askBigodudo('${s}')">${s}</button>`)
                 .join('');
         } catch (error) {
-            console.error('Erro ao carregar sugestÃµes:', error);
+            console.error('Erro ao carregar sugestões:', error);
         }
     }
 
@@ -274,13 +280,12 @@
         // Show typing indicator
         const typingDiv = document.createElement('div');
         typingDiv.className = 'bigodudo-message bigodudo-bot';
-        typingDiv.innerHTML = '<strong>Bigodudo:</strong> <em>Digitando...</em>';
+        typingDiv.innerHTML = `<strong>Bigodudo:</strong> <em>${window.bigodudoTranslations.digitando}</em>`;
         typingDiv.id = 'typing-indicator';
         bigodudoMessages.appendChild(typingDiv);
         bigodudoMessages.scrollTop = bigodudoMessages.scrollHeight;
 
         try {
-            // Get CSRF token from meta tag
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
             const response = await fetch('/api/bigodudo/chat', {
@@ -300,11 +305,11 @@
             if (data.success) {
                 addMessage(data.response, 'bot');
             } else {
-                addMessage(data.error || 'Erro ao processar mensagem', 'bot');
+                addMessage(data.error || window.bigodudoTranslations.erroProcessar, 'bot');
             }
         } catch (error) {
             document.getElementById('typing-indicator')?.remove();
-            addMessage('Rapaz, deu ruim na conexÃ£o... Tenta de novo!', 'bot');
+            addMessage(window.bigodudoTranslations.erroConexao, 'bot');
         }
     }
 
@@ -324,7 +329,7 @@
                 </div>
             `;
         } else {
-            div.innerHTML = `<strong style="color: #fff;">VocÃª:</strong><p style="margin: 5px 0 0 0; color: #ccc;">${text}</p>`;
+            div.innerHTML = `<strong style="color: #fff;">${window.bigodudoTranslations.voce}:</strong><p style="margin: 5px 0 0 0; color: #ccc;">${text}</p>`;
         }
 
         bigodudoMessages.appendChild(div);

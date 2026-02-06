@@ -116,5 +116,20 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<script>
+    window.shopTranslations = {
+        adicionar: "{{ _('Adicionar') }}",
+        carrinhoVazio: "{{ _('Seu carrinho está vazio') }}",
+        cada: "{{ _('cada') }}",
+        confirmarLimpar: "{{ _('Deseja limpar todo o carrinho?') }}",
+        carrinhoVazioAlerta: "{{ _('Seu carrinho está vazio!') }}",
+        saldoInsuficiente: "{{ _('Saldo insuficiente! Você tem {balance} DZCoins mas precisa de {total} DZCoins.') }}",
+        adicionadoAoCarrinho: "{{ _('{name} adicionado ao carrinho!') }}",
+        selecioneImagem: "{{ _('Selecione uma imagem!') }}",
+        uploadSucesso: "{{ _('Imagem atualizada com sucesso!') }}",
+        erroUpload: "{{ _('Erro no upload') }}",
+        erroConexao: "{{ _('Erro na conexão') }}"
+    };
+</script>
 <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
 {% endblock %}

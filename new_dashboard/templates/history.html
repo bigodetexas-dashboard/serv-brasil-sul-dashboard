@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}HistÃ³rico - SERV. BRASIL SUL - XBOX{% endblock %}
+{% block title %}{{ _('Histórico - SERV. BRASIL SUL - XBOX') }}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -388,42 +388,42 @@
 {% block content %}
 <div class="history-container">
     <div class="page-header">
-        <h1>ðŸ“œ HistÃ³rico de Atividades</h1>
-        <p>Acompanhe todas as suas aÃ§Ãµes e eventos no servidor</p>
+        <h1>📜 {{ _('Histórico de Atividades') }}</h1>
+        <p>{{ _('Acompanhe todas as suas ações e eventos no servidor') }}</p>
     </div>
 
     <div class="filters-section">
         <div class="filters-grid">
             <div class="filter-group">
-                <label>Tipo de Evento</label>
+                <label>{{ _('Tipo de Evento') }}</label>
                 <select id="eventTypeFilter">
-                    <option value="all">Todos os Eventos</option>
-                    <option value="kill">EliminaÃ§Ãµes</option>
-                    <option value="death">Mortes</option>
-                    <option value="login">ConexÃµes</option>
-                    <option value="logout">DesconexÃµes</option>
-                    <option value="achievement">Conquistas</option>
-                    <option value="trade">NegociaÃ§Ãµes</option>
+                    <option value="all">{{ _('Todos os Eventos') }}</option>
+                    <option value="kill">{{ _('Eliminações') }}</option>
+                    <option value="death">{{ _('Mortes') }}</option>
+                    <option value="login">{{ _('Conexões') }}</option>
+                    <option value="logout">{{ _('Desconexões') }}</option>
+                    <option value="achievement">{{ _('Conquistas') }}</option>
+                    <option value="trade">{{ _('Negociações') }}</option>
                 </select>
             </div>
 
             <div class="filter-group">
-                <label>PerÃ­odo</label>
+                <label>{{ _('Período') }}</label>
                 <select id="periodFilter">
-                    <option value="today">Hoje</option>
-                    <option value="week">Ãšltima Semana</option>
-                    <option value="month">Ãšltimo MÃªs</option>
-                    <option value="all">Todo o HistÃ³rico</option>
+                    <option value="today">{{ _('Hoje') }}</option>
+                    <option value="week">{{ _('Última Semana') }}</option>
+                    <option value="month">{{ _('Último Mês') }}</option>
+                    <option value="all">{{ _('Todo o Histórico') }}</option>
                 </select>
             </div>
 
             <div class="filter-group">
-                <label>Data Inicial</label>
+                <label>{{ _('Data Inicial') }}</label>
                 <input type="date" id="startDate">
             </div>
 
             <div class="filter-group">
-                <label>Data Final</label>
+                <label>{{ _('Data Final') }}</label>
                 <input type="date" id="endDate">
             </div>
         </div>
@@ -431,33 +431,33 @@
 
     <div class="stats-cards">
         <div class="stat-card">
-            <div class="icon">ðŸ“Š</div>
+            <div class="icon">📊</div>
             <div class="value" id="totalEvents">0</div>
-            <div class="label">Total de Eventos</div>
+            <div class="label">{{ _('Total de Eventos') }}</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">âš”ï¸</div>
+            <div class="icon">⚔️</div>
             <div class="value" id="totalKills">0</div>
-            <div class="label">EliminaÃ§Ãµes</div>
+            <div class="label">{{ _('Eliminações') }}</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">ðŸ’€</div>
+            <div class="icon">💀</div>
             <div class="value" id="totalDeaths">0</div>
-            <div class="label">Mortes</div>
+            <div class="label">{{ _('Mortes') }}</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">â±ï¸</div>
+            <div class="icon">⏱️</div>
             <div class="value" id="avgSession">0h</div>
-            <div class="label">SessÃ£o MÃ©dia</div>
+            <div class="label">{{ _('Sessão Média') }}</div>
         </div>
 
         <div class="stat-card">
-            <div class="icon">ðŸŽ¯</div>
+            <div class="icon">🎯</div>
             <div class="value" id="kdRatio">0.0</div>
-            <div class="label">K/D Ratio</div>
+            <div class="label">{{ _('K/D Ratio') }}</div>
         </div>
     </div>
 
@@ -466,9 +466,20 @@
     </div>
 
     <div class="load-more">
-        <button class="load-more-btn" id="loadMoreBtn">Carregar Mais</button>
+        <button class="load-more-btn" id="loadMoreBtn">{{ _('Carregar Mais') }}</button>
     </div>
 </div>
+
+<script>
+    window.historyTranslations = {
+        erro_carregar: "{{ _('Erro ao carregar histórico:') }}",
+        erro_requisicao: "{{ _('Erro na requisição:') }}",
+        minutosAttr: "{{ _('minutos atrás') }}",
+        horasAttr: "{{ _('horas atrás') }}",
+        diasAttr: "{{ _('dias atrás') }}",
+        nenhumEvento: "{{ _('Nenhum evento encontrado para os filtros selecionados') }}"
+    };
+</script>
 
 <!-- Script movido para /static/js/history.js -->
 <script src="{{ url_for('static', filename='js/history.js') }}"></script>

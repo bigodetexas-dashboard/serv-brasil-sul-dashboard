@@ -1,432 +1,418 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil - {{ player_name }} - BigodeTexas</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <style>
-        :root {
-            --profile-banner-height: 300px;
-        }
+{% block title %}{{ _('Perfil - {player_name} - BigodeTexas').format(player_name=player_name) }}{% endblock %}
 
-        .profile-header {
-            position: relative;
-            height: var(--profile-banner-height);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            margin-bottom: 5rem;
-            background: #1a1a1a;
-        }
+{% block extra_head %}
+<style>
+    :root {
+        --profile-banner-height: 300px;
+    }
 
-        .profile-banner {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.7);
-            transition: transform 0.5s ease;
-        }
+    .profile-header {
+        position: relative;
+        height: var(--profile-banner-height);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 5rem;
+        background: #1a1a1a;
+    }
 
-        .profile-header:hover .profile-banner {
-            transform: scale(1.05);
+    .profile-banner {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.7);
+        transition: transform 0.5s ease;
+    }
+
+    .profile-header:hover .profile-banner {
+        transform: scale(1.05);
+    }
+
+    .profile-avatar-container {
+        position: absolute;
+        bottom: -40px;
+        left: 3rem;
+        display: flex;
+        align-items: flex-end;
+        gap: 1.5rem;
+        z-index: 10;
+    }
+
+    .profile-avatar {
+        width: 140px;
+        height: 140px;
+        border-radius: var(--radius-lg);
+        border: 4px solid var(--bg-dark);
+        background: var(--bg-card);
+        box-shadow: var(--shadow-lg);
+        object-fit: cover;
+    }
+
+    .profile-identity {
+        padding-bottom: 0.5rem;
+    }
+
+    .profile-name {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .profile-tag {
+        background: var(--primary);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+    }
+
+    .bio-section {
+        margin-bottom: 2rem;
+    }
+
+    .bio-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+        white-space: pre-wrap;
+    }
+
+    .stats-grid-premium {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-item-premium {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 1.25rem;
+        border-radius: var(--radius-md);
+        text-align: center;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .stat-item-premium:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-icon-premium {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value-premium {
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: block;
+    }
+
+    .stat-label-premium {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .badges-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .badge-premium {
+        width: 48px;
+        height: 48px;
+        background: rgba(var(--primary-rgb), 0.1);
+        border: 1px solid var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .badge-premium:hover {
+        transform: rotate(15deg) scale(1.1);
+        background: var(--primary);
+        color: white;
+    }
+
+    .metrics-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .metric-mini {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: var(--radius-sm);
+    }
+
+    @media (max-width: 992px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
         }
 
         .profile-avatar-container {
-            position: absolute;
-            bottom: -40px;
-            left: 3rem;
-            display: flex;
-            align-items: flex-end;
-            gap: 1.5rem;
-            z-index: 10;
+            left: 1.5rem;
+            flex-direction: column;
+            align-items: center;
+            bottom: -100px;
+            width: calc(100% - 3rem);
+            text-align: center;
         }
 
-        .profile-avatar {
-            width: 140px;
-            height: 140px;
-            border-radius: var(--radius-lg);
-            border: 4px solid var(--bg-dark);
-            background: var(--bg-card);
-            box-shadow: var(--shadow-lg);
-            object-fit: cover;
-        }
-
-        .profile-identity {
-            padding-bottom: 0.5rem;
+        .profile-header {
+            margin-bottom: 8rem;
         }
 
         .profile-name {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: white;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .profile-tag {
-            background: var(--primary);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .profile-grid {
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-        }
-
-        .bio-section {
-            margin-bottom: 2rem;
-        }
-
-        .bio-text {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            white-space: pre-wrap;
-        }
-
-        .stats-grid-premium {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-item-premium {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 1.25rem;
-            border-radius: var(--radius-md);
-            text-align: center;
-            transition: transform 0.2s ease, background 0.2s ease;
-        }
-
-        .stat-item-premium:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .stat-icon-premium {
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value-premium {
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: block;
-        }
-
-        .stat-label-premium {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .badges-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-
-        .badge-premium {
-            width: 48px;
-            height: 48px;
-            background: rgba(var(--primary-rgb), 0.1);
-            border: 1px solid var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
+    }
+</style>
+{% endblock %}
 
-        .badge-premium:hover {
-            transform: rotate(15deg) scale(1.1);
-            background: var(--primary);
-            color: white;
-        }
-
-        .metrics-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .metric-mini {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: var(--radius-sm);
-        }
-
-        @media (max-width: 992px) {
-            .profile-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .profile-avatar-container {
-                left: 1.5rem;
-                flex-direction: column;
-                align-items: center;
-                bottom: -100px;
-                width: calc(100% - 3rem);
-                text-align: center;
-            }
-
-            .profile-header {
-                margin-bottom: 8rem;
-            }
-
-            .profile-name {
-                justify-content: center;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/" class="navbar-brand">ðŸ¤  BigodeTexas</a>
-            <ul class="navbar-nav">
-                <li><a href="/" class="nav-link">InÃ­cio</a></li>
-                <li><a href="/leaderboard" class="nav-link">Ranking</a></li>
-                <li><a href="/shop" class="nav-link">Loja</a></li>
-                <li><a href="/heatmap" class="nav-link">Mapa</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container">
-        <!-- Profile Header -->
-        <div class="profile-header fade-in">
-            <img id="profile-banner" src="/static/images/banners/default.jpg" alt="Banner" class="profile-banner">
-            <div class="profile-avatar-container">
-                <img id="profile-avatar" src="/static/images/default-avatar.png" alt="Avatar" class="profile-avatar">
-                <div class="profile-identity">
-                    <h1 class="profile-name" id="player-fullname">
-                        Carregando...
-                        <span id="xbox-verified-icon" style="display:none; color:#10b981"><i
-                                class="ri-checkbox-circle-fill"></i></span>
-                    </h1>
-                    <span class="profile-tag" id="player-archetype">Recruta</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="profile-grid">
-            <!-- Main Content -->
-            <div class="profile-main">
-                <div class="glass-card bio-section fade-in">
-                    <h3 class="card-title" style="margin-bottom: 1rem;"><i class="ri-book-open-line"></i> Sobre o
-                        Sobrevivente</h3>
-                    <p class="bio-text" id="player-bio">Carregando histÃ³ria do sobrevivente...</p>
-
-                    <div class="badges-container" id="pinned-badges">
-                        <!-- Badges will be injected here -->
-                    </div>
-                </div>
-
-                <div class="stats-grid-premium fade-in">
-                    <div class="stat-item-premium">
-                        <i class="ri-skull-line stat-icon-premium"></i>
-                        <span class="stat-value-premium" id="stat-kills">0</span>
-                        <span class="stat-label-premium">VÃ­timas</span>
-                    </div>
-                    <div class="stat-item-premium">
-                        <i class="ri-heart-pulse-line stat-icon-premium"></i>
-                        <span class="stat-value-premium" id="stat-deaths">0</span>
-                        <span class="stat-label-premium">Mortes</span>
-                    </div>
-                    <div class="stat-item-premium">
-                        <i class="ri-fire-line stat-icon-premium"></i>
-                        <span class="stat-value-premium" id="stat-kd">0.0</span>
-                        <span class="stat-label-premium">K/D Ratio</span>
-                    </div>
-                    <div class="stat-item-premium">
-                        <i class="ri-copper-coin-line stat-icon-premium"></i>
-                        <span class="stat-value-premium" id="stat-coins">0</span>
-                        <span class="stat-label-premium">Moedas</span>
-                    </div>
-                </div>
-
-                <div class="glass-card fade-in">
-                    <h3 class="card-title" style="margin-bottom: 1.5rem;"><i class="ri-bar-chart-2-line"></i> Desempenho
-                        em Detalhes</h3>
-                    <div class="grid grid-2">
-                        <div class="metric-mini">
-                            <span class="text-muted">ðŸ”¥ Maior SequÃªncia</span>
-                            <strong id="stat-streak">0</strong>
-                        </div>
-                        <div class="metric-mini">
-                            <span class="text-muted">ðŸ• Tempo de Vida</span>
-                            <strong id="stat-playtime">0h</strong>
-                        </div>
-                        <div class="metric-mini">
-                            <span class="text-muted">ðŸ¦  Zumbis Abatidos</span>
-                            <strong id="stat-zombies">0</strong>
-                        </div>
-                        <div class="metric-mini">
-                            <span class="text-muted">ðŸªµ Ãrvores Cortadas</span>
-                            <strong id="stat-trees">0</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="metrics-sidebar fade-in">
-                <div class="glass-card">
-                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">ðŸŒ³ Explorador</h3>
-                    <div class="metric-mini">
-                        <span class="text-muted">DistÃ¢ncia</span>
-                        <strong id="stat-distance">0km</strong>
-                    </div>
-                </div>
-
-                <div class="glass-card">
-                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">ðŸ—ï¸ Construtor</h3>
-                    <div class="metric-mini">
-                        <span class="text-muted">Estruturas</span>
-                        <strong id="stat-buildings">0</strong>
-                    </div>
-                </div>
-
-                <div class="glass-card">
-                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">ðŸŽ£ Pescador</h3>
-                    <div class="metric-mini">
-                        <span class="text-muted">Peixes</span>
-                        <strong id="stat-fish">0</strong>
-                    </div>
-                </div>
-
-                <!-- ALARME DE BASE SECTION -->
-                <div class="glass-card"
-                    style="border-left: 4px solid var(--primary); background: rgba(var(--primary-rgb), 0.05);">
-                    <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);">ðŸš¨
-                        Alarme de Base</h3>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                        Receba notificaÃ§Ãµes de invasÃ£o no seu dispositivo!
-                    </p>
-                    <div class="metric-mini" style="margin-bottom: 1rem;">
-                        <span class="text-muted">Seu Telegram ID</span>
-                        <strong id="telegram-id-display" style="color: #60a5fa;">{{ player_id if player_id else
-                            'Consulte no Bot' }}</strong>
-                    </div>
-                    <div
-                        style="background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.75rem;">
-                        <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem;">Como
-                            ativar:</span>
-                        <code
-                            style="color: #fbbf24; display: block; word-break: break-all;">!alarme set [Nome] [X] [Z] [Raio] [ID] false</code>
-                    </div>
-                    <a href="https://t.me/BRASILSULALARMEBOT" target="_blank" class="btn btn-sm btn-secondary"
-                        style="margin-top: 1rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                        <i class="ri-telegram-line"></i> Abrir Bot
-                    </a>
-                </div>
-
-                <a href="/leaderboard" class="btn btn-secondary" style="width: 100%; text-align: center;">â† Voltar ao
-                    Ranking</a>
+{% block content %}
+<div class="container">
+    <!-- Profile Header -->
+    <div class="profile-header fade-in">
+        <img id="profile-banner" src="/static/images/banners/default.jpg" alt="Banner" class="profile-banner">
+        <div class="profile-avatar-container">
+            <img id="profile-avatar" src="/static/images/default-avatar.png" alt="Avatar" class="profile-avatar">
+            <div class="profile-identity">
+                <h1 class="profile-name" id="player-fullname">
+                    {{ _('Carregando...') }}
+                    <span id="xbox-verified-icon" style="display:none; color:#10b981"><i
+                            class="ri-checkbox-circle-fill"></i></span>
+                </h1>
+                <span class="profile-tag" id="player-archetype">{{ _('Recruta') }}</span>
             </div>
         </div>
     </div>
 
-    <script src="/static/js/main.js"></script>
-    <script>
-        const playerName = "{{ player_name }}";
+    <div class="profile-grid">
+        <!-- Main Content -->
+        <div class="profile-main">
+            <div class="glass-card bio-section fade-in">
+                <h3 class="card-title" style="margin-bottom: 1rem;"><i class="ri-book-open-line"></i> {{ _('Sobre o
+                    Sobrevivente') }}</h3>
+                <p class="bio-text" id="player-bio">{{ _('Carregando história do sobrevivente...') }}</p>
 
-        async function loadPremiumProfile() {
-            try {
-                const response = await fetch(`/api/player/${playerName}`);
-                const data = await response.json();
+                <div class="badges-container" id="pinned-badges">
+                    <!-- Badges will be injected here -->
+                </div>
+            </div>
 
-                if (!data) {
-                    document.getElementById('player-fullname').textContent = 'Sobrevivente nÃ£o encontrado';
-                    return;
-                }
+            <div class="stats-grid-premium fade-in">
+                <div class="stat-item-premium">
+                    <i class="ri-skull-line stat-icon-premium"></i>
+                    <span class="stat-value-premium" id="stat-kills">0</span>
+                    <span class="stat-label-premium">{{ _('Vítimas') }}</span>
+                </div>
+                <div class="stat-item-premium">
+                    <i class="ri-heart-pulse-line stat-icon-premium"></i>
+                    <span class="stat-value-premium" id="stat-deaths">0</span>
+                    <span class="stat-label-premium">{{ _('Mortes') }}</span>
+                </div>
+                <div class="stat-item-premium">
+                    <i class="ri-fire-line stat-icon-premium"></i>
+                    <span class="stat-value-premium" id="stat-kd">0.0</span>
+                    <span class="stat-label-premium">{{ _('K/D Ratio') }}</span>
+                </div>
+                <div class="stat-item-premium">
+                    <i class="ri-copper-coin-line stat-icon-premium"></i>
+                    <span class="stat-value-premium" id="stat-coins">0</span>
+                    <span class="stat-label-premium">{{ _('Moedas') }}</span>
+                </div>
+            </div>
 
-                // Header & Identity
-                document.getElementById('player-fullname').innerHTML = `ðŸ‘¤ ${data.name} ${data.verified ? '<i class="ri-checkbox-circle-fill" style="color:#10b981; font-size: 1.5rem;"></i>' : ''}`;
-                document.getElementById('player-archetype').textContent = data.archetype.name;
-                document.getElementById('player-archetype').style.background = getArchetypeColor(data.arch_key);
+            <div class="glass-card fade-in">
+                <h3 class="card-title" style="margin-bottom: 1.5rem;"><i class="ri-bar-chart-2-line"></i> {{
+                    _('Desempenho em Detalhes') }}</h3>
+                <div class="grid grid-2">
+                    <div class="metric-mini">
+                        <span class="text-muted">🔥 {{ _('Maior Sequência') }}</span>
+                        <strong id="stat-streak">0</strong>
+                    </div>
+                    <div class="metric-mini">
+                        <span class="text-muted">🕒 {{ _('Tempo de Vida') }}</span>
+                        <strong id="stat-playtime">0h</strong>
+                    </div>
+                    <div class="metric-mini">
+                        <span class="text-muted">🦠 {{ _('Zumbis Abatidos') }}</span>
+                        <strong id="stat-zombies">0</strong>
+                    </div>
+                    <div class="metric-mini">
+                        <span class="text-muted">🪓 {{ _('Árvores Cortadas') }}</span>
+                        <strong id="stat-trees">0</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                // Customization
-                document.getElementById('profile-banner').src = data.custom.banner;
-                if (data.custom.avatar) {
-                    document.getElementById('profile-avatar').src = data.custom.avatar;
-                } else {
-                    document.getElementById('profile-avatar').src = `https://ui-avatars.com/api/?name=${data.name}&background=random&color=fff&size=200`;
-                }
+        <!-- Sidebar -->
+        <div class="metrics-sidebar fade-in">
+            <div class="glass-card">
+                <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">🌲 {{ _('Explorador') }}</h3>
+                <div class="metric-mini">
+                    <span class="text-muted">{{ _('Distância') }}</span>
+                    <strong id="stat-distance">0km</strong>
+                </div>
+            </div>
 
-                // Bio
-                document.getElementById('player-bio').textContent = data.bio;
+            <div class="glass-card">
+                <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">🏗️ {{ _('Construtor') }}</h3>
+                <div class="metric-mini">
+                    <span class="text-muted">{{ _('Estruturas') }}</span>
+                    <strong id="stat-buildings">0</strong>
+                </div>
+            </div>
 
-                // Core Stats
-                document.getElementById('stat-kills').textContent = formatNumber(data.kills);
-                document.getElementById('stat-deaths').textContent = formatNumber(data.deaths);
-                document.getElementById('stat-kd').textContent = data.kd;
-                document.getElementById('stat-coins').textContent = formatNumber(data.balance);
+            <div class="glass-card">
+                <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem;">🎣 {{ _('Pescador') }}</h3>
+                <div class="metric-mini">
+                    <span class="text-muted">{{ _('Peixes') }}</span>
+                    <strong id="stat-fish">0</strong>
+                </div>
+            </div>
 
-                // Detailed Metrics
-                document.getElementById('stat-streak').textContent = data.killstreak;
-                document.getElementById('stat-playtime').textContent = Math.floor(data.total_playtime / 60) + 'h';
-                document.getElementById('stat-zombies').textContent = formatNumber(data.metrics.zombies);
-                document.getElementById('stat-trees').textContent = formatNumber(data.metrics.trees);
-                document.getElementById('stat-buildings').textContent = formatNumber(data.metrics.buildings);
-                document.getElementById('stat-fish').textContent = formatNumber(data.metrics.fish);
-                document.getElementById('stat-distance').textContent = data.metrics.distance;
+            <div class="glass-card"
+                style="border-left: 4px solid var(--primary); background: rgba(var(--primary-rgb), 0.05);">
+                <h3 class="card-title" style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);">🚨 {{
+                    _('Alarme de Base') }}</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    {{ _('Receba notificações de invasão no seu dispositivo!') }}
+                </p>
+                <div class="metric-mini" style="margin-bottom: 1rem;">
+                    <span class="text-muted">{{ _('Seu Telegram ID') }}</span>
+                    <strong id="telegram-id-display" style="color: #60a5fa;">{{ player_id if player_id else _('Consulte
+                        no Bot') }}</strong>
+                </div>
+                <div
+                    style="background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.75rem;">
+                    <span style="color: var(--text-muted); display: block; margin-bottom: 0.5rem;">{{ _('Como ativar:')
+                        }}</span>
+                    <code
+                        style="color: #fbbf24; display: block; word-break: break-all;">!alarme set [Nome] [X] [Z] [Raio] [ID] false</code>
+                </div>
+                <a href="https://t.me/BRASILSULALARMEBOT" target="_blank" class="btn btn-sm btn-secondary"
+                    style="margin-top: 1rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <i class="ri-telegram-line"></i> {{ _('Abrir Bot') }}
+                </a>
+            </div>
 
-            } catch (error) {
-                console.error("Erro ao carregar perfil:", error);
+            <a href="/leaderboard" class="btn btn-secondary" style="width: 100%; text-align: center;">← {{ _('Voltar ao
+                Ranking') }}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    window.profileTranslations = {
+        naoEncontrado: "{{ _('Sobrevivente não encontrado') }}",
+        carregando: "{{ _('Carregando...') }}"
+    };
+
+    const playerName = "{{ player_name }}";
+
+    async function loadPremiumProfile() {
+        try {
+            const response = await fetch(`/api/player/${playerName}`);
+            const data = await response.json();
+
+            if (!data) {
+                document.getElementById('player-fullname').textContent = window.profileTranslations.naoEncontrado;
+                return;
             }
+
+            // Header & Identity
+            document.getElementById('player-fullname').innerHTML = `👤 ${data.name} ${data.verified ? '<i class="ri-checkbox-circle-fill" style="color:#10b981; font-size: 1.5rem;"></i>' : ''}`;
+            document.getElementById('player-archetype').textContent = data.archetype.name;
+            document.getElementById('player-archetype').style.background = getArchetypeColor(data.arch_key);
+
+            // Customization
+            document.getElementById('profile-banner').src = data.custom.banner;
+            if (data.custom.avatar) {
+                document.getElementById('profile-avatar').src = data.custom.avatar;
+            } else {
+                document.getElementById('profile-avatar').src = `https://ui-avatars.com/api/?name=${data.name}&background=random&color=fff&size=200`;
+            }
+
+            // Bio
+            document.getElementById('player-bio').textContent = data.bio;
+
+            // Core Stats
+            document.getElementById('stat-kills').textContent = formatNumber(data.kills);
+            document.getElementById('stat-deaths').textContent = formatNumber(data.deaths);
+            document.getElementById('stat-kd').textContent = data.kd;
+            document.getElementById('stat-coins').textContent = formatNumber(data.balance);
+
+            // Detailed Metrics
+            document.getElementById('stat-streak').textContent = data.killstreak;
+            document.getElementById('stat-playtime').textContent = Math.floor(data.total_playtime / 60) + 'h';
+            document.getElementById('stat-zombies').textContent = formatNumber(data.metrics.zombies);
+            document.getElementById('stat-trees').textContent = formatNumber(data.metrics.trees);
+            document.getElementById('stat-buildings').textContent = formatNumber(data.metrics.buildings);
+            document.getElementById('stat-fish').textContent = formatNumber(data.metrics.fish);
+            document.getElementById('stat-distance').textContent = data.metrics.distance;
+
+        } catch (error) {
+            console.error("Erro ao carregar perfil:", error);
         }
+    }
 
-        function getArchetypeColor(key) {
-            const colors = {
-                'shadow_legend': '#ef4444', // Red
-                'engineer': '#f59e0b',      // Amber
-                'nomad': '#3b82f6',         // Blue
-                'fisherman': '#0ea5e9',     // Sky
-                'pacifist': '#10b981',      // Emerald
-                'default': '#64748b'        // Slate
-            };
-            return colors[key] || colors['default'];
-        }
+    function getArchetypeColor(key) {
+        const colors = {
+            'shadow_legend': '#ef4444', // Red
+            'engineer': '#f59e0b',      // Amber
+            'nomad': '#3b82f6',         // Blue
+            'fisherman': '#0ea5e9',     // Sky
+            'pacifist': '#10b981',      // Emerald
+            'default': '#64748b'        // Slate
+        };
+        return colors[key] || colors['default'];
+    }
 
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
 
-        loadPremiumProfile();
-    </script>
-</body>
-
-</html>
+    loadPremiumProfile();
+</script>
+{% endblock %}

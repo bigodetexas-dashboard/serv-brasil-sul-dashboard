@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Gerenciar Bases - BIGODETEXAS{% endblock %}
+{% block title %}{{ _('Gerenciar Bases - BIGODETEXAS') }}{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -170,20 +170,20 @@
 {% block content %}
 <div class="base-container">
     <div class="base-header">
-        <h1><i class="ri-shield-user-fill" style="color: var(--accent);"></i> Gerenciar Bases</h1>
-        <p>Controle suas bases e gerencie permissÃµes de acesso.</p>
+        <h1><i class="ri-shield-user-fill" style="color: var(--accent);"></i> {{ _('Gerenciar Bases') }}</h1>
+        <p>{{ _('Controle suas bases e gerencie permissões de acesso.') }}</p>
     </div>
 
     <div class="manage-tabs">
-        <button class="tab-btn active" onclick="switchTab('my-bases')">Minhas Bases</button>
-        <button class="tab-btn" onclick="switchTab('register-base')">Criar Nova Base</button>
+        <button class="tab-btn active" onclick="switchTab('my-bases')">{{ _('Minhas Bases') }}</button>
+        <button class="tab-btn" onclick="switchTab('register-base')">{{ _('Criar Nova Base') }}</button>
     </div>
 
     <!-- TAB 1: My Bases -->
     <div id="tab-my-bases" class="tab-content">
         <div id="bases-list">
             <!-- Loading or list populated by JS -->
-            <p style="text-align:center; color: var(--text-secondary);">Carregando bases...</p>
+            <p style="text-align:center; color: var(--text-secondary);">{{ _('Carregando bases...') }}</p>
         </div>
     </div>
 
@@ -195,13 +195,12 @@
         </div>
 
         <div class="info-card">
-            <h3>Nova Base</h3>
+            <h3>{{ _('Nova Base') }}</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <input type="text" id="base-name" placeholder="Nome da Base" style="grid-column: span 2;">
-                <input type="number" id="coord-x" placeholder="Coord X" min="0" max="15360">
-                <input type="number" id="coord-z" placeholder="Coord Z" min="0" max="15360">
+                <input type="number" id="coord-x" placeholder="{{ _('Coord X') }}" min="0" max="15360">
+                <input type="number" id="coord-z" placeholder="{{ _('Coord Z') }}" min="0" max="15360">
             </div>
-            <button class="register-btn" onclick="registerBase()">Registrar Base</button>
+            <button class="register-btn" onclick="registerBase()">{{ _('Registrar Base') }}</button>
         </div>
     </div>
 </div>
@@ -209,8 +208,7 @@
 <!-- PERMISSIONS MODAL -->
 <div id="perm-modal" class="modal">
     <div class="modal-content">
-        <button class="close-modal" onclick="closeModal()">&times;</button>
-        <h2 id="modal-base-name">PermissÃµes de Acesso</h2>
+        <h2 id="modal-base-name">{{ _('Permissões de Acesso') }}</h2>
         <input type="hidden" id="current-base-id">
 
         <div class="perm-list" id="perm-list-container">
@@ -218,11 +216,11 @@
         </div>
 
         <div class="add-perm-form">
-            <input type="text" id="new-perm-id" placeholder="Discord ID do Jogador">
+            <input type="text" id="new-perm-id" placeholder="{{ _('Discord ID do Jogador') }}">
             <select id="new-perm-level">
-                <option value="GUEST">Convidado</option>
-                <option value="BUILDER">Construtor</option>
-                <option value="CO_OWNER">Co-Dono</option>
+                <option value="GUEST">{{ _('Convidado') }}</option>
+                <option value="BUILDER">{{ _('Construtor') }}</option>
+                <option value="CO_OWNER">{{ _('Co-Dono') }}</option>
             </select>
             <button class="action-btn" style="background: var(--accent); color: black;" onclick="addPermission()">
                 <i class="ri-add-line"></i>
@@ -234,6 +232,29 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<script>
+    window.baseTranslations = {
+        carregando: "{{ _('Carregando...') }}",
+        nenhumaBase: "{{ _('Nenhuma base encontrada') }}",
+        aindaNaoRegistrou: "{{ _('Você ainda não registrou nenhuma base.') }}",
+        registrarAgora: "{{ _('Registrar Agora') }}",
+        semLocalizacao: "{{ _('Sem localização') }}",
+        criadaEm: "{{ _('Criada em:') }}",
+        permissoes: "{{ _('Permissões') }}",
+        erroCarregarBases: "{{ _('Erro ao carregar bases.') }}",
+        preenchaCampos: "{{ _('Preencha todos os campos!') }}",
+        baseRegistrada: "{{ _('Base registrada com sucesso!') }}",
+        erro: "{{ _('Erro:') }}",
+        desconhecido: "{{ _('Desconhecido') }}",
+        erroConexao: "{{ _('Erro de conexão') }}",
+        permissoesTitulo: "{{ _('Permissões:') }}",
+        nenhumaPermissao: "{{ _('Nenhuma permissão concedida ainda.') }}",
+        erroCarregarPerms: "{{ _('Erro ao carregar permissões.') }}",
+        erroAdicionarPerm: "{{ _('Erro ao adicionar permissão') }}",
+        confirmarRemover: "{{ _('Remover permissão deste usuário?') }}",
+        erroRemoverPerm: "{{ _('Erro ao remover permissão') }}"
+    };
+</script>
 <script>
     // --- TAB SWITCHING ---
     function switchTab(tabId) {
@@ -249,7 +270,7 @@
     // --- LOAD BASES ---
     async function loadMyBases() {
         const container = document.getElementById('bases-list');
-        container.innerHTML = '<p style="text-align:center;">Carregando...</p>';
+        container.innerHTML = `<p style="text-align:center;">${window.baseTranslations.carregando}</p>`;
 
         try {
             const res = await fetch('/api/base/my');
@@ -258,9 +279,9 @@
             if (bases.length === 0) {
                 container.innerHTML = `
                     <div style="text-align:center; padding: 3rem; background: rgba(255,255,255,0.03); border-radius: 1rem;">
-                        <h3>Nenhuma base encontrada</h3>
-                        <p style="color: var(--text-secondary);">VocÃª ainda nÃ£o registrou nenhuma base.</p>
-                        <button class="action-btn" style="margin-top:1rem;" onclick="switchTab('register-base')">Registrar Agora</button>
+                        <h3>${window.baseTranslations.nenhumaBase}</h3>
+                        <p style="color: var(--text-secondary);">${window.baseTranslations.aindaNaoRegistrou}</p>
+                        <button class="action-btn" style="margin-top:1rem;" onclick="switchTab('register-base')">${window.baseTranslations.registrarAgora}</button>
                     </div>`;
                 return;
             }
@@ -269,12 +290,12 @@
                 <div class="base-card">
                     <div class="base-info">
                         <h3>${base.name}</h3>
-                        <p><i class="ri-map-pin-line"></i> ${base.location || 'Sem localizaÃ§Ã£o'}</p>
-                        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Criada em: ${new Date(base.created_at).toLocaleDateString()}</p>
+                        <p><i class="ri-map-pin-line"></i> ${base.location || window.baseTranslations.semLocalizacao}</p>
+                        <p style="font-size: 0.8rem; margin-top: 0.5rem;">${window.baseTranslations.criadaEm} ${new Date(base.created_at).toLocaleDateString()}</p>
                     </div>
                     <div>
                         <button class="action-btn" onclick="openPermModal(${base.id}, '${base.name}')">
-                            <i class="ri-group-line"></i> PermissÃµes
+                            <i class="ri-group-line"></i> ${window.baseTranslations.permissoes}
                         </button>
                     </div>
                 </div>
@@ -282,7 +303,7 @@
 
         } catch (e) {
             console.error(e);
-            container.innerHTML = '<p style="color:red; text-align:center;">Erro ao carregar bases.</p>';
+            container.innerHTML = `<p style="color:red; text-align:center;">${window.baseTranslations.erroCarregarBases}</p>`;
         }
     }
 
@@ -293,7 +314,7 @@
         const z = document.getElementById('coord-z').value;
 
         if (!name || !x || !z) {
-            alert("Preencha todos os campos!");
+            alert(window.baseTranslations.preenchaCampos);
             return;
         }
 
@@ -309,21 +330,21 @@
             const data = await res.json();
 
             if (data.success) {
-                alert("Base registrada com sucesso!");
+                alert(window.baseTranslations.baseRegistrada);
                 document.getElementById('base-name').value = '';
                 switchTab('my-bases');
             } else {
-                alert("Erro: " + (data.error || "Desconhecido"));
+                alert(window.baseTranslations.erro + " " + (data.error || window.baseTranslations.desconhecido));
             }
         } catch (e) {
-            alert("Erro de conexÃ£o");
+            alert(window.baseTranslations.erroConexao);
         }
     }
 
     // --- PERMISSIONS MODAL ---
     async function openPermModal(baseId, baseName) {
         document.getElementById('perm-modal').style.display = 'flex';
-        document.getElementById('modal-base-name').textContent = `PermissÃµes: ${baseName}`;
+        document.getElementById('modal-base-name').textContent = `${window.baseTranslations.permissoesTitulo} ${baseName}`;
         document.getElementById('current-base-id').value = baseId;
         loadPermissions(baseId);
     }
@@ -341,10 +362,11 @@
             const perms = await res.json();
 
             if (perms.length === 0) {
-                list.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Nenhuma permissÃ£o concedida ainda.</p>';
+                list.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${window.baseTranslations.nenhumaPermissao}</p>`;
                 return;
             }
 
+            // ... (rest of the map remains the same, but let's just replace the whole block to be safe)
             list.innerHTML = perms.map(p => `
                 <div class="perm-item">
                     <div>
@@ -359,7 +381,7 @@
             `).join('');
 
         } catch (e) {
-            list.innerHTML = 'Erro ao carregar permissÃµes.';
+            list.innerHTML = window.baseTranslations.erroCarregarPerms;
         }
     }
 
@@ -381,7 +403,7 @@
                 document.getElementById('new-perm-id').value = '';
                 loadPermissions(baseId);
             } else {
-                alert("Erro ao adicionar permissÃ£o");
+                alert(window.baseTranslations.erroAdicionarPerm);
             }
         } catch (e) {
             console.error(e);
@@ -389,7 +411,7 @@
     }
 
     async function revokePermission(baseId, discordId) {
-        if (!confirm("Remover permissÃ£o deste usuÃ¡rio?")) return;
+        if (!confirm(window.baseTranslations.confirmarRemover)) return;
 
         try {
             const res = await fetch(`/api/base/${baseId}/permission`, {
@@ -401,7 +423,7 @@
             if (res.ok) {
                 loadPermissions(baseId);
             } else {
-                alert("Erro ao remover permissÃ£o");
+                alert(window.baseTranslations.erroRemoverPerm);
             }
         } catch (e) {
             console.error(e);

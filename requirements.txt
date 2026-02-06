@@ -12,3 +12,4 @@ pillow
 pytz
 flask-socketio
 eventlet
+anthropic
