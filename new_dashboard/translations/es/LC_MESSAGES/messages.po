@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-06 13:26-0600\n"
+"POT-Creation-Date: 2026-02-06 13:51-0600\n"
 "PO-Revision-Date: 2026-02-04 21:34-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -18,29 +18,65 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app.py:789 app.py:807
+msgid "Jogador de Teste"
+msgstr "Jugador de Prueba"
+
+#: app.py:879
+msgid "Unauthorized"
+msgstr "No autorizado"
+
+#: app.py:893
+msgid "No file part"
+msgstr "No hay parte de archivo"
+
+#: app.py:899
+msgid "No selected file"
+msgstr "Ningún archivo seleccionado"
+
+#: app.py:902
+msgid "Item ID missing"
+msgstr "Falta el ID del artículo"
+
+#: app.py:908
+msgid "Invalid file type"
+msgstr "Tipo de archivo inválido"
+
+#: app.py:935
+msgid "Database update failed"
+msgstr "Fallo al actualizar la base de datos"
+
+#: app.py:964
+msgid "Name is required"
+msgstr "El nombre é requerido"
+
+#: app.py:973
+msgid "Failed to create base"
+msgstr "Fallo ao crear a base"
+
 #: templates/achievements.html:3
 msgid "Conquistas - SERV. BRASIL SUL - XBOX"
-msgstr ""
+msgstr "Logros - SERV. BRASIL SUL - XBOX"
 
 #: templates/achievements.html:383 templates/history.html:405
 msgid "Conquistas"
-msgstr ""
+msgstr "Logros"
 
 #: templates/achievements.html:384
 msgid "Desbloqueie conquistas e mostre suas habilidades em DayZ"
-msgstr ""
+msgstr "Desbloquea logros y demuestra tus habilidades en DayZ"
 
 #: templates/achievements.html:391 templates/achievements.html:418
 msgid "Desbloqueadas"
-msgstr ""
+msgstr "Desbloqueados"
 
 #: templates/achievements.html:400
 msgid "Pontos de Conquista"
-msgstr ""
+msgstr "Puntos de Logro"
 
 #: templates/achievements.html:406
 msgid "Conquistas Raras"
-msgstr ""
+msgstr "Logros Raros"
 
 #: templates/achievements.html:412
 #, fuzzy
@@ -49,23 +85,23 @@ msgstr "Mapa de Calor"
 
 #: templates/achievements.html:417
 msgid "Todas"
-msgstr ""
+msgstr "Todos"
 
 #: templates/achievements.html:419
 msgid "Bloqueadas"
-msgstr ""
+msgstr "Bloqueados"
 
 #: templates/achievements.html:420
 msgid "Combate"
-msgstr ""
+msgstr "Combate"
 
 #: templates/achievements.html:421 templates/dashboard.html:141
 msgid "Sobrevivência"
-msgstr ""
+msgstr "Supervivencia"
 
 #: templates/achievements.html:422
 msgid "Exploração"
-msgstr ""
+msgstr "Exploración"
 
 #: templates/achievements.html:423
 #, fuzzy
@@ -74,27 +110,27 @@ msgstr "Tienda"
 
 #: templates/achievements.html:435
 msgid "Erro ao carregar conquistas:"
-msgstr ""
+msgstr "Error al cargar logros:"
 
 #: templates/achievements.html:436 templates/history.html:476
 msgid "Erro na requisição:"
-msgstr ""
+msgstr "Error en la solicitud:"
 
 #: templates/achievements.html:437
 msgid "Progresso"
-msgstr ""
+msgstr "Progreso"
 
 #: templates/achievements.html:438
 msgid "Desbloqueada em"
-msgstr ""
+msgstr "Desbloqueado en"
 
 #: templates/achievements.html:439
 msgid "Conquista Desbloqueada!"
-msgstr ""
+msgstr "¡Logro Desbloqueado!"
 
 #: templates/agradecimentos.html:3
 msgid "Agradecimentos - BIGODETEXAS - XBOX"
-msgstr ""
+msgstr "Créditos - BIGODETEXAS - XBOX"
 
 #: templates/agradecimentos.html:89 templates/layout.html:140
 msgid "Agradecimentos"
@@ -102,18 +138,18 @@ msgstr "Créditos"
 
 #: templates/agradecimentos.html:90
 msgid "8 Anos de Sobrevivência e Amizade"
-msgstr ""
+msgstr "8 Años de Supervivencia y Amistad"
 
 #: templates/agradecimentos.html:97
 msgid ""
 "Um verdadeiro sobrevivente não anda só — ele traz o novato e mostra onde "
 "cavar, onde mirar e\n"
 "                    onde confiar."
-msgstr ""
+msgstr "Un verdadero sobreviviente no camina solo — trae al novato y le muestra dónde cavar, dónde apuntar y dónde confiar."
 
 #: templates/agradecimentos.html:106
 msgid "Uma Jornada de 8 Anos"
-msgstr ""
+msgstr "Un Viaje de 8 Años"
 
 #: templates/agradecimentos.html:108
 msgid ""
@@ -127,11 +163,11 @@ msgid ""
 "isso porque alguém se importou. Porque vocês\n"
 "                    estavam lá, não apenas como companheiros de jogo, mas"
 " como verdadeiros amigos."
-msgstr ""
+msgstr "Todo comenzó con un simple gesto de amabilidad. Lavarse las manos en el grifo de agua. Un gesto simple que alguien me enseñó. En ese momento, no sabía que estaba comenzando un viaje que lo cambiaría todo. Me sumergí en los detalles... configurar, entender, crear. Descubrir secretos, dominar sistemas, construir algo propio. Todo esto porque alguien se preocupó. Porque ustedes estuvieron allí, no solo como compañeros de juego, sino como verdaderos amigos."
 
 #: templates/agradecimentos.html:117
 msgid "Obrigado"
-msgstr ""
+msgstr "Gracias"
 
 #: templates/agradecimentos.html:119
 msgid ""
@@ -144,7 +180,7 @@ msgid ""
 "Por 8 anos de risadas, sustos, vitórias e derrotas. Por me ensinarem que "
 "em Chernarus,\n"
 "                        assim como na vida, ninguém sobrevive sozinho."
-msgstr ""
+msgstr "Por 8 años de risas, sustos, victorias y derrotas. Por enseñarme que en Chernarus, al igual que en la vida, nadie sobrevive solo."
 
 #: templates/banco.html:3 templates/dashboard.html:351
 #: templates/layout.html:134
@@ -158,31 +194,31 @@ msgstr "Banco Texas"
 
 #: templates/banco.html:118
 msgid "SISTEMA FINANCEIRO MILITAR"
-msgstr ""
+msgstr "SISTEMA FINANCIERO MILITAR"
 
 #: templates/banco.html:124
 msgid "CONTA CORRENTE"
-msgstr ""
+msgstr "CUENTA CORRIENTE"
 
 #: templates/banco.html:126
 msgid "TITULAR:"
-msgstr ""
+msgstr "TITULAR:"
 
 #: templates/banco.html:126
 msgid "CARREGANDO..."
-msgstr ""
+msgstr "CARGANDO..."
 
 #: templates/banco.html:127
 msgid "CONTA:"
-msgstr ""
+msgstr "CUENTA:"
 
 #: templates/banco.html:130
 msgid "SALDO DISPONÍVEL"
-msgstr ""
+msgstr "SALDO DISPONIBLE"
 
 #: templates/banco.html:135
 msgid "EXTRATO - ÚLTIMAS OPERAÇÕES"
-msgstr ""
+msgstr "EXTRACTO - ÚLTIMAS OPERACIONES"
 
 #: templates/banco.html:137
 msgid "CARREGANDO TRANSAÇÕES..."
@@ -190,19 +226,19 @@ msgstr ""
 
 #: templates/banco.html:143
 msgid "TRANSFERÊNCIA"
-msgstr ""
+msgstr "TRANSFERENCIA"
 
 #: templates/banco.html:144
 msgid "DESTINATÁRIO (Discord ID):"
-msgstr ""
+msgstr "DESTINATARIO (Discord ID):"
 
 #: templates/banco.html:145
 msgid "Digite o Discord ID"
-msgstr ""
+msgstr "Ingrese el Discord ID"
 
 #: templates/banco.html:147
 msgid "VALOR:"
-msgstr ""
+msgstr "VALOR:"
 
 #: templates/banco.html:150
 msgid "DESCRIÇÃO:"
@@ -215,31 +251,31 @@ msgstr "Tienda"
 
 #: templates/banco.html:154
 msgid "EXECUTAR TRANSFERÊNCIA"
-msgstr ""
+msgstr "EJECUTAR TRANSFERENCIA"
 
 #: templates/banco.html:160
 msgid "BANCO DO CLÃ"
-msgstr ""
+msgstr "BANCO DEL CLAN"
 
 #: templates/banco.html:163
 msgid "SALDO DO CLÃ"
-msgstr ""
+msgstr "SALDO DEL CLAN"
 
 #: templates/banco.html:166
 msgid "FUNCIONALIDADE EM DESENVOLVIMENTO"
-msgstr ""
+msgstr "FUNCIONALIDAD EN DESARROLLO"
 
 #: templates/banco.html:176 templates/base.html:245
 msgid "Preencha todos os campos!"
-msgstr ""
+msgstr "¡Complete todos los campos!"
 
 #: templates/banco.html:177
 msgid "Transferência realizada com sucesso!"
-msgstr ""
+msgstr "¡Transferencia realizada con éxito!"
 
 #: templates/banco.html:178
 msgid "Erro ao transferir"
-msgstr ""
+msgstr "Error al transferir"
 
 #: templates/banco.html:179
 msgid "Nenhuma transação recente."
@@ -255,32 +291,31 @@ msgstr ""
 
 #: templates/base.html:3
 msgid "Gerenciar Bases - BIGODETEXAS"
-msgstr ""
+msgstr "Gestionar Bases - BIGODETEXAS"
 
 #: templates/base.html:173
 msgid "Gerenciar Bases"
-msgstr ""
+msgstr "Gestionar Bases"
 
 #: templates/base.html:174
 msgid "Controle suas bases e gerencie permissões de acesso."
-msgstr ""
+msgstr "Controla tus bases y gestiona permisos de acceso."
 
 #: templates/base.html:178
 msgid "Minhas Bases"
-msgstr ""
+msgstr "Mis Bases"
 
 #: templates/base.html:179
 msgid "Criar Nova Base"
-msgstr ""
+msgstr "Crear Nueva Base"
 
 #: templates/base.html:186
 msgid "Carregando bases..."
-msgstr ""
+msgstr "Cargando bases..."
 
 #: templates/base.html:198
-#, fuzzy
 msgid "Nova Base"
-msgstr "Base"
+msgstr "Nueva Base"
 
 #: templates/base.html:200
 msgid "Coord X"
@@ -297,15 +332,15 @@ msgstr "Reglas"
 
 #: templates/base.html:211
 msgid "Permissões de Acesso"
-msgstr ""
+msgstr "Permisos de Acceso"
 
 #: templates/base.html:219
 msgid "Discord ID do Jogador"
-msgstr ""
+msgstr "Discord ID del Jugador"
 
 #: templates/base.html:221
 msgid "Convidado"
-msgstr ""
+msgstr "Invitado"
 
 #: templates/base.html:222 templates/profile.html:298
 msgid "Construtor"
@@ -333,27 +368,27 @@ msgstr ""
 
 #: templates/base.html:240
 msgid "Registrar Agora"
-msgstr ""
+msgstr "Registrar Ahora"
 
 #: templates/base.html:241
 msgid "Sem localização"
-msgstr ""
+msgstr "Sin ubicación"
 
 #: templates/base.html:242
 msgid "Criada em:"
-msgstr ""
+msgstr "Creada en:"
 
 #: templates/base.html:243
 msgid "Permissões"
-msgstr ""
+msgstr "Permisos"
 
 #: templates/base.html:244
 msgid "Erro ao carregar bases."
-msgstr ""
+msgstr "Error al cargar bases."
 
 #: templates/base.html:246
 msgid "Base registrada com sucesso!"
-msgstr ""
+msgstr "¡Base registrada con éxito!"
 
 #: templates/base.html:247 templates/dashboard.html:444
 msgid "Erro:"
@@ -362,19 +397,19 @@ msgstr ""
 #: templates/base.html:248 templates/deaths.html:218 templates/deaths.html:234
 #: templates/leaderboard.html:58
 msgid "Desconhecido"
-msgstr ""
+msgstr "Desconocido"
 
 #: templates/base.html:249
 msgid "Erro de conexão"
-msgstr ""
+msgstr "Error de conexión"
 
 #: templates/base.html:250
 msgid "Permissões:"
-msgstr ""
+msgstr "Permisos:"
 
 #: templates/base.html:251
 msgid "Nenhuma permissão concedida ainda."
-msgstr ""
+msgstr "Aún no se han concedido permisos."
 
 #: templates/base.html:252
 msgid "Erro ao carregar permissões."
@@ -1622,7 +1657,7 @@ msgstr ""
 
 #: templates/index.html:19
 msgid "O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!"
-msgstr "¡O mejor servidor DayZ de Brasil. ¡Sobrevive, conquista y domina!"
+msgstr "¡El mejor servidor DayZ de Brasil. ¡Sobrevive, conquista y domina!"
 
 #: templates/index.html:24
 msgid "Jogadores"
@@ -1630,7 +1665,7 @@ msgstr "Jugadores"
 
 #: templates/index.html:32 templates/leaderboard.html:68
 msgid "DZCoins"
-msgstr ""
+msgstr "DZCoins"
 
 #: templates/index.html:36
 msgid ""
@@ -1663,7 +1698,7 @@ msgstr "Rankings"
 
 #: templates/index.html:58
 msgid "Compete nos rankings de kills, K/D, riqueza e muito mais!"
-msgstr ""
+msgstr "¡Compite en los rankings de kills, K/D, riqueza y mucho más!"
 
 #: templates/index.html:62
 msgid "Estatísticas"
@@ -1719,46 +1754,46 @@ msgstr "Mapa de Calor"
 
 #: templates/layout.html:156
 msgid "Sair da Conta"
-msgstr ""
+msgstr "Cerrar Sesión"
 
 #: templates/layout.html:163 templates/layout.html:195 templates/login.html:114
 msgid "Entrar com Discord"
-msgstr ""
+msgstr "Entrar con Discord"
 
 #: templates/layout.html:184 templates/leaderboard.html:40
 msgid "Jogador"
-msgstr ""
+msgstr "Jugador"
 
 #: templates/layout.html:285
 msgid "Erro"
 msgstr ""
 
 #: templates/leaderboard.html:12
-#, fuzzy
+# , fuzzy
 msgid "Rankings Globais"
-msgstr "Rankings"
+msgstr "Rankings Globales"
 
 #: templates/leaderboard.html:13
 msgid "Os melhores sobreviventes do servidor em diversas categorias."
-msgstr ""
+msgstr "Los mejores sobrevivientes del servidor en diversas categorías."
 
 #: templates/leaderboard.html:21
 msgid "Riqueza"
-msgstr ""
+msgstr "Riqueza"
 
 #: templates/leaderboard.html:25
 msgid ""
 "Longest\n"
 "            Shot"
-msgstr ""
+msgstr "Tiro más largo"
 
 #: templates/leaderboard.html:42
 msgid "Detalhes"
-msgstr ""
+msgstr "Detalles"
 
 #: templates/leaderboard.html:56
 msgid "Nenhum dado disponível"
-msgstr ""
+msgstr "Ningún dato disponible"
 
 #: templates/leaderboard.html:59
 #, fuzzy
@@ -1792,27 +1827,27 @@ msgstr "Bienvenido a"
 
 #: templates/login.html:110
 msgid "Entre agora para acessar a loja e gerenciar seu perfil!"
-msgstr ""
+msgstr "¡Entra ahora para acceder a la tienda y gestionar tu perfil!"
 
 #: templates/login.html:120
 msgid "Acesse seu saldo de DZCoins"
-msgstr ""
+msgstr "Accede a tu saldo de DZCoins"
 
 #: templates/login.html:124
 msgid "Compre kits e equipamentos dinâmicos"
-msgstr ""
+msgstr "Compra kits y equipamiento dinámico"
 
 #: templates/login.html:128
 msgid "Gestão de coordenadas de entrega"
-msgstr ""
+msgstr "Gestión de coordenadas de entrega"
 
 #: templates/login.html:132
 msgid "Gerencie seu clã e suas guerras"
-msgstr ""
+msgstr "Gestiona tu clan y tus guerras"
 
 #: templates/login.html:138
 msgid "Voltar para o Início"
-msgstr ""
+msgstr "Volver al Inicio"
 
 #: templates/marketplace.html:3 templates/shop_new.html:3
 #, fuzzy
@@ -2672,6 +2707,95 @@ msgid ""
 "balanceada. Ganhe DZ Coins matando\n"
 "            inimigos, sobrevivendo e completando desafios. Use suas "
 "moedas para comprar equipamentos premium na loja."
+msgstr ""
+
+#: utils/achievements.py:5 utils/achievements.py:6
+msgid "🎯 Primeira Vítima"
+msgstr ""
+
+#: utils/achievements.py:7
+msgid "Mate seu primeiro jogador"
+msgstr ""
+
+#: utils/achievements.py:8
+msgid "500 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:18 utils/achievements.py:19
+msgid "💀 Assassino"
+msgstr ""
+
+#: utils/achievements.py:20
+msgid "Acumule 10 kills"
+msgstr ""
+
+#: utils/achievements.py:21 utils/achievements.py:73
+msgid "1000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:31 utils/achievements.py:32
+msgid "☠️ Serial Killer"
+msgstr ""
+
+#: utils/achievements.py:33
+msgid "Acumule 50 kills"
+msgstr ""
+
+#: utils/achievements.py:34 utils/achievements.py:89
+msgid "5000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:44 utils/achievements.py:45
+msgid "💰 Rico"
+msgstr ""
+
+#: utils/achievements.py:46
+msgid "Acumule 10.000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:47
+#, fuzzy
+msgid "Badges de Perfil"
+msgstr "Mi Perfil"
+
+#: utils/achievements.py:57 utils/achievements.py:58
+msgid "💎 Milionário"
+msgstr ""
+
+#: utils/achievements.py:59
+msgid "Acumule 100.000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:60
+msgid "10000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:70 utils/achievements.py:71
+msgid "🛒 Comprador"
+msgstr ""
+
+#: utils/achievements.py:72
+msgid "Faça 10 compras na loja"
+msgstr ""
+
+#: utils/achievements.py:86 utils/achievements.py:87
+msgid "⏰ Veterano"
+msgstr ""
+
+#: utils/achievements.py:88
+msgid "Jogue por 50 horas"
+msgstr ""
+
+#: utils/achievements.py:101 utils/achievements.py:102
+msgid "🎯 Matador de Aluguel"
+msgstr ""
+
+#: utils/achievements.py:103
+msgid "Complete 5 caçadas (bumbas)"
+msgstr ""
+
+#: utils/achievements.py:104
+msgid "2500 DZ Coins"
 msgstr ""
 
 #~ msgid "VOLTAR AO SISTEMA"

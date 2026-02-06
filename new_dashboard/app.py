@@ -15,7 +15,7 @@ from flask import (
     request,
     abort,
 )
-from flask_babel import gettext as _, ngettext
+from flask_babel import gettext as _
 from babel_config import init_babel
 from flask_socketio import SocketIO, emit, join_room
 from flask_wtf.csrf import CSRFProtect
@@ -786,7 +786,7 @@ def achievements():
     """PÃ¡gina de conquistas"""
     if "discord_user_id" not in session:
         session["discord_user_id"] = "test_user_123"
-        session["discord_username"] = "Jogador de Teste"
+        session["discord_username"] = _("Jogador de Teste")
     return render_template("achievements.html")
 
 
@@ -804,7 +804,7 @@ def settings():
     """PÃ¡gina de configuraÃ§Ãµes"""
     if "discord_user_id" not in session:
         session["discord_user_id"] = "test_user_123"
-        session["discord_username"] = "Jogador de Teste"
+        session["discord_username"] = _("Jogador de Teste")
     return render_template("settings.html")
 
 
@@ -876,7 +876,7 @@ def api_shop_upload_image():
     """Upload custom image for a shop item (Admin Only)"""
     user_id = get_current_user_id()
     if not user_id:
-        return jsonify({"error": "Unauthorized"}), 401
+        return jsonify({"error": _("Unauthorized")}), 401
 
     # Simple Admin Check (replace with real role check later)
     # For now, we trust the "admin" role in users table if it existed,
@@ -890,22 +890,22 @@ def api_shop_upload_image():
         pass
 
     if "image" not in request.files:
-        return jsonify({"error": "No file part"}), 400
+        return jsonify({"error": _("No file part")}), 400
 
     file = request.files["image"]
     item_id = request.form.get("item_id")
 
     if not file or file.filename == "":
-        return jsonify({"error": "No selected file"}), 400
+        return jsonify({"error": _("No selected file")}), 400
 
     if not item_id:
-        return jsonify({"error": "Item ID missing"}), 400
+        return jsonify({"error": _("Item ID missing")}), 400
 
     # Validate file type
     allowed_extensions = {"png", "jpg", "jpeg", "webp", "gif"}
     ext = file.filename.rsplit(".", 1)[1].lower() if "." in file.filename else ""
     if ext not in allowed_extensions:
-        return jsonify({"error": "Invalid file type"}), 400
+        return jsonify({"error": _("Invalid file type")}), 400
 
     # Save file
     filename = secure_filename(f"{item_id}_{int(time.time())}.{ext}")
@@ -932,7 +932,7 @@ def api_shop_upload_image():
     if success:
         return jsonify({"success": True, "image_url": web_path})
     else:
-        return jsonify({"error": "Database update failed"}), 500
+        return jsonify({"error": _("Database update failed")}), 500
 
 
 @app.route("/api/base/my")
@@ -961,7 +961,7 @@ def api_create_base():
     location = data.get("location", "")
 
     if not name:
-        return jsonify({"error": "Name is required"}), 400
+        return jsonify({"error": _("Name is required")}), 400
 
     from repositories.player_base_repository import PlayerBaseRepository
 
@@ -970,7 +970,7 @@ def api_create_base():
 
     if base_id:
         return jsonify({"success": True, "base_id": base_id})
-    return jsonify({"error": "Failed to create base"}), 500
+    return jsonify({"error": _("Failed to create base")}), 500
 
 
 @app.route("/api/base/<int:base_id>/permissions")

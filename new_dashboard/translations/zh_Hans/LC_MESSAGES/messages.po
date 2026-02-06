@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-06 13:26-0600\n"
+"POT-Creation-Date: 2026-02-06 13:51-0600\n"
 "PO-Revision-Date: 2026-02-04 21:34-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans\n"
@@ -18,21 +18,57 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app.py:789 app.py:807
+msgid "Jogador de Teste"
+msgstr "测试玩家"
+
+#: app.py:879
+msgid "Unauthorized"
+msgstr "未经授权"
+
+#: app.py:893
+msgid "No file part"
+msgstr ""
+
+#: app.py:899
+msgid "No selected file"
+msgstr ""
+
+#: app.py:902
+msgid "Item ID missing"
+msgstr ""
+
+#: app.py:908
+msgid "Invalid file type"
+msgstr ""
+
+#: app.py:935
+msgid "Database update failed"
+msgstr ""
+
+#: app.py:964
+msgid "Name is required"
+msgstr ""
+
+#: app.py:973
+msgid "Failed to create base"
+msgstr ""
+
 #: templates/achievements.html:3
 msgid "Conquistas - SERV. BRASIL SUL - XBOX"
-msgstr ""
+msgstr "成就 - SERV. BRASIL SUL - XBOX"
 
 #: templates/achievements.html:383 templates/history.html:405
 msgid "Conquistas"
-msgstr ""
+msgstr "成就"
 
 #: templates/achievements.html:384
 msgid "Desbloqueie conquistas e mostre suas habilidades em DayZ"
-msgstr ""
+msgstr "解锁成就，展示您的 DayZ 技巧"
 
 #: templates/achievements.html:391 templates/achievements.html:418
 msgid "Desbloqueadas"
-msgstr ""
+msgstr "已解锁"
 
 #: templates/achievements.html:400
 msgid "Pontos de Conquista"
@@ -1621,11 +1657,11 @@ msgstr ""
 
 #: templates/index.html:19
 msgid "O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!"
-msgstr ""
+msgstr "巴西最强的 DayZ 服务器。生存、征服并统治！"
 
 #: templates/index.html:24
 msgid "Jogadores"
-msgstr ""
+msgstr "玩家"
 
 #: templates/index.html:32 templates/leaderboard.html:68
 msgid "DZCoins"
@@ -1733,17 +1769,17 @@ msgid "Erro"
 msgstr ""
 
 #: templates/leaderboard.html:12
-#, fuzzy
+# , fuzzy
 msgid "Rankings Globais"
-msgstr "排行榜"
+msgstr "全球排名"
 
 #: templates/leaderboard.html:13
 msgid "Os melhores sobreviventes do servidor em diversas categorias."
-msgstr ""
+msgstr "服务器中各个类别的顶级生存者。"
 
 #: templates/leaderboard.html:21
 msgid "Riqueza"
-msgstr ""
+msgstr "财富"
 
 #: templates/leaderboard.html:25
 msgid ""
@@ -1753,7 +1789,7 @@ msgstr ""
 
 #: templates/leaderboard.html:42
 msgid "Detalhes"
-msgstr ""
+msgstr "详细信息"
 
 #: templates/leaderboard.html:56
 msgid "Nenhum dado disponível"
@@ -1789,23 +1825,23 @@ msgstr ""
 
 #: templates/login.html:110
 msgid "Entre agora para acessar a loja e gerenciar seu perfil!"
-msgstr ""
+msgstr "立即登录以访问商店并管理您的个人资料！"
 
 #: templates/login.html:120
 msgid "Acesse seu saldo de DZCoins"
-msgstr ""
+msgstr "访问您的 DZCoins 余额"
 
 #: templates/login.html:124
 msgid "Compre kits e equipamentos dinâmicos"
-msgstr ""
+msgstr "购买动态礼包和装备"
 
 #: templates/login.html:128
 msgid "Gestão de coordenadas de entrega"
-msgstr ""
+msgstr "管理派送坐标"
 
 #: templates/login.html:132
 msgid "Gerencie seu clã e suas guerras"
-msgstr ""
+msgstr "管理您的克兰和战争"
 
 #: templates/login.html:138
 msgid "Voltar para o Início"
@@ -2665,6 +2701,95 @@ msgid ""
 "balanceada. Ganhe DZ Coins matando\n"
 "            inimigos, sobrevivendo e completando desafios. Use suas "
 "moedas para comprar equipamentos premium na loja."
+msgstr ""
+
+#: utils/achievements.py:5 utils/achievements.py:6
+msgid "🎯 Primeira Vítima"
+msgstr ""
+
+#: utils/achievements.py:7
+msgid "Mate seu primeiro jogador"
+msgstr ""
+
+#: utils/achievements.py:8
+msgid "500 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:18 utils/achievements.py:19
+msgid "💀 Assassino"
+msgstr ""
+
+#: utils/achievements.py:20
+msgid "Acumule 10 kills"
+msgstr ""
+
+#: utils/achievements.py:21 utils/achievements.py:73
+msgid "1000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:31 utils/achievements.py:32
+msgid "☠️ Serial Killer"
+msgstr ""
+
+#: utils/achievements.py:33
+msgid "Acumule 50 kills"
+msgstr ""
+
+#: utils/achievements.py:34 utils/achievements.py:89
+msgid "5000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:44 utils/achievements.py:45
+msgid "💰 Rico"
+msgstr ""
+
+#: utils/achievements.py:46
+msgid "Acumule 10.000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:47
+#, fuzzy
+msgid "Badges de Perfil"
+msgstr "我的资料"
+
+#: utils/achievements.py:57 utils/achievements.py:58
+msgid "💎 Milionário"
+msgstr ""
+
+#: utils/achievements.py:59
+msgid "Acumule 100.000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:60
+msgid "10000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:70 utils/achievements.py:71
+msgid "🛒 Comprador"
+msgstr ""
+
+#: utils/achievements.py:72
+msgid "Faça 10 compras na loja"
+msgstr ""
+
+#: utils/achievements.py:86 utils/achievements.py:87
+msgid "⏰ Veterano"
+msgstr ""
+
+#: utils/achievements.py:88
+msgid "Jogue por 50 horas"
+msgstr ""
+
+#: utils/achievements.py:101 utils/achievements.py:102
+msgid "🎯 Matador de Aluguel"
+msgstr ""
+
+#: utils/achievements.py:103
+msgid "Complete 5 caçadas (bumbas)"
+msgstr ""
+
+#: utils/achievements.py:104
+msgid "2500 DZ Coins"
 msgstr ""
 
 #~ msgid "Bem-vindo ao"

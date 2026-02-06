@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-06 13:26-0600\n"
+"POT-Creation-Date: 2026-02-06 13:51-0600\n"
 "PO-Revision-Date: 2026-02-04 21:34-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt\n"
@@ -18,21 +18,57 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
+#: app.py:789 app.py:807
+msgid "Jogador de Teste"
+msgstr "Jogador de Teste"
+
+#: app.py:879
+msgid "Unauthorized"
+msgstr "Não autorizado"
+
+#: app.py:893
+msgid "No file part"
+msgstr ""
+
+#: app.py:899
+msgid "No selected file"
+msgstr ""
+
+#: app.py:902
+msgid "Item ID missing"
+msgstr ""
+
+#: app.py:908
+msgid "Invalid file type"
+msgstr ""
+
+#: app.py:935
+msgid "Database update failed"
+msgstr ""
+
+#: app.py:964
+msgid "Name is required"
+msgstr ""
+
+#: app.py:973
+msgid "Failed to create base"
+msgstr ""
+
 #: templates/achievements.html:3
 msgid "Conquistas - SERV. BRASIL SUL - XBOX"
-msgstr ""
+msgstr "Conquistas - SERV. BRASIL SUL - XBOX"
 
 #: templates/achievements.html:383 templates/history.html:405
 msgid "Conquistas"
-msgstr ""
+msgstr "Conquistas"
 
 #: templates/achievements.html:384
 msgid "Desbloqueie conquistas e mostre suas habilidades em DayZ"
-msgstr ""
+msgstr "Desbloqueie conquistas e mostre suas habilidades no DayZ"
 
 #: templates/achievements.html:391 templates/achievements.html:418
 msgid "Desbloqueadas"
-msgstr ""
+msgstr "Desbloqueadas"
 
 #: templates/achievements.html:400
 #, fuzzy
@@ -41,7 +77,7 @@ msgstr "UNIÃO DE CONTAS"
 
 #: templates/achievements.html:406
 msgid "Conquistas Raras"
-msgstr ""
+msgstr "Conquistas Raras"
 
 #: templates/achievements.html:412
 #, fuzzy
@@ -50,15 +86,15 @@ msgstr "Mapa de Calor"
 
 #: templates/achievements.html:417
 msgid "Todas"
-msgstr ""
+msgstr "Todas"
 
 #: templates/achievements.html:419
 msgid "Bloqueadas"
-msgstr ""
+msgstr "Bloqueadas"
 
 #: templates/achievements.html:420
 msgid "Combate"
-msgstr ""
+msgstr "Combate"
 
 #: templates/achievements.html:421 templates/dashboard.html:141
 msgid "Sobrevivência"
@@ -66,7 +102,7 @@ msgstr ""
 
 #: templates/achievements.html:422
 msgid "Exploração"
-msgstr ""
+msgstr "Exploração"
 
 #: templates/achievements.html:423
 #, fuzzy
@@ -75,7 +111,7 @@ msgstr "Loja"
 
 #: templates/achievements.html:435
 msgid "Erro ao carregar conquistas:"
-msgstr ""
+msgstr "Erro ao carregar conquistas:"
 
 #: templates/achievements.html:436 templates/history.html:476
 msgid "Erro na requisição:"
@@ -83,15 +119,15 @@ msgstr ""
 
 #: templates/achievements.html:437
 msgid "Progresso"
-msgstr ""
+msgstr "Progresso"
 
 #: templates/achievements.html:438
 msgid "Desbloqueada em"
-msgstr ""
+msgstr "Desbloqueada em"
 
 #: templates/achievements.html:439
 msgid "Conquista Desbloqueada!"
-msgstr ""
+msgstr "Conquista Desbloqueada!"
 
 #: templates/agradecimentos.html:3
 msgid "Agradecimentos - BIGODETEXAS - XBOX"
@@ -103,7 +139,7 @@ msgstr "Agradecimentos"
 
 #: templates/agradecimentos.html:90
 msgid "8 Anos de Sobrevivência e Amizade"
-msgstr ""
+msgstr "8 Anos de Sobrevivência e Amizade"
 
 #: templates/agradecimentos.html:97
 msgid ""
@@ -114,7 +150,7 @@ msgstr ""
 
 #: templates/agradecimentos.html:106
 msgid "Uma Jornada de 8 Anos"
-msgstr ""
+msgstr "Uma Jornada de 8 Anos"
 
 #: templates/agradecimentos.html:108
 msgid ""
@@ -132,7 +168,7 @@ msgstr ""
 
 #: templates/agradecimentos.html:117
 msgid "Obrigado"
-msgstr ""
+msgstr "Obrigado"
 
 #: templates/agradecimentos.html:119
 msgid ""
@@ -159,11 +195,11 @@ msgstr "Banco Texas"
 
 #: templates/banco.html:118
 msgid "SISTEMA FINANCEIRO MILITAR"
-msgstr ""
+msgstr "SISTEMA FINANCEIRO MILITAR"
 
 #: templates/banco.html:124
 msgid "CONTA CORRENTE"
-msgstr ""
+msgstr "CONTA CORRENTE"
 
 #: templates/banco.html:126
 #, fuzzy
@@ -172,43 +208,43 @@ msgstr "Pular"
 
 #: templates/banco.html:126
 msgid "CARREGANDO..."
-msgstr ""
+msgstr "CARREGANDO..."
 
 #: templates/banco.html:127
 msgid "CONTA:"
-msgstr ""
+msgstr "CONTA:"
 
 #: templates/banco.html:130
 msgid "SALDO DISPONÍVEL"
-msgstr ""
+msgstr "SALDO DISPONÍVEL"
 
 #: templates/banco.html:135
 msgid "EXTRATO - ÚLTIMAS OPERAÇÕES"
-msgstr ""
+msgstr "EXTRATO - ÚLTIMAS OPERAÇÕES"
 
 #: templates/banco.html:137
 msgid "CARREGANDO TRANSAÇÕES..."
-msgstr ""
+msgstr "CARREGANDO TRANSAÇÕES..."
 
 #: templates/banco.html:143
 msgid "TRANSFERÊNCIA"
-msgstr ""
+msgstr "TRANSFERÊNCIA"
 
 #: templates/banco.html:144
 msgid "DESTINATÁRIO (Discord ID):"
-msgstr ""
+msgstr "DESTINATÁRIO (Discord ID):"
 
 #: templates/banco.html:145
 msgid "Digite o Discord ID"
-msgstr ""
+msgstr "Digite o Discord ID"
 
 #: templates/banco.html:147
 msgid "VALOR:"
-msgstr ""
+msgstr "VALOR:"
 
 #: templates/banco.html:150
 msgid "DESCRIÇÃO:"
-msgstr ""
+msgstr "DESCRIÇÃO:"
 
 #: templates/banco.html:151
 #, fuzzy
@@ -217,19 +253,19 @@ msgstr "Loja"
 
 #: templates/banco.html:154
 msgid "EXECUTAR TRANSFERÊNCIA"
-msgstr ""
+msgstr "EXECUTAR TRANSFERÊNCIA"
 
 #: templates/banco.html:160
 msgid "BANCO DO CLÃ"
-msgstr ""
+msgstr "BANCO DO CLÃ"
 
 #: templates/banco.html:163
 msgid "SALDO DO CLÃ"
-msgstr ""
+msgstr "SALDO DO CLÃ"
 
 #: templates/banco.html:166
 msgid "FUNCIONALIDADE EM DESENVOLVIMENTO"
-msgstr ""
+msgstr "FUNCIONALIDADE EM DESENVOLVIMENTO"
 
 #: templates/banco.html:176 templates/base.html:245
 msgid "Preencha todos os campos!"
@@ -265,7 +301,7 @@ msgstr ""
 
 #: templates/base.html:174
 msgid "Controle suas bases e gerencie permissões de acesso."
-msgstr ""
+msgstr "Controle suas bases e gerencie permissões de acesso."
 
 #: templates/base.html:178
 msgid "Minhas Bases"
@@ -565,15 +601,15 @@ msgstr ""
 
 #: templates/clan.html:8
 msgid "Gerenciamento de Clã"
-msgstr ""
+msgstr "Gerenciamento de Clã"
 
 #: templates/clan.html:9
 msgid "Crie ou gerencie seu clã"
-msgstr ""
+msgstr "Crie ou gerencie seu clã"
 
 #: templates/clan.html:15
 msgid "Criar Novo Clã"
-msgstr ""
+msgstr "Criar Novo Clã"
 
 #: templates/clan.html:18
 msgid "Nome do Clã"
@@ -758,51 +794,51 @@ msgstr ""
 
 #: templates/dashboard.html:102
 msgid "Estatísticas de Combate"
-msgstr ""
+msgstr "Estatísticas de Combate"
 
 #: templates/dashboard.html:108 templates/index.html:28
 #: templates/leaderboard.html:18 templates/leaderboard.html:41
 #: templates/leaderboard.html:65
 msgid "Kills"
-msgstr ""
+msgstr "Abates"
 
 #: templates/dashboard.html:115 templates/heatmap.html:201
 #: templates/history.html:402 templates/history.html:448
 #: templates/leaderboard.html:19 templates/leaderboard.html:66
 #: templates/profile.html:249
 msgid "Mortes"
-msgstr ""
+msgstr "Mortes"
 
 #: templates/dashboard.html:122 templates/history.html:460
 #: templates/leaderboard.html:20 templates/leaderboard.html:67
 #: templates/profile.html:254
 msgid "K/D Ratio"
-msgstr ""
+msgstr "Relação K/D"
 
 #: templates/dashboard.html:129
 msgid "Zumbis Mortos"
-msgstr ""
+msgstr "Zumbis Mortos"
 
 #: templates/dashboard.html:136
 msgid "Melhor Série"
-msgstr ""
+msgstr "Melhor Série"
 
 #: templates/dashboard.html:147 templates/leaderboard.html:23
 #: templates/leaderboard.html:69
 msgid "Tempo Jogado"
-msgstr ""
+msgstr "Tempo Jogado"
 
 #: templates/dashboard.html:154
 msgid "Distância (Pé)"
-msgstr ""
+msgstr "Distância (A Pé)"
 
 #: templates/dashboard.html:161
 msgid "Distância (Carro)"
-msgstr ""
+msgstr "Distância (Carro)"
 
 #: templates/dashboard.html:168
 msgid "Construções"
-msgstr ""
+msgstr "Construções"
 
 #: templates/dashboard.html:174
 msgid "Clã e Comunicação"
@@ -814,7 +850,7 @@ msgstr ""
 
 #: templates/dashboard.html:184
 msgid "Rádio de Clã (Chat Interno)"
-msgstr ""
+msgstr "Rádio de Clã (Chat Interno)"
 
 #: templates/dashboard.html:185
 msgid "AO VIVO"
@@ -1081,6 +1117,10 @@ msgstr ""
 msgid "Erro ao processar convite."
 msgstr ""
 
+#: templates/dashboard.html:424
+msgid "Tem certeza que deseja sair do clã?"
+msgstr ""
+
 #: templates/dashboard.html:425
 msgid "Você saiu do clã."
 msgstr ""
@@ -1107,6 +1147,10 @@ msgstr ""
 msgid "Postado em:"
 msgstr ""
 
+#: templates/dashboard.html:432
+msgid "Nenhuma recompensa ativa no momento."
+msgstr ""
+
 #: templates/dashboard.html:433
 msgid "Xbox:"
 msgstr ""
@@ -1130,6 +1174,14 @@ msgstr ""
 
 #: templates/dashboard.html:438
 msgid "Nenhuma conta secundária detectada ainda."
+msgstr ""
+
+#: templates/dashboard.html:439
+msgid "Selecione o Inimigo"
+msgstr ""
+
+#: templates/dashboard.html:440
+msgid "Erro ao carregar"
 msgstr ""
 
 #: templates/dashboard.html:441
@@ -1174,6 +1226,10 @@ msgstr ""
 msgid "BEM-VINDO AO BIGODETEXAS"
 msgstr "BEM-VINDO AO BIGODETEXAS"
 
+#: templates/dashboard.html:454
+msgid "Seu painel de controle completo para o apocalipse."
+msgstr "Seu painel de controle completo para o apocalipse."
+
 #: templates/dashboard.html:455
 msgid ""
 "Aqui você gerencia sua sobrevivência, economia e reputação no servidor "
@@ -1182,9 +1238,25 @@ msgstr ""
 "Aqui você gerencia sua sobrevivência, economia e reputação no servidor "
 "mais brabo do Xbox."
 
+#: templates/dashboard.html:456
+msgid "Proteção de Base"
+msgstr ""
+
+#: templates/dashboard.html:457
+msgid "Economia Real"
+msgstr ""
+
+#: templates/dashboard.html:458
+msgid "Killfeed & Ranking"
+msgstr ""
+
 #: templates/dashboard.html:460
 msgid "UNIÃO DE CONTAS"
 msgstr "UNIÃO DE CONTAS"
+
+#: templates/dashboard.html:461
+msgid "O Fim das Contas Fantasmas."
+msgstr ""
 
 #: templates/dashboard.html:462
 msgid "POR QUE VINCULAR?"
@@ -1410,14 +1482,16 @@ msgid ""
 "Veja onde a ação está acontecendo em tempo real. As áreas vermelhas\n"
 "                indicam zonas de alto conflito."
 msgstr ""
+"Veja onde a ação está acontecendo em tempo real. As áreas vermelhas\n"
+"                indicam zonas de alto conflito."
 
 #: templates/heatmap.html:26
 msgid "Período:"
-msgstr ""
+msgstr "Período:"
 
 #: templates/heatmap.html:27
 msgid "Últimas 24h"
-msgstr ""
+msgstr "Últimas 24h"
 
 #: templates/heatmap.html:28
 msgid "7 Dias"
@@ -1433,7 +1507,7 @@ msgstr ""
 
 #: templates/heatmap.html:35
 msgid "Tipo:"
-msgstr ""
+msgstr "Tipo:"
 
 #: templates/heatmap.html:38 templates/heatmap.html:125
 msgid "PvE"
@@ -1445,11 +1519,11 @@ msgstr ""
 
 #: templates/heatmap.html:45
 msgid "Todas as Armas"
-msgstr ""
+msgstr "Todas as Armas"
 
 #: templates/heatmap.html:58 templates/stats.html:12
 msgid "Total de Kills"
-msgstr ""
+msgstr "Total de Abates"
 
 #: templates/heatmap.html:65
 msgid "Kills Hoje"
@@ -1457,7 +1531,7 @@ msgstr ""
 
 #: templates/heatmap.html:72
 msgid "Arma Mais Letal"
-msgstr ""
+msgstr "Arma Mais Letal"
 
 #: templates/heatmap.html:79
 msgid "Jogador Top"
@@ -1469,7 +1543,7 @@ msgstr ""
 
 #: templates/heatmap.html:93
 msgid "Zona Mais Quente"
-msgstr ""
+msgstr "Zona Mais Quente"
 
 #: templates/heatmap.html:107 templates/stats.html:16
 msgid "Total de Mortes"
@@ -1533,75 +1607,75 @@ msgstr ""
 
 #: templates/history.html:3
 msgid "Histórico - SERV. BRASIL SUL - XBOX"
-msgstr ""
+msgstr "Histórico - SERV. BRASIL SUL - XBOX"
 
 #: templates/history.html:391
 msgid "Histórico de Atividades"
-msgstr ""
+msgstr "Histórico de Atividades"
 
 #: templates/history.html:392
 msgid "Acompanhe todas as suas ações e eventos no servidor"
-msgstr ""
+msgstr "Acompanhe todas as suas ações e eventos no servidor"
 
 #: templates/history.html:398
 msgid "Tipo de Evento"
-msgstr ""
+msgstr "Tipo de Evento"
 
 #: templates/history.html:400
 msgid "Todos os Eventos"
-msgstr ""
+msgstr "Todos os Eventos"
 
 #: templates/history.html:401 templates/history.html:442
 msgid "Eliminações"
-msgstr ""
+msgstr "Eliminações"
 
 #: templates/history.html:403
 msgid "Conexões"
-msgstr ""
+msgstr "Conexões"
 
 #: templates/history.html:404
 msgid "Desconexões"
-msgstr ""
+msgstr "Desconexões"
 
 #: templates/history.html:406
 msgid "Negociações"
-msgstr ""
+msgstr "Negociações"
 
 #: templates/history.html:411
 msgid "Período"
-msgstr ""
+msgstr "Período"
 
 #: templates/history.html:413
 msgid "Hoje"
-msgstr ""
+msgstr "Hoje"
 
 #: templates/history.html:414
 msgid "Última Semana"
-msgstr ""
+msgstr "Última Semana"
 
 #: templates/history.html:415
 msgid "Último Mês"
-msgstr ""
+msgstr "Último Mês"
 
 #: templates/history.html:416
 msgid "Todo o Histórico"
-msgstr ""
+msgstr "Todo o Histórico"
 
 #: templates/history.html:421
 msgid "Data Inicial"
-msgstr ""
+msgstr "Data Inicial"
 
 #: templates/history.html:426
 msgid "Data Final"
-msgstr ""
+msgstr "Data Final"
 
 #: templates/history.html:436
 msgid "Total de Eventos"
-msgstr ""
+msgstr "Total de Eventos"
 
 #: templates/history.html:454
 msgid "Sessão Média"
-msgstr ""
+msgstr "Sessão Média"
 
 #: templates/history.html:469
 #, fuzzy
@@ -1610,39 +1684,39 @@ msgstr "Regras"
 
 #: templates/history.html:475
 msgid "Erro ao carregar histórico:"
-msgstr ""
+msgstr "Erro ao carregar histórico:"
 
 #: templates/history.html:477
 msgid "minutos atrás"
-msgstr ""
+msgstr "minutos atrás"
 
 #: templates/history.html:478
 msgid "horas atrás"
-msgstr ""
+msgstr "horas atrás"
 
 #: templates/history.html:479
 msgid "dias atrás"
-msgstr ""
+msgstr "dias atrás"
 
 #: templates/history.html:480
 msgid "Nenhum evento encontrado para os filtros selecionados"
-msgstr ""
+msgstr "Nenhum evento encontrado para os filtros selecionados"
 
 #: templates/index.html:16
 msgid "WELCOME_HERO"
-msgstr ""
+msgstr "Bem-vindo, Herói!"
 
 #: templates/index.html:19
 msgid "O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!"
-msgstr ""
+msgstr "O melhor servidor DayZ do Brasil. Sobreviva, conquiste e domine!"
 
 #: templates/index.html:24
 msgid "Jogadores"
-msgstr ""
+msgstr "Jogadores"
 
 #: templates/index.html:32 templates/leaderboard.html:68
 msgid "DZCoins"
-msgstr ""
+msgstr "DZCoins"
 
 #: templates/index.html:36
 msgid ""
@@ -1740,24 +1814,24 @@ msgstr ""
 
 #: templates/layout.html:184 templates/leaderboard.html:40
 msgid "Jogador"
-msgstr ""
+msgstr "Jogador"
 
 #: templates/layout.html:285
 msgid "Erro"
-msgstr ""
+msgstr "Erro"
 
 #: templates/leaderboard.html:12
-#, fuzzy
+# , fuzzy
 msgid "Rankings Globais"
-msgstr "Rankings"
+msgstr "Rankings Globais"
 
 #: templates/leaderboard.html:13
 msgid "Os melhores sobreviventes do servidor em diversas categorias."
-msgstr ""
+msgstr "Os melhores sobreviventes do servidor em diversas categorias."
 
 #: templates/leaderboard.html:21
 msgid "Riqueza"
-msgstr ""
+msgstr "Riqueza"
 
 #: templates/leaderboard.html:25
 msgid ""
@@ -1767,7 +1841,7 @@ msgstr ""
 
 #: templates/leaderboard.html:42
 msgid "Detalhes"
-msgstr ""
+msgstr "Detalhes"
 
 #: templates/leaderboard.html:56
 msgid "Nenhum dado disponível"
@@ -1804,27 +1878,27 @@ msgstr "BEM-VINDO AO BIGODETEXAS"
 
 #: templates/login.html:110
 msgid "Entre agora para acessar a loja e gerenciar seu perfil!"
-msgstr ""
+msgstr "Entre agora para acessar a loja e gerenciar seu perfil!"
 
 #: templates/login.html:120
 msgid "Acesse seu saldo de DZCoins"
-msgstr ""
+msgstr "Acesse seu saldo de DZCoins"
 
 #: templates/login.html:124
 msgid "Compre kits e equipamentos dinâmicos"
-msgstr ""
+msgstr "Compre kits e equipamentos dinâmicos"
 
 #: templates/login.html:128
 msgid "Gestão de coordenadas de entrega"
-msgstr ""
+msgstr "Gestão de coordenadas de entrega"
 
 #: templates/login.html:132
 msgid "Gerencie seu clã e suas guerras"
-msgstr ""
+msgstr "Gerencie seu clã e suas guerras"
 
 #: templates/login.html:138
 msgid "Voltar para o Início"
-msgstr ""
+msgstr "Voltar para o Início"
 
 #: templates/marketplace.html:3 templates/shop_new.html:3
 #, fuzzy
@@ -1843,47 +1917,47 @@ msgstr ""
 #: templates/marketplace.html:185 templates/shop.html:33
 #: templates/shop_new.html:395
 msgid "Armas"
-msgstr ""
+msgstr "Armas"
 
 #: templates/marketplace.html:187 templates/shop.html:35
 #: templates/shop_new.html:397
 msgid "Munição"
-msgstr ""
+msgstr "Munição"
 
 #: templates/marketplace.html:190 templates/shop.html:37
 msgid "Carregadores"
-msgstr ""
+msgstr "Carregadores"
 
 #: templates/marketplace.html:192 templates/shop.html:38
 msgid "Acessórios"
-msgstr ""
+msgstr "Acessórios"
 
 #: templates/marketplace.html:194 templates/shop.html:49
 #: templates/shop_new.html:406
 msgid "Construção"
-msgstr ""
+msgstr "Construção"
 
 #: templates/marketplace.html:196 templates/shop.html:51
 msgid "Ferramentas"
-msgstr ""
+msgstr "Ferramentas"
 
 #: templates/marketplace.html:197 templates/shop.html:42
 #: templates/shop_new.html:399
 msgid "Médico"
-msgstr ""
+msgstr "Médico"
 
 #: templates/marketplace.html:199 templates/shop.html:46
 msgid "Roupas"
-msgstr ""
+msgstr "Roupas"
 
 #: templates/marketplace.html:202 templates/shop.html:53
 msgid "Veículos"
-msgstr ""
+msgstr "Veículos"
 
 #: templates/marketplace.html:210 templates/shop.html:68
 #: templates/shop_new.html:421
 msgid "Carrinho"
-msgstr ""
+msgstr "Carrinho"
 
 #: templates/marketplace.html:212 templates/marketplace.html:238
 #: templates/shop_new.html:426
@@ -1926,7 +2000,7 @@ msgstr ""
 
 #: templates/mural.html:3
 msgid "Mural da Vergonha - BIGODE TEXAS"
-msgstr ""
+msgstr "Mural da Vergonha - BIGODE TEXAS"
 
 #: templates/mural.html:129
 msgid "Carregando lista de foragidos..."
@@ -1938,7 +2012,7 @@ msgstr ""
 
 #: templates/mural.html:137
 msgid "PROCURADO"
-msgstr ""
+msgstr "PROCURADO"
 
 #: templates/mural.html:138
 msgid "BANIDO"
@@ -2026,15 +2100,15 @@ msgstr ""
 
 #: templates/profile.html:244
 msgid "Vítimas"
-msgstr ""
+msgstr "Vítimas"
 
 #: templates/profile.html:259
 msgid "Moedas"
-msgstr ""
+msgstr "Moedas"
 
 #: templates/profile.html:265
 msgid "Desempenho em Detalhes"
-msgstr ""
+msgstr "Desempenho em Detalhes"
 
 #: templates/profile.html:268
 msgid "Maior Sequência"
@@ -2058,11 +2132,11 @@ msgstr ""
 
 #: templates/profile.html:292
 msgid "Distância"
-msgstr ""
+msgstr "Distância"
 
 #: templates/profile.html:300
 msgid "Estruturas"
-msgstr ""
+msgstr "Estruturas"
 
 #: templates/profile.html:306
 msgid "Pescador"
@@ -2110,7 +2184,7 @@ msgstr ""
 
 #: templates/regras.html:3
 msgid "ARQUIVOS CONFIDENCIAIS"
-msgstr ""
+msgstr "ARQUIVOS CONFIDENCIAIS"
 
 #: templates/regras.html:211
 msgid "TOP SECRET"
@@ -2126,7 +2200,7 @@ msgstr ""
 
 #: templates/regras.html:220
 msgid "DOSSIÊ BIGODETEXAS"
-msgstr ""
+msgstr "DOSSIÊ BIGODETEXAS"
 
 #: templates/regras.html:221
 msgid ""
@@ -2144,7 +2218,7 @@ msgstr ""
 
 #: templates/regras.html:226
 msgid "LIBERDADE"
-msgstr ""
+msgstr "LIBERDADE"
 
 #: templates/regras.html:227
 msgid "Mas liberdade sem ordem é caos."
@@ -2178,6 +2252,9 @@ msgid ""
 "                prioridade: Monitorar ameaças e PROTEGER o patrimônio dos"
 " sobreviventes cadastrados."
 msgstr ""
+"foi ativado. Nossa\n"
+"                prioridade: Monitorar ameaças e PROTEGER o patrimônio dos"
+" sobreviventes cadastrados."
 
 #: templates/regras.html:237
 msgid "PROTOCOLO DE CONFLITO (RAID)"
@@ -2197,6 +2274,9 @@ msgid ""
 "será considerada um ato\n"
 "                de guerra ilegal."
 msgstr ""
+"Fora dessa janela temporal, qualquer tentativa de violação estrutural "
+"será considerada um ato\n"
+"                de guerra ilegal."
 
 #: templates/regras.html:248
 msgid "RAID TÁTICO:"
@@ -2245,6 +2325,8 @@ msgid ""
 "Não há julgamento. Não há apelação. O sistema elimina a ameaça (ID XBOX)\n"
 "                        instantaneamente."
 msgstr ""
+"Não há julgamento. Não há apelação. O sistema elimina a ameaça (ID XBOX)\n"
+"                        instantaneamente."
 
 #: templates/regras.html:270
 msgid "DEPARTAMENTO DE RELAÇÕES HUMANAS"
@@ -2284,6 +2366,9 @@ msgid ""
 "atravessar texturas)\n"
 "                será detectada."
 msgstr ""
+"Qualquer tentativa de \"forçar a física\" da realidade (bugar, duplicar, "
+"atravessar texturas)\n"
+"                será detectada."
 
 #: templates/regras.html:281
 msgid "A punição é sumária. Fez errado? Já sabe."
@@ -2340,7 +2425,7 @@ msgstr ""
 
 #: templates/settings.html:246
 msgid "Configurações"
-msgstr ""
+msgstr "Configurações"
 
 #: templates/settings.html:247
 msgid "Personalize sua experiência no servidor"
@@ -2353,15 +2438,15 @@ msgstr "Meu Perfil"
 
 #: templates/settings.html:256 templates/settings.html:303
 msgid "Privacidade"
-msgstr ""
+msgstr "Privacidade"
 
 #: templates/settings.html:259 templates/settings.html:333
 msgid "Notificações"
-msgstr ""
+msgstr "Notificações"
 
 #: templates/settings.html:262 templates/settings.html:363
 msgid "Aparência"
-msgstr ""
+msgstr "Aparência"
 
 #: templates/settings.html:269
 #, fuzzy
@@ -2475,7 +2560,7 @@ msgstr ""
 
 #: templates/shop.html:14
 msgid "Compre itens com DZCoins e receba no mapa!"
-msgstr ""
+msgstr "Compre itens com DZCoins e receba no mapa!"
 
 #: templates/shop.html:21
 msgid "Buscar item..."
@@ -2603,7 +2688,7 @@ msgstr ""
 
 #: templates/shop_new.html:442
 msgid "Clique no mapa para escolher onde seus itens serão entregues"
-msgstr ""
+msgstr "Clique no mapa para escolher onde seus itens serão entregues"
 
 #: templates/shop_new.html:447
 #, fuzzy
@@ -2612,7 +2697,7 @@ msgstr "Mapa de Calor"
 
 #: templates/shop_new.html:451 templates/shop_new.html:475
 msgid "Nenhuma coordenada selecionada"
-msgstr ""
+msgstr "Nenhuma coordenada selecionada"
 
 #: templates/shop_new.html:456
 msgid "Cancelar"
@@ -2620,7 +2705,7 @@ msgstr ""
 
 #: templates/shop_new.html:457
 msgid "Confirmar Compra"
-msgstr ""
+msgstr "Confirmar Compra"
 
 #: templates/shop_new.html:467
 msgid "Nenhum item encontrado nesta categoria."
@@ -2652,7 +2737,7 @@ msgstr ""
 
 #: templates/stats.html:7
 msgid "Estatísticas do Servidor"
-msgstr ""
+msgstr "Estatísticas do Servidor"
 
 #: templates/stats.html:20
 msgid "Jogadores Registrados"
@@ -2660,7 +2745,7 @@ msgstr ""
 
 #: templates/stats.html:24
 msgid "DZ Coins em Circulação"
-msgstr ""
+msgstr "DZ Coins em Circulação"
 
 #: templates/stats.html:32
 msgid "Kills ao Longo do Tempo"
@@ -2684,6 +2769,96 @@ msgid ""
 "balanceada. Ganhe DZ Coins matando\n"
 "            inimigos, sobrevivendo e completando desafios. Use suas "
 "moedas para comprar equipamentos premium na loja."
+msgstr ""
+
+#: utils/achievements.py:5 utils/achievements.py:6
+msgid "🎯 Primeira Vítima"
+msgstr ""
+
+#: utils/achievements.py:7
+msgid "Mate seu primeiro jogador"
+msgstr ""
+
+#: utils/achievements.py:8
+msgid "500 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:18 utils/achievements.py:19
+msgid "💀 Assassino"
+msgstr ""
+
+#: utils/achievements.py:20
+msgid "Acumule 10 kills"
+msgstr ""
+
+#: utils/achievements.py:21 utils/achievements.py:73
+msgid "1000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:31 utils/achievements.py:32
+msgid "☠️ Serial Killer"
+msgstr ""
+
+#: utils/achievements.py:33
+msgid "Acumule 50 kills"
+msgstr ""
+
+#: utils/achievements.py:34 utils/achievements.py:89
+msgid "5000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:44 utils/achievements.py:45
+msgid "💰 Rico"
+msgstr ""
+
+#: utils/achievements.py:46
+msgid "Acumule 10.000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:47
+#, fuzzy
+msgid "Badges de Perfil"
+msgstr "Meu Perfil"
+
+#: utils/achievements.py:57 utils/achievements.py:58
+msgid "💎 Milionário"
+msgstr ""
+
+#: utils/achievements.py:59
+msgid "Acumule 100.000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:60
+msgid "10000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:70 utils/achievements.py:71
+#, fuzzy
+msgid "🛒 Comprador"
+msgstr "COMEÇAR TOUR"
+
+#: utils/achievements.py:72
+msgid "Faça 10 compras na loja"
+msgstr ""
+
+#: utils/achievements.py:86 utils/achievements.py:87
+msgid "⏰ Veterano"
+msgstr ""
+
+#: utils/achievements.py:88
+msgid "Jogue por 50 horas"
+msgstr ""
+
+#: utils/achievements.py:101 utils/achievements.py:102
+msgid "🎯 Matador de Aluguel"
+msgstr ""
+
+#: utils/achievements.py:103
+msgid "Complete 5 caçadas (bumbas)"
+msgstr ""
+
+#: utils/achievements.py:104
+msgid "2500 DZ Coins"
 msgstr ""
 
 #~ msgid "Bem-vindo ao"

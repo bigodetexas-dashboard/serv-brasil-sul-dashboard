@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-06 13:26-0600\n"
+"POT-Creation-Date: 2026-02-06 13:51-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,42 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+
+#: app.py:789 app.py:807
+msgid "Jogador de Teste"
+msgstr ""
+
+#: app.py:879
+msgid "Unauthorized"
+msgstr ""
+
+#: app.py:893
+msgid "No file part"
+msgstr ""
+
+#: app.py:899
+msgid "No selected file"
+msgstr ""
+
+#: app.py:902
+msgid "Item ID missing"
+msgstr ""
+
+#: app.py:908
+msgid "Invalid file type"
+msgstr ""
+
+#: app.py:935
+msgid "Database update failed"
+msgstr ""
+
+#: app.py:964
+msgid "Name is required"
+msgstr ""
+
+#: app.py:973
+msgid "Failed to create base"
+msgstr ""
 
 #: templates/achievements.html:3
 msgid "Conquistas - SERV. BRASIL SUL - XBOX"
@@ -2646,5 +2682,93 @@ msgid ""
 "balanceada. Ganhe DZ Coins matando\n"
 "            inimigos, sobrevivendo e completando desafios. Use suas "
 "moedas para comprar equipamentos premium na loja."
+msgstr ""
+
+#: utils/achievements.py:5 utils/achievements.py:6
+msgid "🎯 Primeira Vítima"
+msgstr ""
+
+#: utils/achievements.py:7
+msgid "Mate seu primeiro jogador"
+msgstr ""
+
+#: utils/achievements.py:8
+msgid "500 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:18 utils/achievements.py:19
+msgid "💀 Assassino"
+msgstr ""
+
+#: utils/achievements.py:20
+msgid "Acumule 10 kills"
+msgstr ""
+
+#: utils/achievements.py:21 utils/achievements.py:73
+msgid "1000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:31 utils/achievements.py:32
+msgid "☠️ Serial Killer"
+msgstr ""
+
+#: utils/achievements.py:33
+msgid "Acumule 50 kills"
+msgstr ""
+
+#: utils/achievements.py:34 utils/achievements.py:89
+msgid "5000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:44 utils/achievements.py:45
+msgid "💰 Rico"
+msgstr ""
+
+#: utils/achievements.py:46
+msgid "Acumule 10.000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:47
+msgid "Badges de Perfil"
+msgstr ""
+
+#: utils/achievements.py:57 utils/achievements.py:58
+msgid "💎 Milionário"
+msgstr ""
+
+#: utils/achievements.py:59
+msgid "Acumule 100.000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:60
+msgid "10000 DZ Coins"
+msgstr ""
+
+#: utils/achievements.py:70 utils/achievements.py:71
+msgid "🛒 Comprador"
+msgstr ""
+
+#: utils/achievements.py:72
+msgid "Faça 10 compras na loja"
+msgstr ""
+
+#: utils/achievements.py:86 utils/achievements.py:87
+msgid "⏰ Veterano"
+msgstr ""
+
+#: utils/achievements.py:88
+msgid "Jogue por 50 horas"
+msgstr ""
+
+#: utils/achievements.py:101 utils/achievements.py:102
+msgid "🎯 Matador de Aluguel"
+msgstr ""
+
+#: utils/achievements.py:103
+msgid "Complete 5 caçadas (bumbas)"
+msgstr ""
+
+#: utils/achievements.py:104
+msgid "2500 DZ Coins"
 msgstr ""
 
