@@ -1,0 +1,424 @@
+{% extends "layout.html" %}
+
+{% block title %}Dicas & Crafting | BigodeTexas{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tips.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tips-container">
+
+    <!-- Hero Section -->
+    <header class="hero-section">
+        <h1 class="hero-title">GUIA DE SOBREVIVÊNCIA</h1>
+        <p class="hero-subtitle">Táticas de combate e segredos para dominar o apocalipse do DayZ.
+        </p>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="category-nav">
+        <button class="cat-btn active" onclick="filterCategory('all')"><i class="ri-grid-fill"></i> Todos</button>
+        <button class="cat-btn" onclick="scrollToId('visual-chart')"><i class="ri-map-2-line"></i> Visual Chart</button>
+        <button class="cat-btn" onclick="filterCategory('crafting')"><i class="ri-tools-line"></i> Crafting</button>
+        <button class="cat-btn" onclick="filterCategory('combat')"><i class="ri-sword-line"></i> Combate</button>
+        <button class="cat-btn" onclick="filterCategory('medical')"><i class="ri-first-aid-kit-line"></i>
+            Médico</button>
+        <button class="cat-btn" onclick="filterCategory('base')"><i class="ri-home-wifi-line"></i> Base</button>
+    </nav>
+
+    <!-- CONTENT SECTIONS -->
+
+    <!-- Section: Visual Chart (Image) -->
+    <div class="section-group" id="visual-chart">
+        <h2 class="section-title"><i class="ri-image-2-fill"></i> Carta de Crafting Elemental</h2>
+        <div class="visual-chart-container" onclick="toggleZoom(this)">
+            <img src="{{ url_for('static', filename='img/crafting_chart.png') }}" alt="DayZ Elemental Crafting Chart"
+                class="chart-img">
+            <div class="zoom-hint"><i class="ri-zoom-in-line"></i> Clique para ampliar</div>
+        </div>
+    </div>
+
+    <!-- Section: Galeria da Comunidade -->
+    {% if gallery_images %}
+    <div class="section-group" id="gallery-group">
+        <h2 class="section-title"><i class="ri-camera-fill"></i> Galeria da Comunidade</h2>
+        <div class="gallery-grid">
+            {% for img in gallery_images %}
+            <div class="gallery-item" onclick="openLightbox({{ loop.index0 }})">
+                <img src="{{ url_for('static', filename=img) }}" alt="Community Image" loading="lazy">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="close-btn" onclick="closeLightbox()">&times;</span>
+        <a class="prev-btn" onclick="changeSlide(-1)">&#10094;</a>
+        <a class="next-btn" onclick="changeSlide(1)">&#10095;</a>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="Lightbox Image">
+            <div class="lightbox-caption" id="lightbox-counter"></div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Section: Survival Elementals (Flow Chart Style) -->
+    <div class="section-group" id="crafting-group">
+        <h2 class="section-title"><i class="ri-node-tree"></i> Árvore de Crafting: Sobrevivência</h2>
+
+        <!-- FOGO -->
+        <div class="flow-chain">
+            <div class="flow-item">
+                <div class="node-icon"><i class="ri-knife-line"></i></div>
+                <span>Faca</span>
+            </div>
+            <span class="plus">+</span>
+            <div class="flow-item">
+                <div class="node-icon"><i class="ri-tree-line"></i></div>
+                <span>Árvore (Casca)</span>
+            </div>
+            <span class="flow-arrow"><i class="ri-arrow-right-line"></i></span>
+
+            <div class="tree-node">
+                <div class="node-title">Hand Drill Kit</div>
+                <div class="node-recipe">Graveto + Casca Escura</div>
+                <div class="recipe-note">Acendedor de Fogo</div>
+            </div>
+
+            <span class="flow-arrow"><i class="ri-arrow-right-line"></i></span>
+
+            <div class="tree-node">
+                <div class="node-title">Fogueira</div>
+                <div class="node-recipe">Graveto + Lenha/Trapo</div>
+            </div>
+        </div>
+
+        <!-- MOCHILA -->
+        <div class="flow-chain">
+            <div class="flow-item">
+                <div class="node-icon"><i class="ri-t-shirt-line"></i></div>
+                <span>Saco de Juta</span>
+            </div>
+            <span class="plus">+</span>
+            <div class="flow-item">
+                <div class="node-icon"><i class="ri-links-line"></i></div>
+                <span>Corda</span>
+            </div>
+            <span class="flow-arrow"><i class="ri-arrow-right-line"></i></span>
+
+            <div class="tree-node">
+                <div class="node-title">Bolsa Courier</div>
+                <div class="node-recipe">30 Slots</div>
+            </div>
+
+            <span class="plus">+</span>
+            <div class="flow-item">
+                <div class="node-icon"><i class="ri-menu-line"></i></div>
+                <span>3x Gravetos</span>
+            </div>
+
+            <span class="flow-arrow"><i class="ri-arrow-right-line"></i></span>
+
+            <div class="tree-node" style="border-color: var(--success-color);">
+                <div class="node-title">Mochila Improvisada</div>
+                <div class="node-recipe">42 Slots</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Section: Combate e Armadilhas -->
+    <div class="section-group" id="combat-group">
+        <h2 class="section-title"><i class="ri-sword-fill"></i> Combate & Armadilhas</h2>
+        <div class="recipes-grid">
+
+            <!-- Silenciador -->
+            <div class="recipe-card" data-category="combat">
+                <div class="card-header">
+                    <h3 class="item-name">Silenciador de Garrafa</h3>
+                    <span class="item-type">Furtividade</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">Garrafa PET</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">Silver Tape</span>
+                </div>
+                <p class="recipe-note">Reduz ruído drasticamente, mas estraga após poucos disparos. Ideal para .22 ou
+                    9mm.</p>
+            </div>
+
+            <!-- Armadilha de Laço -->
+            <div class="recipe-card" data-category="combat">
+                <div class="card-header">
+                    <h3 class="item-name">Armadilha de Laço (Snare)</h3>
+                    <span class="item-type">Caça</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">Arame</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">Graveto Curto</span>
+                </div>
+                <p class="recipe-note">Capture coelhos ou galinhas. Use minhocas ou frutas como isca.</p>
+            </div>
+
+            <!-- IED -->
+            <div class="recipe-card" data-category="combat">
+                <div class="card-header">
+                    <h3 class="item-name">IED (Explosivo)</h3>
+                    <span class="item-type">Destruição</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">Case Amarela</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">Kit Elétrico</span>
+                </div>
+                <p class="recipe-note">Recheie com granadas ou explosivos plásticos. Detone com Timer de Cozinha ou
+                    Despertador (Clock Detonator).</p>
+            </div>
+            <!-- Ghillie -->
+            <div class="recipe-card" data-category="combat">
+                <div class="card-header">
+                    <h3 class="item-name">Traje Ghillie</h3>
+                    <span class="item-type">Camuflagem</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">Rede (Netting)</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">Tiras de Juta</span>
+                </div>
+                <p class="recipe-note">Capuz (2 Tiras + 1 Rede), Manto (4 Tiras + 2 Redes) ou Completo (10 Tiras + 4
+                    Redes). Apenas cor Palha craftável.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Section: Base Building -->
+    <div class="section-group" id="base-group">
+        <h2 class="section-title"><i class="ri-home-wifi-fill"></i> Base & Acampamento</h2>
+        <div class="recipes-grid">
+
+            <!-- Caixa de Madeira -->
+            <div class="recipe-card" data-category="base">
+                <div class="card-header">
+                    <h3 class="item-name">Caixa de Madeira</h3>
+                    <span class="item-type">Armazenamento</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">8 Tábuas</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">16 Pregos</span>
+                </div>
+                <div class="tip-box">
+                    <i class="ri-treasure-map-line"></i>
+                    <span>Tire a casca de árvores para fazer caixas camufladas ou enterre-as com uma pá!</span>
+                </div>
+            </div>
+
+            <!-- Abrigo Improvisado -->
+            <div class="recipe-card" data-category="base">
+                <div class="card-header">
+                    <h3 class="item-name">Abrigo Improvisado</h3>
+                    <span class="item-type">Acampamento</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">Kit (Corda + 4 Gravetos)</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">4 Varas Longas</span>
+                </div>
+                <div class="recipe-ingredients" style="margin-top: 5px;">
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">50 Gravetos / 4 Lonas / 8 Couros</span>
+                </div>
+                <p class="recipe-note">Cria uma tenda pequena e discreta na floresta. Ótimo para solo players.</p>
+            </div>
+            <!-- Fire Barrel -->
+            <div class="recipe-card" data-category="base">
+                <div class="card-header">
+                    <h3 class="item-name">Tambor de Fogo</h3>
+                    <span class="item-type">Cozinha</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">Barril de Óleo</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">Faca (Furar)</span>
+                </div>
+                <p class="recipe-note">Permite cozinhar e defumar carnes sem espalhar muita luz se fechar a tampa.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Section: Filtros e Armadilhas Pesca Avaçadas -->
+    <div class="section-group" id="adv-group">
+        <h2 class="section-title"><i class="ri-flask-fill"></i> Avançado</h2>
+        <div class="recipes-grid">
+            <!-- Filtro Gas -->
+            <div class="recipe-card" data-category="crafting">
+                <div class="card-header">
+                    <h3 class="item-name">Filtro de Máscara</h3>
+                    <span class="item-type">NBC</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">Garrafa PET</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">Máscara de Poeira</span>
+                </div>
+                <div class="recipe-ingredients" style="margin-top: -10px;">
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">Carvão Ativado</span>
+                </div>
+                <p class="recipe-note">Recarregue filtros com tabletes de carvão para sobreviver em zonas de gás tóxico.
+                </p>
+            </div>
+            <!-- Armadilha Peixe Garrafa -->
+            <div class="recipe-card" data-category="crafting">
+                <div class="card-header">
+                    <h3 class="item-name">Armadilha de Peixe (Garrafa)</h3>
+                    <span class="item-type">Pesca</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">Garrafa PET</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">Faca</span>
+                </div>
+                <p class="recipe-note">Pega peixes pequenos (iscas ou comida de emergência).</p>
+            </div>
+            <!-- Armadilha Peixe Rede -->
+            <div class="recipe-card" data-category="crafting">
+                <div class="card-header">
+                    <h3 class="item-name">Armadilha de Rede</h3>
+                    <span class="item-type">Pesca</span>
+                </div>
+                <div class="recipe-ingredients">
+                    <span class="ingredient">Rede (Netting)</span>
+                    <span class="plus-sign">+</span>
+                    <span class="ingredient">Arame</span>
+                </div>
+                <p class="recipe-note">Mais eficiente para peixes maiores.</p>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    // Gallery Data
+    const galleryImages = [
+        {% for img in gallery_images %}
+    "{{ url_for('static', filename=img) }}",
+        {% endfor %}
+    ];
+    let currentSlideIndex = 0;
+
+    function openLightbox(index) {
+        currentSlideIndex = index;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const counter = document.getElementById('lightbox-counter');
+
+        lightbox.style.display = "flex";
+        setTimeout(() => lightbox.classList.add('active'), 10); // Fade in
+
+        updateLightboxImage();
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('lightbox');
+        lightbox.classList.remove('active');
+        setTimeout(() => {
+            lightbox.style.display = "none";
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+
+    function changeSlide(n) {
+        currentSlideIndex += n;
+        if (currentSlideIndex >= galleryImages.length) {
+            currentSlideIndex = 0;
+        } else if (currentSlideIndex < 0) {
+            currentSlideIndex = galleryImages.length - 1;
+        }
+        updateLightboxImage();
+    }
+
+    function updateLightboxImage() {
+        const img = document.getElementById('lightbox-img');
+        const counter = document.getElementById('lightbox-counter');
+
+        // Add fade effect
+        img.style.opacity = 0;
+        setTimeout(() => {
+            img.src = galleryImages[currentSlideIndex];
+            counter.innerText = `${currentSlideIndex + 1} / ${galleryImages.length}`;
+            img.style.opacity = 1;
+        }, 200);
+    }
+
+    // Close on Escape key or outside click
+    document.addEventListener('keydown', function (event) {
+        if (event.key === "Escape") {
+            closeLightbox();
+        } else if (event.key === "ArrowRight") {
+            changeSlide(1);
+        } else if (event.key === "ArrowLeft") {
+            changeSlide(-1);
+        }
+    });
+
+    // Chart Functions
+    function scrollToId(id) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+            // Highlight
+            element.style.animation = 'none';
+            setTimeout(() => { element.style.animation = 'fadeIn 0.5s ease forwards'; }, 10);
+        }
+    }
+
+    function toggleZoom(element) {
+        element.classList.toggle('zoomed');
+        document.body.style.overflow = element.classList.contains('zoomed') ? 'hidden' : 'auto';
+    }
+
+    function filterCategory(category) {
+        // Update Buttons
+        document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        // Filter Cards
+        const cards = document.querySelectorAll('.recipe-card');
+        const groups = document.querySelectorAll('.section-group');
+
+        cards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+                // Animation
+                card.style.animation = 'fadeIn 0.5s ease forwards';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Hide empty groups
+        if (category === 'all') {
+            groups.forEach(g => g.style.display = 'block');
+        } else {
+            groups.forEach(group => {
+                // Check if any visible cards are in this group's grid
+                const visibleCards = group.querySelectorAll(`.recipe-card[data-category="${category}"]`);
+                if (visibleCards.length > 0) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            })
+        }
+    }
+</script>
+{% endblock %}

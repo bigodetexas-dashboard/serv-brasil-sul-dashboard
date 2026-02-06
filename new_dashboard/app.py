@@ -174,6 +174,21 @@ def regras():
     return render_template("regras.html")
 
 
+@app.route("/tips")
+def tips():
+    """Página de Dicas e Crafting (Survival Guide)"""
+    # Listar imagens da galeria dinamicamente
+    gallery_path = os.path.join(app.static_folder, "img", "gallery")
+    gallery_images = []
+    if os.path.exists(gallery_path):
+        gallery_images = [
+            f"img/gallery/{f}"
+            for f in os.listdir(gallery_path)
+            if f.lower().endswith((".png", ".jpg", ".jpeg", ".gif"))
+        ]
+    return render_template("tips.html", gallery_images=gallery_images)
+
+
 # ==================== AUTO-START LOG ROBOT ====================
 def start_log_robot():
     """Inicia o robÃ´ de logs em uma thread separada para autonomia total."""
