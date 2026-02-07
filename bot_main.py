@@ -13,7 +13,7 @@ import sqlite3
 import discord
 from discord.ext import commands, tasks
 import aiohttp
-from flask import Flask
+from flask import Flask, jsonify  # Added jsonify
 from dotenv import load_dotenv
 
 # Local Application Imports
@@ -24,6 +24,8 @@ from security import (
 )
 from web_dashboard import dashboard_bp
 from discord_oauth import init_oauth
+from flask_wtf.csrf import CSRFProtect  # Added for CSRF support
+from new_dashboard.babel_config import init_babel  # Added for Translation support
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -212,58 +214,71 @@ async def on_ready():
 # Imports moved to top
 from flask_socketio import SocketIO
 
-# Inicializar Flask App
-health_app = Flask(__name__)
-health_app.secret_key = os.getenv(
-    "SECRET_KEY", "dev-secret-key"
-)  # Importante para sessões
+# --- CONFIGURAÇÃO FLASK INTEGRADA ---
+base_dir = os.path.dirname(os.path.abspath(__file__))
+# UNIFICADO: Aponta para o novo dashboard premium
+template_dir = os.path.join(base_dir, "new_dashboard", "templates")
+static_dir = os.path.join(base_dir, "new_dashboard", "static")
+app = Flask(
+    __name__,
+    template_folder=template_dir,
+    static_folder=static_dir,
+    static_url_path="/static",
+)
+app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")  # Importante para sessões
+csrf = CSRFProtect(app)  # Initialize CSRF
+
+# Carregar Blueprints
+app.register_blueprint(dashboard_bp)
+
+# Inicializar OAuth e Babel
+init_oauth(app)
+babel = init_babel(app)  # Initialize Translation
 
 # CRITICAL: Desabilitar cache de templates para forçar reload
-health_app.config["TEMPLATES_AUTO_RELOAD"] = True
-health_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-health_app.config["EXPLAIN_TEMPLATE_LOADING"] = True
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+app.config["EXPLAIN_TEMPLATE_LOADING"] = True
 
 # Inicializar SocketIO (Async via Threading)
-socketio = SocketIO(health_app, cors_allowed_origins="*", async_mode="threading")
-
-# Inicializar OAuth
-init_oauth(health_app)
-
-# Registrar Blueprint do Dashboard
-health_app.register_blueprint(dashboard_bp)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
 
 # Rota de Health Check (mantida para compatibilidade)
-@health_app.route("/health")
+@app.route("/health")
 def health():
     return "OK", 200
 
 
+@app.route("/set_language/<lang>")
+def set_language(lang):
+    from flask import session, redirect, request, url_for
+
+    session["lang"] = lang  # Using 'lang' as per babel_config.py
+    return redirect(request.referrer or url_for("dashboard.index"))
+
+
 # --- SISTEMA DE LOGS AO VIVO (Stdout Hijack) ---
 class SocketWriter:
-    """Redireciona stdout/stderr para o WebSocket"""
-
-    def __init__(self, original_stream):
-        self.original_stream = original_stream
+    def __init__(self, stream, namespace="/admin"):
+        self.stream = stream
+        self.namespace = namespace
 
     def write(self, message):
-        # Escreve no terminal original (com fallback para unicode)
-        try:
-            self.original_stream.write(message)
-        except UnicodeEncodeError:
-            self.original_stream.write(
-                message.encode("ascii", "replace").decode("ascii")
-            )
-
-        # Emite para o SocketIO se houver mensagem
+        self.stream.write(message)
+        self.stream.flush()  # Ensure terminal sees it
         if message.strip():
+            # Enviar para o SocketIO dentro do contexto da aplicação
             try:
-                socketio.emit("log_message", {"data": message}, namespace="/admin")
+                with app.app_context():
+                    socketio.emit(
+                        "log_message", {"data": message}, namespace=self.namespace
+                    )
             except:
-                pass
+                pass  # Ignore context errors during startup
 
     def flush(self):
-        self.original_stream.flush()
+        self.stream.flush()
 
 
 # Substitui stdout e stderr (MOVIDO PARA ON_READY PARA EVITAR DEADLOCK)
@@ -273,11 +288,14 @@ class SocketWriter:
 
 # Rodar o servidor web em uma thread separada (MOVIDO PARA O BLOCO MAIN)
 def start_web_server():
-    print("[INIT] Iniciando Servidor Web na porta 3000...")
+    port = int(
+        os.getenv("PORT", "5001")
+    )  # Changed from 3000 to 5001 as per user expectation
+    print(f"[INIT] Iniciando Servidor Web na porta {port}...")
     socketio.run(
-        health_app,
+        app,
         host="0.0.0.0",
-        port=int(os.getenv("PORT", "3000")),
+        port=port,
         allow_unsafe_werkzeug=True,
     )
 

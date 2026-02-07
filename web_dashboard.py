@@ -1,7 +1,16 @@
-# Blueprint version of the original dashboard
-import json, os, sys
+from flask import (
+    Blueprint,
+    jsonify,
+    render_template,
+    send_from_directory,
+    request,
+    url_for,
+)
+import sqlite3
+import json
+import os
+import sys
 from datetime import datetime
-from flask import Blueprint, jsonify, render_template, send_from_directory
 
 # Adicionar raiz do projeto ao sys.path para encontrar o core
 # Adicionar raiz do projeto ao sys.path para encontrar o core
@@ -21,14 +30,9 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 # POINTING TO NEW DASHBOARD (Gold Elite)
 template_dir = os.path.join(base_dir, "new_dashboard", "templates")
 static_dir = os.path.join(base_dir, "new_dashboard", "static")
+DB_PATH = os.path.join(base_dir, "bigode_unified.db")
 
-dashboard_bp = Blueprint(
-    "dashboard",
-    __name__,
-    template_folder=template_dir,
-    static_folder=static_dir,
-    static_url_path="/static",
-)
+dashboard_bp = Blueprint("dashboard", __name__)
 
 
 # ==================== ROTAS DE COMPATIBILIDADE (NOVO DESIGN) ====================
@@ -396,7 +400,89 @@ def mural():
     return render_template("mural.html")
 
 
-@dashboard_bp.route("/admin")
+@dashboard_bp.route("/deaths")
+@dashboard_bp.route("/tiro-na-lata")
+def deaths_feed():
+    return render_template("deaths.html")
+
+
+@dashboard_bp.route("/status")
+def status():
+    return jsonify({"status": "online", "server": "DayZ Xbox"})
+
+
+@dashboard_bp.route("/api/deaths/recent")
+def api_deaths_recent():
+    try:
+        limit = request.args.get("per_page", 50, type=int)
+
+        # Connect to DB (using bigode_unified.db which has deaths_log)
+        conn = sqlite3.connect(DB_PATH)  # Using global DB_PATH
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        # In bigode_unified.db, table is deaths_log and timestamp is occurred_at
+        cursor.execute(
+            "SELECT * FROM deaths_log ORDER BY occurred_at DESC LIMIT ?", (limit,)
+        )
+        rows = cursor.fetchall()
+        conn.close()
+
+        deaths = []
+        for row in rows:
+            deaths.append(
+                {
+                    "id": row["id"],
+                    "killer": row["killer_gamertag"],
+                    "victim": row["victim_gamertag"],
+                    "weapon": row["weapon"],
+                    "distance": row["distance"],
+                    "location": row["location_name"]
+                    or f"{row['coord_x']:.0f}, {row['coord_z']:.0f}",
+                    "timestamp": row["occurred_at"],
+                    "death_type": row["death_type"],
+                    "is_headshot": bool(row["is_headshot"]),
+                    "death_cause": row["death_cause"],
+                }
+            )
+
+        return jsonify({"deaths": deaths})
+    except Exception as e:
+        print(f"Error fetching deaths: {e}")
+        return jsonify({"deaths": []}), 500
+
+
+@dashboard_bp.route("/api/deaths/stats")
+def api_deaths_stats():
+    try:
+        conn = sqlite3.connect(DB_PATH)  # Using global DB_PATH
+        cursor = conn.cursor()
+
+        # Simple stats in deaths_log
+        cursor.execute("SELECT COUNT(*) FROM deaths_log")
+        total_deaths = cursor.fetchone()[0]
+
+        cursor.execute("SELECT COUNT(*) FROM deaths_log WHERE death_type = 'pvp'")
+        pvp_deaths = cursor.fetchone()[0]
+
+        cursor.execute("SELECT COUNT(*) FROM deaths_log WHERE is_headshot = 1")
+        headshots = cursor.fetchone()[0]
+
+        conn.close()
+
+        return jsonify(
+            {
+                "total_deaths": total_deaths,
+                "pvp": pvp_deaths,
+                "animal": 0,  # Add animal count if needed
+                "headshots": headshots,
+            }
+        )
+    except Exception as e:
+        print(f"Error fetching stats: {e}")
+        return jsonify({}), 500
+
+
 @login_required
 def admin_panel():
     from flask import session, abort
