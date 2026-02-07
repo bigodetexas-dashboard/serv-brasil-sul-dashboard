@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import io
 import time
@@ -183,6 +184,7 @@ async def on_ready():
 
 # --- DASHBOARD & WEB SERVER ---
 # Imports moved to top
+from flask_socketio import SocketIO
 
 # Inicializar Flask App
 health_app = Flask(__name__)
@@ -194,6 +196,9 @@ health_app.secret_key = os.getenv(
 health_app.config["TEMPLATES_AUTO_RELOAD"] = True
 health_app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 health_app.config["EXPLAIN_TEMPLATE_LOADING"] = True
+
+# Inicializar SocketIO (Async via Threading)
+socketio = SocketIO(health_app, cors_allowed_origins="*", async_mode="threading")
 
 # Inicializar OAuth
 init_oauth(health_app)
@@ -208,9 +213,41 @@ def health():
     return "OK", 200
 
 
-# Rodar o servidor web em uma thread separada
+# --- SISTEMA DE LOGS AO VIVO (Stdout Hijack) ---
+class SocketWriter:
+    """Redireciona stdout/stderr para o WebSocket"""
+
+    def __init__(self, original_stream):
+        self.original_stream = original_stream
+
+    def write(self, message):
+        # Escreve no terminal original
+        self.original_stream.write(message)
+        # Emite para o SocketIO se houver mensagem
+        if message.strip():
+            try:
+                socketio.emit("log_message", {"data": message}, namespace="/admin")
+            except:
+                pass
+
+    def flush(self):
+        self.original_stream.flush()
+
+
+# Substitui stdout e stderr
+sys.stdout = SocketWriter(sys.stdout)
+sys.stderr = SocketWriter(sys.stderr)
+
+
+# Rodar o servidor web em uma thread separada (usando socketio.run)
+# NOTE: allow_unsafe_werkzeug=True é necessário aqui pois socketio roda sobre Werkzeug em dev mode
 threading.Thread(
-    target=lambda: health_app.run(host="0.0.0.0", port=int(os.getenv("PORT", "3000"))),
+    target=lambda: socketio.run(
+        health_app,
+        host="0.0.0.0",
+        port=int(os.getenv("PORT", "3000")),
+        allow_unsafe_werkzeug=True,
+    ),
     daemon=True,
 ).start()
 

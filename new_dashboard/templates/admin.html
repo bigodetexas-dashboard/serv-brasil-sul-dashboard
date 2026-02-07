@@ -269,26 +269,23 @@
                 </div>
             </div>
 
-            <!-- Logs Tab -->
+            <!-- Logs Tab (Live Console) -->
             <div id="tab-logs" style="display: none;">
-                <h2>ðŸ“œ Logs do Jogo (ADM/RPT)</h2>
-                <div class="log-viewer"
-                    style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; max-height: 500px; overflow-y: auto;">
-                    <table style="width: 100%; border-collapse: collapse; color: #ddd;">
-                        <thead>
-                            <tr style="border-bottom: 1px solid #444;">
-                                <th style="text-align: left; padding: 10px;">Data/Hora</th>
-                                <th style="text-align: left; padding: 10px;">Evento</th>
-                                <th style="text-align: left; padding: 10px;">Jogador</th>
-                                <th style="text-align: left; padding: 10px;">Detalhes</th>
-                            </tr>
-                        </thead>
-                        <tbody id="logs-table-body">
-                            <tr>
-                                <td colspan="4" style="text-align: center; padding: 20px;">Carregando logs...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2><i class="ri-terminal-box-line"></i> Terminal do Servidor (Ao Vivo)</h2>
+                    <span class="badge" id="socket-status" style="background: #e74c3c;">Desconectado</span>
+                </div>
+
+                <div class="console-container" id="console-output"
+                    style="background-color: #0c0c0c; color: #00ff00; font-family: 'Consolas', 'Courier New', monospace; padding: 15px; border-radius: 8px; height: 500px; overflow-y: auto; font-size: 0.9rem; border: 1px solid #333; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);">
+                    <div>Conectando ao feed de logs...</div>
+                </div>
+
+                <div style="margin-top: 10px; display: flex; gap: 10px;">
+                    <button class="btn btn-small" onclick="clearConsole()"><i class="ri-delete-bin-line"></i>
+                        Limpar</button>
+                    <button class="btn btn-small" onclick="toggleAutoScroll()" id="btn-autoscroll"
+                        style="background: #2980b9;">Auto-Scroll: ON</button>
                 </div>
             </div>
 
@@ -377,10 +374,77 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
+        // --- SOCKET.IO LIVE LOGS ---
+        const socket = io('/admin');
+        const consoleOutput = document.getElementById('console-output');
+        let autoScroll = true;
+
+        socket.on('connect', () => {
+            document.getElementById('socket-status').textContent = 'Conectado (Ao Vivo)';
+            document.getElementById('socket-status').style.background = '#2ed573';
+            logToConsole('>>> CONEXÃO ESTABELECIDA COM O SERVIDOR <<<', '#2ed573');
+        });
+
+        socket.on('disconnect', () => {
+            document.getElementById('socket-status').textContent = 'Desconectado';
+            document.getElementById('socket-status').style.background = '#e74c3c';
+            logToConsole('>>> CONEXÃO PERDIDA <<<', '#e74c3c');
+        });
+
+        socket.on('log_message', (msg) => {
+            logToConsole(msg.data);
+        });
+
+        function logToConsole(text, color = null) {
+            const div = document.createElement('div');
+            // Sanitiza HTML simples e preserva quebras de linha
+            div.textContent = text;
+            div.style.borderBottom = '1px solid #1a1a1a';
+            div.style.padding = '2px 0';
+            if (color) div.style.color = color;
+
+            // Highlight para Erros e Avisos
+            if (text.includes('[ERROR]') || text.includes('❌')) div.style.color = '#ff4757';
+            if (text.includes('[WARNING]') || text.includes('⚠️')) div.style.color = '#ffa502';
+            if (text.includes('[SUCCESS]') || text.includes('✅')) div.style.color = '#2ed573';
+
+            consoleOutput.appendChild(div);
+
+            // Limite de linhas (evitar travar navegador)
+            if (consoleOutput.childElementCount > 1000) {
+                consoleOutput.removeChild(consoleOutput.firstChild);
+            }
+
+            if (autoScroll) {
+                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            }
+        }
+
+        function clearConsole() {
+            consoleOutput.innerHTML = '';
+        }
+
+        function toggleAutoScroll() {
+            autoScroll = !autoScroll;
+            const btn = document.getElementById('btn-autoscroll');
+            if (autoScroll) {
+                btn.textContent = 'Auto-Scroll: ON';
+                btn.style.background = '#2980b9';
+            } else {
+                btn.textContent = 'Auto-Scroll: OFF';
+                btn.style.background = '#7f8c8d';
+            }
+        }
+
+        // --- END LIVE LOGS ---
+
         document.addEventListener('DOMContentLoaded', function () {
             showTab('dashboard'); // Force load dashboard first
         });
+
+        // ... (Mantendo restante do script inalterado abaixo) ...
 
         // Global state tracking
         let currentBuildMode = 'restricted';
@@ -398,7 +462,7 @@
 
             if (tabName === 'users') loadUsers();
             if (tabName === 'dashboard') loadStats();
-            if (tabName === 'logs') loadLogs();
+            // if (tabName === 'logs') loadLogs(); // Removido pois agora é Live Console
             if (tabName === 'texano') monitorTexano();
         }
 
