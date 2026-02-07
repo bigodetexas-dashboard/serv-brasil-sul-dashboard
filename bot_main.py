@@ -733,6 +733,36 @@ def save_death_to_db(
         print(f"[DB SYNC ERROR] Erro ao salvar morte no DB: {e}")
 
 
+# --- PERSISTENT LOGGING (ADM DASHBOARD) ---
+def save_log_to_db(event_type, gamertag, ip, extra=None):
+    """Salva logs gerais no banco para o Admin Dashboard."""
+    try:
+        db_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "bigode_unified.db"
+        )
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+
+        cur.execute(
+            """
+            INSERT INTO game_logs (timestamp, event_type, gamertag, ip, extra)
+            VALUES (?, ?, ?, ?, ?)
+        """,
+            (
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                event_type,
+                gamertag,
+                ip,
+                json.dumps(extra or {}),
+            ),
+        )
+
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"[LOG DB ERROR] {e}")
+
+
 async def parse_log_line(line):
     line = line.strip()
     if not line:
@@ -750,6 +780,9 @@ async def parse_log_line(line):
             print(f"[LOG] Jogador {name} conectando com IP: {ip}")
 
             # TODO: Comparar com lista de banidos/alts no DB
+            # Salva log de conexão
+            save_log_to_db("connection", name, ip, {"action": "login"})
+
             is_suspect = False
             # if database.check_suspect(name, ip): is_suspect = True
 

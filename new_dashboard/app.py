@@ -152,9 +152,39 @@ if os.getenv("FLASK_ENV") == "production":
     )
 
 # Inicializar SocketIO com CORS restrito
+# Inicializar SocketIO com CORS restrito
 socketio = SocketIO(
     app, cors_allowed_origins=ALLOWED_ORIGINS.split(","), async_mode="threading"
 )
+
+
+# --- LIVE CONSOLE INTERCEPTOR ---
+class StdoutInterceptor:
+    def __init__(self, original_stdout):
+        self.original_stdout = original_stdout
+
+    def write(self, message):
+        self.original_stdout.write(message)
+        if message.strip():
+            try:
+                socketio.emit(
+                    "log_message",
+                    {"data": message},
+                    namespace="/admin",
+                    broadcast=True,
+                )
+            except:
+                pass
+
+    def flush(self):
+        self.original_stdout.flush()
+
+
+# Redirecionar stdout para o interceptor (Apenas em Prod ou se flag ativa)
+import sys
+
+sys.stdout = StdoutInterceptor(sys.stdout)
+sys.stderr = StdoutInterceptor(sys.stderr)
 
 
 # Import security helpers
