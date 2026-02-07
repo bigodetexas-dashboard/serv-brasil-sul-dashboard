@@ -511,8 +511,7 @@ def format_time(seconds):
 
 def find_latest_adm_log(ftp):
     """Encontra o arquivo .ADM mais recente no servidor (Priorizando /dayzxb/config)."""
-    print("Buscando arquivos de log (.ADM, .RPT, .log)...")
-    found_files = []
+    print("Buscando arquivos de log (.ADM)...")
 
     # Prioridade 1: /dayzxb/config (Nitrado Xbox Default)
     # Prioridade 2: Fallbacks
@@ -521,29 +520,36 @@ def find_latest_adm_log(ftp):
             print(f"  Tentando pasta: {path}")
             ftp.cwd(path)
             items = ftp.nlst()
-            count = 0
-            for name in items:
-                lower_name = name.lower()
-                if (
-                    lower_name.endswith(".adm") or lower_name.endswith(".rpt")
-                ) and "crash" not in lower_name:
-                    found_files.append(f"{path}/{name}")
-                    count += 1
-            if count > 0:
-                print(f"  [OK] Encontrados {count} logs em {path}")
-                break
+
+            # Filtra apenas ADM primeiro
+            adm_files = [
+                f"{path}/{f}"
+                for f in items
+                if f.lower().endswith(".adm") and "crash" not in f.lower()
+            ]
+            if adm_files:
+                adm_files.sort()
+                latest = adm_files[-1]
+                print(f"  [OK] Encontrado .ADM mais recente: {latest}")
+                return latest
+
+            # Fallback para .RPT se não houver .ADM
+            rpt_files = [
+                f"{path}/{f}"
+                for f in items
+                if f.lower().endswith(".rpt") and "crash" not in f.lower()
+            ]
+            if rpt_files:
+                rpt_files.sort()
+                latest = rpt_files[-1]
+                print(f"  [OK] Usando .RPT (Fallback): {latest}")
+                return latest
+
         except Exception:
             continue
 
-    if not found_files:
-        print("Nenhum arquivo de log (.ADM ou .RPT) encontrado.")
-        return None
-
-    # Ordenar por nome (que contém a data) para pegar o mais recente
-    found_files.sort()
-    latest_file = found_files[-1]
-    print(f"Usando log mais recente: {latest_file}")
-    return latest_file
+    print("Nenhum arquivo de log (.ADM ou .RPT) encontrado.")
+    return None
 
 
 # --- ANTI-SPAM DE CONSTRUÇÃO & DUPLICAÇÃO ---
@@ -766,7 +772,14 @@ def save_log_to_db(event_type, gamertag, ip, extra=None):
 async def parse_log_line(line):
     line = line.strip()
     if not line:
-        return None
+        return
+
+    # DEBUG: Ver o que está passando
+    # print(f"[DEBUG PARSER] {line[:50]}...")
+    if "killed by" in line:
+        pass  # print(f"[DEBUG KILLED MATCH] {line}")
+    elif "died" in line:  # Catch 'died' generic
+        pass  # print(f"[DEBUG DIED MATCH] {line}")
 
     lx, lz = 0, 0
 
@@ -1444,6 +1457,7 @@ async def killfeed_loop():
             current_log_file = find_latest_adm_log(ftp)
             if current_log_file:
                 # Get Initial Size
+                ftp.voidcmd("TYPE I")  # Ensure binary mode for SIZE
                 size = ftp.size(current_log_file)
                 last_byte_offset = size
                 print(f"Initial Log: {current_log_file} (Start Offset {size})")
@@ -1461,6 +1475,7 @@ async def killfeed_loop():
         else:
             # 3. Check for Update
             try:
+                ftp.voidcmd("TYPE I")  # Ensure binary mode for SIZE
                 server_size = ftp.size(current_log_file)
             except Exception:
                 # File might be gone or rotated
