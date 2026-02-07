@@ -17,6 +17,7 @@ def connect_ftp():
         ftp = ftplib.FTP()
         ftp.connect(FTP_HOST, FTP_PORT)
         ftp.login(FTP_USER, FTP_PASS)
+        ftp.voidcmd("TYPE I")  # Force Binary Mode for SIZE support
         return ftp
     except Exception as e:
         print(f"Erro FTP: {e}")
