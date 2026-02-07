@@ -66,6 +66,7 @@ from utils.helpers import (
     save_json,
     find_item_by_key,
     calculate_kd,
+    calculate_level,
     get_user_clan,
 )
 from utils.ftp_helpers import connect_ftp
@@ -131,17 +132,62 @@ last_read_lines = 0
 
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix="!", intents=intents)
+intents.members = True
 
-# Anexa atributos ao bot para acesso nos Cogs
-bot.admin_password = ADMIN_PASSWORD
-bot.admin_whitelist = admin_whitelist
-bot.footer_icon = FOOTER_ICON
+
+class BigodeBot(commands.Bot):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.admin_password = ADMIN_PASSWORD
+        self.admin_whitelist = admin_whitelist
+        self.footer_icon = FOOTER_ICON
+
+    async def setup_hook(self):
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("--- EXECUTANDO SETUP_HOOK (STARTUP) ---")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+        # 1. Iniciar Loops de Processamento IMEDIATAMENTE
+        tasks_to_start = [
+            raid_scheduler,
+            backup_loop,
+            save_data_loop,
+            killfeed_loop,
+            sync_queue_loop,
+        ]
+
+        for t in tasks_to_start:
+            try:
+                if not t.is_running():
+                    t.start()
+                    print(f"  [OK] Task iniciada via Setup Hook: {t}")
+            except Exception as e:
+                print(f"  [ERRO] Falha ao iniciar task {t}: {e}")
+
+        # 2. Carregar Cogs (Módulos)
+        try:
+            await load_extensions()
+        except Exception as e:
+            print(f"  [ERROR] Falha ao carregar extensoes: {e}")
+
+        # 3. Hijack de logs (opcional, deixar desativado para debug se necessário)
+        # sys.stdout = SocketWriter(sys.stdout)
+        # sys.stderr = SocketWriter(sys.stderr)
+
+        print("--- SETUP_HOOK CONCLUIDO ---")
+
+
+bot = BigodeBot(command_prefix="!", intents=intents)
 
 
 async def load_extensions():
+    # print("Iniciando carregamento de modulos (Cogs)...")
     # Usar caminho absoluto para a pasta cogs
     cogs_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cogs")
+    if not os.path.exists(cogs_dir):
+        print(f"  [ERROR] Diretorio de Cogs nao encontrado: {cogs_dir}")
+        return
+
     for filename in os.listdir(cogs_dir):
         if filename.endswith(".py") and not filename.startswith("__"):
             try:
@@ -154,31 +200,10 @@ async def load_extensions():
 # Substituir o antigo load_extensions
 @bot.event
 async def on_ready():
-    await load_extensions()
-
-    # Start Background Tasks
-    if not raid_scheduler.is_running():
-        raid_scheduler.start()
-        print("✅ Raid Scheduler iniciado.")
-
-    if not backup_loop.is_running():
-        backup_loop.start()
-        print("✅ Backup Loop iniciado.")
-
-    if not save_data_loop.is_running():
-        save_data_loop.start()
-        print("✅ Save Data Loop iniciado.")
-
-    # Killfeed loop (monitor_killfeed) identified in next step
-    if not killfeed_loop.is_running():
-        killfeed_loop.start()
-        print("✅ Monitor de Killfeed iniciado.")
-
-    if not sync_queue_loop.is_running():
-        sync_queue_loop.start()
-        print("✅ Sincronizador de Fila iniciado.")
-
-    print(f"Logged in as {bot.user} (ID: {bot.user.id})")
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print(f"BOT LOGADO: {bot.user} (ID: {bot.user.id})")
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print("SISTEMA PRONTO E PROCESSANDO.")
     print("------")
 
 
@@ -221,8 +246,14 @@ class SocketWriter:
         self.original_stream = original_stream
 
     def write(self, message):
-        # Escreve no terminal original
-        self.original_stream.write(message)
+        # Escreve no terminal original (com fallback para unicode)
+        try:
+            self.original_stream.write(message)
+        except UnicodeEncodeError:
+            self.original_stream.write(
+                message.encode("ascii", "replace").decode("ascii")
+            )
+
         # Emite para o SocketIO se houver mensagem
         if message.strip():
             try:
@@ -234,22 +265,20 @@ class SocketWriter:
         self.original_stream.flush()
 
 
-# Substitui stdout e stderr
-sys.stdout = SocketWriter(sys.stdout)
-sys.stderr = SocketWriter(sys.stderr)
+# Substitui stdout e stderr (MOVIDO PARA ON_READY PARA EVITAR DEADLOCK)
+# sys.stdout = SocketWriter(sys.stdout)
+# sys.stderr = SocketWriter(sys.stderr)
 
 
-# Rodar o servidor web em uma thread separada (usando socketio.run)
-# NOTE: allow_unsafe_werkzeug=True é necessário aqui pois socketio roda sobre Werkzeug em dev mode
-threading.Thread(
-    target=lambda: socketio.run(
+# Rodar o servidor web em uma thread separada (MOVIDO PARA O BLOCO MAIN)
+def start_web_server():
+    print("[INIT] Iniciando Servidor Web na porta 3000...")
+    socketio.run(
         health_app,
         host="0.0.0.0",
         port=int(os.getenv("PORT", "3000")),
         allow_unsafe_werkzeug=True,
-    ),
-    daemon=True,
-).start()
+    )
 
 
 # --- CLASSE DE PAGINAÇÃO INTERATIVA ---
@@ -469,8 +498,7 @@ def format_time(seconds):
     return f"{hours:02d}h:{minutes:02d}m:{secs:02d}s"
 
 
-def calculate_level(kills):
-    return 1 + int(kills / 5)
+# calculate_level movido para utils/helpers.py
 
 
 # calculate_kd movido para utils/helpers.py
@@ -481,58 +509,36 @@ def calculate_level(kills):
 
 
 def find_latest_adm_log(ftp):
-    """Encontra o arquivo .ADM mais recente no servidor (Busca Recursiva)."""
+    """Encontra o arquivo .ADM mais recente no servidor (Priorizando /dayzxb/config)."""
     print("Buscando arquivos de log (.ADM, .RPT, .log)...")
     found_files = []
 
-    def traverse(path):
+    # Prioridade 1: /dayzxb/config (Nitrado Xbox Default)
+    # Prioridade 2: Fallbacks
+    for path in ["/dayzxb/config", "/dayzxb", "/profile", "/SC"]:
         try:
+            print(f"  Tentando pasta: {path}")
             ftp.cwd(path)
-            items = ftp.mlsd()
+            items = ftp.nlst()
+            count = 0
+            for name in items:
+                lower_name = name.lower()
+                if (
+                    lower_name.endswith(".adm") or lower_name.endswith(".rpt")
+                ) and "crash" not in lower_name:
+                    found_files.append(f"{path}/{name}")
+                    count += 1
+            if count > 0:
+                print(f"  [OK] Encontrados {count} logs em {path}")
+                break
         except Exception:
-            try:
-                ftp.cwd(path)
-                items = []
-                for name in ftp.nlst():
-                    items.append((name, {"type": "unknown"}))
-            except Exception:
-                return
-
-        for name, facts in items:
-            if name in [".", ".."]:
-                continue
-
-            full_path = f"{path}/{name}" if path != "/" else f"/{name}"
-
-            lower_name = name.lower()
-            if lower_name.endswith(".adm") or lower_name.endswith(".rpt"):
-                if "crash" not in lower_name:
-                    found_files.append(full_path)
-
-            if "." not in name or facts.get("type") == "dir":
-                try:
-                    traverse(full_path)
-                    ftp.cwd(path)
-                except Exception:
-                    pass
-
-    try:
-        ftp.cwd("/")
-        root_items = ftp.nlst()
-        for item in root_items:
-            lower_item = item.lower()
-            if lower_item.endswith(".adm") or lower_item.endswith(".rpt"):
-                if "crash" not in lower_item:
-                    found_files.append(f"/{item}")
-            elif "." not in item:
-                traverse(f"/{item}")
-    except Exception as e:
-        print(f"Erro na busca inicial: {e}")
+            continue
 
     if not found_files:
         print("Nenhum arquivo de log (.ADM ou .RPT) encontrado.")
         return None
 
+    # Ordenar por nome (que contém a data) para pegar o mais recente
     found_files.sort()
     latest_file = found_files[-1]
     print(f"Usando log mais recente: {latest_file}")
@@ -1251,30 +1257,49 @@ STATE_FILE = "bot_state.json"
 @tasks.loop(seconds=15)
 async def killfeed_loop():
     global last_read_lines, current_log_file
+    print("[DEBUG] killfeed_loop EXECUTANDO...", flush=True)
 
-    # 🔄 AUTO-FAILOVER: Verifica se deve ativar modo backup
-    should_backup = auto_failover.should_activate_backup()
-    if should_backup:
-        auto_failover.send_backup_heartbeat()
-    else:
-        # Sistema principal está ativo, não processar logs aqui
-        return
+    # 🔄 AUTO-FAILOVER: Ignorado para forçar este bot como principal
+    # should_backup = auto_failover.should_activate_backup()
+    # if should_backup:
+    #     auto_failover.send_backup_heartbeat()
+    # else:
+    #     return
+
+    # Forçado Ativado
+    pass
 
     # NOTE: 'last_read_lines' is reused here as 'last_byte_offset' to avoid global renaming chaos
     last_byte_offset = last_read_lines
 
     config = load_json(CONFIG_FILE)
     channel_id = config.get("killfeed_channel")
+    print(f"[DEBUG] killfeed_loop EXECUTANDO... (Channel ID: {channel_id})", flush=True)
     if not channel_id:
         return
 
-    channel = bot.get_channel(channel_id)
+    channel = bot.get_channel(int(channel_id))
     if not channel:
-        return
+        try:
+            print(
+                f"[DEBUG] Canal {channel_id} nao encontrado no cache. Tentando buscar...",
+                flush=True,
+            )
+            channel = await bot.fetch_channel(int(channel_id))
+        except Exception as e:
+            print(f"[DEBUG] Erro ao buscar canal {channel_id}: {e}", flush=True)
+            return
 
+    # Usar ascii/ignore para evitar UnicodeEncodeError no terminal Windows
+    safe_channel_name = channel.name.encode("ascii", "ignore").decode("ascii")
+    print(f"[DEBUG] Canal encontrado: {safe_channel_name}", flush=True)
+    print("[DEBUG] Tentando conectar ao FTP...", flush=True)
     ftp = connect_ftp()
     if not ftp:
+        print("[DEBUG] FALHA AO CONECTAR FTP.", flush=True)
         return
+
+    print("[DEBUG] FTP Conectado com sucesso!", flush=True)
 
     try:
         # 1. State Recovery
@@ -1289,6 +1314,7 @@ async def killfeed_loop():
 
         # 2. File Selection (if none)
         if not current_log_file:
+            print("Tentando localizar log mais recente no FTP...")
             current_log_file = find_latest_adm_log(ftp)
             if current_log_file:
                 # Get Initial Size
@@ -1745,77 +1771,8 @@ def get_location_name(x, z):
 # --- COMANDOS EXTRAS ---
 
 
-@bot.group(invoke_without_command=True)
-async def alarme(ctx):
-    """Sistema de Alarmes de Base."""
-    await ctx.send(
-        "🚨 **Sistema de Alarmes**\nUse `!alarme set <nome> <X> <Z> <raio>` para proteger sua base."
-    )
-
-
-@alarme.command()
-async def set(ctx, nome: str, x: float, z: float, raio: int):
-    """Define um alarme. Ex: !alarme set BasePrincipal 4500 10200 100"""
-    if raio > 500:
-        await ctx.send("❌ Raio máximo permitido: 500 metros.")
-        return
-
-    cost = 10000  # Custo para instalar alarme
-    bal = database.get_balance(ctx.author.id)
-    if bal < cost:
-        await ctx.send(
-            f"❌ Custa {cost} DZ Coins para instalar um sistema de segurança."
-        )
-        return
-
-    database.update_balance(
-        ctx.author.id, -cost, "other", f"Instalação de Alarme: {nome}"
-    )
-
-    alarms = load_alarms()
-
-    # Verifica se o usuário já possui um alarme (base) registrado
-    for _aid, data in alarms.items():
-        if data["owner_id"] == ctx.author.id:
-            await ctx.send(
-                "❌ **Limite Atingido!**\nVocê já possui uma base registrada. Use `!alarme remover <nome>` antes de registrar uma nova."
-            )
-            return
-
-    user_clan, _ = get_user_clan(ctx.author.id)
-
-    for _aid, data in alarms.items():
-        # Calcula distância entre o novo alarme e o existente
-        dist = math.sqrt((x - data["x"]) ** 2 + (z - data["z"]) ** 2)
-        # Se as áreas se sobrepõem (soma dos raios) ou estão muito perto
-        if dist < (raio + data["radius"]):
-            owner_clan, _ = get_user_clan(data["owner_id"])
-
-            # Se o dono do alarme existente não for o mesmo usuário
-            if data["owner_id"] != ctx.author.id:
-                # Se não tiverem clã, ou forem de clãs diferentes -> BLOQUEIA
-                if user_clan is None or owner_clan != user_clan:
-                    await ctx.send(
-                        "❌ **Acesso Negado!**\nEsta área já é monitorada por outro sobrevivente (ou Clã).\nVocê só pode colocar alarmes aqui se fizer parte do mesmo Clã que o dono."
-                    )
-                    # Devolve o dinheiro
-                    database.update_balance(
-                        ctx.author.id, cost, "other", "Reembolso de Alarme"
-                    )
-                    return
-
-    # ID único para o alarme
-    alarm_id = f"{ctx.author.id}_{len(alarms) + 1}"
-
-    alarms[alarm_id] = {
-        "owner_id": ctx.author.id,
-        "name": nome,
-        "x": x,
-        "z": z,
-        "radius": raio,
-        "created_at": datetime.now().isoformat(),
-    }
-    save_alarms(alarms)
+# --- COMANDOS MOVIDOS PARA COGS (pvp.py) ---
+# alarme, set, etc.
 
 
 # --- COMANDOS DE ALARME E PROCURADO MOVIDOS PARA cogs/pvp.py ---
@@ -1857,10 +1814,14 @@ async def set(ctx, nome: str, x: float, z: float, raio: int):
 
 
 if __name__ == "__main__":
+    # Iniciar Servidor Web
+    web_thread = threading.Thread(target=start_web_server, daemon=True)
+    web_thread.start()
+
     try:
+        print("--- INICIANDO BOT.RUN() ---")
         bot.run(TOKEN)
     except Exception as e:
         print(f"\n[ERRO CRITICO] O bot falhou ao iniciar: {e}")
         print("Verifique se o TOKEN esta correto e se a internet esta funcionando.")
-        # input("Pressione ENTER para fechar...")
         pass

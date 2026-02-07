@@ -30,6 +30,11 @@ def find_item_by_key(key):
     return None
 
 
+def calculate_level(kills):
+    """Calcula o nível do jogador baseado em kills"""
+    return 1 + int(kills / 5)
+
+
 def calculate_kd(kills, deaths):
     """Calcula o K/D de um jogador"""
     return float(kills) if deaths == 0 else round(kills / deaths, 2)
