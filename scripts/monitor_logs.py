@@ -277,11 +277,24 @@ def check_construction(x, z, y, player_name, item_name, conn):
     return True, "OK"
 
 
-def ban_player(gamertag, reason="Banido pelo Bot"):
+def ban_player(gamertag, reason="Banido pelo Bot", conn=None):
     """
-    Adiciona o jogador ao arquivo ban.txt no servidor via FTP.
-    Retorna True se sucesso, False se falhou.
+    Adiciona o jogador ao arquivo ban.txt no servidor via FTP usando XUID se disponível.
     """
+    xuid = None
+    if conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT xbox_id FROM player_identities WHERE LOWER(gamertag) = LOWER(?)",
+                (gamertag,),
+            )
+            row = cur.fetchone()
+            if row:
+                xuid = row[0] if isinstance(row, tuple) else row.get("xbox_id")
+        except Exception as e:
+            print(f"[ERRO] Falha ao buscar XUID para banimento: {e}")
+
     try:
         ftp = connect_ftp()
         if not ftp:
@@ -301,19 +314,31 @@ def ban_player(gamertag, reason="Banido pelo Bot"):
             bio.seek(0)
             ban_list = bio.read().decode("utf-8", errors="ignore").splitlines()
         except Exception:
-            # Arquivo não existe ainda
             pass
 
+        # Identificador para busca no ban.txt
+        ban_id = xuid if xuid else gamertag
+
         # Verifica se já está banido
-        if gamertag.lower() in [b.lower() for b in ban_list]:
-            print(f"[INFO] {gamertag} já está banido")
+        is_banned = False
+        for line in ban_list:
+            if ban_id.lower() in line.lower():
+                is_banned = True
+                break
+
+        if is_banned:
+            print(f"[INFO] {gamertag} ({ban_id}) já está banido")
             ftp.quit()
             return True
 
-        # Adiciona novo ban
-        ban_list.append(
-            f"{gamertag}  // {reason} - {datetime.now().strftime('%Y-%m-%d %H:%M')}"
-        )
+        # Adiciona novo ban no formato solicitado: [XUID/GT] // [Gamertag] - [Motivo]
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+        if xuid:
+            new_ban_line = f"{xuid}  // {gamertag} - {reason} - {timestamp}"
+        else:
+            new_ban_line = f"{gamertag}  // {reason} - {timestamp}"
+
+        ban_list.append(new_ban_line)
 
         # Upload do arquivo atualizado
         from io import BytesIO
@@ -323,14 +348,11 @@ def ban_player(gamertag, reason="Banido pelo Bot"):
         ftp.storbinary(f"STOR {ban_file_path}", bio)
 
         ftp.quit()
-        print(f"✅ [BANIMENTO] {gamertag} foi banido: {reason}")
+        print(f"✅ [BANIMENTO] {gamertag} ({ban_id}) foi banido: {reason}")
         return True
 
     except Exception as e:
         print(f"[ERRO] Falha ao banir {gamertag}: {e}")
-        import traceback
-
-        traceback.print_exc()
         return False
 
 
@@ -389,13 +411,13 @@ def sync_logs():
 
                 if row:
                     cur.execute(
-                        "UPDATE player_identities SET nitrado_id = ?, last_ip = ?, last_seen = datetime('now') WHERE LOWER(gamertag) = LOWER(?)",
-                        (pid, ip, gt),
+                        "UPDATE player_identities SET nitrado_id = ?, xbox_id = ?, last_ip = ?, last_seen = datetime('now') WHERE LOWER(gamertag) = LOWER(?)",
+                        (pid, pid, ip, gt),
                     )
                 else:
                     cur.execute(
-                        "INSERT OR IGNORE INTO player_identities (gamertag, nitrado_id, last_ip, last_seen) VALUES (?, ?, ?, datetime('now'))",
-                        (gt, pid, ip),
+                        "INSERT OR IGNORE INTO player_identities (gamertag, nitrado_id, xbox_id, last_ip, last_seen) VALUES (?, ?, ?, ?, datetime('now'))",
+                        (gt, pid, pid, ip),
                     )
 
                 # 🛡️ PROTEÇÃO ATIVA: Anti-Dupe
@@ -403,7 +425,7 @@ def sync_logs():
                     print(
                         f"🚫 [ANTI-DUPE] {gt} relogou rápido demais (Possível Duplicação)!"
                     )
-                    ban_player(gt, "Tentativa de Duplicação (Fast Relog)")
+                    ban_player(gt, "Tentativa de Duplicação (Fast Relog)", conn)
 
                 stats["conn"] += 1
 
@@ -424,7 +446,7 @@ def sync_logs():
 
                     if not allowed:
                         print(f"🚫 [SKY-KILL] {killer} detectado: {reason}")
-                        ban_player(killer, reason)
+                        ban_player(killer, reason, conn)
 
                 # 1. Registrar na tabela 'events' para o Heatmap
                 cur.execute(
@@ -510,7 +532,7 @@ def sync_logs():
                 # 🛡️ PROTEÇÃO ATIVA: Verifica SPAM
                 if check_spam(player, item):
                     print(f"🚫 [SPAM DETECTADO] {player} está spamando {item}!")
-                    ban_player(player, "Spam de Construção/Lag Machine")
+                    ban_player(player, "Spam de Construção/Lag Machine", conn)
                     stats["conn"] += 1  # Conta como evento processado
                     continue
 
@@ -521,34 +543,38 @@ def sync_logs():
                     # BANIMENTO AUTOMÁTICO
                     if reason == "GardenPlot":
                         print(f"🚫 [BANIMENTO] {player} tentou plantar GardenPlot!")
-                        ban_player(player, "GardenPlot Proibido")
+                        ban_player(player, "GardenPlot Proibido", conn)
 
                     elif reason == "SkyBase":
                         print(
                             f"🚫 [BANIMENTO] {player} tentou construir Sky Base (y={y}m)!"
                         )
                         # Sky Base é construção. Sky Walk seria movimento, mas se construir lá em cima também pega.
-                        ban_player(player, f"Sky Base Detectada (Altura: {y}m)")
+                        ban_player(player, f"Sky Base Detectada (Altura: {y}m)", conn)
 
                     elif reason == "UndergroundBase":
                         print(
                             f"🚫 [BANIMENTO] {player} tentou construir Underground Base (y={y}m)!"
                         )
-                        ban_player(player, f"Underground Base Detectada (Altura: {y}m)")
+                        ban_player(
+                            player, f"Underground Base Detectada (Altura: {y}m)", conn
+                        )
 
                     elif reason.startswith("BannedItemBase"):
                         banned_item = reason.split(":")[1]
                         print(
                             f"🚫 [BANIMENTO] {player} usou item proibido em base: {banned_item}!"
                         )
-                        ban_player(player, f"Glitch Item em Base: {banned_item}")
+                        ban_player(player, f"Glitch Item em Base: {banned_item}", conn)
 
                     elif reason.startswith("UnauthorizedBase"):
                         base_name = reason.split(":")[1]
                         print(
                             f"🚫 [BANIMENTO] {player} construiu ilegalmente na base {base_name}!"
                         )
-                        ban_player(player, f"Construção Ilegal em Base: {base_name}")
+                        ban_player(
+                            player, f"Construção Ilegal em Base: {base_name}", conn
+                        )
 
                     stats["conn"] += 1  # Conta como evento processado
                     continue
