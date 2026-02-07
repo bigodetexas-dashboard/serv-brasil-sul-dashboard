@@ -164,8 +164,20 @@ from bigodudo_routes import bigodudo_bp
 from admin_routes import admin_bp
 
 # Register Blueprints
+from bigodudo_routes import bigodudo_bp
+from admin_routes import admin_bp
+from deaths_apis import deaths_bp
+
 app.register_blueprint(bigodudo_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(deaths_bp, url_prefix="/api/deaths")
+
+
+@app.route("/tiro-na-lata")
+@app.route("/deaths")
+def deaths_page():
+    """Página de KillFeed"""
+    return render_template("deaths.html")
 
 
 @app.route("/regras")

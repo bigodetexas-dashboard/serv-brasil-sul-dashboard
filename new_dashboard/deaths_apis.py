@@ -1,28 +1,55 @@
 # -*- coding: utf-8 -*-
 """
-APIs para Deaths (Kill Feed)
-Adicionar ao new_dashboard/app.py
+APIs para Deaths (Kill Feed) - BigodeTexas
+Refatorado para Blueprint e compatibilidade SQLite.
 """
+
+from flask import Blueprint, request, jsonify, current_app
+import sqlite3
+import os
+from datetime import datetime, timezone
+import math
+
+deaths_bp = Blueprint("deaths", __name__)
+
+
+# --- DATABASE HELPER ---
+def get_db_path():
+    # Assume que o DB está na raiz do projeto (um nível acima deste arquivo se estiver em new_dashboard/)
+    return os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "bigode_unified.db"
+    )
+
+
+def get_db_connection():
+    try:
+        conn = sqlite3.connect(get_db_path())
+        conn.row_factory = sqlite3.Row
+        return conn
+    except Exception as e:
+        print(f"[DEATHS API ERROR] Connection failed: {e}")
+        return None
+
 
 # ==================== DEATHS APIs ====================
 
-from datetime import datetime, timezone
-from utils.deaths_helper import get_location_name
 
-
-@app.route("/api/deaths/recent", methods=["GET"])
+@deaths_bp.route("/recent", methods=["GET"])
 def api_deaths_recent():
-    """Retorna mortes recentes com paginaÃ§Ã£o"""
+    """Retorna mortes recentes com paginação"""
     page = int(request.args.get("page", 1))
     per_page = int(request.args.get("per_page", 20))
     offset = (page - 1) * per_page
 
     conn = get_db_connection()
+    if not conn:
+        return jsonify({"deaths": [], "error": "Database connection failed"}), 500
+
     cur = conn.cursor()
 
     # Total
     cur.execute("SELECT COUNT(*) FROM deaths_log")
-    total = cur.fetchone()[0] if cur.fetchone() else 0
+    total = cur.fetchone()[0]
 
     # Mortes recentes
     cur.execute(
@@ -32,27 +59,40 @@ def api_deaths_recent():
             weapon, distance, is_headshot,
             coord_x, coord_z, location_name, occurred_at
         FROM deaths_log
-        ORDER BY occurred_at DESC
-        LIMIT %s OFFSET %s
+        ORDER BY id DESC
+        LIMIT ? OFFSET ?
     """,
         (per_page, offset),
     )
 
     deaths = []
     for row in cur.fetchall():
+        # SQLite doesn't have native datetime objects like PG, so we parse if needed
+        # But occurred_at is stored as TIMESTAMP which usually returns as string or int depending on adapter
+        dt_str = row["occurred_at"]
+        try:
+            # Try to convert to ISO for JS if it's already a string
+            dt = (
+                datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
+                if dt_str
+                else None
+            )
+        except:
+            dt = None
+
         death = {
-            "id": row[0],
-            "killer": row[1],
-            "victim": row[2],
-            "death_type": row[3],
-            "death_cause": row[4],
-            "weapon": row[5],
-            "distance": row[6],
-            "is_headshot": row[7],
-            "coords": [row[8], row[9]],
-            "location": row[10],
-            "timestamp": row[11].isoformat() if row[11] else None,
-            "time_ago": get_time_ago(row[11]) if row[11] else "Desconhecido",
+            "id": row["id"],
+            "killer": row["killer_gamertag"],
+            "victim": row["victim_gamertag"],
+            "death_type": row["death_type"],
+            "death_cause": row["death_cause"],
+            "weapon": row["weapon"],
+            "distance": row["distance"],
+            "is_headshot": bool(row["is_headshot"]),
+            "coords": [row["coord_x"], row["coord_z"]],
+            "location": row["location_name"],
+            "timestamp": dt_str,
+            "time_ago": get_time_ago(dt) if dt else "Recentemente",
         }
         deaths.append(death)
 
@@ -64,80 +104,93 @@ def api_deaths_recent():
     )
 
 
-@app.route("/api/deaths/stats", methods=["GET"])
+@deaths_bp.route("/stats", methods=["GET"])
 def api_deaths_stats():
-    """Retorna estatÃ­sticas de mortes (Ãºltimas 24h)"""
+    """Retorna estatísticas de mortes (últimas 24h)"""
     conn = get_db_connection()
+    if not conn:
+        return jsonify({"error": "Database connection failed"}), 500
+
     cur = conn.cursor()
 
-    # Stats bÃ¡sicas
+    # Stats básicas (SQLite compatível)
     cur.execute("""
         SELECT
             COUNT(*) as total,
-            COUNT(*) FILTER (WHERE death_type = 'pvp') as pvp,
-            COUNT(*) FILTER (WHERE death_type = 'animal') as animal,
-            COUNT(*) FILTER (WHERE is_headshot = TRUE) as headshots
+            SUM(CASE WHEN death_type = 'pvp' THEN 1 ELSE 0 END) as pvp,
+            SUM(CASE WHEN death_type = 'animal' THEN 1 ELSE 0 END) as animal,
+            SUM(CASE WHEN is_headshot = 1 THEN 1 ELSE 0 END) as headshots
         FROM deaths_log
-        WHERE occurred_at >= NOW() - INTERVAL '24 hours'
+        WHERE occurred_at >= datetime('now', '-24 hours')
     """)
 
-    stats = cur.fetchone()
+    row = cur.fetchone()
+    stats = dict(row) if row else {"total": 0, "pvp": 0, "animal": 0, "headshots": 0}
 
     # Arma mais usada
     cur.execute("""
         SELECT weapon, COUNT(*) as count
         FROM deaths_log
-        WHERE death_type = 'pvp' AND occurred_at >= NOW() - INTERVAL '24 hours'
+        WHERE death_type = 'pvp' AND occurred_at >= datetime('now', '-24 hours')
         GROUP BY weapon
         ORDER BY count DESC
         LIMIT 1
     """)
-    most_weapon = cur.fetchone()
+    most_weapon_row = cur.fetchone()
+    most_weapon = most_weapon_row["weapon"] if most_weapon_row else "N/A"
 
     # Local mais mortal
     cur.execute("""
         SELECT location_name, COUNT(*) as count
         FROM deaths_log
-        WHERE occurred_at >= NOW() - INTERVAL '24 hours'
+        WHERE occurred_at >= datetime('now', '-24 hours')
         GROUP BY location_name
         ORDER BY count DESC
         LIMIT 1
     """)
-    most_location = cur.fetchone()
+    most_location_row = cur.fetchone()
+    most_location = most_location_row["location_name"] if most_location_row else "N/A"
 
     cur.close()
     conn.close()
 
+    total_deaths = stats.get("total") or 0
     return jsonify(
         {
-            "total_deaths": stats[0] if stats else 0,
-            "pvp": stats[1] if stats else 0,
-            "animal": stats[2] if stats else 0,
-            "headshots": stats[3] if stats else 0,
-            "deaths_per_hour": round((stats[0] if stats else 0) / 24, 1),
-            "most_used_weapon": most_weapon[0] if most_weapon else "N/A",
-            "most_deadly_location": most_location[0] if most_location else "N/A",
+            "total_deaths": total_deaths,
+            "pvp": stats.get("pvp") or 0,
+            "animal": stats.get("animal") or 0,
+            "headshots": stats.get("headshots") or 0,
+            "deaths_per_hour": round(total_deaths / 24, 1),
+            "most_used_weapon": most_weapon,
+            "most_deadly_location": most_location,
         }
     )
 
 
-def get_time_ago(timestamp):
-    """Converte timestamp para 'hÃ¡ X minutos/horas'"""
-    if not timestamp:
+def get_time_ago(dt):
+    """Converte datetime para 'há X minutos/horas'"""
+    if not dt:
         return "Desconhecido"
 
     now = datetime.now(timezone.utc)
-    diff = now - timestamp.replace(tzinfo=timezone.utc)
+    # Ensure dt is timezone aware
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+
+    diff = now - dt
     seconds = diff.total_seconds()
 
+    if seconds < 0:
+        return "agora"
     if seconds < 60:
-        return "hÃ¡ poucos segundos"
+        return "há poucos segundos"
     elif seconds < 3600:
         minutes = int(seconds / 60)
-        return f"hÃ¡ {minutes} min"
+        return f"há {minutes} min"
     elif seconds < 86400:
         hours = int(seconds / 3600)
-        return f"hÃ¡ {hours}h"
+        return f"há {hours}h"
     else:
         days = int(seconds / 86400)
-        return f"hÃ¡ {days}d"
+        return f"há {days}d"

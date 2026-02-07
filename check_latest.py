@@ -15,7 +15,7 @@ def check_db():
     print("--- LATEST DEATHS ---")
     try:
         cur.execute(
-            "SELECT id, victim, killer, weapon, timestamp FROM deaths_log ORDER BY id DESC LIMIT 3"
+            "SELECT id, victim_gamertag, killer_gamertag, weapon, occurred_at FROM deaths_log ORDER BY id DESC LIMIT 3"
         )
         rows = cur.fetchall()
         for r in rows:
@@ -26,7 +26,7 @@ def check_db():
     print("\n--- LATEST DASHBOARD EVENTS ---")
     try:
         cur.execute(
-            "SELECT id, event_type, value, timestamp FROM dashboard_events ORDER BY id DESC LIMIT 3"
+            "SELECT id, type, content, created_at FROM dashboard_events ORDER BY id DESC LIMIT 3"
         )
         rows = cur.fetchall()
         for r in rows:

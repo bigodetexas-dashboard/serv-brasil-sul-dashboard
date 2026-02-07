@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 
 # Third-Party Imports
+import sqlite3
 import discord
 from discord.ext import commands, tasks
 import aiohttp
@@ -666,10 +667,78 @@ def check_construction(x, z, y, player_name, item_name):
     return True, "OK"
 
 
+# --- DATABASE SYNC FOR DASHBOARD ---
+def save_death_to_db(
+    killer,
+    victim,
+    weapon,
+    distance,
+    pos,
+    death_type="pvp",
+    is_headshot=0,
+    location="Chernarus",
+):
+    """Salva morte no banco de dados unificado para o dashboard."""
+    try:
+        db_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "bigode_unified.db"
+        )
+        conn = sqlite3.connect(db_path)
+        cur = conn.cursor()
+
+        cur.execute(
+            """
+            INSERT INTO deaths_log (
+                killer_gamertag, victim_gamertag, death_type, death_cause,
+                weapon, distance, is_headshot, coord_x, coord_z, location_name, occurred_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+        """,
+            (
+                killer,
+                victim,
+                death_type,
+                f"Killed by {killer}" if killer else "Died",
+                weapon,
+                distance,
+                1 if is_headshot else 0,
+                pos[0],
+                pos[2],
+                location,
+            ),
+        )
+
+        conn.commit()
+        conn.close()
+        print(f"[DB SYNC] Morte registrada no Dashboard: {killer} -> {victim}")
+
+        # Emitir via SocketIO se possível (Opcional, pois o dashboard costuma ler via API)
+        # Notificar o dashboard via socket se estiver rodando no mesmo processo
+        try:
+            from new_dashboard.app import socketio
+
+            socketio.emit(
+                "new_death",
+                {
+                    "killer": killer,
+                    "victim": victim,
+                    "weapon": weapon,
+                    "location": location,
+                },
+                namespace="/",
+            )
+        except:
+            pass
+
+    except Exception as e:
+        print(f"[DB SYNC ERROR] Erro ao salvar morte no DB: {e}")
+
+
 async def parse_log_line(line):
     line = line.strip()
     if not line:
         return None
+
+    lx, lz = 0, 0
 
     # --- DETECÇÃO DE LOGIN (SUSPEITOS) ---
     if "connected" in line.lower() and "ip" in line.lower():
@@ -935,6 +1004,18 @@ async def parse_log_line(line):
                 icon_url=FOOTER_ICON,
             )
 
+            # SALVAR NO DB DO DASHBOARD 🚀
+            save_death_to_db(
+                killer_name,
+                victim_name,
+                weapon,
+                distance,
+                (lx, 0, lz),
+                death_type="pvp",
+                is_headshot=False,
+                location=location,
+            )
+
             return embed
         except Exception as e:
             print(f"Erro parse kill: {e}")
@@ -957,6 +1038,18 @@ async def parse_log_line(line):
             victim["killstreak"] = 0
             victim["last_death_time"] = time.time()
             save_json(PLAYERS_DB_FILE, db)
+
+            # SALVAR NO DB DO DASHBOARD 🚀
+            save_death_to_db(
+                None,
+                victim_name,
+                "Desconhecido",
+                0,
+                (0, 0, 0),
+                death_type="pve",
+                is_headshot=False,
+                location="Chernarus",
+            )
 
             embed = discord.Embed(
                 description=f"💀 **{victim_name}** morreu.",
