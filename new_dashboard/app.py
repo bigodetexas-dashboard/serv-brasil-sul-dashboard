@@ -793,6 +793,47 @@ def leaderboard():
     return render_template("leaderboard.html")
 
 
+@app.route("/hall-of-shame")
+def hall_of_shame():
+    """Muro da Vergonha - Jogadores banidos"""
+    try:
+        # Importar sistema de auto-ban
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        import auto_ban_system
+
+        # Buscar banimentos
+        bans = auto_ban_system.get_hall_of_shame(limit=100)
+
+        # Calcular estatísticas
+        total_bans = len(bans)
+        critical_bans = sum(1 for b in bans if b['severity'] == 'CRÍTICA')
+        severe_bans = sum(1 for b in bans if b['severity'] == 'GRAVE')
+
+        # Banimentos de hoje
+        from datetime import datetime, timedelta
+        today = datetime.now().date()
+        today_bans = sum(1 for b in bans if b['detected_at'] and b['detected_at'][:10] == str(today))
+
+        return render_template(
+            "hall_of_shame.html",
+            bans=bans,
+            total_bans=total_bans,
+            critical_bans=critical_bans,
+            severe_bans=severe_bans,
+            today_bans=today_bans
+        )
+    except Exception as e:
+        print(f"[HALL OF SHAME] Erro: {e}")
+        return render_template(
+            "hall_of_shame.html",
+            bans=[],
+            total_bans=0,
+            critical_bans=0,
+            severe_bans=0,
+            today_bans=0
+        )
+
+
 @app.route("/checkout")
 def checkout():
     """PÃ¡gina de checkout com mapa"""

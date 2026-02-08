@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muro da Vergonha - BigodeTexas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0000;
+            border-radius: 15px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #ffaaaa;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #ff6666;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .bans-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .ban-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 5px solid;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .ban-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .ban-card.critica {
+            border-left-color: #ff0000;
+            background: rgba(255, 0, 0, 0.05);
+        }
+
+        .ban-card.grave {
+            border-left-color: #ff6600;
+            background: rgba(255, 102, 0, 0.05);
+        }
+
+        .ban-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .ban-player {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .ban-severity {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .severity-critica {
+            background: #ff0000;
+            color: #fff;
+        }
+
+        .severity-grave {
+            background: #ff6600;
+            color: #fff;
+        }
+
+        .ban-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .detail-label {
+            color: #888;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #fff;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .ban-reason {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .ban-reason h4 {
+            color: #ff6666;
+            margin-bottom: 10px;
+        }
+
+        .ban-reason p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .evidence {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #0f0;
+            overflow-x: auto;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #ff0000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #cc0000;
+        }
+
+        .no-bans {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+        }
+
+        .no-bans h2 {
+            color: #00ff00;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .no-bans p {
+            color: #aaffaa;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .ban-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-button">← Voltar ao Dashboard</a>
+
+        <div class="header">
+            <h1>🔨 MURO DA VERGONHA 🔨</h1>
+            <p>Jogadores banidos permanentemente do servidor BigodeTexas</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="total-bans">{{ total_bans }}</h3>
+                <p>Total de Banimentos</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="critical-bans">{{ critical_bans }}</h3>
+                <p>Infrações Críticas</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="severe-bans">{{ severe_bans }}</h3>
+                <p>Infrações Graves</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="today-bans">{{ today_bans }}</h3>
+                <p>Banimentos Hoje</p>
+            </div>
+        </div>
+
+        <div class="bans-grid">
+            {% if bans %}
+                {% for ban in bans %}
+                <div class="ban-card {{ ban.severity|lower }}">
+                    <div class="ban-header">
+                        <div class="ban-player">{{ ban.gamertag }}</div>
+                        <div class="ban-severity severity-{{ ban.severity|lower }}">
+                            {{ ban.severity }}
+                        </div>
+                    </div>
+
+                    <div class="ban-details">
+                        <div class="detail-item">
+                            <div class="detail-label">XUID</div>
+                            <div class="detail-value">{{ ban.xuid or 'N/A' }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Tipo de Infração</div>
+                            <div class="detail-value">{{ ban.infraction_type }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Data do Ban</div>
+                            <div class="detail-value">{{ ban.detected_at }}</div>
+                        </div>
+                    </div>
+
+                    <div class="ban-reason">
+                        <h4>Motivo do Banimento:</h4>
+                        <p>{{ ban.description }}</p>
+
+                        {% if ban.evidence %}
+                        <div class="evidence">
+                            {{ ban.evidence }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-bans">
+                    <h2>✅ Nenhum Banimento Registrado</h2>
+                    <p>O servidor está livre de cheaters no momento!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh a cada 30 segundos
+        setTimeout(() => {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>
