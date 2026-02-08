@@ -1,0 +1,18 @@
+RELATORIO DE INTEGRACAO - BigodeTexas
+Data: 2026-02-08 08:15:54.878602
+
+Status: [X] SISTEMA COM ERROS CRITICOS
+
+Resultados:
+  Nitrado FTP: WARNING - ban.txt nao encontrado
+  Discord Webhook: ERROR - Webhook nao configurado
+  Banco de Dados: SUCCESS - Todas tabelas criticas presentes
+  Sistema Failover: SUCCESS - Sistema de failover operacional
+  Auto-Ban System: SUCCESS - Sistema de auto-ban operacional
+  Scripts Monitoramento: SUCCESS - Todos scripts presentes
+
+Erros:
+  • Discord Webhook: Webhook nao configurado
+
+Avisos:
+  • Nitrado FTP: ban.txt nao encontrado

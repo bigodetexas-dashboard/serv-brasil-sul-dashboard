@@ -270,7 +270,7 @@ def add_to_nitrado_banlist(gamertag, xuid, reason):
         ftp.login(ftp_user, ftp_pass)
 
         # Caminho do arquivo de banimentos
-        ban_file_path = "/dayzxb/config/ban.txt"
+        ban_file_path = "/dayzxb_config/ban.txt"  # Correto: underscore não barra
 
         # Baixar ban.txt atual
         ban_list = []
