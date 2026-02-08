@@ -27,8 +27,11 @@ load_dotenv()
 # Configurar encoding UTF-8 para o stdout (corrige exibição de caracteres especiais)
 if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
+    # Só aplicar se stdout ainda não foi interceptado
+    if hasattr(sys.stdout, 'detach'):
+        sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+    if hasattr(sys.stderr, 'detach'):
+        sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
 
 # Caminho do banco de dados unificado
 DB_PATH = os.path.join(project_root, "bigode_unified.db")

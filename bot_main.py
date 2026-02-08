@@ -440,9 +440,13 @@ def update_war_score(killer_name, victim_name):
     if not k_tag or not v_tag or k_tag == v_tag:
         return None
 
-    # TODO: Implement War System in Database
-    # For now, we skip war updates as it requires a new table or complex JSON structure
-    return None
+    # War System implementado ✓
+    try:
+        from war_system import update_war_scores
+        return update_war_scores(k_tag, v_tag)
+    except Exception as e:
+        print(f"[WAR SYSTEM] Erro: {e}")
+        return None
 
 
 # --- SISTEMA DE STATS (KILLFEED) ---
@@ -810,12 +814,56 @@ async def parse_log_line(line):
 
             print(f"[LOG] Jogador {name} conectando com IP: {ip}")
 
-            # TODO: Comparar com lista de banidos/alts no DB
-            # Salva log de conexão
+            # Detecção de banidos/alts implementada ✓
             save_log_to_db("connection", name, ip, {"action": "login"})
 
             is_suspect = False
-            # if database.check_suspect(name, ip): is_suspect = True
+            is_banned = False
+
+            # Verificar se o jogador ou IP está banido
+            conn = database.get_db_connection()
+            if conn:
+                try:
+                    cur = conn.cursor()
+
+                    # 1. Verificar se o gamertag está banido
+                    cur.execute("SELECT is_banned FROM users WHERE gamertag = ? AND is_banned = 1", (name,))
+                    if cur.fetchone():
+                        is_banned = True
+                        print(f"⚠️  [ANTI-CHEAT] {name} está BANIDO!")
+
+                    # 2. Verificar se o IP está em lista de banidos (tabela opcional)
+                    try:
+                        cur.execute("SELECT COUNT(*) FROM banned_ips WHERE ip_address = ?", (ip,))
+                        if cur.fetchone()[0] > 0:
+                            is_banned = True
+                            print(f"⚠️  [ANTI-CHEAT] IP {ip} está BANIDO!")
+                    except:
+                        pass  # Tabela banned_ips pode não existir
+
+                    # 3. Detectar possíveis alts (mesmo IP usado por contas banidas)
+                    if not is_banned:
+                        cur.execute("""
+                            SELECT DISTINCT gamertag FROM connection_logs
+                            WHERE ip_address = ? AND gamertag != ?
+                            LIMIT 5
+                        """, (ip, name))
+                        alts = cur.fetchall()
+                        if alts:
+                            alt_names = [alt[0] for alt in alts]
+                            # Verificar se alguma das alts está banida
+                            for alt_name in alt_names:
+                                cur.execute("SELECT is_banned FROM users WHERE gamertag = ? AND is_banned = 1", (alt_name,))
+                                if cur.fetchone():
+                                    is_suspect = True
+                                    print(f"🚨 [ANTI-CHEAT] {name} pode ser ALT de conta banida: {alt_name}")
+                                    break
+
+                    conn.close()
+                except Exception as e:
+                    print(f"[ANTI-CHEAT] Erro na verificação: {e}")
+                    if conn:
+                        conn.close()
 
             if is_suspect:
                 embed = discord.Embed(

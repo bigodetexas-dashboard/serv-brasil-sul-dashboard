@@ -280,7 +280,24 @@ def get_economy(user_id):
             with open("economy.json", "r", encoding="utf-8") as f:
                 all_data = json.load(f)
                 if user_id == "all":
-                    # TODO: Sincronizar 'all' é complexo, retorna local por enquanto ou implementar loop
+                    # Sincronização 'all' implementada ✓
+                    conn = get_pg_conn()
+                    if conn:
+                        try:
+                            cur = conn.cursor()
+                            cur.execute("SELECT discord_id, balance FROM bank_accounts")
+                            pg_data = cur.fetchall()
+                            # Mesclar dados do PostgreSQL com dados locais
+                            for discord_id, balance in pg_data:
+                                if str(discord_id) in all_data:
+                                    all_data[str(discord_id)]['balance'] = balance
+                                else:
+                                    all_data[str(discord_id)] = {'balance': balance}
+                            conn.close()
+                        except Exception as e:
+                            print(f"[ECONOMY SYNC ALL] Erro ao sincronizar: {e}")
+                            if conn:
+                                conn.close()
                     return all_data
                 json_data = all_data.get(str(user_id), {})
         except:
