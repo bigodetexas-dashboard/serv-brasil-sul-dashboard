@@ -2,12 +2,26 @@
 """
 Sistema de Guerra entre Clãs - BigodeTexas
 """
-import database
+import sqlite3
+import os
+
+# Caminho do banco de dados
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bigode_unified.db")
+
+
+def get_war_db():
+    """Conecta ao banco de dados"""
+    try:
+        if os.path.exists(DB_PATH):
+            return sqlite3.connect(DB_PATH)
+    except Exception as e:
+        print(f"[WAR SYSTEM] Erro ao conectar: {e}")
+    return None
 
 
 def ensure_clan_wars_table():
     """Garante que a tabela clan_wars existe no banco de dados"""
-    conn = database.get_db_connection()
+    conn = get_war_db()
     if not conn:
         return False
 
@@ -42,7 +56,7 @@ def update_war_scores(killer_clan, victim_clan):
 
     ensure_clan_wars_table()
 
-    conn = database.get_db_connection()
+    conn = get_war_db()
     if not conn:
         return None
 

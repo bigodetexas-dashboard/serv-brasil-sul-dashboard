@@ -25,7 +25,8 @@ from utils.ftp_helpers import connect_ftp
 load_dotenv()
 
 # Configurar encoding UTF-8 para o stdout (corrige exibição de caracteres especiais)
-if sys.platform == "win32":
+# NOTA: Desabilitado quando importado como módulo para evitar conflito com StdoutInterceptor
+if sys.platform == "win32" and __name__ == "__main__":
     import codecs
     # Só aplicar se stdout ainda não foi interceptado
     if hasattr(sys.stdout, 'detach'):
