@@ -14,6 +14,7 @@ from flask import (
     jsonify,
     request,
     abort,
+    send_from_directory,
 )
 from flask_babel import gettext as _
 from babel_config import init_babel
@@ -31,6 +32,13 @@ import json
 import math
 import requests
 import time
+
+# Configurar encoding UTF-8 para stdout/stderr no Windows
+if sys.platform == "win32":
+    import codecs
+    if hasattr(sys.stdout, 'detach'):
+        sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+        sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
 from werkzeug.utils import secure_filename
 from itsdangerous import URLSafeTimedSerializer
 
@@ -192,15 +200,95 @@ from security_helpers import waf, ip_blacklist
 from email_service import send_2fa_code
 from bigodudo_routes import bigodudo_bp
 from admin_routes import admin_bp
-
-# Register Blueprints
-from bigodudo_routes import bigodudo_bp
-from admin_routes import admin_bp
 from deaths_apis import deaths_bp
 
 app.register_blueprint(bigodudo_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(deaths_bp, url_prefix="/api/deaths")
+
+
+# ==================== RBAC (Role-Based Access Control) ====================
+
+class UserRole:
+    """User roles for RBAC"""
+    ADMIN = "admin"
+    MODERATOR = "moderator"
+    USER = "user"
+    BANNED = "banned"
+
+
+def get_user_role(user_id):
+    """Get the role of a user from database or config"""
+    if not user_id:
+        return None
+
+    # 1. Dev bypass
+    if os.getenv("FLASK_ENV") == "development" and user_id == "test_user_123":
+        return UserRole.ADMIN
+
+    # 2. Check master admin email (from session)
+    user_email = session.get("discord_email")
+    if user_email and user_email.lower() == "5.wellyton@gmail.com":
+        return UserRole.ADMIN
+
+    # 3. Check ADMIN_DISCORD_IDS from .env
+    env_admin_ids = os.getenv("ADMIN_DISCORD_IDS", "")
+    admin_list = [i.strip() for i in env_admin_ids.split(",") if i.strip()]
+    if str(user_id) in admin_list:
+        return UserRole.ADMIN
+
+    # 4. Check database for role (if users table has 'role' column)
+    try:
+        conn = get_db()
+        if conn:
+            cur = conn.cursor()
+            cur.execute("SELECT role FROM users WHERE discord_id = ?", (str(user_id),))
+            row = cur.fetchone()
+            if row and row[0]:
+                return row[0]
+    except Exception:
+        pass  # Column might not exist yet
+
+    # 5. Default to user role
+    return UserRole.USER
+
+
+def require_role(*allowed_roles):
+    """Decorator to require specific role(s) to access a route"""
+    from functools import wraps
+
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            user_id = session.get("discord_user_id")
+
+            if not user_id:
+                return redirect(url_for("index"))
+
+            user_role = get_user_role(user_id)
+
+            # Check if user is banned
+            if user_role == UserRole.BANNED:
+                return jsonify({"error": "Access denied: User is banned"}), 403
+
+            # Check if user has required role
+            if user_role not in allowed_roles:
+                return jsonify({"error": "Access denied: Insufficient permissions"}), 403
+
+            return f(*args, **kwargs)
+
+        return decorated_function
+    return decorator
+
+
+# ==================== ROUTES ====================
+
+@app.route("/favicon.ico")
+def favicon():
+    """Serve favicon"""
+    return send_from_directory(
+        os.path.join(app.root_path, "static"), "favicon.ico", mimetype="image/x-icon"
+    )
 
 
 @app.route("/tiro-na-lata")
@@ -929,22 +1017,12 @@ def check_2fa_verification():
 
 
 @app.route("/api/shop/upload", methods=["POST"])
+@require_role(UserRole.ADMIN, UserRole.MODERATOR)  # RBAC implemented ✓
 def api_shop_upload_image():
-    """Upload custom image for a shop item (Admin Only)"""
+    """Upload custom image for a shop item (Admin/Moderator Only)"""
     user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": _("Unauthorized")}), 401
-
-    # Simple Admin Check (replace with real role check later)
-    # For now, we trust the "admin" role in users table if it existed,
-    # but we will check against an ENV var for safety
-    admin_id = os.getenv("ADMIN_DISCORD_ID")
-    if admin_id and str(user_id) != str(admin_id):
-        # Also check if user has admin role in DB?
-        # For simplicity in this handover phase, let's assume if they can access the dashboard
-        # and we trust them enough.
-        # TODO: Implement proper role-based access control
-        pass
 
     if "image" not in request.files:
         return jsonify({"error": _("No file part")}), 400
@@ -3819,10 +3897,10 @@ def api_emit_event():
 # ==================== DEATHS (KILL FEED) ROUTES ====================
 
 
-@app.route("/deaths")
-def deaths_page():
-    """PÃ¡gina do feed de mortes"""
-    return render_template("deaths.html")
+# @app.route("/deaths")  # DUPLICADO - Já existe na linha 207
+# def deaths_page():
+#     """PÃ¡gina do feed de mortes"""
+#     return render_template("deaths.html")
 
 
 @app.route("/api/deaths/recent", methods=["GET"])
@@ -3990,16 +4068,33 @@ def get_time_ago_deaths(timestamp_str):
 if __name__ == "__main__":
     host = os.getenv("DASHBOARD_HOST", "127.0.0.1")
     port = int(os.getenv("DASHBOARD_PORT", 5000))
-    # SECURITY: Default should be False (0) for safety
-    debug = os.getenv("FLASK_DEBUG", "0") == "1"
+
+    # SECURITY: Debug mode configuration
+    # Only enable debug if BOTH FLASK_ENV=development AND FLASK_DEBUG=1
+    is_development = os.getenv("FLASK_ENV", "production") == "development"
+    debug_flag = os.getenv("FLASK_DEBUG", "0") == "1"
+    debug = is_development and debug_flag
+
+    # SECURITY WARNING: Never run with debug=True in production!
+    if debug and host not in ("127.0.0.1", "localhost"):
+        print("\n⚠️  WARNING: Debug mode is ON with external access!")
+        print("⚠️  This is UNSAFE for production. Set FLASK_DEBUG=0 in .env\n")
 
     print("=" * 60)
     print("BigodeTexas Dashboard v2.2 (WebSocket Edition)")
     print("=" * 60)
+    print(f"Environment: {os.getenv('FLASK_ENV', 'production').upper()}")
     print(f"WebSocket: ATIVO")
     print(f"Servidor: http://{host}:{port}")
-    print(f"Debug: {'ON' if debug else 'OFF'}")
+    print(f"Debug: {'ON ⚠️ ' if debug else 'OFF ✓'}")
     print("=" * 60)
 
-    # Usar socketio.run() ao invÃ©s de app.run() para suportar WebSocket
-    socketio.run(app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True)
+    # Usar socketio.run() ao invés de app.run() para suportar WebSocket
+    # SECURITY: allow_unsafe_werkzeug only in development
+    socketio.run(
+        app,
+        host=host,
+        port=port,
+        debug=debug,
+        allow_unsafe_werkzeug=debug  # Only allow in debug mode
+    )
