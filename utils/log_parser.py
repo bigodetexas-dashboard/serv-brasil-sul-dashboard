@@ -22,7 +22,8 @@ class DayZLogParser:
         self.ftp_user = os.getenv("FTP_USER")
         self.ftp_pass = os.getenv("FTP_PASS")
         self.ftp_port = int(os.getenv("FTP_PORT", 21))
-        self.log_path = "/dayzxb_missions/dayzOffline.chernarusplus/ADM.log"
+        # Usar FTP_LOG_PATH do .env se disponível, senão usa auto-detect
+        self.log_path = os.getenv("FTP_LOG_PATH") or None
 
     def fetch_logs(self, local_file="server_logs.txt"):
         """Baixa logs do servidor via FTP (usando credenciais dinâmicas se disponíveis)"""
@@ -54,48 +55,65 @@ class DayZLogParser:
             ftp.connect(self.ftp_host, self.ftp_port, timeout=30)
             ftp.login(self.ftp_user, self.ftp_pass)
 
-            # Os logs do Xbox costumam estar na pasta 'profile' ou 'missions'
-            target_dirs = [
-                "profile",
-                "dayzxb/profile",
-                "dayzxb_missions/dayzOffline.chernarusplus",
-                "missions/dayzOffline.chernarusplus",
-                "config",
-                "",
-            ]
-
+            # Tentar usar log_path configurado primeiro
             found_file = None
-            for d in target_dirs:
+
+            if self.log_path:
                 try:
-                    ftp.cwd("/" + d if d else "/")
-                    files = ftp.nlst()
+                    print(f"[LOG PARSER] Tentando caminho configurado: {self.log_path}")
+                    # Verificar se arquivo existe
+                    ftp.cwd("/")
+                    ftp.size(self.log_path)  # Lança erro se não existir
+                    found_file = self.log_path
+                    print(f"[LOG PARSER] ✓ Caminho configurado encontrado!")
+                except Exception as e:
+                    print(f"[LOG PARSER] ✗ Caminho configurado não encontrado: {e}")
+                    print(f"[LOG PARSER] Iniciando auto-detect...")
 
-                    # Prioridade 1: Arquivos .ADM (Mais completos para DayZ)
-                    adm_files = sorted(
-                        [f for f in files if f.upper().endswith(".ADM")], reverse=True
-                    )
-                    if adm_files:
-                        found_file = (d + "/" if d else "") + adm_files[0]
-                        break
+            # Auto-detect se não encontrou no caminho configurado
+            if not found_file:
+                # Os logs do Xbox costumam estar nestas pastas
+                target_dirs = [
+                    "profile",
+                    "dayzxb/profile",
+                    "dayzxb_missions/dayzOffline.chernarusplus",
+                    "missions/dayzOffline.chernarusplus",
+                    "config",
+                    "",
+                ]
 
-                    # Prioridade 2: Arquivos .RPT
-                    rpt_files = sorted(
-                        [f for f in files if f.upper().endswith(".RPT")], reverse=True
-                    )
-                    if rpt_files:
-                        found_file = (d + "/" if d else "") + rpt_files[0]
-                        break
-                except:
-                    continue
+                for d in target_dirs:
+                    try:
+                        ftp.cwd("/" + d if d else "/")
+                        files = ftp.nlst()
+
+                        # Prioridade 1: Arquivos .ADM (Mais completos para DayZ)
+                        adm_files = sorted(
+                            [f for f in files if f.upper().endswith(".ADM")], reverse=True
+                        )
+                        if adm_files:
+                            found_file = ("/" + d + "/" if d else "/") + adm_files[0]
+                            print(f"[LOG PARSER] ✓ Auto-detect encontrou: {found_file}")
+                            break
+
+                        # Prioridade 2: Arquivos .RPT
+                        rpt_files = sorted(
+                            [f for f in files if f.upper().endswith(".RPT")], reverse=True
+                        )
+                        if rpt_files:
+                            found_file = ("/" + d + "/" if d else "/") + rpt_files[0]
+                            print(f"[LOG PARSER] ✓ Auto-detect encontrou: {found_file}")
+                            break
+                    except Exception as e:
+                        continue
 
             if not found_file:
-                print(
-                    "[LOG PARSER] ERRO: Nenhum arquivo .ADM ou .RPT encontrado no FTP."
-                )
+                print("[LOG PARSER] ✗ ERRO: Nenhum arquivo de log encontrado no FTP.")
+                print("[LOG PARSER] Dica: Configure FTP_LOG_PATH no .env com o caminho correto")
                 ftp.quit()
                 return False
 
-            print(f"[LOG PARSER] Baixando: {found_file}")
+            print(f"[LOG PARSER] → Baixando: {found_file}")
             with open(local_file, "wb") as f:
                 ftp.retrbinary(f"RETR {found_file}", f.write)
 
