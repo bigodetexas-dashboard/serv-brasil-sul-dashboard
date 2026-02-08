@@ -21,6 +21,7 @@ Sistema de **banimento IMEDIATO** que detecta infrações e aplica punições au
 | 7 | **Speed Hack** | Velocidade anormal de movimento | Automática |
 | 8 | **Aimbot** | Taxa de headshot anormal | Automática |
 | 9 | **Wallhack** | Kills através de paredes | Automática |
+| 10 | **Territory Invasion** | Construção em base/território alheio | Automática |
 
 ### 🔴 GRAVES (Ban Imediato - Revisável)
 

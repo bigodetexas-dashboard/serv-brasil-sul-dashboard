@@ -282,6 +282,48 @@ def check_construction(x, z, y, player_name, item_name, conn):
                 except Exception:
                     pass
 
+            # INVASÃO DE TERRITÓRIO DETECTADA - BAN IMEDIATO!
+            print(f"\n🚨 [TERRITÓRIO] INVASÃO DETECTADA!")
+            print(f"   Invasor: {player_name}")
+            print(f"   Base: {base_name}")
+            print(f"   Dono: {base_owner}")
+            print(f"   Item: {item_name}")
+
+            # Importar sistema de auto-ban
+            try:
+                sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                from auto_ban_system import ban_player_immediate, InfractionType
+
+                # Buscar XUID do invasor
+                xuid = None
+                try:
+                    cur.execute(
+                        "SELECT xbox_id FROM player_identities WHERE LOWER(gamertag) = LOWER(?)",
+                        (player_name,)
+                    )
+                    xuid_row = cur.fetchone()
+                    if xuid_row:
+                        xuid = xuid_row[0] if isinstance(xuid_row, tuple) else xuid_row.get("xbox_id")
+                except Exception:
+                    pass
+
+                # Aplicar BAN IMEDIATO via XUID
+                reason = f"Invasão de território: Tentou construir '{item_name}' na base '{base_name}' (Dono: {base_owner})"
+                evidence = f"Coordenadas: X={x}, Z={z}\nDistância da base: {dist:.1f}m\nRaio da base: {base_radius}m"
+
+                ban_player_immediate(
+                    gamertag=player_name,
+                    xuid=xuid,
+                    reason=reason,
+                    infraction_type=InfractionType.TERRITORY_INVASION,
+                    evidence=evidence
+                )
+
+                print(f"✅ [TERRITÓRIO] {player_name} BANIDO automaticamente!")
+
+            except Exception as e:
+                print(f"⚠️ [TERRITÓRIO] Erro ao aplicar auto-ban: {e}")
+
             return False, f"UnauthorizedBase:{base_name}"
 
     return True, "OK"

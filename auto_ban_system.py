@@ -44,11 +44,12 @@ class InfractionType:
     GARDEN_EXPLOIT = "garden_exploit"        # Construção em jardim
     RAID_EXPLOIT = "raid_exploit"            # Raid fora do horário permitido
     GLITCH_ABUSE = "glitch_abuse"            # Abuso de bugs do jogo
+    TERRITORY_INVASION = "territory_invasion"  # Construção em território alheio
 
     # CATEGORIAS
     CATEGORIES = {
         "CRÍTICA": [LAG_MACHINE, FLY_HACK, SKY_BASE, UNDERGROUND_BASE, BANNED_ITEM,
-                    DUPLICATION, SPEED_HACK, AIMBOT, WALLHACK],
+                    DUPLICATION, SPEED_HACK, AIMBOT, WALLHACK, TERRITORY_INVASION],
         "GRAVE": [ALT_ACCOUNT, GARDEN_EXPLOIT, RAID_EXPLOIT, GLITCH_ABUSE],
     }
 
