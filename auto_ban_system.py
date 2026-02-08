@@ -17,10 +17,28 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import database
 
+# Importar sistema de failover/sync
+try:
+    from utils.sync_manager import SyncManager
+    SYNC_ENABLED = True
+except ImportError:
+    SYNC_ENABLED = False
+    print("[AUTO-BAN] ⚠️ Sistema de sincronização não disponível")
+
 load_dotenv()
 
 # Caminho do banco de dados
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bigode_unified.db")
+
+
+# ==================== WHITELIST DE PROTEÇÃO ====================
+# XUIDs protegidos - NUNCA serão banidos automaticamente
+# Administradores e moderadores do servidor
+PROTECTED_XUIDS = [
+    "2535405695546273",  # Wellyton (Admin Principal)
+    # Adicione outros admins aqui:
+    # "1234567890123456",  # Nome do Admin
+]
 
 
 # ==================== TIPOS DE INFRAÇÕES ====================
@@ -146,6 +164,28 @@ def ban_player_immediate(gamertag, xuid, reason, infraction_type, evidence=None)
     print(f"Tipo: {infraction_type}")
     print(f"{'='*60}\n")
 
+    # 🛡️ PROTEÇÃO: Verificar se é admin protegido
+    if xuid and xuid in PROTECTED_XUIDS:
+        print(f"\n{'='*60}")
+        print(f"⚠️ [PROTEÇÃO] ADMIN DETECTADO - BAN BLOQUEADO!")
+        print(f"Jogador: {gamertag}")
+        print(f"XUID: {xuid}")
+        print(f"Infração detectada: {infraction_type}")
+        print(f"Motivo: {reason}")
+        print(f"{'='*60}\n")
+
+        # Registrar infração para auditoria (sem banir)
+        record_infraction(
+            gamertag=gamertag,
+            infraction_type=f"{infraction_type}_ADMIN_PROTECTED",
+            description=f"[ADMIN PROTEGIDO] {reason}",
+            evidence=evidence,
+            xuid=xuid
+        )
+
+        print(f"[AUTO-BAN] ℹ️ Infração registrada para auditoria, mas admin NÃO foi banido")
+        return False  # Não banir
+
     # 1. Registrar infração
     infraction_id = record_infraction(
         gamertag=gamertag,
@@ -183,6 +223,25 @@ def ban_player_immediate(gamertag, xuid, reason, infraction_type, evidence=None)
 
     # 5. Adicionar ao Muro da Vergonha
     add_to_hall_of_shame(gamertag, xuid, reason, infraction_type, infraction_id)
+
+    # 6. 🔄 FAILOVER: Enfileirar evento se estiver em modo backup
+    is_backup_mode = os.getenv("BACKUP_MODE") == "1"
+    if is_backup_mode and SYNC_ENABLED:
+        try:
+            sync_mgr = SyncManager()
+            event_data = {
+                "gamertag": gamertag,
+                "xuid": xuid,
+                "reason": reason,
+                "infraction_type": infraction_type,
+                "evidence": evidence,
+                "infraction_id": infraction_id,
+                "banned_at": datetime.now().isoformat()
+            }
+            sync_mgr.queue_event("auto_ban", event_data, "backup")
+            print(f"[AUTO-BAN] 🔄 Evento enfileirado para sincronização (modo backup)")
+        except Exception as e:
+            print(f"[AUTO-BAN] ⚠️ Erro ao enfileirar evento: {e}")
 
     if ban_success:
         print(f"\n[AUTO-BAN] ✅ BANIMENTO COMPLETO: {gamertag}")

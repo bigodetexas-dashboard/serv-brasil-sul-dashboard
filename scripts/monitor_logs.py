@@ -19,8 +19,12 @@ if project_root not in sys.path:
 
 from utils.log_parser import DayZLogParser
 from utils.ftp_helpers import connect_ftp
-# from utils.heartbeat import send_heartbeat  # Opcional - comentado temporariamente
-# from utils.sync_manager import SyncManager  # Opcional - comentado temporariamente
+from utils.heartbeat import send_heartbeat
+from utils.sync_manager import SyncManager
+
+# Importar sistema de auto-ban autônomo
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from auto_ban_system import ban_player_immediate, InfractionType
 
 load_dotenv()
 
@@ -289,25 +293,9 @@ def check_construction(x, z, y, player_name, item_name, conn):
             print(f"   Dono: {base_owner}")
             print(f"   Item: {item_name}")
 
-            # Importar sistema de auto-ban
+            # Buscar XUID do invasor e aplicar BAN IMEDIATO
             try:
-                sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-                from auto_ban_system import ban_player_immediate, InfractionType
-
-                # Buscar XUID do invasor
-                xuid = None
-                try:
-                    cur.execute(
-                        "SELECT xbox_id FROM player_identities WHERE LOWER(gamertag) = LOWER(?)",
-                        (player_name,)
-                    )
-                    xuid_row = cur.fetchone()
-                    if xuid_row:
-                        xuid = xuid_row[0] if isinstance(xuid_row, tuple) else xuid_row.get("xbox_id")
-                except Exception:
-                    pass
-
-                # Aplicar BAN IMEDIATO via XUID
+                xuid = get_player_xuid(player_name, cur)
                 reason = f"Invasão de território: Tentou construir '{item_name}' na base '{base_name}' (Dono: {base_owner})"
                 evidence = f"Coordenadas: X={x}, Z={z}\nDistância da base: {dist:.1f}m\nRaio da base: {base_radius}m"
 
@@ -327,6 +315,73 @@ def check_construction(x, z, y, player_name, item_name, conn):
             return False, f"UnauthorizedBase:{base_name}"
 
     return True, "OK"
+
+
+def get_player_xuid(gamertag, cur):
+    """Busca XUID do jogador pelo gamertag"""
+    try:
+        cur.execute(
+            "SELECT xbox_id FROM player_identities WHERE LOWER(gamertag) = LOWER(?)",
+            (gamertag,)
+        )
+        row = cur.fetchone()
+        if row:
+            return row[0] if isinstance(row, tuple) else row.get("xbox_id")
+    except Exception:
+        pass
+    return None
+
+
+def log_player_connection(gamertag, xuid, ip_address, discord_id, cur):
+    """
+    Registra conexão de jogador e detecta alt accounts.
+    Retorna True se detectar múltiplas contas no mesmo IP.
+    """
+    try:
+        # Registrar nova conexão
+        cur.execute("""
+            INSERT INTO connection_logs
+            (gamertag, discord_id, ip_address, xuid, server_name, connected_at)
+            VALUES (?, ?, ?, ?, 'DayZ BigodeTexas', datetime('now'))
+        """, (gamertag, discord_id, ip_address, xuid))
+
+        # Detectar alt accounts: múltiplos XUIDs no mesmo IP nas últimas 24h
+        if ip_address and xuid:
+            cur.execute("""
+                SELECT COUNT(DISTINCT xuid) as unique_accounts,
+                       GROUP_CONCAT(DISTINCT gamertag) as gamertags
+                FROM connection_logs
+                WHERE ip_address = ?
+                  AND xuid IS NOT NULL
+                  AND connected_at > datetime('now', '-24 hours')
+            """, (ip_address,))
+
+            row = cur.fetchone()
+            if row:
+                unique_accounts = row[0] if isinstance(row, tuple) else row.get("unique_accounts")
+                gamertags = row[1] if isinstance(row, tuple) else row.get("gamertags")
+
+                # Se 2+ contas diferentes no mesmo IP = ALT ACCOUNT SUSPEITO
+                if unique_accounts >= 2:
+                    print(f"🚨 [ALT ACCOUNT] Detectado múltiplas contas no IP {ip_address}")
+                    print(f"   Contas: {gamertags}")
+
+                    # Marcar todas as sessões desse IP como suspeitas
+                    cur.execute("""
+                        UPDATE connection_logs
+                        SET is_suspicious = 1,
+                            notes = 'Múltiplas contas no mesmo IP'
+                        WHERE ip_address = ?
+                          AND connected_at > datetime('now', '-24 hours')
+                    """, (ip_address,))
+
+                    return True  # Suspeito de alt account
+
+        return False  # Normal
+
+    except Exception as e:
+        print(f"[ERRO] Falha ao registrar conexão: {e}")
+        return False
 
 
 def ban_player(gamertag, reason="Banido pelo Bot", conn=None):
@@ -417,13 +472,13 @@ def sync_logs():
 
     try:
         # 🔄 FAILOVER: Envia heartbeat para indicar que está vivo
-        # send_heartbeat("primary")  # Comentado temporariamente
+        send_heartbeat("primary")
 
         # 🔄 FAILOVER: Verifica se há eventos do backup para sincronizar
-        # sync_mgr = SyncManager()  # Comentado temporariamente
-        # if sync_mgr.has_pending_sync():
-        #     print("[SYNC] Eventos pendentes detectados! Sincronizando...")
-        #     sync_mgr.process_backup_events()
+        sync_mgr = SyncManager()
+        if sync_mgr.has_pending_sync():
+            print("[SYNC] Eventos pendentes detectados! Sincronizando...")
+            sync_mgr.process_backup_events()
 
         parser = DayZLogParser()
         local_log = "monitor_server_logs.txt"
@@ -460,8 +515,10 @@ def sync_logs():
                     (gt,),
                 )
                 row = cur.fetchone()
+                discord_id = None
 
                 if row:
+                    discord_id = row[0] if isinstance(row, tuple) else row.get("discord_id")
                     cur.execute(
                         "UPDATE player_identities SET nitrado_id = ?, xbox_id = ?, last_ip = ?, last_seen = datetime('now') WHERE LOWER(gamertag) = LOWER(?)",
                         (pid, pid, ip, gt),
@@ -472,12 +529,34 @@ def sync_logs():
                         (gt, pid, pid, ip),
                     )
 
+                # 📝 REGISTRAR CONEXÃO e DETECTAR ALT ACCOUNTS
+                is_alt_account = log_player_connection(gt, pid, ip, discord_id, cur)
+
+                # 🛡️ PROTEÇÃO ATIVA: Alt Account Detectado
+                if is_alt_account:
+                    print(f"🚫 [ALT ACCOUNT] {gt} detectado usando múltiplas contas!")
+                    xuid = get_player_xuid(gt, cur)
+                    ban_player_immediate(
+                        gamertag=gt,
+                        xuid=xuid,
+                        reason="Alt Account Detectado (Múltiplas contas no mesmo IP)",
+                        infraction_type=InfractionType.ALT_ACCOUNT,
+                        evidence=f"IP: {ip}\nXUID: {pid}\nDetectado múltiplas contas no mesmo IP nas últimas 24h"
+                    )
+
                 # 🛡️ PROTEÇÃO ATIVA: Anti-Dupe
                 if check_duplication(gt):
                     print(
                         f"🚫 [ANTI-DUPE] {gt} relogou rápido demais (Possível Duplicação)!"
                     )
-                    ban_player(gt, "Tentativa de Duplicação (Fast Relog)", conn)
+                    xuid = get_player_xuid(gt, cur)
+                    ban_player_immediate(
+                        gamertag=gt,
+                        xuid=xuid,
+                        reason="Tentativa de Duplicação (Fast Relog)",
+                        infraction_type=InfractionType.DUPLICATION,
+                        evidence=f"Relogou {len(login_tracker[gt])} vezes em 2.5 minutos"
+                    )
 
                 stats["conn"] += 1
 
@@ -498,7 +577,14 @@ def sync_logs():
 
                     if not allowed:
                         print(f"🚫 [SKY-KILL] {killer} detectado: {reason}")
-                        ban_player(killer, reason, conn)
+                        xuid = get_player_xuid(killer, cur)
+                        ban_player_immediate(
+                            gamertag=killer,
+                            xuid=xuid,
+                            reason=f"Fly Hack Detectado: {reason}",
+                            infraction_type=InfractionType.FLY_HACK,
+                            evidence=f"Kill em altura ilegal\nCoordenadas: X={x}, Y={y}, Z={z}\nVítima: {victim}\nArma: {weapon}\n{reason}"
+                        )
 
                 # 1. Registrar na tabela 'events' para o Heatmap
                 cur.execute(
@@ -584,7 +670,14 @@ def sync_logs():
                 # 🛡️ PROTEÇÃO ATIVA: Verifica SPAM
                 if check_spam(player, item):
                     print(f"🚫 [SPAM DETECTADO] {player} está spamando {item}!")
-                    ban_player(player, "Spam de Construção/Lag Machine", conn)
+                    xuid = get_player_xuid(player, cur)
+                    ban_player_immediate(
+                        gamertag=player,
+                        xuid=xuid,
+                        reason="Spam de Construção/Lag Machine",
+                        infraction_type=InfractionType.LAG_MACHINE,
+                        evidence=f"Colocou {len(spam_tracker[player])} itens '{item}' em menos de 1 minuto\nCoordenadas: X={x}, Y={y}, Z={z}"
+                    )
                     stats["conn"] += 1  # Conta como evento processado
                     continue
 
@@ -595,21 +688,40 @@ def sync_logs():
                     # BANIMENTO AUTOMÁTICO
                     if reason == "GardenPlot":
                         print(f"🚫 [BANIMENTO] {player} tentou plantar GardenPlot!")
-                        ban_player(player, "GardenPlot Proibido", conn)
+                        xuid = get_player_xuid(player, cur)
+                        ban_player_immediate(
+                            gamertag=player,
+                            xuid=xuid,
+                            reason="GardenPlot Proibido",
+                            infraction_type=InfractionType.GARDEN_EXPLOIT,
+                            evidence=f"Tentou plantar GardenPlot em local proibido\nCoordenadas: X={x}, Y={y}, Z={z}\nItem: {item}"
+                        )
 
                     elif reason == "SkyBase":
                         print(
                             f"🚫 [BANIMENTO] {player} tentou construir Sky Base (y={y}m)!"
                         )
                         # Sky Base é construção. Sky Walk seria movimento, mas se construir lá em cima também pega.
-                        ban_player(player, f"Sky Base Detectada (Altura: {y}m)", conn)
+                        xuid = get_player_xuid(player, cur)
+                        ban_player_immediate(
+                            gamertag=player,
+                            xuid=xuid,
+                            reason=f"Sky Base Detectada (Altura: {y}m)",
+                            infraction_type=InfractionType.SKY_BASE,
+                            evidence=f"Construção em altura extrema\nCoordenadas: X={x}, Y={y}m, Z={z}\nItem: {item}"
+                        )
 
                     elif reason == "UndergroundBase":
                         print(
                             f"🚫 [BANIMENTO] {player} tentou construir Underground Base (y={y}m)!"
                         )
-                        ban_player(
-                            player, f"Underground Base Detectada (Altura: {y}m)", conn
+                        xuid = get_player_xuid(player, cur)
+                        ban_player_immediate(
+                            gamertag=player,
+                            xuid=xuid,
+                            reason=f"Underground Base Detectada (Altura: {y}m)",
+                            infraction_type=InfractionType.UNDERGROUND_BASE,
+                            evidence=f"Construção subterrânea ilegal\nCoordenadas: X={x}, Y={y}m, Z={z}\nItem: {item}"
                         )
 
                     elif reason.startswith("BannedItemBase"):
@@ -617,15 +729,21 @@ def sync_logs():
                         print(
                             f"🚫 [BANIMENTO] {player} usou item proibido em base: {banned_item}!"
                         )
-                        ban_player(player, f"Glitch Item em Base: {banned_item}", conn)
+                        xuid = get_player_xuid(player, cur)
+                        ban_player_immediate(
+                            gamertag=player,
+                            xuid=xuid,
+                            reason=f"Uso de Item Banido: {banned_item}",
+                            infraction_type=InfractionType.BANNED_ITEM,
+                            evidence=f"Tentou usar item proibido\nItem: {banned_item}\nCoordenadas: X={x}, Y={y}, Z={z}"
+                        )
 
                     elif reason.startswith("UnauthorizedBase"):
+                        # JÁ FOI BANIDO dentro de check_construction() com ban_player_immediate()
+                        # Apenas logando aqui para manter consistência
                         base_name = reason.split(":")[1]
                         print(
-                            f"🚫 [BANIMENTO] {player} construiu ilegalmente na base {base_name}!"
-                        )
-                        ban_player(
-                            player, f"Construção Ilegal em Base: {base_name}", conn
+                            f"✅ [BANIMENTO COMPLETO] {player} já foi banido por invasão em {base_name}!"
                         )
 
                     stats["conn"] += 1  # Conta como evento processado
