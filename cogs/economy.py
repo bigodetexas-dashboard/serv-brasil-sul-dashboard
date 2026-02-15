@@ -1,16 +1,27 @@
-import discord
-from discord.ext import commands
+"""Cog de economia do bot com sistema de loja, inventário e transações."""
+
 import asyncio
+import os
 import random
 import re
+import sys
 from datetime import datetime, timedelta
-from utils.helpers import load_json, save_json, find_item_by_key, calculate_kd
+
+import discord
+from discord.ext import commands
+
+# Adicionar o diretório pai ao path para imports funcionarem
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import database
 from utils.decorators import rate_limit
 from utils.ftp_helpers import upload_spawn_request
-import database
+from utils.helpers import calculate_kd, find_item_by_key, load_json
 
 
 class ShopPaginator(discord.ui.View):
+    """Paginador para exibir itens da loja em múltiplas páginas."""
+
     def __init__(
         self, items_list, category_name, category_emoji, footer_icon, items_per_page=5
     ):
@@ -69,6 +80,8 @@ class ShopPaginator(discord.ui.View):
 
 
 class Economy(commands.Cog):
+    """Comandos de economia, loja e sistema de transações."""
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -105,14 +118,15 @@ class Economy(commands.Cog):
     @commands.command(name="registrar")
     @rate_limit()
     async def registrar(self, ctx, gamertag: str):
-        links = load_json("links.json")
         uid = str(ctx.author.id)
-        if any(v == ctx.author.id for v in links.values()):
+        existing = database.get_link_by_discord(ctx.author.id)
+        if existing:
             await ctx.send("❌ Você já está registrado.")
             return
-        links[gamertag] = ctx.author.id
-        save_json("links.json", links)
+        database.save_link(gamertag, ctx.author.id)
         eco = database.get_economy(uid)
+        if not eco:
+            eco = {"discord_id": uid, "balance": 0}
         eco["gamertag"] = gamertag
         database.save_economy(uid, eco)
         await ctx.send(f"✅ Gamertag **{gamertag}** vinculada!")
@@ -338,23 +352,20 @@ class Economy(commands.Cog):
     @rate_limit()
     async def desvincular(self, ctx, gamertag: str):
         """(Admin) Remove vinculação de uma gamertag"""
-        # Verificação de admin poderia ser via decorador ou direto no bot
         if ctx.author.id not in self.bot.admin_whitelist:
             await ctx.send("❌ Apenas Admins podem desvincular contas.")
             return
 
-        links = load_json("links.json")
-        if gamertag not in links:
+        discord_id = database.get_link_by_gamertag(gamertag)
+        if not discord_id:
             await ctx.send(f"❌ Gamertag **{gamertag}** não encontrada.")
             return
 
-        uid = str(links[gamertag])
-        del links[gamertag]
-        save_json("links.json", links)
-
-        eco = database.get_economy(uid)
-        eco["gamertag"] = None
-        database.save_economy(uid, eco)
+        database.remove_link(gamertag)
+        eco = database.get_economy(discord_id)
+        if eco:
+            eco["gamertag"] = None
+            database.save_economy(discord_id, eco)
         await ctx.send(f"✅ Gamertag **{gamertag}** desvinculada.")
 
     @commands.command(name="favoritar")

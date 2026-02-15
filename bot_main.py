@@ -1,31 +1,29 @@
-import os
-import sys
-import json
 import io
-import time
+import json
 import math
+import os
+import sqlite3
 import threading
+import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 
-# Third-Party Imports
-import sqlite3
+import aiohttp
 import discord
 from discord.ext import commands, tasks
-import aiohttp
-from flask import Flask, jsonify  # Added jsonify
 from dotenv import load_dotenv
+from flask import Flask
+from flask_wtf.csrf import CSRFProtect  # Added for CSRF support
 
 # Local Application Imports
 import database
+from discord_oauth import init_oauth
+from new_dashboard.babel_config import init_babel  # Added for Translation support
 from security import (
     AdminWhitelist,
     backup_manager,
 )
 from web_dashboard import dashboard_bp
-from discord_oauth import init_oauth
-from flask_wtf.csrf import CSRFProtect  # Added for CSRF support
-from new_dashboard.babel_config import init_babel  # Added for Translation support
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -64,19 +62,39 @@ if not FTP_HOST or not FTP_USER or not FTP_PASS:
     raise ValueError("Credenciais FTP não encontradas no .env!")
 
 
+from utils.dashboard_api import send_dashboard_event  # NEW
+from utils.decorators import rate_limit, require_admin_password
+from utils.ftp_helpers import connect_ftp
 from utils.helpers import (
-    load_json,
-    save_json,
-    find_item_by_key,
     calculate_kd,
     calculate_level,
     get_user_clan,
+    load_json,
+    save_json,
 )
-from utils.ftp_helpers import connect_ftp
-from utils.decorators import rate_limit, require_admin_password
-from utils.dashboard_api import send_dashboard_event  # NEW
 from utils.n8n_dispatcher import send_n8n_base_alert
-from utils.auto_failover import auto_failover  # 🔄 AUTO-FAILOVER AUTÔNOMO
+
+# Coordenadas das principais cidades de Chernarus (X, Z)
+CHERNARUS_LOCATIONS = {
+    "Chernogorsk": (6600, 2600),
+    "Elektrozavodsk": (10400, 2300),
+    "Berezino": (12900, 9500),
+    "Zelenogorsk": (2700, 5200),
+    "Severograd": (8400, 12700),
+    "Novodmitrovsk": (11500, 14500),
+    "Svetloyarsk": (13900, 13400),
+    "Vybor": (3800, 8900),
+    "NWAF (Aeroporto)": (4500, 10000),
+    "Stary Sobor": (6100, 7700),
+    "Gorka": (9700, 8800),
+    "Polana": (10800, 11300),
+    "Krasnostav": (11400, 12200),
+    "Kamensk": (7900, 14500),
+    "Tisy": (1700, 14200),
+    "Balota (Aeroporto)": (4500, 2300),
+    "Cherno (Centro)": (6600, 2600),
+    "Elektro (Centro)": (10400, 2300),
+}
 
 
 async def restart_server():
@@ -252,7 +270,7 @@ def health():
 
 @app.route("/set_language/<lang>")
 def set_language(lang):
-    from flask import session, redirect, request, url_for
+    from flask import redirect, request, session, url_for
 
     session["lang"] = lang  # Using 'lang' as per babel_config.py
     return redirect(request.referrer or url_for("dashboard.index"))
@@ -289,8 +307,8 @@ class SocketWriter:
 # Rodar o servidor web em uma thread separada (MOVIDO PARA O BLOCO MAIN)
 def start_web_server():
     port = int(
-        os.getenv("PORT", "5001")
-    )  # Changed from 3000 to 5001 as per user expectation
+        os.getenv("PORT", "5000")
+    )  # Changed from 5001 to 5000 to avoid conflict with dashboard on 5001
     print(f"[INIT] Iniciando Servidor Web na porta {port}...")
     socketio.run(
         app,
@@ -443,6 +461,7 @@ def update_war_score(killer_name, victim_name):
     # War System implementado ✓
     try:
         from war_system import update_war_scores
+
         return update_war_scores(k_tag, v_tag)
     except Exception as e:
         print(f"[WAR SYSTEM] Erro: {e}")
@@ -511,7 +530,35 @@ def update_stats_db(killer_name, victim_name, weapon=None, distance=0):
 
     database.save_player(victim_name, victim)
 
+    # Sync stats para SQLite (dashboard)
+    _sync_player_stats_to_db(killer_name, killer)
+    _sync_player_stats_to_db(victim_name, victim)
+
     return killer, victim, time_alive
+
+
+def _sync_player_stats_to_db(gamertag, stats):
+    """Sincroniza stats do jogador para SQLite (usado pelo dashboard)."""
+    try:
+        conn = _get_unified_db()
+        cur = conn.cursor()
+        cur.execute(
+            """
+            UPDATE users SET kills = ?, deaths = ?, best_killstreak = ?, longest_shot = ?
+            WHERE nitrado_gamertag = ?
+        """,
+            (
+                stats.get("kills", 0),
+                stats.get("deaths", 0),
+                stats.get("best_killstreak", 0),
+                stats.get("longest_shot", 0),
+                gamertag,
+            ),
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass  # Sync falhou silenciosamente - nao deve impedir o bot
 
 
 def format_time(seconds):
@@ -576,6 +623,12 @@ def find_latest_adm_log(ftp):
 
 # --- ANTI-SPAM DE CONSTRUÇÃO & DUPLICAÇÃO ---
 spam_tracker = {}  # {player_name: [timestamps]}
+fireplace_tracker = {}  # {player_name: [(x, z, timestamp)]}
+garden_tracker = {}  # {player_name: [(x, z, timestamp)]}
+
+# Rastreamento global de locais (para detectar spam coordenado)
+global_fireplace_locations = []  # [(x, z, player_name, timestamp)]
+global_garden_locations = []  # [(x, z, player_name, timestamp)]
 
 
 def check_duplication(player_name, item_name, item_id):
@@ -625,72 +678,214 @@ def check_spam(player_name, item_name):
     return False
 
 
+def check_coordinated_spam(x, z, item_type, player_name):
+    """Detecta se há concentração excessiva de construções no mesmo local (spam).
+
+    Args:
+        x, z: Coordenadas da construção
+        item_type: 'fireplace' ou 'garden'
+        player_name: Nome do jogador
+
+    Returns:
+        (is_spam, details): Tupla com bool indicando spam e detalhes
+    """
+    now = time.time()
+    PROXIMITY_RADIUS = 50  # Raio de 50m para considerar "mesmo local"
+    SPAM_THRESHOLD = 3  # Mais de 3 construções no mesmo local = spam
+    TIME_WINDOW = 600  # Últimos 10 minutos
+
+    # Selecionar lista apropriada
+    if item_type == "fireplace":
+        location_list = global_fireplace_locations
+    else:  # garden
+        location_list = global_garden_locations
+
+    # Limpar locais antigos (mais de 10 minutos)
+    location_list[:] = [
+        (lx, lz, lp, lt) for lx, lz, lp, lt in location_list if now - lt < TIME_WINDOW
+    ]
+
+    # Contar construções próximas (de QUALQUER jogador)
+    nearby_constructions = []
+    unique_players = set()
+
+    for lx, lz, lp, lt in location_list:
+        # Calcular distância
+        dist = math.sqrt((x - lx) ** 2 + (z - lz) ** 2)
+
+        if dist <= PROXIMITY_RADIUS:
+            nearby_constructions.append((lx, lz, lp, lt, dist))
+            unique_players.add(lp)
+
+    # Adicionar construção atual
+    location_list.append((x, z, player_name, now))
+
+    # Verificar se há spam (MAIS DE 3 construções no mesmo local)
+    total_nearby = len(nearby_constructions) + 1  # +1 para incluir a atual
+    different_players = len(unique_players) + 1  # +1 para incluir jogador atual
+
+    # NOVA REGRA SIMPLIFICADA: Apenas verificar total de construções
+    # Não importa quantos jogadores (pode ser 1, 2, 3 ou mais)
+    if total_nearby > SPAM_THRESHOLD:
+        # SPAM DETECTADO!
+        player_list = list(unique_players) + [player_name]
+        return True, {
+            "total": total_nearby,
+            "players": different_players,
+            "player_list": player_list,
+            "location": (x, z),
+            "radius": PROXIMITY_RADIUS,
+        }
+
+    return False, None
+
+
 def check_construction(x, z, y, player_name, item_name):
     """Verifica se a construção é permitida."""
     item_lower = item_name.lower()
+    now = time.time()
 
-    # 1. BANIMENTO DE JARDIM (GardenPlot)
-    if "gardenplot" in item_lower:
-        return False, "GardenPlot"
-
-    # 2. SKY BASE (Altura > 1000m)
+    # 1. SKY BASE (Altura > 1000m)
     if y > 1000:
         return False, "SkyBase"
 
-    # 3. UNDERGROUND BASE (Altura < -10m)
+    # 2. UNDERGROUND BASE (Altura < -10m)
     if y < -10:
         return False, "UndergroundBase"
 
-    # 4. PROTEÇÃO DE BASE
-    # 4. PROTEÇÃO DE BASE
+    # 3. VERIFICAR SE ESTÁ DENTRO DE UMA BASE REGISTRADA
     active_bases = database.get_active_bases()
+    inside_base = False
+    current_base = None
+
     for base in active_bases:
         dist = math.sqrt((x - base["x"]) ** 2 + (z - base["z"]) ** 2)
         if dist <= base["radius"]:
-            # --- REGRAS ESPECÍFICAS DE BASE ---
+            inside_base = True
+            current_base = base
+            break
 
-            # A. PNEUS (Glitch) -> BANIMENTO IMEDIATO
-            if "wheel" in item_lower or "tire" in item_lower:
-                return False, f"BannedItemBase:{item_name}"
+    # 4. REGRAS DENTRO DE BASE REGISTRADA
+    if inside_base:
+        # A. PNEUS (Glitch) -> BANIMENTO IMEDIATO
+        if "wheel" in item_lower or "tire" in item_lower:
+            return False, f"BannedItemBase:{item_name}"
 
-            # B. SHELTER (Glitch de Visão) -> BANIMENTO IMEDIATO
-            if "improvisedshelter" in item_lower:
-                return False, f"BannedItemBase:{item_name}"
+        # B. SHELTER (Glitch de Visão) -> BANIMENTO IMEDIATO
+        if "improvisedshelter" in item_lower:
+            return False, f"BannedItemBase:{item_name}"
 
-            # C. FOGUEIRA/CONSTRUÇÃO -> APENAS AUTORIZADOS
+        # C. FOGUEIRA/GARDEN/CONSTRUÇÃO -> APENAS AUTORIZADOS
+        # Dentro de base, SEM LIMITE de fogueiras/gardens para membros autorizados
 
-            # Verifica se o jogador é do clã ou dono
-            builder_id = get_discord_id_by_gamertag(player_name)
+        builder_id = get_discord_id_by_gamertag(player_name)
 
-            if not builder_id:
-                # Se não tem conta vinculada, é considerado INIMIGO na área protegida
-                return False, f"UnauthorizedBase:{base.get('name', 'Base')}"
+        if not builder_id:
+            # Se não tem conta vinculada, é considerado INIMIGO na área protegida
+            return False, f"UnauthorizedBase:{current_base.get('name', 'Base')}"
 
-            # 1. É o Dono?
-            if str(base["owner_id"]) == str(builder_id):
-                return True, "Owner"
+        # 1. É o Dono?
+        if str(current_base["owner_id"]) == str(builder_id):
+            return True, "Owner"
 
-            # 2. Tem permissão explícita? (Permissao de Construir via Tabela)
-            if base.get("source") == "db" and database.check_base_permission(
-                base["id"], builder_id
-            ):
-                return True, "PermittedUser"
+        # 2. Tem permissão explícita?
+        if current_base.get("source") == "db" and database.check_base_permission(
+            current_base["id"], builder_id
+        ):
+            return True, "PermittedUser"
 
-            # 3. É do Clã da Base? (Verificação Refinada)
-            builder_clan_tag, builder_clan_data = database.get_user_clan(builder_id)
+        # 3. É do Clã da Base?
+        builder_clan_tag, builder_clan_data = get_user_clan(builder_id)
 
-            # Se base V2 tem Clan ID
-            if base.get("clan_id") and builder_clan_data:
-                # Se o clã do builder tiver ID e bater com o da base
-                if builder_clan_data.get("id") == base["clan_id"]:
-                    return True, "ClanBaseMember"
+        if current_base.get("clan_id") and builder_clan_data:
+            if builder_clan_data.get("id") == current_base["clan_id"]:
+                return True, "ClanBaseMember"
 
-            # Fallback Legacy: Compara TAGs se ownership bate
-            owner_clan_tag, _ = database.get_user_clan(base["owner_id"])
-            if owner_clan_tag and builder_clan_tag == owner_clan_tag:
-                return True, "ClanMemberLegacy"
+        # Fallback Legacy: Compara TAGs
+        owner_clan_tag, _ = get_user_clan(current_base["owner_id"])
+        if owner_clan_tag and builder_clan_tag == owner_clan_tag:
+            return True, "ClanMemberLegacy"
 
-            return False, f"UnauthorizedBase:{base.get('name', 'Base')}"
+        return False, f"UnauthorizedBase:{current_base.get('name', 'Base')}"
+
+    # 5. REGRAS FORA DE BASE (GLOBAL)
+    # NOVA REGRA: Limite de 3 fogueiras e 3 gardens por jogador
+
+    # 5A. LIMITE DE FOGUEIRAS (FIREPLACE)
+    if "fireplace" in item_lower or "fogueira" in item_lower:
+        # VERIFICAR SPAM COORDENADO PRIMEIRO
+        is_coordinated_spam, spam_details = check_coordinated_spam(
+            x, z, "fireplace", player_name
+        )
+
+        if is_coordinated_spam:
+            # SPAM COORDENADO DETECTADO - BANIMENTO!
+            players_involved = ", ".join(spam_details["player_list"])
+            print(
+                f"[SPAM COORDENADO] {spam_details['total']} fogueiras em {spam_details['radius']}m por {spam_details['players']} jogadores: {players_involved}"
+            )
+            return (
+                False,
+                f"CoordinatedSpam:Fireplace ({spam_details['total']} fogueiras, {spam_details['players']} jogadores)",
+            )
+
+        if player_name not in fireplace_tracker:
+            fireplace_tracker[player_name] = []
+
+        # Limpar fogueiras antigas (mais de 1 hora)
+        fireplace_tracker[player_name] = [
+            (fx, fz, ft)
+            for fx, fz, ft in fireplace_tracker[player_name]
+            if now - ft < 3600
+        ]
+
+        # Contar fogueiras ativas
+        fireplace_count = len(fireplace_tracker[player_name])
+
+        if fireplace_count >= 3:
+            return False, "FireplaceLimit:3/3 (Máximo: 3 fogueiras fora de bases)"
+
+        # Adicionar nova fogueira
+        fireplace_tracker[player_name].append((x, z, now))
+        print(f"[FIREPLACE TRACKER] {player_name}: {fireplace_count + 1}/3 fogueiras")
+
+    # 5B. LIMITE DE GARDENS (GARDENPLOT)
+    if "gardenplot" in item_lower or "garden" in item_lower:
+        # VERIFICAR SPAM COORDENADO PRIMEIRO
+        is_coordinated_spam, spam_details = check_coordinated_spam(
+            x, z, "garden", player_name
+        )
+
+        if is_coordinated_spam:
+            # SPAM COORDENADO DETECTADO - BANIMENTO!
+            players_involved = ", ".join(spam_details["player_list"])
+            print(
+                f"[SPAM COORDENADO] {spam_details['total']} gardens em {spam_details['radius']}m por {spam_details['players']} jogadores: {players_involved}"
+            )
+            return (
+                False,
+                f"CoordinatedSpam:Garden ({spam_details['total']} gardens, {spam_details['players']} jogadores)",
+            )
+
+        if player_name not in garden_tracker:
+            garden_tracker[player_name] = []
+
+        # Limpar gardens antigos (mais de 1 hora)
+        garden_tracker[player_name] = [
+            (gx, gz, gt)
+            for gx, gz, gt in garden_tracker[player_name]
+            if now - gt < 3600
+        ]
+
+        # Contar gardens ativos
+        garden_count = len(garden_tracker[player_name])
+
+        if garden_count >= 3:
+            return False, "GardenLimit:3/3 (Máximo: 3 gardens fora de bases)"
+
+        # Adicionar novo garden
+        garden_tracker[player_name].append((x, z, now))
+        print(f"[GARDEN TRACKER] {player_name}: {garden_count + 1}/3 gardens")
 
     return True, "OK"
 
@@ -762,13 +957,34 @@ def save_death_to_db(
 
 
 # --- PERSISTENT LOGGING (ADM DASHBOARD) ---
+def _get_unified_db():
+    """Retorna conexao SQLite com bigode_unified.db e garante tabelas existem."""
+    db_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "bigode_unified.db"
+    )
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS game_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT, event_type TEXT, gamertag TEXT, ip TEXT, extra TEXT
+        )
+    """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS connection_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            gamertag TEXT NOT NULL, ip_address TEXT,
+            connected_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    return conn
+
+
 def save_log_to_db(event_type, gamertag, ip, extra=None):
     """Salva logs gerais no banco para o Admin Dashboard."""
     try:
-        db_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "bigode_unified.db"
-        )
-        conn = sqlite3.connect(db_path)
+        conn = _get_unified_db()
         cur = conn.cursor()
 
         cur.execute(
@@ -784,6 +1000,13 @@ def save_log_to_db(event_type, gamertag, ip, extra=None):
                 json.dumps(extra or {}),
             ),
         )
+
+        # Salvar tambem em connection_logs para deteccao de alts
+        if event_type == "connection":
+            cur.execute(
+                "INSERT INTO connection_logs (gamertag, ip_address) VALUES (?, ?)",
+                (gamertag, ip),
+            )
 
         conn.commit()
         conn.close()
@@ -820,50 +1043,67 @@ async def parse_log_line(line):
             is_suspect = False
             is_banned = False
 
-            # Verificar se o jogador ou IP está banido
-            conn = database.get_db_connection()
-            if conn:
+            # Verificar se o jogador ou IP está banido (SQLite local)
+            try:
+                ac_conn = _get_unified_db()
+                ac_cur = ac_conn.cursor()
+
+                # 1. Verificar se o gamertag está banido (campo nitrado_gamertag na tabela users)
                 try:
-                    cur = conn.cursor()
-
-                    # 1. Verificar se o gamertag está banido
-                    cur.execute("SELECT is_banned FROM users WHERE gamertag = ? AND is_banned = 1", (name,))
-                    if cur.fetchone():
+                    ac_cur.execute(
+                        "SELECT is_banned FROM users WHERE nitrado_gamertag = ? AND is_banned = 1",
+                        (name,),
+                    )
+                    if ac_cur.fetchone():
                         is_banned = True
-                        print(f"⚠️  [ANTI-CHEAT] {name} está BANIDO!")
+                        print(f"[ANTI-CHEAT] {name} esta BANIDO!")
+                except Exception:
+                    pass  # Coluna is_banned pode nao existir ainda
 
-                    # 2. Verificar se o IP está em lista de banidos (tabela opcional)
-                    try:
-                        cur.execute("SELECT COUNT(*) FROM banned_ips WHERE ip_address = ?", (ip,))
-                        if cur.fetchone()[0] > 0:
-                            is_banned = True
-                            print(f"⚠️  [ANTI-CHEAT] IP {ip} está BANIDO!")
-                    except:
-                        pass  # Tabela banned_ips pode não existir
+                # 2. Verificar se o IP está em lista de banidos (tabela opcional)
+                try:
+                    ac_cur.execute(
+                        "SELECT COUNT(*) FROM banned_ips WHERE ip_address = ?",
+                        (ip,),
+                    )
+                    if ac_cur.fetchone()[0] > 0:
+                        is_banned = True
+                        print(f"[ANTI-CHEAT] IP {ip} esta BANIDO!")
+                except Exception:
+                    pass  # Tabela banned_ips pode nao existir
 
-                    # 3. Detectar possíveis alts (mesmo IP usado por contas banidas)
-                    if not is_banned:
-                        cur.execute("""
-                            SELECT DISTINCT gamertag FROM connection_logs
-                            WHERE ip_address = ? AND gamertag != ?
-                            LIMIT 5
-                        """, (ip, name))
-                        alts = cur.fetchall()
-                        if alts:
-                            alt_names = [alt[0] for alt in alts]
-                            # Verificar se alguma das alts está banida
-                            for alt_name in alt_names:
-                                cur.execute("SELECT is_banned FROM users WHERE gamertag = ? AND is_banned = 1", (alt_name,))
-                                if cur.fetchone():
+                # 3. Detectar possíveis alts (mesmo IP usado por outras contas)
+                if not is_banned:
+                    ac_cur.execute(
+                        """
+                        SELECT DISTINCT gamertag FROM connection_logs
+                        WHERE ip_address = ? AND gamertag != ?
+                        LIMIT 5
+                    """,
+                        (ip, name),
+                    )
+                    alts = ac_cur.fetchall()
+                    if alts:
+                        alt_names = [alt[0] for alt in alts]
+                        # Verificar se alguma das alts está banida
+                        for alt_name in alt_names:
+                            try:
+                                ac_cur.execute(
+                                    "SELECT is_banned FROM users WHERE nitrado_gamertag = ? AND is_banned = 1",
+                                    (alt_name,),
+                                )
+                                if ac_cur.fetchone():
                                     is_suspect = True
-                                    print(f"🚨 [ANTI-CHEAT] {name} pode ser ALT de conta banida: {alt_name}")
+                                    print(
+                                        f"[ANTI-CHEAT] {name} pode ser ALT de conta banida: {alt_name}"
+                                    )
                                     break
+                            except Exception:
+                                pass  # Coluna is_banned pode nao existir
 
-                    conn.close()
-                except Exception as e:
-                    print(f"[ANTI-CHEAT] Erro na verificação: {e}")
-                    if conn:
-                        conn.close()
+                ac_conn.close()
+            except Exception as e:
+                print(f"[ANTI-CHEAT] Erro na verificacao: {e}")
 
             if is_suspect:
                 embed = discord.Embed(
@@ -878,6 +1118,122 @@ async def parse_log_line(line):
 
     if "committed suicide" in line:
         return None
+
+    # NOVO: Suporte para formato "PlayerKill:" (com Distance explícito)
+    if "PlayerKill:" in line:
+        try:
+            import re
+
+            # Regex para capturar PlayerKill com Distance opcional
+            pattern = r'PlayerKill: Killer="(?P<killer>[^"]+)".*Victim="(?P<victim>[^"]+)".*Pos=<(?P<x>[-0-9.]+),\s*(?P<y>[-0-9.]+),\s*(?P<z>[-0-9.]+)>, Weapon=(?P<weapon>[^,]+)(?:, Distance=(?P<dist>[-0-9.]+))?'
+            match = re.search(pattern, line)
+
+            if match:
+                data = match.groupdict()
+                killer_name = data["killer"]
+                victim_name = data["victim"]
+                weapon = data["weapon"]
+                distance = float(data["dist"]) if data.get("dist") else 0
+                lx, lz = float(data["x"]), float(data["z"])
+
+                # Fallback: Se distância for 0 mas tivermos coordenadas do killer (em updates futuros do parser)
+                # Por enquanto, o log padrão "PlayerKill" contém "Pos" da Vítima e "Distance" do tiro.
+                # Se Distance for 0, é provável que seja à queima-roupa ou bug.
+                # Não temos a posição do Killer neste log específico para calcular manualmente,
+                # a menos que cruzemos com logs de posição periódicos (o que seria complexo e lento).
+                # Então confiamos no campo "Distance" ou aceitamos 0 para melee.
+
+                print(
+                    f"[DEBUG KILLFEED] Killer={killer_name}, Victim={victim_name}, Weapon={weapon}, Distance={distance}m"
+                )
+
+                # Geolocalização
+                loc_name = get_location_name(lx, lz)
+                location = f"{loc_name} ({lx:.0f}, {lz:.0f})"
+
+                # Atualiza Stats
+                k_stats, v_stats, time_alive = update_stats_db(
+                    killer_name, victim_name, weapon, distance
+                )
+
+                # Salvar no DB do Dashboard
+                save_death_to_db(
+                    killer_name,
+                    victim_name,
+                    weapon,
+                    distance,
+                    (lx, 0, lz),
+                    death_type="pvp",
+                    is_headshot=False,
+                    location=location,
+                )
+
+                # Recompensas e conquistas (mesmo código do bloco original)
+                discord_id = get_discord_id_by_gamertag(killer_name)
+                reward_msg = ""
+                total_reward = KILL_REWARD
+
+                # Verifica BOUNTY
+                victim_lower = victim_name.lower()
+                bounty_val = database.claim_bounty(victim_lower, killer_name)
+                if bounty_val > 0:
+                    total_reward += bounty_val
+                    reward_msg += f"\n🤠 **RECOMPENSA COLETADA:** +{bounty_val}!"
+
+                if discord_id:
+                    try:
+                        database.update_balance(
+                            discord_id, total_reward, "kill", f"Kill: {victim_name}"
+                        )
+                    except Exception:
+                        pass
+
+                    try:
+                        new_achievements = check_achievements(discord_id)
+                        if new_achievements:
+                            for _ach_id, ach_def in new_achievements:
+                                reward_msg += f"\n🏆 **CONQUISTA DESBLOQUEADA:** {ach_def['name']}!"
+                                if ach_def["reward"] > 0:
+                                    reward_msg += f" (+{ach_def['reward']} DZ Coins)"
+                    except Exception:
+                        pass
+
+                # TEMA BIGODE TEXAS 🤠
+                embed = discord.Embed(
+                    title="🤠 KILLFEED TEXAS", color=discord.Color.orange()
+                )
+
+                # Assassino
+                embed.add_field(
+                    name="🔫 Pistoleiro (Assassino)",
+                    value=f"**{killer_name}**\n⭐ Nível: {calculate_level(k_stats['kills'])}\n🎯 K/D: {calculate_kd(k_stats['kills'], k_stats['deaths'])}\n🔥 Série: {k_stats['killstreak']}\n📏 Longest: {k_stats.get('longest_shot', 0)}m{reward_msg}",
+                    inline=True,
+                )
+
+                # Vítima
+                embed.add_field(
+                    name="⚰️ Finado (Vítima)",
+                    value=f"**{victim_name}**\n⭐ Nível: {calculate_level(v_stats['kills'])}\n⏳ Viveu: {format_time(time_alive)}",
+                    inline=True,
+                )
+
+                # Detalhes
+                embed.add_field(
+                    name="🌵 Detalhes do Crime",
+                    value=f"🛠️ Arma: `{weapon}`\n📍 Local: `{location}`",
+                    inline=False,
+                )
+
+                embed.set_thumbnail(url="https://i.imgur.com/S71j4qO.png")
+                embed.set_footer(
+                    text=f"BigodeTexas • {datetime.now().strftime('%H:%M')} • O Xerife está de olho 👀",
+                    icon_url=FOOTER_ICON,
+                )
+
+                return embed
+        except Exception as e:
+            print(f"[ERRO] Falha ao processar PlayerKill: {e}")
+            pass
 
     if "killed by Player" in line:
         try:
@@ -1026,7 +1382,6 @@ async def parse_log_line(line):
                 # Precisamos garantir que lx e lz estao no escopo.
                 # O bloco try onde lx e lz sao definidos esta dentro do if "<" in line...
                 # Vamos refatorar levemente para garantir que temos as coords.
-                pass
             except Exception:
                 pass
 
@@ -1037,16 +1392,11 @@ async def parse_log_line(line):
             total_reward = KILL_REWARD
 
             # Verifica BOUNTY (Procurado)
-            bounties = load_bounties()
             victim_lower = victim_name.lower()
-
-            if victim_lower in bounties:
-                bounty_val = bounties[victim_lower]["amount"]
+            bounty_val = database.claim_bounty(victim_lower, killer_name)
+            if bounty_val > 0:
                 total_reward += bounty_val
                 reward_msg += f"\n🤠 **RECOMPENSA COLETADA:** +{bounty_val}!"
-                # Remove a recompensa
-                del bounties[victim_lower]
-                save_bounties(bounties)
 
             if discord_id:
                 try:
@@ -1144,12 +1494,11 @@ async def parse_log_line(line):
                 .replace("'", "")
             )
             # Atualiza DB (morte natural)
-            db = load_json(PLAYERS_DB_FILE)
-            victim = get_player_stats(db, victim_name)
-            victim["deaths"] += 1
+            victim = get_player_stats(None, victim_name)
+            victim["deaths"] = victim.get("deaths", 0) + 1
             victim["killstreak"] = 0
             victim["last_death_time"] = time.time()
-            save_json(PLAYERS_DB_FILE, db)
+            database.save_player(victim_name, victim)
 
             # SALVAR NO DB DO DASHBOARD 🚀
             save_death_to_db(
@@ -1163,11 +1512,13 @@ async def parse_log_line(line):
                 location="Chernarus",
             )
 
-            embed = discord.Embed(
-                description=f"💀 **{victim_name}** morreu.",
-                color=discord.Color.dark_grey(),
-            )
-            return embed
+            # DESABILITADO: Notificação simplificada de morte PvE (evita spam)
+            # embed = discord.Embed(
+            #     description=f"💀 **{victim_name}** morreu.",
+            #     color=discord.Color.dark_grey(),
+            # )
+            # return embed
+            return None  # Não envia notificação para mortes PvE
         except Exception:
             return None
 
@@ -1472,7 +1823,6 @@ async def killfeed_loop():
     #     return
 
     # Forçado Ativado
-    pass
 
     # NOTE: 'last_read_lines' is reused here as 'last_byte_offset' to avoid global renaming chaos
     last_byte_offset = last_read_lines
@@ -1606,7 +1956,7 @@ async def save_data_loop():
 @tasks.loop(minutes=5)
 async def sync_queue_loop():
     """Tenta processar eventos da fila local salvos durante falhas do DB."""
-    from utils.event_queue import load_queue, clear_queue
+    from utils.event_queue import clear_queue, load_queue
 
     pending = load_queue()
     if not pending:
@@ -1839,27 +2189,26 @@ async def ajuda(ctx):
 
 
 # --- SISTEMA DE RECOMPENSAS (BOUNTIES) ---
-BOUNTIES_FILE = "bounties.json"
 
 
 def load_bounties():
-    return load_json(BOUNTIES_FILE)
+    return database.get_all_bounties()
 
 
 def save_bounties(data):
-    save_json(BOUNTIES_FILE, data)
+    pass  # Individual saves handled by database.save_bounty/claim_bounty
 
 
 # --- SISTEMA DE ALARMES ---
-ALARMS_FILE = "alarms.json"
 
 
 def load_alarms():
-    return load_json(ALARMS_FILE)
+    return database.get_all_alarms()
 
 
 def save_alarms(data):
-    save_json(ALARMS_FILE, data)
+    for key, alarm_data in data.items():
+        database.save_alarm(key, alarm_data)
 
 
 def check_alarms(x, z, _event_desc):
@@ -2031,4 +2380,3 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n[ERRO CRITICO] O bot falhou ao iniciar: {e}")
         print("Verifique se o TOKEN esta correto e se a internet esta funcionando.")
-        pass
